@@ -2,16 +2,15 @@
 
     <string id="AppName">Crystal</string>
 
-    <string id="BackgroundColorTitle">Background Color</string>
-    <string id="HoursColorTitle">Hours Color</string>
-    <string id="MinutesColorTitle">Minutes Color</string>
-    <string id="MilitaryFormatTitle">Military Format for 24 Hour Time</string>
+    <string id="BackgroundColourTitle">Background Colour</string>
+    <string id="HighlightColourTitle">Highlight Colour</string>
 
-    <string id="ColorBlack">Black</string>
-    <string id="ColorDarkGray">Dark Gray</string>
-    <string id="ColorLightGray">Light Gray</string>
-    <string id="ColorWhite">White</string>
-    <string id="ColorBlue">Blue</string>
-    <string id="ColorRed">Red</string>
+    <string id="ColourBlack">Black</string>
+    <string id="ColourDarkGray">Dark Gray</string>
+    <string id="ColourLightGray">Light Gray</string>
+    <string id="ColourWhite">White</string>
+    <string id="ColourBlue">Blue</string>
+    <string id="ColourRed">Red</string>
+    <string id="ColourSkyBlue">Sky Blue</string>
 
 </strings>

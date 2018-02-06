@@ -23,6 +23,7 @@ class CrystalView extends Ui.WatchFace {
 
     // Update the view
     function onUpdate(dc) {
+    		/*
         // Get the current time and format it correctly
         var timeFormat = "$1$:$2$";
         var clockTime = Sys.getClockTime();
@@ -31,21 +32,17 @@ class CrystalView extends Ui.WatchFace {
             if (hours > 12) {
                 hours = hours - 12;
             }
-        } else {
-            if (App.getApp().getProperty("UseMilitaryFormat")) {
-                timeFormat = "$1$$2$";
-                hours = hours.format("%02d");
-            }
         }
 
         // Update the view
         var view = View.findDrawableById("HoursLabel");
-        view.setColor(App.getApp().getProperty("HoursColor"));
+        view.setColor(App.getApp().getProperty("HighlightColour"));
         view.setText(hours.format("%02d"));
         
         view = View.findDrawableById("MinutesLabel");
-        view.setColor(App.getApp().getProperty("MinutesColor"));
+        view.setColor(App.getApp().getProperty("HighlightColour"));
         view.setText(clockTime.min.format("%02d"));
+        */
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
