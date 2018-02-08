@@ -1,4 +1,5 @@
 <fonts>
 	<font id="HoursFont" filename="exo-2-bold-56.fnt" antialias="true" />
 	<font id="MinutesFont" filename="exo-2-light-56.fnt" antialias="true" />
+	<font id="SecondsFont" filename="exo-2-medium-20.fnt" antialias="true" />
 </fonts>
