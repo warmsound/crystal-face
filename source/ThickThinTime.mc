@@ -15,6 +15,8 @@ class ThickThinTime extends Ui.Drawable {
 			"height" => 0
 	};
 
+	private var mAnteMeridiem, mPostMeridiem;
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -25,6 +27,9 @@ class ThickThinTime extends Ui.Drawable {
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
 		mSecondsY = 155; // TODO: Define guide.
+
+		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
+		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
 	}
 	
 	function draw(dc) {
@@ -66,6 +71,7 @@ class ThickThinTime extends Ui.Drawable {
 		var hoursWidth = dc.getTextWidthInPixels(hours, mHoursFont);
 		var minutesWidth = dc.getTextWidthInPixels(minutes, mMinutesFont);
 		var combinedWidth = hoursWidth + minutesWidth;
+		var halfDCHeight = dc.getHeight() / 2;
 
 		// Calculate X-position of each left-justified part.
 		var hoursX = (dc.getWidth() / 2) - (combinedWidth / 2);
@@ -74,7 +80,7 @@ class ThickThinTime extends Ui.Drawable {
 		// Draw hours.
 		dc.drawText(
 			hoursX,
-			dc.getHeight() / 2,
+			halfDCHeight,
 			mHoursFont,
 			hours,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -83,7 +89,7 @@ class ThickThinTime extends Ui.Drawable {
 		// Draw minutes.
 		dc.drawText(
 			minutesX,
-			dc.getHeight() / 2,
+			halfDCHeight,
 			mMinutesFont,
 			minutes,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -91,6 +97,25 @@ class ThickThinTime extends Ui.Drawable {
 
 		// Calculate and store X-position of seconds, to avoid having to recalculate when drawing seconds only.
 		mSecondsX = minutesX + minutesWidth - mSeconds00Width;
+
+		// If required, draw am/pm after minutes, vertically centred.
+		if (!is24Hour) {
+			
+			var amPmText;
+			if (isPm) {
+				amPmText = mPostMeridiem;
+			} else {
+				amPmText = mAnteMeridiem;
+			}
+
+			dc.drawText(
+				minutesX + minutesWidth,
+				halfDCHeight,
+				mSecondsFont,
+				amPmText,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.

@@ -13,4 +13,7 @@
 	<string id="ColourRed">Red</string>
 	<string id="ColourSkyBlue">Sky Blue</string>
 
+	<string id="AnteMeridiem">A</string>
+	<string id="PostMeridiem">P</string>
+
 </strings>
