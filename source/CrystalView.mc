@@ -6,63 +6,63 @@ using Toybox.Application as App;
 
 class CrystalView extends Ui.WatchFace {
 
-    function initialize() {
-        WatchFace.initialize();
-    }
+	function initialize() {
+		WatchFace.initialize();
+	}
 
-    // Load your resources here
-    function onLayout(dc) {
-        setLayout(Rez.Layouts.WatchFace(dc));
-    }
+	// Load your resources here
+	function onLayout(dc) {
+		setLayout(Rez.Layouts.WatchFace(dc));
+	}
 
-    // Called when this View is brought to the foreground. Restore
-    // the state of this View and prepare it to be shown. This includes
-    // loading resources into memory.
-    function onShow() {
-    }
+	// Called when this View is brought to the foreground. Restore
+	// the state of this View and prepare it to be shown. This includes
+	// loading resources into memory.
+	function onShow() {
+	}
 
-    // Update the view
-    function onUpdate(dc) {
-    	System.println("onUpdate()");
+	// Update the view
+	function onUpdate(dc) {
+		System.println("onUpdate()");
 
-        // Call the parent onUpdate function to redraw the layout
-        View.onUpdate(dc);
-    }
+		// Call the parent onUpdate function to redraw the layout
+		View.onUpdate(dc);
+	}
 
-    // Set clipping region to previously-displayed seconds text only.
-    // Clear background, clear clipping region, then draw new seconds.
-    function onPartialUpdate(dc) {
-    	System.println("onPartialUpdate()");
-    
-        var time = View.findDrawableById("Time");
-        var secondsClipRect = time.getSecondsClipRect();
-        dc.setClip(
-            secondsClipRect["x"],
-            secondsClipRect["y"],
-            secondsClipRect["width"],
-            secondsClipRect["height"]
-        );
+	// Set clipping region to previously-displayed seconds text only.
+	// Clear background, clear clipping region, then draw new seconds.
+	function onPartialUpdate(dc) {
+		System.println("onPartialUpdate()");
+	
+		var time = View.findDrawableById("Time");
+		var secondsClipRect = time.getSecondsClipRect();
+		dc.setClip(
+			secondsClipRect["x"],
+			secondsClipRect["y"],
+			secondsClipRect["width"],
+			secondsClipRect["height"]
+		);
 
-        var background = View.findDrawableById("Background");
-        background.draw(dc);
+		var background = View.findDrawableById("Background");
+		background.draw(dc);
 
-        dc.clearClip();
+		dc.clearClip();
 
-        time.drawSeconds(dc);
-    }
+		time.drawSeconds(dc);
+	}
 
-    // Called when this View is removed from the screen. Save the
-    // state of this View here. This includes freeing resources from
-    // memory.
-    function onHide() {
-    }
+	// Called when this View is removed from the screen. Save the
+	// state of this View here. This includes freeing resources from
+	// memory.
+	function onHide() {
+	}
 
-    // The user has just looked at their watch. Timers and animations may be started here.
-    function onExitSleep() {
-    }
+	// The user has just looked at their watch. Timers and animations may be started here.
+	function onExitSleep() {
+	}
 
-    // Terminate any active timers and prepare for slow updates.
-    function onEnterSleep() {
-    }
+	// Terminate any active timers and prepare for slow updates.
+	function onEnterSleep() {
+	}
 
 }

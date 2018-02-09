@@ -1,21 +1,21 @@
 <settings>
 
-    <setting propertyKey="@Properties.BackgroundColour" title="@Strings.BackgroundColourTitle">
-        <settingConfig type="list">
-            <listEntry value="0x000000">@Strings.ColourBlack</listEntry>
-            <listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
-            <listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
-            <listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
-        </settingConfig>
-    </setting>
-    
-    <setting propertyKey="@Properties.HighlightColour" title="@Strings.HighlightColourTitle">
-        <settingConfig type="list">
-            <listEntry value="0x000000">@Strings.ColourBlack</listEntry>
-            <listEntry value="0x0000FF">@Strings.ColourBlue</listEntry>
-            <listEntry value="0xFF0000">@Strings.ColourRed</listEntry>
-            <listEntry value="0x00AAFF">@Strings.ColourSkyBlue</listEntry>
-        </settingConfig>
-    </setting>
+	<setting propertyKey="@Properties.BackgroundColour" title="@Strings.BackgroundColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
+			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
+			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
+			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
+		</settingConfig>
+	</setting>
+	
+	<setting propertyKey="@Properties.HighlightColour" title="@Strings.HighlightColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
+			<listEntry value="0x0000FF">@Strings.ColourBlue</listEntry>
+			<listEntry value="0xFF0000">@Strings.ColourRed</listEntry>
+			<listEntry value="0x00AAFF">@Strings.ColourSkyBlue</listEntry>
+		</settingConfig>
+	</setting>
 
 </settings>

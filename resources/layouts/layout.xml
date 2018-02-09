@@ -1,4 +1,4 @@
 <layout id="WatchFace">
-    <drawable class="Background" />
-    <drawable id="Time" class="ThickThinTime"/>
+	<drawable class="Background" />
+	<drawable id="Time" class="ThickThinTime"/>
 </layout>

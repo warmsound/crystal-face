@@ -1,6 +1,6 @@
 <properties>
 
-    <property id="BackgroundColour" type="number">0x000000</property>
-    <property id="HighlightColour" type="number">0x00AAFF</property>
+	<property id="BackgroundColour" type="number">0x000000</property>
+	<property id="HighlightColour" type="number">0x00AAFF</property>
 
 </properties>

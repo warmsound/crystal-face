@@ -4,18 +4,18 @@ using Toybox.Graphics as Gfx;
 
 class Background extends Ui.Drawable {
 
-    function initialize() {
-        var dictionary = {
-            :identifier => "Background"
-        };
+	function initialize() {
+		var dictionary = {
+			:identifier => "Background"
+		};
 
-        Drawable.initialize(dictionary);
-    }
+		Drawable.initialize(dictionary);
+	}
 
-    function draw(dc) {
-        // Set the background color then call to clear the screen
-        dc.setColor(Gfx.COLOR_TRANSPARENT, App.getApp().getProperty("BackgroundColour"));
-        dc.clear();
-    }
+	function draw(dc) {
+		// Set the background color then call to clear the screen
+		dc.setColor(Gfx.COLOR_TRANSPARENT, App.getApp().getProperty("BackgroundColour"));
+		dc.clear();
+	}
 
 }

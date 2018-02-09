@@ -1,16 +1,16 @@
 <strings>
 
-    <string id="AppName">Crystal</string>
+	<string id="AppName">Crystal</string>
 
-    <string id="BackgroundColourTitle">Background Colour</string>
-    <string id="HighlightColourTitle">Highlight Colour</string>
+	<string id="BackgroundColourTitle">Background Colour</string>
+	<string id="HighlightColourTitle">Highlight Colour</string>
 
-    <string id="ColourBlack">Black</string>
-    <string id="ColourDarkGray">Dark Gray</string>
-    <string id="ColourLightGray">Light Gray</string>
-    <string id="ColourWhite">White</string>
-    <string id="ColourBlue">Blue</string>
-    <string id="ColourRed">Red</string>
-    <string id="ColourSkyBlue">Sky Blue</string>
+	<string id="ColourBlack">Black</string>
+	<string id="ColourDarkGray">Dark Gray</string>
+	<string id="ColourLightGray">Light Gray</string>
+	<string id="ColourWhite">White</string>
+	<string id="ColourBlue">Blue</string>
+	<string id="ColourRed">Red</string>
+	<string id="ColourSkyBlue">Sky Blue</string>
 
 </strings>
