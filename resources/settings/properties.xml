@@ -1,8 +1,6 @@
 <properties>
 
-    <property id="BackgroundColor" type="number">0x000000</property>
-    <property id="HoursColor" type="number">0x6495ED</property>
-    <property id="MinutesColor" type="number">0x6495ED</property>
-    <property id="UseMilitaryFormat" type="boolean">false</property>
+	<property id="BackgroundColour" type="number">0x000000</property>
+	<property id="HighlightColour" type="number">0x00AAFF</property>
 
 </properties>

@@ -1,5 +1,4 @@
 <layout id="WatchFace">
-    <drawable class="Background" />
-    <label id="HoursLabel" x="center" y="center" font="@Fonts.HoursFont" justification="Gfx.TEXT_JUSTIFY_RIGHT" color="0x00AAFF" />
-    <label id="MinutesLabel" x="center" y="center" font="@Fonts.MinutesFont" justification="Gfx.TEXT_JUSTIFY_LEFT" color="0x00AAFF" />
+	<drawable class="Background" />
+	<drawable id="Time" class="ThickThinTime"/>
 </layout>
