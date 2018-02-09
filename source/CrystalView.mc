@@ -23,29 +23,32 @@ class CrystalView extends Ui.WatchFace {
 
     // Update the view
     function onUpdate(dc) {
-    		/*
-        // Get the current time and format it correctly
-        var timeFormat = "$1$:$2$";
-        var clockTime = Sys.getClockTime();
-        var hours = clockTime.hour;
-        if (!Sys.getDeviceSettings().is24Hour) {
-            if (hours > 12) {
-                hours = hours - 12;
-            }
-        }
-
-        // Update the view
-        var view = View.findDrawableById("HoursLabel");
-        view.setColor(App.getApp().getProperty("HighlightColour"));
-        view.setText(hours.format("%02d"));
-        
-        view = View.findDrawableById("MinutesLabel");
-        view.setColor(App.getApp().getProperty("HighlightColour"));
-        view.setText(clockTime.min.format("%02d"));
-        */
+    	System.println("onUpdate()");
 
         // Call the parent onUpdate function to redraw the layout
         View.onUpdate(dc);
+    }
+
+    // Set clipping region to previously-displayed seconds text only.
+    // Clear background, clear clipping region, then draw new seconds.
+    function onPartialUpdate(dc) {
+    	System.println("onPartialUpdate()");
+    
+        var time = View.findDrawableById("Time");
+        var secondsClipRect = time.getSecondsClipRect();
+        dc.setClip(
+            secondsClipRect["x"],
+            secondsClipRect["y"],
+            secondsClipRect["width"],
+            secondsClipRect["height"]
+        );
+
+        var background = View.findDrawableById("Background");
+        background.draw(dc);
+
+        dc.clearClip();
+
+        time.drawSeconds(dc);
     }
 
     // Called when this View is removed from the screen. Save the
