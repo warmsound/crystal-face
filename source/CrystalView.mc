@@ -37,10 +37,10 @@ class CrystalView extends Ui.WatchFace {
 		var time = View.findDrawableById("Time");
 		var secondsClipRect = time.getSecondsClipRect();
 		dc.setClip(
-			secondsClipRect["x"],
-			secondsClipRect["y"],
-			secondsClipRect["width"],
-			secondsClipRect["height"]
+			secondsClipRect[:x],
+			secondsClipRect[:y],
+			secondsClipRect[:width],
+			secondsClipRect[:height]
 		);
 
 		var background = View.findDrawableById("Background");

@@ -9,10 +9,10 @@ class ThickThinTime extends Ui.Drawable {
 
 	private var mSeconds00Width, mSecondsX, mSecondsY;
 	private var mSecondsClipRect = {
-			"x" => 0,
-			"y" => 0,
-			"width" => 0,
-			"height" => 0
+			:x => 0,
+			:y => 0,
+			:width => 0,
+			:height => 0
 	};
 
 	private var mAnteMeridiem, mPostMeridiem;
@@ -141,10 +141,10 @@ class ThickThinTime extends Ui.Drawable {
 		// Cache seconds clip rect for low power mode.
 		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
 
-		mSecondsClipRect["x"] = mSecondsX;
-		mSecondsClipRect["y"] = mSecondsY - (secondsDimensions[1] / 2); // Top-left corner of vertically centred text.
-		mSecondsClipRect["width"] = secondsDimensions[0];
-		mSecondsClipRect["height"] = secondsDimensions[1];
+		mSecondsClipRect[:x] = mSecondsX;
+		mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2); // Top-left corner of vertically centred text.
+		mSecondsClipRect[:width] = secondsDimensions[0];
+		mSecondsClipRect[:height] = secondsDimensions[1];
 	}
 
 	function getSecondsClipRect() {
