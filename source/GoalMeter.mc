@@ -11,8 +11,8 @@ class GoalMeter extends Ui.Drawable {
 	private var mHeight; // Total height of meter.
 	private var mSeparator; // Stroke width of separator bars.
 
-	private var mCurrentValue = 3500.0;
-	private var mMaxValue = 7200.0;
+	private var mCurrentValue = 3500;
+	private var mMaxValue = 7200;
 
 	private const MAX_WHOLE_SEGMENTS = 10;
 	private const SEGMENT_SCALES = [1, 2, 5];
@@ -27,31 +27,42 @@ class GoalMeter extends Ui.Drawable {
 		mStroke = params[:stroke];
 		mHeight = params[:height];
 		mSeparator = params[:separator];
-		
-		getSegmentHeights();
 	}
 	
 	function draw(dc) {
-		var highlightColour = App.getApp().getProperty("HighlightColour");
-		dc.setColor(highlightColour, Graphics.COLOR_TRANSPARENT);
-		dc.setPenWidth(mStroke);
+		var segmentHeights = getSegmentHeights();
 
-		var top = (dc.getHeight() - mHeight) / 2;
+		var backgroundColour = App.getApp().getProperty("MeterBackgroundColour");
+		dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+		dc.setPenWidth(mStroke);
+		
+		var bottom = dc.getHeight() - ((dc.getHeight() - mHeight) / 2);
+		var top;
+		var height;
 
 		if (mSide == :left) {
-			dc.setClip(0, top, dc.getWidth() / 2, mHeight);
+			for (var i = 0; i < segmentHeights.size(); ++i) {
+				height = segmentHeights[i];
+				top = bottom - height;
+				System.println("Segment " + i + " bottom " + bottom + " height " + height);
+				dc.setClip(0, top, dc.getWidth() / 2, height);
+				dc.drawCircle(dc.getWidth() / 2, dc.getHeight() / 2, dc.getWidth() / 2 - mMargin - (mStroke / 2));
+				bottom = top - mSeparator;
+			}			
 		}
-		
-		dc.drawCircle(dc.getWidth() / 2, dc.getHeight() / 2, dc.getWidth() / 2 - mMargin - (mStroke / 2));
 	}
 
-	function setValue(current, max) {
+	function setValues(current, max) {
+		mCurrentValue = current;
+		mMaxValue = max;
 	}
 
-
-	private function getSegmentHeights() {
+	// Return array of segment heights in pixels.
+	// Last segment may be partial segment; if so, must adhere to minimum segment height.
+	// Segment heights rounded to nearest pixel, so neighbouring whole segments may differ in height by a pixel.
+	function getSegmentHeights() {
 		var segmentScale = getSegmentScale(); // Value each whole segment represents.
-		var numSegments = mMaxValue / segmentScale; // Including any partial.
+		var numSegments = mMaxValue * 1.0 / segmentScale; // Including any partial. Force floating-point division.
 
 		var availableHeight = mHeight; // Start with full meter height.
 		var numSeparators = Math.ceil(numSegments) - 1; // Subtract total separator height.
@@ -74,23 +85,26 @@ class GoalMeter extends Ui.Drawable {
 			availableHeight -= partialLastSegmentHeight;
 		}
 
-		var segmentHeight = availableHeight / Math.floor(numSegments); // With any adjustment for partial last segment height.
+		Sys.println("availableHeight " + availableHeight);
+		// With any adjustment for partial last segment height.
+		// Force floating-point division.
+		var segmentHeight = availableHeight * 1.0 / Math.floor(numSegments);
 		Sys.println("segmentHeight " + segmentHeight);		
 
 		var segmentHeights = new [Math.ceil(numSegments)];
 		var segmentStart, segmentEnd;
-		for (var i = 0; i < config.size(); ++i) {
+		for (var i = 0; i < segmentHeights.size(); ++i) {
 			segmentStart = Math.round(i * segmentHeight);
 			segmentEnd = Math.round((i + 1) * segmentHeight);
 			
 			// If there is a partial last segment, and this is the last segment.
-			if (hasPartialLastSegment && (i == (config.size() - 1))) {
+			if (hasPartialLastSegment && (i == (segmentHeights.size() - 1))) {
 				segmentHeights[i] = partialLastSegmentHeight;
 			} else {
 				segmentHeights[i] = segmentEnd - segmentStart;
 			}
 			
-			Sys.println("config " + i + " " + config[i]);
+			Sys.println("segmentHeights " + i + " " + segmentHeights[i]);
 		}
 
 		return segmentHeights;
@@ -99,7 +113,7 @@ class GoalMeter extends Ui.Drawable {
 	// Determine what value each whole segment represents.
 	// Try a scale of 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000... until dividing mMaxValue by that scale gives a whole
 	// number of segments that is less than or equal to MAX_WHOLE_SEGMENTS.
-	private function getSegmentScale() {
+	function getSegmentScale() {
 		var scale = 1;
 		var scaleFound = false;
 		var tryScaleIndex, tryScale;
@@ -125,10 +139,5 @@ class GoalMeter extends Ui.Drawable {
 
 		Sys.println("scale " + scale);
 		return scale;	
-	}
-
-	// Determine height of each whole segment in pixels.
-	// Topmost segment may be partial. If so, must be at least MIN_SEGMENT_HEIGHT high.
-	private function getSegmentHeight() {
 	}
 }

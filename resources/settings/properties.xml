@@ -2,5 +2,6 @@
 
 	<property id="BackgroundColour" type="number">0x000000</property>
 	<property id="HighlightColour" type="number">0x00AAFF</property>
+	<property id="MeterBackgroundColour" type="number">0x555555</property>
 
 </properties>
