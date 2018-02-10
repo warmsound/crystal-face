@@ -33,8 +33,6 @@ class ThickThinTime extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		System.println("ThickThinTime.draw()");
-
 		// See drawSeconds(), below.
 		// Determine mSeconds00Width once, the first time a dc is available.
 		if (mSeconds00Width == null) {
