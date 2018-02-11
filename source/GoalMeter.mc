@@ -11,8 +11,10 @@ class GoalMeter extends Ui.Drawable {
 	private var mHeight; // Total height of meter.
 	private var mSeparator; // Stroke width of separator bars.
 
-	private var mCurrentValue = 3500;
-	private var mMaxValue = 7200;
+	private var mCurrentValue = 0;
+	private var mMaxValue = 100;
+
+	private var mLastColour;
 
 	private const MAX_WHOLE_SEGMENTS = 10;
 	private const SEGMENT_SCALES = [1, 2, 5];
@@ -32,23 +34,65 @@ class GoalMeter extends Ui.Drawable {
 	function draw(dc) {
 		var segments = getSegments();
 
-		var backgroundColour = App.getApp().getProperty("MeterBackgroundColour");
-		dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
 		dc.setPenWidth(mStroke);
 		
 		var bottom = dc.getHeight() - ((dc.getHeight() - mHeight) / 2);
-		var top;
-		var height;
+		var height, fillHeight;
+
+		for (var i = 0; i < segments.size(); ++i) {
+			height = segments[i][:height];
+			fillHeight = segments[i][:fillHeight];
+
+			// Fully filled segment.
+			if (fillHeight == height) {
+
+				drawSegment(dc, bottom, height, App.getApp().getProperty("HighlightColour"));
+			
+			// Partially filled segment.
+			} else if (fillHeight > 0) {
+				
+				drawSegment(dc, bottom, fillHeight, App.getApp().getProperty("HighlightColour"));
+				drawSegment(dc, bottom - fillHeight, height - fillHeight, App.getApp().getProperty("MeterBackgroundColour"));
+
+			// Empty segment.
+			} else {
+
+				drawSegment(dc, bottom, height, App.getApp().getProperty("MeterBackgroundColour"));
+			}
+
+			// Separator.
+			bottom -= height + mSeparator;
+		}
+
+		// drawSegment() may set clip.
+		dc.clearClip();
+	}
+
+	function drawSegment(dc, bottom, height, colour) {
+
+		// Set DC colour if different from current DC colour.
+		if (colour != mLastColour) {
+			mLastColour = colour;
+			dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+		}
+
+		var top = bottom - height;
+		var left, right;
+
+		var halfDCWidth = dc.getWidth() / 2;
+		var halfDCHeight = dc.getHeight() / 2;
 
 		if (mSide == :left) {
-			for (var i = 0; i < segments.size(); ++i) {
-				height = segments[i][:height];
-				top = bottom - height;
-				System.println("Segment " + i + " bottom " + bottom + " height " + height);
-				dc.setClip(0, top, dc.getWidth() / 2, height);
-				dc.drawCircle(dc.getWidth() / 2, dc.getHeight() / 2, dc.getWidth() / 2 - mMargin - (mStroke / 2));
-				bottom = top - mSeparator;
-			}			
+			left = 0;
+		} else {
+			left = halfDCWidth;
+		}
+
+		if (mShape == :arc) {
+			dc.setClip(left, top, halfDCWidth, height);
+			dc.drawCircle(halfDCWidth, halfDCHeight, halfDCWidth - mMargin - (mStroke / 2));
+		} else {
+			// TODO.
 		}
 	}
 
@@ -57,7 +101,7 @@ class GoalMeter extends Ui.Drawable {
 		mMaxValue = max;
 	}
 
-	// Return array of segment heights in pixels.
+	// Return array of dictionaries, one per segment. Each dictionary describes height and fill height of segment.
 	// Last segment may be partial segment; if so, must adhere to minimum segment height.
 	// Segment heights rounded to nearest pixel, so neighbouring whole segments may differ in height by a pixel.
 	function getSegments() {

@@ -12,7 +12,7 @@ function testGetSegmentScale(max, expectedResult, logger) {
 	var goalMeter = new GoalMeter(DEFAULT_PARAMS);
 	goalMeter.setValues(0, max);
 	var scale = goalMeter.getSegmentScale();
-	logger.debug("scale is " + scale + ", expecting " + expectedResult);
+	logger.debug("scale is " + scale + ", expected " + expectedResult);
 	return (scale == expectedResult);
 }
 
@@ -60,13 +60,13 @@ function testGetSegments(current, max, expectedFillHeights, expectedHeights, log
 
 		for (var i = 0; i < segments.size(); ++i) {
 			logger.debug("segment " + i + ": " + segments[i][:fillHeight] + "/" + segments[i][:height] +
-				" , expected " + expectedFillHeights[i] + "/" + expectedHeights[i]);
+				", expected " + expectedFillHeights[i] + "/" + expectedHeights[i]);
 
 			if ((segments[i][:fillHeight] != expectedFillHeights[i]) ||
 				(segments[i][:height] != expectedHeights[i])) {
 
 				pass = false;
-				break;
+				// Don't break here, to allow all segments to be logged.
 			}
 		}
 	}
@@ -92,4 +92,9 @@ function getSegmentsShouldHandle2SegmentsWithPartial(logger) {
 (:test)
 function getSegmentsShouldHandle2SegmentsWithMinPartial(logger) {
 	return testGetSegments(0, 1.001, [0, 0], [158, 1], logger);
+}
+
+(:test)
+function getSegmentsShouldHandle6OutOf10(logger) {
+	return testGetSegments(6, 10, [14, 14, 15, 14, 14, 14, 0, 0, 0, 0], [14, 14, 15, 14, 14, 14, 14, 15, 14, 14], logger);
 }

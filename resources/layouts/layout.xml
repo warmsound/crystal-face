@@ -1,8 +1,16 @@
 <layout id="WatchFace">
 	<drawable class="Background" />
 	<drawable id="Time" class="ThickThinTime"/>
-	<drawable id="GoalMeterLeft" class="GoalMeter">
+	<drawable id="LeftGoalMeter" class="GoalMeter">
 		<param name="side">:left</param>
+		<param name="shape">:arc</param>
+		<param name="margin">8</param>
+		<param name="stroke">8</param>
+		<param name="height">160</param>
+		<param name="separator">2</param>
+	</drawable>
+	<drawable id="RightGoalMeter" class="GoalMeter">
+		<param name="side">:right</param>
 		<param name="shape">:arc</param>
 		<param name="margin">8</param>
 		<param name="stroke">8</param>

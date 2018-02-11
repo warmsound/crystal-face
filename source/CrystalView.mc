@@ -25,6 +25,13 @@ class CrystalView extends Ui.WatchFace {
 	function onUpdate(dc) {
 		System.println("onUpdate()");
 
+		// Update goal meters.
+		var leftGoalMeter = View.findDrawableById("LeftGoalMeter");
+		leftGoalMeter.setValues(3750, 5000);
+
+		var rightGoalMeter = View.findDrawableById("RightGoalMeter");
+		rightGoalMeter.setValues(5.5, 10);
+
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
 	}
