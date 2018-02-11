@@ -42,20 +42,29 @@ function getSegmentScaleShouldHandle15(logger) {
 }
 
 
-function testGetSegmentHeights(max, expectedResult, logger) {
+function testGetSegments(current, max, expectedFillHeights, expectedHeights, logger) {
 	var pass = true;
 
 	var goalMeter = new GoalMeter(DEFAULT_PARAMS);
-	goalMeter.setValues(0, max);
-	var segmentHeights = goalMeter.getSegmentHeights();
-	logger.debug(segmentHeights.size() + " segments returned, expected " + expectedResult.size());
+	goalMeter.setValues(current, max);
 
-	if (segmentHeights.size() != expectedResult.size()) {        
+	var segments = goalMeter.getSegments();
+	logger.debug(segments.size() + " segments returned, expected " + expectedFillHeights.size());
+
+	if ((expectedFillHeights.size() != expectedHeights.size()) ||
+		(segments.size() != expectedFillHeights.size())) {
+		     
 		pass = false;
+
 	} else {
-		for (var i = 0; i < segmentHeights.size(); ++i) {
-			logger.debug("segment " + i + ": " + segmentHeights[i] + ", expected " + expectedResult[i]);
-			if (segmentHeights[i] != expectedResult[i]) {
+
+		for (var i = 0; i < segments.size(); ++i) {
+			logger.debug("segment " + i + ": " + segments[i][:fillHeight] + "/" + segments[i][:height] +
+				" , expected " + expectedFillHeights[i] + "/" + expectedHeights[i]);
+
+			if ((segments[i][:fillHeight] != expectedFillHeights[i]) ||
+				(segments[i][:height] != expectedHeights[i])) {
+
 				pass = false;
 				break;
 			}
@@ -66,21 +75,21 @@ function testGetSegmentHeights(max, expectedResult, logger) {
 }
 
 (:test)
-function getSegmentHeightsShouldHandle1Segment(logger) {
-	return testGetSegmentHeights(1, [160], logger);
+function getSegmentsShouldHandle1Segment(logger) {
+	return testGetSegments(0, 1, [0], [160], logger);
 }
 
 (:test)
-function getSegmentHeightsShouldHandle2Segments(logger) {
-	return testGetSegmentHeights(2, [80, 79], logger);
+function getSegmentsShouldHandle2Segments(logger) {
+	return testGetSegments(0, 2, [0, 0], [80, 79], logger);
 }
 
 (:test)
-function getSegmentHeightsShouldHandle2SegmentsWithPartial(logger) {
-	return testGetSegmentHeights(1.25, [127, 32], logger);
+function getSegmentsShouldHandle2SegmentsWithPartial(logger) {
+	return testGetSegments(0, 1.25, [0, 0], [127, 32], logger);
 }
 
 (:test)
-function getSegmentHeightsShouldHandle2SegmentsWithMinPartial(logger) {
-	return testGetSegmentHeights(1.001, [158, 1], logger);
+function getSegmentsShouldHandle2SegmentsWithMinPartial(logger) {
+	return testGetSegments(0, 1.001, [0, 0], [158, 1], logger);
 }
