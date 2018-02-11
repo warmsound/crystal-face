@@ -51,14 +51,15 @@ class ThickThinTime extends Ui.Drawable {
 		var is24Hour = Sys.getDeviceSettings().is24Hour;
 		var isPm = true;
 
-		if (!is24Hour) {
+		if (is24Hour) {
+			hours = hours.format("%02d");
+		} else {
 			if (hours > 12) {
 				hours = hours % 12;
 				isPm = true;
 			}
+			hours = hours.format("%d");
 		}
-		
-		hours = hours.format("%02d");
 
 		dc.setColor(mHighlightColour, Graphics.COLOR_TRANSPARENT);
    
