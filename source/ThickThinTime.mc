@@ -4,7 +4,7 @@ using Toybox.Application as App;
 
 class ThickThinTime extends Ui.Drawable {
 
-	private var mHighlightColour;
+	private var mHighlightColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
 
 	private var mSeconds00Width, mSecondsX, mSecondsY;
@@ -21,6 +21,7 @@ class ThickThinTime extends Ui.Drawable {
 		Drawable.initialize(params);
 
 		mHighlightColour = App.getApp().getProperty("HighlightColour");
+		mBackgroundColour = App.getApp().getProperty("BackgroundColour");
 
 		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
@@ -40,7 +41,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		drawHoursMinutes(dc);
-		drawSeconds(dc);
+		drawSeconds(dc, /* isPartialUpdate */ false);
 	}
 
 	function drawHoursMinutes(dc) {    		
@@ -118,16 +119,44 @@ class ThickThinTime extends Ui.Drawable {
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.
-	// When drawing seconds only, it is the caller's responsibility to clear the seconds background only by setting clip region,
-	// but then clearing it before the new seconds text is drawn (which may be wider than previous text).
+	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: clear only the required rect, but also set
+	// the appropriate clip rect before drawring the new text.
 	// Seconds are aligned beneath minutes such that "00" right-aligns with right edge of minutes.
 	// Seconds are drawn left-aligned to avoid left edge jumping around as seconds change.
 	// Vertically centre-align with move bar guide.
-	function drawSeconds(dc) {
+	function drawSeconds(dc, isPartialUpdate) {
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
-		dc.setColor(mHighlightColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(mHighlightColour, mBackgroundColour);
+
+		if (isPartialUpdate) {
+			// Clear old rect (assume nothing overlaps seconds text).
+			dc.setClip(
+				mSecondsClipRect[:x],
+				mSecondsClipRect[:y],
+				mSecondsClipRect[:width],
+				mSecondsClipRect[:height]
+			);
+			dc.clear();
+		}
+
+		// Cache new seconds clip rect for low power mode.
+		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
+
+		mSecondsClipRect[:x] = mSecondsX;
+		mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2); // Top-left corner of vertically centred text.
+		mSecondsClipRect[:width] = secondsDimensions[0];
+		mSecondsClipRect[:height] = secondsDimensions[1];
+
+		if (isPartialUpdate) {
+			dc.setClip(
+				mSecondsClipRect[:x],
+				mSecondsClipRect[:y],
+				mSecondsClipRect[:width],
+				mSecondsClipRect[:height]
+			);
+		}
 
 		dc.drawText(
 			mSecondsX, // Recalculated in draw().
@@ -137,16 +166,8 @@ class ThickThinTime extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
-		// Cache seconds clip rect for low power mode.
-		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
-
-		mSecondsClipRect[:x] = mSecondsX;
-		mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2); // Top-left corner of vertically centred text.
-		mSecondsClipRect[:width] = secondsDimensions[0];
-		mSecondsClipRect[:height] = secondsDimensions[1];
-	}
-
-	function getSecondsClipRect() {
-		return mSecondsClipRect;
+		if (isPartialUpdate) {
+			dc.clearClip();
+		}
 	}
 }

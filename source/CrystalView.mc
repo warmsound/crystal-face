@@ -42,20 +42,7 @@ class CrystalView extends Ui.WatchFace {
 		System.println("onPartialUpdate()");
 	
 		var time = View.findDrawableById("Time");
-		var secondsClipRect = time.getSecondsClipRect();
-		dc.setClip(
-			secondsClipRect[:x],
-			secondsClipRect[:y],
-			secondsClipRect[:width],
-			secondsClipRect[:height]
-		);
-
-		var background = View.findDrawableById("Background");
-		background.draw(dc);
-
-		dc.clearClip();
-
-		time.drawSeconds(dc);
+		time.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
 
 	// Called when this View is removed from the screen. Save the
