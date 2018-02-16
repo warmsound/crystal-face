@@ -4,7 +4,7 @@ using Toybox.Application as App;
 
 class ThickThinTime extends Ui.Drawable {
 
-	private var mHighlightColour, mBackgroundColour;
+	private var mThemeColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
 
 	private var mSeconds00Width, mSecondsX, mSecondsY;
@@ -20,7 +20,7 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mHighlightColour = App.getApp().getProperty("HighlightColour");
+		mThemeColour = App.getApp().getProperty("ThemeColour");
 		mBackgroundColour = App.getApp().getProperty("BackgroundColour");
 
 		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
@@ -62,7 +62,7 @@ class ThickThinTime extends Ui.Drawable {
 			hours = hours.format("%d");
 		}
 
-		dc.setColor(mHighlightColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
    
 		// Centre-justify the combined hours/minutes string, rather than right-justifying hours and left-justifying minutes, in
 		// case hours width differs from minutes width significantly.
@@ -128,7 +128,7 @@ class ThickThinTime extends Ui.Drawable {
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
-		dc.setColor(mHighlightColour, mBackgroundColour);
+		dc.setColor(mThemeColour, mBackgroundColour);
 
 		if (isPartialUpdate) {
 			// Clear old rect (assume nothing overlaps seconds text).

@@ -9,7 +9,7 @@
 		</settingConfig>
 	</setting>
 	
-	<setting propertyKey="@Properties.HighlightColour" title="@Strings.HighlightColourTitle">
+	<setting propertyKey="@Properties.ThemeColour" title="@Strings.ThemeColourTitle">
 		<settingConfig type="list">
 			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
 			<listEntry value="0x0000FF">@Strings.ColourBlue</listEntry>

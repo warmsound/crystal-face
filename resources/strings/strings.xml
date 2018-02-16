@@ -3,7 +3,7 @@
 	<string id="AppName">Crystal</string>
 
 	<string id="BackgroundColourTitle">Background Colour</string>
-	<string id="HighlightColourTitle">Highlight Colour</string>
+	<string id="ThemeColourTitle">Theme Colour</string>
 
 	<string id="ColourBlack">Black</string>
 	<string id="ColourDarkGray">Dark Gray</string>
