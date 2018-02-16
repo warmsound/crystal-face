@@ -3,6 +3,7 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 using Toybox.Application as App;
+using Toybox.ActivityMonitor as ActivityMonitor;
 
 class CrystalView extends Ui.WatchFace {
 
@@ -25,15 +26,50 @@ class CrystalView extends Ui.WatchFace {
 	function onUpdate(dc) {
 		System.println("onUpdate()");
 
-		// Update goal meters.
-		var leftGoalMeter = View.findDrawableById("LeftGoalMeter");
-		leftGoalMeter.setValues(3750, 5000);
-
-		var rightGoalMeter = View.findDrawableById("RightGoalMeter");
-		rightGoalMeter.setValues(5.5, 10);
+		updateGoalMeters();		
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
+	}
+
+	function updateGoalMeters() {
+		var info = ActivityMonitor.getInfo();
+
+		var leftGoalValues = getValuesForGoalType(info, App.getApp().getProperty("LeftGoalType"));
+
+		View.findDrawableById("LeftGoalMeter").setValues(leftGoalValues[:current], leftGoalValues[:max]);
+		View.findDrawableById("LeftGoalCurrent").setText(leftGoalValues[:current].format("%d"));
+		View.findDrawableById("LeftGoalMax").setText(leftGoalValues[:max].format("%d"));
+
+		var rightGoalValues = getValuesForGoalType(info, App.getApp().getProperty("RightGoalType"));
+
+		View.findDrawableById("RightGoalMeter").setValues(rightGoalValues[:current], rightGoalValues[:max]);
+		View.findDrawableById("RightGoalCurrent").setText(rightGoalValues[:current].format("%d"));
+		View.findDrawableById("RightGoalMax").setText(rightGoalValues[:max].format("%d"));
+	}
+
+	function getValuesForGoalType(info, type) {
+		var current;
+		var max;
+
+		switch(type) {
+			case App.GOAL_TYPE_STEPS:
+				current = info.steps;
+				max = info.stepGoal;
+				break;
+
+			case App.GOAL_TYPE_FLOORS_CLIMBED:
+				current = info.floorsClimbed;
+				max = info.floorsClimbedGoal;
+				break;
+
+			case App.GAOL_TYPE_ACTIVE_MINUTES:
+				current = info.activeMinutesWeek;
+				max = into.activeMinutesWeekGoal;
+				break;
+		}
+
+		return { :current => current, :max => max };
 	}
 
 	// Set clipping region to previously-displayed seconds text only.

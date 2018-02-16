@@ -18,4 +18,20 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Steps</listEntry>
+			<listEntry value="1">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.RightGoalType" title="@Strings.RightGoalMeterTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Steps</listEntry>
+			<listEntry value="1">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+		</settingConfig>
+	</setting>
+
 </settings>
