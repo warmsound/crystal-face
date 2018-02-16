@@ -14,7 +14,7 @@ class GoalMeter extends Ui.Drawable {
 	private var mCurrentValue = 0;
 	private var mMaxValue = 100;
 
-	private var mLastColour;
+	private var mLastColour = null;
 
 	private const MAX_WHOLE_SEGMENTS = 10;
 	private const SEGMENT_SCALES = [1, 2, 5];
@@ -66,6 +66,10 @@ class GoalMeter extends Ui.Drawable {
 
 		// drawSegment() may set clip.
 		dc.clearClip();
+
+		// Clear mLastColour to force it to be set at the beginning of the next draw cycle, or else full goal meter draws as
+		// empty on second draw cycle.
+		mLastColour = null;
 	}
 
 	function drawSegment(dc, bottom, height, colour) {
