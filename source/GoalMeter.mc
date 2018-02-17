@@ -16,9 +16,8 @@ class GoalMeter extends Ui.Drawable {
 
 	private var mLastColour = null;
 
-	private const MAX_WHOLE_SEGMENTS = 10;
-	private const SEGMENT_SCALES = [1, 2, 5];
-	private const MIN_SEGMENT_HEIGHT = 1;
+	private const SEGMENT_SCALES = [1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000, 10000];
+	private const MIN_WHOLE_SEGMENT_HEIGHT = 10;
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -106,62 +105,38 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	// Return array of dictionaries, one per segment. Each dictionary describes height and fill height of segment.
-	// Last segment may be partial segment; if so, must adhere to minimum segment height.
+	// Last segment may be partial segment; if so, ensure its height is at least 1 pixel.
 	// Segment heights rounded to nearest pixel, so neighbouring whole segments may differ in height by a pixel.
 	function getSegments() {
 		var segmentScale = getSegmentScale(); // Value each whole segment represents.
+
 		var numSegments = mMaxValue * 1.0 / segmentScale; // Including any partial. Force floating-point division.
+		var numSeparators = Math.ceil(numSegments) - 1;
 
-		var totalSegmentHeight = mHeight; // Start with full meter height.
-		var numSeparators = Math.ceil(numSegments) - 1; // Subtract total separator height.
-		totalSegmentHeight -= numSeparators * mSeparator;
-
-		// Partial last segment handling.
-		var totalWholeSegmentHeight = totalSegmentHeight;
-		var hasPartialLastSegment = (numSegments != Math.round(numSegments));
-		var partialLastSegmentHeight = 0;
-		if (hasPartialLastSegment) {
-			// "(numSegments % 1) * segmentHeight" doesn't work because % expects Number/Long, not Number/Float.
-			// partialLastSegmentHeight = fractionalPartOfNumSegments * segmentHeight;
-			partialLastSegmentHeight = (numSegments - Math.floor(numSegments)) * (totalSegmentHeight / numSegments);
-			partialLastSegmentHeight = Math.round(partialLastSegmentHeight);
-
-			// Enforce minimum partial last segment height.
-			if (partialLastSegmentHeight < MIN_SEGMENT_HEIGHT) {
-				partialLastSegmentHeight = MIN_SEGMENT_HEIGHT;
-			}
-			Sys.println("partialLastSegmentHeight " + partialLastSegmentHeight);
-			totalWholeSegmentHeight -= partialLastSegmentHeight;
-		}
-		Sys.println("totalWholeSegmentHeight " + totalWholeSegmentHeight);
-		
-		var segmentHeight = totalWholeSegmentHeight * 1.0 / Math.floor(numSegments); // Force floating-point division.
+		var totalSegmentHeight = mHeight - (numSeparators * mSeparator); // Subtract total separator height from full height.		
+		var segmentHeight = totalSegmentHeight * 1.0 / numSegments; // Force floating-point division.
 		Sys.println("segmentHeight " + segmentHeight);
 
-		// floor() to ensure meter is full only on genuine goal completion.
-		var remainingFillHeight = Math.floor((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight);
+		var remainingFillHeight = Math.round((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight);
 		Sys.println("remainingFillHeight " + remainingFillHeight);
 
 		var segments = new [Math.ceil(numSegments)];
 		var start, end, height, fillHeight;
-		var isPartialLastSegment;
+
 		for (var i = 0; i < segments.size(); ++i) {
 			start = Math.round(i * segmentHeight);
 			end = Math.round((i + 1) * segmentHeight);
-			
-			// If there is a partial last segment, and this is the last segment.
-			isPartialLastSegment = hasPartialLastSegment && (i == (segments.size() - 1));
 
-			if (isPartialLastSegment) {
-				height = partialLastSegmentHeight;
-			} else {
-				height = end - start;
-			}		
+			// Last segment is partial.
+			if (end > totalSegmentHeight) {
+				end = totalSegmentHeight;
+			}
+
+			height = end - start;
 
 			// Fully filled segment.
 			if (remainingFillHeight > height) {
 				fillHeight = height;
-			//} else if (isPartialLastSegment) {
 
 			// Partially filled segment.
 			} else if (remainingFillHeight > 0) {
@@ -185,33 +160,28 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	// Determine what value each whole segment represents.
-	// Try a scale of 1, 2, 5, 10, 20, 50, 100, 200, 500, 1000, 2000, 5000... until dividing mMaxValue by that scale gives a whole
-	// number of segments that is less than or equal to MAX_WHOLE_SEGMENTS.
+	// Try each scale in SEGMENT_SCALES array, until MIN_SEGMENT_HEIGHT is breached.
 	function getSegmentScale() {
-		var scale = 1;
-		var scaleFound = false;
-		var tryScaleIndex, tryScale;
-		var magnitude;
+		var segmentScale;
 
-		// 1, 10, 100, 1000...
-		for (magnitude = 1; !scaleFound; magnitude *= 10) {
+		var tryScaleIndex = 0;		
+		var segmentHeight;
+		var numSegments;
+		var numSeparators;
+		var totalSegmentHeight;
 
-			// 0, 1, 2...
-			for (tryScaleIndex = 0; !scaleFound && (tryScaleIndex < SEGMENT_SCALES.size()); ++tryScaleIndex) {
+		do {
+			segmentScale = SEGMENT_SCALES[tryScaleIndex];
 
-				// 1, 2, 5.
-				tryScale = SEGMENT_SCALES[tryScaleIndex];
+			numSegments = mMaxValue * 1.0 / segmentScale;
+			numSeparators = Math.ceil(numSegments);
+			totalSegmentHeight = mHeight - (numSeparators * mSeparator);
+			segmentHeight = Math.floor(totalSegmentHeight / numSegments);
 
-				// 1, 2, 5, 10, 20, 50...
-				scale = magnitude * tryScale;
+			tryScaleIndex++;	
+		} while (segmentHeight <= MIN_WHOLE_SEGMENT_HEIGHT);
 
-				if (Math.floor(mMaxValue / scale) <= MAX_WHOLE_SEGMENTS) {
-					scaleFound = true; // double break;
-				}
-			}
-		}
-
-		Sys.println("scale " + scale);
-		return scale;	
+		Sys.println("scale " + segmentScale);
+		return segmentScale;
 	}
 }
