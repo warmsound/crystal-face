@@ -3,7 +3,9 @@
 	<string id="AppName">Crystal</string>
 
 	<string id="BackgroundColourTitle">Background Colour</string>
-	<string id="HighlightColourTitle">Highlight Colour</string>
+	<string id="ThemeColourTitle">Theme Colour</string>
+	<string id="LeftGoalMeterTitle">Left Goal Meter</string>
+	<string id="RightGoalMeterTitle">Right Goal Meter</string>
 
 	<string id="ColourBlack">Black</string>
 	<string id="ColourDarkGray">Dark Gray</string>
@@ -15,5 +17,9 @@
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
+
+	<string id="Steps">Steps</string>
+	<string id="FloorsClimbed">Floors Climbed</string>
+	<string id="ActiveMinutes">Active Minutes</string>
 
 </strings>

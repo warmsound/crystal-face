@@ -1,4 +1,30 @@
 <layout id="WatchFace">
 	<drawable class="Background" />
+
 	<drawable id="Time" class="ThickThinTime"/>
+
+	<drawable id="LeftGoalMeter" class="GoalMeter">
+		<param name="side">:left</param>
+		<param name="shape">:arc</param>
+		<param name="margin">8</param>
+		<param name="stroke">8</param>
+		<param name="height">160</param>
+		<param name="separator">2</param>
+	</drawable>
+	<label id="LeftGoalIcon" text="0" x="57" y="180" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+	<label id="LeftGoalCurrent" text="3500" x="80" y="171" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+	<label id="LeftGoalMax" text="5000" x="80" y="187" font="@Fonts.SmallFont" color="Gfx.COLOR_DK_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+
+	<drawable id="RightGoalMeter" class="GoalMeter">
+		<param name="side">:right</param>
+		<param name="shape">:arc</param>
+		<param name="margin">8</param>
+		<param name="stroke">8</param>
+		<param name="height">160</param>
+		<param name="separator">2</param>
+	</drawable>
+	<label id="RightGoalIcon" text="1" x="183" y="180" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+	<label id="RightGoalCurrent" text="6" x="160" y="171" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+	<label id="RightGoalMax" text="10" x="160" y="187" font="@Fonts.SmallFont" color="Gfx.COLOR_DK_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+	
 </layout>
