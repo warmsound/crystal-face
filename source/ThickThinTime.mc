@@ -27,7 +27,7 @@ class ThickThinTime extends Ui.Drawable {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
-		mSecondsY = 155; // TODO: Define guide.
+		mSecondsY = 162; // TODO: Define guide.
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
