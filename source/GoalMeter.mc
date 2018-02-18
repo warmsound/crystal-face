@@ -6,7 +6,6 @@ class GoalMeter extends Ui.Drawable {
 
 	private var mSide; // :left, :right.
 	private var mShape; // :arc, :line.
-	private var mMargin; // Margin between outer edge of stroke and edge of DC.
 	private var mStroke; // Stroke width.
 	private var mHeight; // Total height of meter.
 	private var mSeparator; // Stroke width of separator bars.
@@ -24,7 +23,6 @@ class GoalMeter extends Ui.Drawable {
 
 		mSide = params[:side];
 		mShape = params[:shape];
-		mMargin = params[:margin];
 		mStroke = params[:stroke];
 		mHeight = params[:height];
 		mSeparator = params[:separator];
@@ -93,7 +91,7 @@ class GoalMeter extends Ui.Drawable {
 
 		if (mShape == :arc) {
 			dc.setClip(left, top, halfDCWidth, height);
-			dc.drawCircle(halfDCWidth, halfDCHeight, halfDCWidth - mMargin - (mStroke / 2));
+			dc.drawCircle(halfDCWidth, halfDCHeight, halfDCWidth - (mStroke / 2));
 		} else {
 			// TODO.
 		}
