@@ -50,17 +50,15 @@ class ThickThinTime extends Ui.Drawable {
 		var minutes = clockTime.min.format("%02d");
 
 		var is24Hour = Sys.getDeviceSettings().is24Hour;
-		var isPm = true;
-
-		if (is24Hour) {
-			hours = hours.format("%02d");
-		} else {
-			if (hours > 12) {
-				hours = hours % 12;
-				isPm = true;
-			}
-			hours = hours.format("%d");
+		var isPm = false;
+		
+		if (!is24Hour && (hours > 12)) {
+			hours = hours % 12;
+			isPm = true;
 		}
+
+		// Hours always have leading zero, regardless of hour mode, to allow more room for move bar.
+		hours = hours.format("%02d");
 
 		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
    
