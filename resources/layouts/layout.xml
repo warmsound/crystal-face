@@ -5,6 +5,8 @@
 		<param name="y">70</param>
 	</drawable>
 
+	<label id="Bluetooth" text="3" x="30" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER" />
+
 	<drawable id="Time" class="ThickThinTime">
 		<param name="secondsY">162</param>
 	</drawable>

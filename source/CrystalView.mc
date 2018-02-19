@@ -31,10 +31,22 @@ class CrystalView extends Ui.WatchFace {
 	function onUpdate(dc) {
 		System.println("onUpdate()");
 
+		updateBluetoothIndicator();
 		updateGoalMeters();		
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
+	}
+
+	// Set colour of bluetooth indicator, depending on phone connection status.
+	function updateBluetoothIndicator() {
+		var indicator = View.findDrawableById("Bluetooth");
+
+		if (Sys.getDeviceSettings().phoneConnected) {
+			indicator.setColor(App.getApp().getProperty("ThemeColour"));
+		} else {
+			indicator.setColor(App.getApp().getProperty("MonoDarkColour"));
+		}
 	}
 
 	function updateGoalMeters() {
