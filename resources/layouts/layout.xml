@@ -1,7 +1,13 @@
 <layout id="WatchFace">
 	<drawable class="Background" />
 
-	<drawable id="Time" class="ThickThinTime"/>
+	<drawable id="Date" class="DateLine">
+		<param name="y">70</param>
+	</drawable>
+
+	<drawable id="Time" class="ThickThinTime">
+		<param name="secondsY">162</param>
+	</drawable>
 
 	<drawable id="LeftGoalMeter" class="GoalMeter">
 		<param name="side">:left</param>

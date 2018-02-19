@@ -27,7 +27,7 @@ class ThickThinTime extends Ui.Drawable {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
-		mSecondsY = 162; // TODO: Define guide.
+		mSecondsY = params[:secondsY];
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
@@ -51,7 +51,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		var is24Hour = Sys.getDeviceSettings().is24Hour;
 		var isPm = false;
-		
+
 		if (!is24Hour && (hours > 12)) {
 			hours = hours % 12;
 			isPm = true;
