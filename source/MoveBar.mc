@@ -22,27 +22,33 @@ class MoveBar extends Ui.Drawable {
 		var moveBarLevel = info.moveBarLevel;
 		var barWidth = getBarWidth();
 		var thisBarWidth;
-		var thisBarColour;
+		var thisBarColour = 0;
 		var x = mX;
+		var alwaysShowMoveBar = App.getApp().getProperty("AlwaysShowMoveBar");
 
-		if (App.getApp().getProperty("AlwaysShowMoveBar")) {
-			for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
-				if (i == 1) {
-					thisBarWidth = 2 * barWidth;
-				} else {
-					thisBarWidth = barWidth;
-				}
-
-				if (i <= moveBarLevel) {
-					thisBarColour = App.getApp().getProperty("ThemeColour");
-				} else {
-					thisBarColour = App.getApp().getProperty("MeterBackgroundColour");
-				}
-
-				drawBar(dc, thisBarColour, x, thisBarWidth);
-
-				x += thisBarWidth + mSeparator;
+		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
+			if (i == 1) {
+				thisBarWidth = 2 * barWidth;
+			} else {
+				thisBarWidth = barWidth;
 			}
+
+			// Move bar at this level or greater, so show regardless of AlwaysShowMoveBar setting.
+			if (i <= moveBarLevel) {
+				thisBarColour = App.getApp().getProperty("ThemeColour");
+
+			// Move bar below this level, so only show if AlwaysShowMoveBar setting is true.
+			} else if (alwaysShowMoveBar) {
+				thisBarColour = App.getApp().getProperty("MeterBackgroundColour");
+
+			// Otherwise, do not show this, or any higher level.
+			} else {
+				break;
+			}
+
+			drawBar(dc, thisBarColour, x, thisBarWidth);
+
+			x += thisBarWidth + mSeparator;
 		}
 	}
 
