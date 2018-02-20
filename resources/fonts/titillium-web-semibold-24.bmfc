@@ -2,7 +2,7 @@
 fileVersion=1
 
 # font settings
-fontName=Exo 2 Medium
+fontName=Titillium Web SemiBold
 fontFile=
 charSet=0
 fontSize=-24
@@ -50,6 +50,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32,48-57,65-90,192-223
+chars=48-57,65-90,192-223
 
 # imported icon images
