@@ -49,12 +49,12 @@ class GoalMeter extends Ui.Drawable {
 			} else if (fillHeight > 0) {
 				
 				drawSegment(dc, bottom, fillHeight, App.getApp().getProperty("ThemeColour"));
-				drawSegment(dc, bottom - fillHeight, height - fillHeight, App.getApp().getProperty("MonoDarkColour"));
+				drawSegment(dc, bottom - fillHeight, height - fillHeight, App.getApp().getProperty("MeterBackgroundColour"));
 
 			// Empty segment.
 			} else {
 
-				drawSegment(dc, bottom, height, App.getApp().getProperty("MonoDarkColour"));
+				drawSegment(dc, bottom, height, App.getApp().getProperty("MeterBackgroundColour"));
 			}
 
 			// Separator.

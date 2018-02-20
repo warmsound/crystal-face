@@ -12,6 +12,14 @@
 		<param name="secondsMinYOffset">10</param>
 	</drawable>
 
+	<drawable id="MoveBar" class="MoveBar">
+		<param name="x">54</param>
+		<param name="y">162</param>
+		<param name="width">82</param>
+		<param name="height">9</param>
+		<param name="separator">3</param>
+	</drawable>
+
 	<drawable id="LeftGoalMeter" class="GoalMeter">
 		<param name="side">:left</param>
 		<param name="shape">:arc</param>
