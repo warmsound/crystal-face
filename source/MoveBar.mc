@@ -71,8 +71,8 @@ class MoveBar extends Ui.Drawable {
 		points[1] = [x - halfHeight, mY - halfHeight];
 		points[2] = [x - halfHeight + width, mY - halfHeight];
 		points[3] = [x + width, mY];
-		points[4] = [x - halfHeight + width, mY + halfHeight + /* Exclusive */ 1];
-		points[5] = [x - halfHeight, mY + halfHeight + /* Exclusive */ 1];
+		points[4] = [x - halfHeight + width - /* Inclusive? */ 1, mY + halfHeight + /* Exclusive? */ 1];
+		points[5] = [x - halfHeight - /* Inclusive? */ 1, mY + halfHeight + /* Exclusive? */ 1];
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.fillPolygon(points);
