@@ -6,6 +6,7 @@
 	<string id="ThemeColourTitle">Theme Colour</string>
 	<string id="LeftGoalMeterTitle">Left Goal Meter</string>
 	<string id="RightGoalMeterTitle">Right Goal Meter</string>
+	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
 
 	<string id="ColourBlack">Black</string>
 	<string id="ColourDarkGray">Dark Gray</string>
