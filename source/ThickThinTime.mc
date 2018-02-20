@@ -156,7 +156,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
 		mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-		mSecondsClipRect[:height] = secondsDimensions[1] + 1; // mSecondsMaxHeight + 1;
+		mSecondsClipRect[:height] = secondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
 
 		if (isPartialUpdate) {
 			dc.setClip(
