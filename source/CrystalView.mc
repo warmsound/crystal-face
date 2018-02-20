@@ -45,7 +45,7 @@ class CrystalView extends Ui.WatchFace {
 		if (Sys.getDeviceSettings().phoneConnected) {
 			indicator.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
-			indicator.setColor(App.getApp().getProperty("MonoDarkColour"));
+			indicator.setColor(App.getApp().getProperty("MeterBackgroundColour"));
 		}
 	}
 
