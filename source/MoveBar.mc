@@ -36,7 +36,7 @@ class MoveBar extends Ui.Drawable {
 				if (i <= moveBarLevel) {
 					thisBarColour = App.getApp().getProperty("ThemeColour");
 				} else {
-					thisBarColour = App.getApp().getProperty("MonoDarkColour");
+					thisBarColour = App.getApp().getProperty("MeterBackgroundColour");
 				}
 
 				drawBar(dc, thisBarColour, x, thisBarWidth);
