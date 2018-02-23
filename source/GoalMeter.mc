@@ -77,21 +77,36 @@ class GoalMeter extends Ui.Drawable {
 			dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		}
 
-		var top = bottom - height;
-		var left, right;
+		var halfDCWidth = dc.getWidth() / 2.0;
+		var halfDCHeight = dc.getHeight() / 2.0;	
 
-		var halfDCWidth = dc.getWidth() / 2;
-		var halfDCHeight = dc.getHeight() / 2;
+		var left;
+		var top = bottom - height;
+		var radius = halfDCWidth - (mStroke / 2.0);
+
+		var theta = Math.asin((mHeight / 2.0) / (halfDCWidth - mStroke));
+		theta /= (Math.PI / 180); // Half angle subtended by full meter arc, in degrees.
+		
+		var direction;
+		var start;
+		var end;
 
 		if (mSide == :left) {
 			left = 0;
+			direction = Graphics.ARC_CLOCKWISE;
+			start = 180 + theta; // 180 degrees: 9 o'clock.
+			end = 180 - theta;
 		} else {
 			left = halfDCWidth;
+			direction = Graphics.ARC_COUNTER_CLOCKWISE;
+			start = 360 - theta; // 0 or 360 degrees: 3 o'clock.
+			end = 0 + theta;
 		}
 
 		if (mShape == :arc) {
 			dc.setClip(left, top, halfDCWidth, height);
-			dc.drawCircle(halfDCWidth, halfDCHeight, halfDCWidth - (mStroke / 2));
+			//dc.drawCircle(halfDCWidth, halfDCHeight, radius); 
+			dc.drawArc(halfDCWidth, halfDCHeight, radius, direction, start, end);
 		} else {
 			// TODO.
 		}
