@@ -94,7 +94,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// Draw filled segments.		
 		clipBottom = dcHeight - top;
-		clipTop = clipBottom - mFillHeight;
+		clipTop = clipBottom - mFillHeight - 1;
 		clipHeight = clipBottom - clipTop;
 
 		if (clipHeight > 0) {
@@ -125,6 +125,7 @@ class GoalMeter extends Ui.Drawable {
 			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
 			innerRadius = halfScreenWidth - mStroke; 
 			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
+			width = Math.ceil(width); // Round up to cover partial pixels.
 		} else {
 			width = mStroke;
 		}
@@ -146,38 +147,29 @@ class GoalMeter extends Ui.Drawable {
 		var bufferDcWidth = bufferDc.getWidth();
 		var halfBufferDcHeight = bufferDc.getHeight() / 2.0;
 
-		var arcCentreX;
+		var circleCentreX;
 		var radius;
-		var theta;		
-		var direction;
-		var start;
-		var end;
 
 		var separatorY = 0;
 
 		// Draw meter fill.
-		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
+		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
+		//bufferDc.clear();
 		bufferDc.setPenWidth(mStroke);
 
 		if (mShape == :arc) {
-		
-			radius = halfScreenDcWidth - (mStroke / 2.0);
-			theta = Math.asin((mHeight / 2.0) / (halfScreenDcWidth - mStroke));
-			theta /= (Math.PI / 180); // Half angle subtended by full meter arc, in degrees.
 
 			if (mSide == :left) {
-				arcCentreX = halfScreenDcWidth; // Beyond right edge of bufferDc.
-				direction = Graphics.ARC_CLOCKWISE;
-				start = 180 + theta; // 180 degrees: 9 o'clock.
-				end = 180 - theta;
+				circleCentreX = halfScreenDcWidth; // Beyond right edge of bufferDc.
 			} else {
-				arcCentreX = mWidth - halfScreenDcWidth; // Beyond left edge of bufferDc.
-				direction = Graphics.ARC_COUNTER_CLOCKWISE;
-				start = 360 - theta; // 0 or 360 degrees: 3 o'clock.
-				end = 0 + theta;
+				circleCentreX = mWidth - halfScreenDcWidth; // Beyond left edge of bufferDc.
 			}
 
-			bufferDc.drawArc(arcCentreX, halfBufferDcHeight, radius, direction, start, end);
+			radius = halfScreenDcWidth - (mStroke / 2.0);
+
+			// Previously attempted to use drawArc() to minimise drawing calculations, but does not track edge of round screen as
+			// well as drawCircle() - different algorithms!
+			bufferDc.drawCircle(circleCentreX, halfBufferDcHeight, radius);
 
 		} else {
 			// TODO.
