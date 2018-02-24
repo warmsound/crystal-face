@@ -1,25 +1,6 @@
 <layout id="WatchFace">
 	<drawable class="Background" />
 
-	<drawable id="Date" class="DateLine">
-		<param name="y">70</param>
-	</drawable>
-
-	<label id="Bluetooth" text="3" x="30" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER" />
-
-	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsY">160</param>
-		<param name="secondsMinYOffset">10</param>
-	</drawable>
-
-	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">54</param>
-		<param name="y">162</param>
-		<param name="width">82</param>
-		<param name="height">9</param>
-		<param name="separator">3</param>
-	</drawable>
-
 	<drawable id="LeftGoalMeter" class="GoalMeter">
 		<param name="side">:left</param>
 		<param name="shape">:arc</param>
@@ -41,5 +22,24 @@
 	<label id="RightGoalIcon" text="1" x="191" y="188" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
 	<label id="RightGoalCurrent" text="6" x="164" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 	<label id="RightGoalMax" text="10" x="164" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<drawable id="Date" class="DateLine">
+		<param name="y">70</param>
+	</drawable>
+
+	<label id="Bluetooth" text="3" x="30" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER" />
+
+	<drawable id="Time" class="ThickThinTime">
+		<param name="secondsY">160</param>
+		<param name="secondsMinYOffset">10</param>
+	</drawable>
+
+	<drawable id="MoveBar" class="MoveBar">
+		<param name="x">54</param>
+		<param name="y">162</param>
+		<param name="width">82</param>
+		<param name="height">9</param>
+		<param name="separator">3</param>
+	</drawable>
 	
 </layout>

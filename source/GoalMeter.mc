@@ -2,18 +2,29 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+// Buffered drawing behaviour:
+// - On initialisation: calculate clip width (non-trivial for arc shape); create buffers for empty and filled segments.
+// - On setting current/max values: if max changes, re-calculate segment layout and set dirty buffer flag; if current changes, re-
+//   calculate fill height.
+// - On draw: if buffers are dirty, redraw them and clear flag; clip appropriate portion of each buffer to screen. Each buffer
+//   contains all segments in appropriate colour, with separators. Maximum of 2 draws to screen on each draw() cycle.
 class GoalMeter extends Ui.Drawable {
 
 	private var mSide; // :left, :right.
 	private var mShape; // :arc, :line.
 	private var mStroke; // Stroke width.
-	private var mHeight; // Total height of meter.
+	private var mWidth; // Clip width of meter.
+	private var mHeight; // Clip height of meter.
 	private var mSeparator; // Stroke width of separator bars.
+
+	private var mFilledBuffer; // Bitmap buffer containing all full segments;
+	private var mEmptyBuffer; // Bitmap buffer containing all empty segments;
+	private var mSegments; // Array of segment heights, in pixels, excluding separators.
+	private var mFillHeight; // Total height of filled segments, in pixels, including separators.
+	private var mBuffersDirty = true; // Buffers need to be redrawn on next draw() cycle.
 
 	private var mCurrentValue = 0;
 	private var mMaxValue = 100;
-
-	private var mLastColour = null;
 
 	private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
 	private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
@@ -26,98 +37,168 @@ class GoalMeter extends Ui.Drawable {
 		mStroke = params[:stroke];
 		mHeight = params[:height];
 		mSeparator = params[:separator];
+
+		mWidth = getWidth();
+
+		// Create buffers here; buffers are only drawn in response to initial setValues() call, and only when maxValue changes
+		// thereafter.
+		mEmptyBuffer = createSegmentBuffer();
+		mFilledBuffer = createSegmentBuffer();
 	}
-	
+
+	function setValues(current, max) {
+
+		// If max value changes, recalculate and cache segment layout, and set mBuffersDirty flag. Can't redraw buffers here, as
+		// we don't have reference to screen DC, in order to determine its dimensions - do this later, in draw() (already in
+		// draw cycle, so no real benefit in fetching screen width). Clear current value to force recalculation of fillHeight.
+		if (max != mMaxValue) {
+			mMaxValue = max;
+			mCurrentValue = null;
+
+			mSegments = getSegments();
+			mBuffersDirty = true;
+		}
+
+		// If current value changes, recalculate fill height, ahead of draw().
+		if (current != mCurrentValue) {
+			mCurrentValue = current;
+			mFillHeight = getFillHeight(mSegments);			
+		}		
+	}
+
+	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
+	// remaining height.
 	function draw(dc) {
-		var segments = getSegments();
+		var left;
+		var top;
 
-		dc.setPenWidth(mStroke);
-		
-		var bottom = dc.getHeight() - ((dc.getHeight() - mHeight) / 2);
-		var height, fillHeight;
+		var clipBottom;
+		var clipTop;
+		var clipHeight;		
 
-		for (var i = 0; i < segments.size(); ++i) {
-			height = segments[i][:height];
-			fillHeight = segments[i][:fillHeight];
+		var dcHeight = dc.getHeight();
 
-			// Fully filled segment.
-			if (fillHeight == height) {
-
-				drawSegment(dc, bottom, height, App.getApp().getProperty("ThemeColour"));
-			
-			// Partially filled segment.
-			} else if (fillHeight > 0) {
-				
-				drawSegment(dc, bottom, fillHeight, App.getApp().getProperty("ThemeColour"));
-				drawSegment(dc, bottom - fillHeight, height - fillHeight, App.getApp().getProperty("MeterBackgroundColour"));
-
-			// Empty segment.
-			} else {
-
-				drawSegment(dc, bottom, height, App.getApp().getProperty("MeterBackgroundColour"));
-			}
-
-			// Separator.
-			bottom -= height + mSeparator;
+		if (mBuffersDirty) {			
+			drawBuffer(dc, mFilledBuffer.getDc(), App.getApp().getProperty("ThemeColour"), mSegments);
+			drawBuffer(dc, mEmptyBuffer.getDc(), App.getApp().getProperty("MeterBackgroundColour"), mSegments);
+			mBuffersDirty = false;
 		}
 
-		// drawSegment() may set clip.
-		dc.clearClip();
+		if (mSide == :left) {
+			left = 0;
+		} else {
+			left = dc.getWidth() - mWidth;
+		}
 
-		// Clear mLastColour to force it to be set at the beginning of the next draw cycle, or else full goal meter draws as
-		// empty on second draw cycle.
-		mLastColour = null;
+		top = (dcHeight - mHeight) / 2;
+
+		// Draw filled segments.		
+		clipBottom = dcHeight - top;
+		clipTop = clipBottom - mFillHeight;
+		clipHeight = clipBottom - clipTop;
+
+		if (clipHeight > 0) {
+			dc.setClip(left, clipTop, mWidth, clipHeight);
+			dc.drawBitmap(left, top, mFilledBuffer);
+		}
+
+		// Draw unfilled segments.
+		clipBottom = clipTop;
+		clipTop = top;
+		clipHeight = clipBottom - clipTop;
+
+		if (clipHeight > 0) {
+			dc.setClip(left, clipTop, mWidth, clipHeight);
+			dc.drawBitmap(left, top, mEmptyBuffer);
+		}
+
+		dc.clearClip();
 	}
 
-	function drawSegment(dc, bottom, height, colour) {
+	function getWidth() {
+		var width;
+		
+		var halfScreenWidth;
+		var innerRadius;
 
-		// Set DC colour if different from current DC colour.
-		if (colour != mLastColour) {
-			mLastColour = colour;
-			dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+		if (mShape == :arc) {
+			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
+			innerRadius = halfScreenWidth - mStroke; 
+			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
+		} else {
+			width = mStroke;
 		}
 
-		var halfDCWidth = dc.getWidth() / 2.0;
-		var halfDCHeight = dc.getHeight() / 2.0;	
+		return width;
+	}
 
-		var left;
-		var top = bottom - height;
-		var radius = halfDCWidth - (mStroke / 2.0);
+	// Use system palette, to avoid having to recreate buffer when theme colour changes.
+	function createSegmentBuffer() {
+		return new Graphics.BufferedBitmap({
+			:width => mWidth,
+			:height => mHeight
+		});
+	}
 
-		var theta = Math.asin((mHeight / 2.0) / (halfDCWidth - mStroke));
-		theta /= (Math.PI / 180); // Half angle subtended by full meter arc, in degrees.
-		
+	// bufferDc is the same size as meter clip rectangle: mWidth calculated on initialisation, mHeight from layout param.
+	function drawBuffer(screenDc, bufferDc, fillColour, segments) {
+		var halfScreenDcWidth = screenDc.getWidth() / 2.0;
+		var bufferDcWidth = bufferDc.getWidth();
+		var halfBufferDcHeight = bufferDc.getHeight() / 2.0;
+
+		var arcCentreX;
+		var radius;
+		var theta;		
 		var direction;
 		var start;
 		var end;
 
-		if (mSide == :left) {
-			left = 0;
-			direction = Graphics.ARC_CLOCKWISE;
-			start = 180 + theta; // 180 degrees: 9 o'clock.
-			end = 180 - theta;
-		} else {
-			left = halfDCWidth;
-			direction = Graphics.ARC_COUNTER_CLOCKWISE;
-			start = 360 - theta; // 0 or 360 degrees: 3 o'clock.
-			end = 0 + theta;
-		}
+		var separatorY = 0;
+
+		// Draw meter fill.
+		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
+		bufferDc.setPenWidth(mStroke);
 
 		if (mShape == :arc) {
-			dc.setClip(left, top, halfDCWidth, height);
-			//dc.drawCircle(halfDCWidth, halfDCHeight, radius); 
-			dc.drawArc(halfDCWidth, halfDCHeight, radius, direction, start, end);
+		
+			radius = halfScreenDcWidth - (mStroke / 2.0);
+			theta = Math.asin((mHeight / 2.0) / (halfScreenDcWidth - mStroke));
+			theta /= (Math.PI / 180); // Half angle subtended by full meter arc, in degrees.
+
+			if (mSide == :left) {
+				arcCentreX = halfScreenDcWidth; // Beyond right edge of bufferDc.
+				direction = Graphics.ARC_CLOCKWISE;
+				start = 180 + theta; // 180 degrees: 9 o'clock.
+				end = 180 - theta;
+			} else {
+				arcCentreX = mWidth - halfScreenDcWidth; // Beyond left edge of bufferDc.
+				direction = Graphics.ARC_COUNTER_CLOCKWISE;
+				start = 360 - theta; // 0 or 360 degrees: 3 o'clock.
+				end = 0 + theta;
+			}
+
+			bufferDc.drawArc(arcCentreX, halfBufferDcHeight, radius, direction, start, end);
+
 		} else {
 			// TODO.
 		}
+
+		// Draw separators: horizontal transparent lines across meter fill.
+		// Drawing transparent lines should be faster than drawing clipped filled arcs.
+		bufferDc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
+		bufferDc.setPenWidth(mSeparator);
+
+		// Skip segment, draw separator, skip separator...
+		for (var i = 0; i < segments.size(); ++i) {
+			separatorY += segments[i];
+
+			bufferDc.drawLine(0, separatorY, bufferDcWidth, separatorY);
+
+			separatorY += mSeparator;
+		}
 	}
 
-	function setValues(current, max) {
-		mCurrentValue = current;
-		mMaxValue = max;
-	}
-
-	// Return array of dictionaries, one per segment. Each dictionary describes height and fill height of segment.
+	// Return array of segment heights.
 	// Last segment may be partial segment; if so, ensure its height is at least 1 pixel.
 	// Segment heights rounded to nearest pixel, so neighbouring whole segments may differ in height by a pixel.
 	function getSegments() {
@@ -130,11 +211,8 @@ class GoalMeter extends Ui.Drawable {
 		var segmentHeight = totalSegmentHeight * 1.0 / numSegments; // Force floating-point division.
 		Sys.println("segmentHeight " + segmentHeight);
 
-		var remainingFillHeight = Math.round((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight);
-		Sys.println("remainingFillHeight " + remainingFillHeight);
-
 		var segments = new [Math.ceil(numSegments)];
-		var start, end, height, fillHeight;
+		var start, end, height;
 
 		for (var i = 0; i < segments.size(); ++i) {
 			start = Math.round(i * segmentHeight);
@@ -147,29 +225,36 @@ class GoalMeter extends Ui.Drawable {
 
 			height = end - start;
 
-			// Fully filled segment.
-			if (remainingFillHeight > height) {
-				fillHeight = height;
-
-			// Partially filled segment.
-			} else if (remainingFillHeight > 0) {
-				fillHeight = remainingFillHeight;
-
-			// Empty segment.
-			} else {
-				fillHeight = 0;
-			}
-
-			segments[i] = {};
-			segments[i][:height] = height;
-			segments[i][:fillHeight] = fillHeight;
-			Sys.println("segment " + i + " height " + segments[i][:height] + " fillHeight " + segments[i][:fillHeight]);
-
-			remainingFillHeight -= height;
-			Sys.println("remainingFillHeight " + remainingFillHeight);
+			segments[i] = height;
+			Sys.println("segment " + i + " height " + height);
 		}
 
 		return segments;
+	}
+
+	function getFillHeight(segments) {
+		var fillHeight;
+
+		var i;
+
+		var totalSegmentHeight = 0;
+		for (i = 0; i < segments.size(); ++i) {
+			totalSegmentHeight += segments[i];
+		}
+
+		var remainingFillHeight = Math.round((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight); // Excluding separators.
+		fillHeight = remainingFillHeight;
+
+		for (i = 0; i < segments.size(); ++i) {
+			remainingFillHeight -= segments[i];
+			if (remainingFillHeight > 0) {
+				fillHeight += mSeparator; // Fill extends beyond end of this segment, so add separator height.
+			} else {
+				break; // Fill does not extend beyond end of this sgement, because this segment is not full.
+			}			
+		}
+
+		return fillHeight;
 	}
 
 	// Determine what value each whole segment represents.
