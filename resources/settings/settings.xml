@@ -1,20 +1,20 @@
 <settings>
 
-	<setting propertyKey="@Properties.BackgroundColour" title="@Strings.BackgroundColourTitle">
-		<settingConfig type="list">
-			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
-			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
-			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
-			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
-		</settingConfig>
-	</setting>
-	
 	<setting propertyKey="@Properties.ThemeColour" title="@Strings.ThemeColourTitle">
 		<settingConfig type="list">
 			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
 			<listEntry value="0x0000FF">@Strings.ColourBlue</listEntry>
 			<listEntry value="0xFF0000">@Strings.ColourRed</listEntry>
 			<listEntry value="0x00AAFF">@Strings.ColourSkyBlue</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.BackgroundColour" title="@Strings.BackgroundColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0x000000">@Strings.ColourBlack</listEntry>
+			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
+			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
+			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -36,6 +36,30 @@
 
 	<setting propertyKey="@Properties.AlwaysShowMoveBar" title="@Strings.AlwaysShowMoveBarTitle">
 		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.MonoLightColour" title="@Strings.MonoLightColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
+			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
+			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.MonoDarkColour" title="@Strings.MonoDarkColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
+			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
+			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.MeterBackgroundColour" title="@Strings.MeterBackgroundColourTitle">
+		<settingConfig type="list">
+			<listEntry value="0xFFFFFF">@Strings.ColourWhite</listEntry>
+			<listEntry value="0xAAAAAA">@Strings.ColourLightGray</listEntry>
+			<listEntry value="0x555555">@Strings.ColourDarkGray</listEntry>
+		</settingConfig>
 	</setting>
 
 </settings>
