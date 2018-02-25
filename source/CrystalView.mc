@@ -6,10 +6,33 @@ using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
 class CrystalView extends Ui.WatchFace {
+	
+	private var GOAL_TYPES = {
+		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
+		App.GOAL_TYPE_FLOORS_CLIMBED => :GOAL_TYPE_FLOORS_CLIMBED,
+		App.GOAL_TYPE_ACTIVE_MINUTES => :GOAL_TYPE_ACTIVE_MINUTES,
+		
+		-1 => :GOAL_TYPE_BATTERY
+	};
+
+	private var FIELD_TYPES = {
+		0 => :HEART_RATE,
+		1 => :BATTERY,
+		2 => :MESSAGES,
+		3 => :CALORIES,
+		4 => :DISTANCE
+	};
+
 	private var ICON_FONT_CHARS = {
-		App.GOAL_TYPE_STEPS => "0",
-		App.GOAL_TYPE_FLOORS_CLIMBED => "1",
-		App.GOAL_TYPE_ACTIVE_MINUTES => "2",
+		:GOAL_TYPE_STEPS => "0",
+		:GOAL_TYPE_FLOORS_CLIMBED => "1",
+		:GOAL_TYPE_ACTIVE_MINUTES => "2",
+		:FIELD_TYPE_HEART_RATE => "3",
+		:FIELD_TYPE_BATTERY => "4",
+		:FIELD_TYPE_MESSAGES => "5",
+		:FIELD_TYPE_CALORIES => "6",
+		:FIELD_TYPE_DISTANCE => "7",
+		:INDICATOR_BLUETOOTH => "8"
 	};
 
 	function initialize() {
@@ -31,11 +54,68 @@ class CrystalView extends Ui.WatchFace {
 	function onUpdate(dc) {
 		System.println("onUpdate()");
 
+		updateGoalMeters();
+		updateDataFields();
 		updateBluetoothIndicator();
-		updateGoalMeters();		
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
+	}
+
+	function updateDataFields() {
+		updateDataField(
+			App.getApp().getProperty("LeftFieldType"),
+			View.findDrawableById("LeftFieldIcon"),
+			View.findDrawableById("LeftFieldValue")
+		);
+
+		updateDataField(
+			App.getApp().getProperty("CenterFieldType"),
+			View.findDrawableById("CenterFieldIcon"),
+			View.findDrawableById("CenterFieldValue")
+		);
+
+		updateDataField(
+			App.getApp().getProperty("RightFieldType"),
+			View.findDrawableById("RightFieldIcon"),
+			View.findDrawableById("RightFieldValue")
+		);
+	}
+
+	function updateDataField(fieldType, iconLabel, valueLabel) {
+		var info = getDisplayInfoForFieldType(fieldType);
+
+		iconLabel.setColor(info[:colour]);
+		valueLabel.setText(info[:value]);
+	}
+
+	// "type" parameter is raw property value (it's converted to symbol below).
+	function getDisplayInfoForFieldType(type) {
+		var info = {
+			:colour => App.getApp().getProperty("ThemeColour"),
+			:value => ""
+		};
+
+		switch (FIELD_TYPES[type]) {
+			case :HEART_RATE:
+				break;
+
+			case :BATTERY:
+				var battery = Sys.getSystemStats().battery;
+				info[:value] = battery.format("%d") + "%";
+				break;
+
+			case :MESSAGES:
+				break;
+
+			case :CALORIES:
+				break;
+
+			case :DISTANCE:
+				break;
+		}
+
+		return info;
 	}
 
 	// Set colour of bluetooth indicator, depending on phone connection status.
@@ -53,7 +133,7 @@ class CrystalView extends Ui.WatchFace {
 		var themeColour = App.getApp().getProperty("ThemeColour");
 		var info = ActivityMonitor.getInfo();
 
-		var leftGoalType = App.getApp().getProperty("LeftGoalType");
+		var leftGoalType = GOAL_TYPES[App.getApp().getProperty("LeftGoalType")];
 		var leftGoalValues = getValuesForGoalType(info, leftGoalType);
 
 		var leftGoalIcon = View.findDrawableById("LeftGoalIcon");
@@ -64,7 +144,7 @@ class CrystalView extends Ui.WatchFace {
 		View.findDrawableById("LeftGoalCurrent").setText(leftGoalValues[:current].format("%d"));
 		View.findDrawableById("LeftGoalMax").setText(leftGoalValues[:max].format("%d"));
 
-		var rightGoalType = App.getApp().getProperty("RightGoalType");
+		var rightGoalType = GOAL_TYPES[App.getApp().getProperty("RightGoalType")];
 		var rightGoalValues = getValuesForGoalType(info, rightGoalType);
 
 		var rightGoalIcon = View.findDrawableById("RightGoalIcon");
@@ -81,17 +161,17 @@ class CrystalView extends Ui.WatchFace {
 		var max;
 
 		switch(type) {
-			case App.GOAL_TYPE_STEPS:
+			case :GOAL_TYPE_STEPS:
 				current = info.steps;
 				max = info.stepGoal;
 				break;
 
-			case App.GOAL_TYPE_FLOORS_CLIMBED:
+			case :GOAL_TYPE_FLOORS_CLIMBED:
 				current = info.floorsClimbed;
 				max = info.floorsClimbedGoal;
 				break;
 
-			case App.GOAL_TYPE_ACTIVE_MINUTES:
+			case :GOAL_TYPE_ACTIVE_MINUTES:
 				current = info.activeMinutesWeek.total;
 				max = info.activeMinutesWeekGoal;
 				break;

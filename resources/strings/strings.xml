@@ -27,7 +27,7 @@
 
 	<string id="Steps">Steps</string>
 	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes</string>
+	<string id="ActiveMinutes">Active Minutes Weekly</string>
 
 	<string id="HeartRate">Heart Rate</string>
 	<string id="Battery">Battery</string>
