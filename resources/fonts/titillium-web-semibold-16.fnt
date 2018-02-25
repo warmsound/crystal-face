@@ -1,14 +1,15 @@
 info face="Titillium Web SemiBold" size=-16 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
 common lineHeight=24 base=18 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="titillium-web-semibold-16_0.png"
-chars count=10
-char id=48   x=0     y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=49   x=90    y=0     width=6     height=11    xoffset=1     yoffset=7     xadvance=9     page=0  chnl=15
-char id=50   x=60    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=51   x=10    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=52   x=70    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=53   x=20    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=54   x=30    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=55   x=80    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=56   x=40    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
-char id=57   x=50    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+chars count=11
+char id=37   x=0     y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=48   x=10    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=49   x=100   y=0     width=6     height=11    xoffset=1     yoffset=7     xadvance=9     page=0  chnl=15
+char id=50   x=70    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=51   x=20    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=52   x=80    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=53   x=30    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=54   x=40    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=55   x=90    y=0     width=9     height=11    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=56   x=50    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=57   x=60    y=0     width=9     height=12    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
