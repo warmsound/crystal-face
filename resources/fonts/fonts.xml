@@ -4,5 +4,4 @@
 	<font id="SecondsFont" filename="titillium-web-semibold-24.fnt" antialias="true" />
 	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" />
 	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true" />
-	<font id="SmallIconsFont" filename="crystal-icons-small.fnt" antialias="true" />
 </fonts>
