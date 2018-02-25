@@ -9,7 +9,10 @@
 	<string id="MeterBackgroundColourTitle">Meter Background Colour</string>
 	<string id="LeftGoalMeterTitle">Left Goal Meter</string>
 	<string id="RightGoalMeterTitle">Right Goal Meter</string>
-	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>	
+	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
+	<string id="LeftDataFieldTitle">Left Data Field</string>
+	<string id="CenterDataFieldTitle">Center Data Field</string>
+	<string id="RightDataFieldTitle">Right Data Field</string>
 
 	<string id="ColourBlack">Black</string>
 	<string id="ColourDarkGray">Dark Gray</string>
@@ -25,5 +28,11 @@
 	<string id="Steps">Steps</string>
 	<string id="FloorsClimbed">Floors Climbed</string>
 	<string id="ActiveMinutes">Active Minutes</string>
+
+	<string id="HeartRate">Heart Rate</string>
+	<string id="Battery">Battery</string>
+	<string id="Messages">Messages</string>
+	<string id="Calories">Calories</string>
+	<string id="Distance">Distance</string>
 
 </strings>
