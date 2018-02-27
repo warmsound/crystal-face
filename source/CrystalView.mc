@@ -35,6 +35,11 @@ class CrystalView extends Ui.WatchFace {
 		:INDICATOR_BLUETOOTH => "8"
 	};
 
+	const BATTERY_FILL_WIDTH = 18;
+	const BATTERY_FILL_HEIGHT = 6;
+	const BATTERY_LEVEL_LOW = 20;
+	const BATTERY_LEVEL_CRITICAL = 10;
+
 	function initialize() {
 		WatchFace.initialize();
 	}
@@ -60,6 +65,46 @@ class CrystalView extends Ui.WatchFace {
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
+
+		// Additional drawing on top of drawables.
+		// TODO: Solving z-order issue forces ugly repetition (retrieval of battery value, etc.); can this be avoided?
+		onPostUpdate(dc);
+	}
+
+	function onPostUpdate(dc) {
+
+		// Find any battery meter icons, and draw fill on top. 
+		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :BATTERY) {
+			fillBatteryMeter(dc, View.findDrawableById("LeftFieldIcon"));
+		}
+
+		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :BATTERY) {
+			fillBatteryMeter(dc, View.findDrawableById("CenterFieldIcon"));
+		}
+
+		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :BATTERY) {
+			fillBatteryMeter(dc, View.findDrawableById("RightFieldIcon"));
+		}
+	}
+
+	function fillBatteryMeter(dc, batteryIcon) {
+		var batteryLevel = Sys.getSystemStats().battery;
+		var colour;
+
+		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
+			colour = Graphics.COLOR_RED;
+		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
+			colour = Graphics.COLOR_YELLOW;
+		} else {
+			colour = App.getApp().getProperty("ThemeColour");
+		}
+
+		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+		dc.fillRectangle(
+			batteryIcon[:locX] - (BATTERY_FILL_WIDTH / 2) - 1,
+			batteryIcon[:locY] - (BATTERY_FILL_HEIGHT / 2) + 1,
+			Math.ceil(BATTERY_FILL_WIDTH * (batteryLevel / 100)), 
+			BATTERY_FILL_HEIGHT);
 	}
 
 	function updateDataFields() {
