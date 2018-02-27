@@ -150,7 +150,7 @@ class GoalMeter extends Ui.Drawable {
 		var circleCentreX;
 		var radius;
 
-		var separatorY = 0;
+		var separatorY;
 
 		// Draw meter fill.
 		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
@@ -180,13 +180,14 @@ class GoalMeter extends Ui.Drawable {
 		bufferDc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
 		bufferDc.setPenWidth(mSeparator);
 
-		// Skip segment, draw separator, skip separator...
+		// Skip segment, draw separator, skip separator... starting from the bottom, working upwards.
+		separatorY = bufferDc.getHeight();
 		for (var i = 0; i < segments.size(); ++i) {
-			separatorY += segments[i];
+			separatorY -= segments[i];
 
 			bufferDc.drawLine(0, separatorY, bufferDcWidth, separatorY);
 
-			separatorY += mSeparator;
+			separatorY -= mSeparator;
 		}
 	}
 
