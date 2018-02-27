@@ -101,8 +101,8 @@ class CrystalView extends Ui.WatchFace {
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.fillRectangle(
-			batteryIcon[:locX] - (BATTERY_FILL_WIDTH / 2) - 1,
-			batteryIcon[:locY] - (BATTERY_FILL_HEIGHT / 2) + 1,
+			batteryIcon.locX - (BATTERY_FILL_WIDTH / 2) - 1,
+			batteryIcon.locY - (BATTERY_FILL_HEIGHT / 2) + 1,
 			Math.ceil(BATTERY_FILL_WIDTH * (batteryLevel / 100)), 
 			BATTERY_FILL_HEIGHT);
 	}
@@ -143,6 +143,16 @@ class CrystalView extends Ui.WatchFace {
 
 		switch (FIELD_TYPES[type]) {
 			case :HEART_RATE:
+				var activityInfo = ActivityMonitor.getInfo();
+				var iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
+				var sample = iterator.next();
+				if (sample) {
+					info[:value] = sample.heartRate.format("%d");
+
+				// If no HR history available, grey out icon and do not show text.
+				} else {
+					info[:colour] = App.getApp().getProperty("MeterBackgroundColour");
+				}
 				break;
 
 			case :BATTERY:
