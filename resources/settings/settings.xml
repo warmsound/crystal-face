@@ -38,7 +38,7 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Messages</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 		</settingConfig>
@@ -48,7 +48,7 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Messages</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 		</settingConfig>
@@ -58,7 +58,7 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Messages</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 		</settingConfig>

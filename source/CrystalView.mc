@@ -16,11 +16,11 @@ class CrystalView extends Ui.WatchFace {
 	};
 
 	private var FIELD_TYPES = {
-		0 => :HEART_RATE,
-		1 => :BATTERY,
-		2 => :MESSAGES,
-		3 => :CALORIES,
-		4 => :DISTANCE
+		0 => :FIELD_TYPE_HEART_RATE,
+		1 => :FIELD_TYPE_BATTERY,
+		2 => :FIELD_TYPE_NOTIFICATIONS,
+		3 => :FIELD_TYPE_CALORIES,
+		4 => :FIELD_TYPE_DISTANCE
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -29,7 +29,7 @@ class CrystalView extends Ui.WatchFace {
 		:GOAL_TYPE_ACTIVE_MINUTES => "2",
 		:FIELD_TYPE_HEART_RATE => "3",
 		:FIELD_TYPE_BATTERY => "4",
-		:FIELD_TYPE_MESSAGES => "5",
+		:FIELD_TYPE_NOTIFICATIONS => "5",
 		:FIELD_TYPE_CALORIES => "6",
 		:FIELD_TYPE_DISTANCE => "7",
 		:INDICATOR_BLUETOOTH => "8"
@@ -39,6 +39,9 @@ class CrystalView extends Ui.WatchFace {
 	const BATTERY_FILL_HEIGHT = 6;
 	const BATTERY_LEVEL_LOW = 20;
 	const BATTERY_LEVEL_CRITICAL = 10;
+
+	const CM_PER_KM = 100000;
+	const MI_PER_KM = 0.621371;
 
 	function initialize() {
 		WatchFace.initialize();
@@ -74,15 +77,15 @@ class CrystalView extends Ui.WatchFace {
 	function onPostUpdate(dc) {
 
 		// Find any battery meter icons, and draw fill on top. 
-		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :BATTERY) {
+		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) {
 			fillBatteryMeter(dc, View.findDrawableById("LeftFieldIcon"));
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :BATTERY) {
+		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) {
 			fillBatteryMeter(dc, View.findDrawableById("CenterFieldIcon"));
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :BATTERY) {
+		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) {
 			fillBatteryMeter(dc, View.findDrawableById("RightFieldIcon"));
 		}
 	}
@@ -127,10 +130,13 @@ class CrystalView extends Ui.WatchFace {
 		);
 	}
 
+	// "fieldType" parameter is raw property value (it's converted to symbol below).
 	function updateDataField(fieldType, iconLabel, valueLabel) {
 		var info = getDisplayInfoForFieldType(fieldType);
 
+		iconLabel.setText(ICON_FONT_CHARS[FIELD_TYPES[fieldType]]);
 		iconLabel.setColor(info[:colour]);
+		
 		valueLabel.setText(info[:value]);
 	}
 
@@ -141,12 +147,21 @@ class CrystalView extends Ui.WatchFace {
 			:value => ""
 		};
 
+		var activityInfo;
+		var iterator;
+		var sample;
+		var battery;
+		var settings;
+		var distance;
+		var format;
+		var unit;
+
 		switch (FIELD_TYPES[type]) {
-			case :HEART_RATE:
-				var activityInfo = ActivityMonitor.getInfo();
-				var iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
-				var sample = iterator.next();
-				if (sample) {
+			case :FIELD_TYPE_HEART_RATE:
+				activityInfo = ActivityMonitor.getInfo();
+				iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
+				sample = iterator.next();
+				if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
 					info[:value] = sample.heartRate.format("%d");
 
 				// If no HR history available, grey out icon and do not show text.
@@ -155,18 +170,49 @@ class CrystalView extends Ui.WatchFace {
 				}
 				break;
 
-			case :BATTERY:
-				var battery = Sys.getSystemStats().battery;
+			case :FIELD_TYPE_BATTERY:
+				battery = Sys.getSystemStats().battery;
 				info[:value] = battery.format("%d") + "%";
 				break;
 
-			case :MESSAGES:
+			case :FIELD_TYPE_NOTIFICATIONS:
+				settings = Sys.getDeviceSettings();
+				
+				if (settings.notificationCount > 0) {
+					info[:value] = settings.notificationCount.format("%d");
+
+				// If no notifications, grey out icon and do not show text.
+				} else {
+					info[:colour] = App.getApp().getProperty("MeterBackgroundColour");
+				}
 				break;
 
-			case :CALORIES:
+			case :FIELD_TYPE_CALORIES:
+				activityInfo = ActivityMonitor.getInfo();
+				info[:value] = activityInfo.calories.format("%d");
 				break;
 
-			case :DISTANCE:
+			case :FIELD_TYPE_DISTANCE:
+				settings = Sys.getDeviceSettings();
+				activityInfo = ActivityMonitor.getInfo();
+				distance = activityInfo.distance / CM_PER_KM;
+
+				if (settings.distanceUnits == System.UNIT_METRIC) {
+					unit = "km";					
+				} else {
+					distance *= MI_PER_KM;
+					unit = "mi";
+				}
+
+				//  Show decimal point only if distance less than 10, to save space.
+				if (distance < 10) {
+					format = "%.1f";
+				} else {
+					format = "%d";
+				}
+
+				info[:value] = distance.format(format) + unit;
+				
 				break;
 		}
 
