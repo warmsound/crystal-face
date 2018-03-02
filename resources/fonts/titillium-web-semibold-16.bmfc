@@ -5,7 +5,7 @@ fileVersion=1
 fontName=Titillium Web SemiBold
 fontFile=
 charSet=0
-fontSize=-24
+fontSize=-16
 aa=1
 scaleH=100
 useSmoothing=1
@@ -50,6 +50,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32,48-57,65-90,192-223
+chars=37,46,48-57,105,107,109
 
 # imported icon images
