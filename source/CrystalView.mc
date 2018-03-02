@@ -58,6 +58,12 @@ class CrystalView extends Ui.WatchFace {
 	function onShow() {
 	}
 
+	// Recreate background buffers for each meter, in case theme colour has changed.
+	function onSettingsChanged() {
+		View.findDrawableById("LeftGoalMeter").onSettingsChanged();
+		View.findDrawableById("RightGoalMeter").onSettingsChanged();
+	}
+
 	// Update the view
 	function onUpdate(dc) {
 		System.println("onUpdate()");
