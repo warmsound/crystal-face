@@ -13,7 +13,10 @@ class DateLine extends Ui.Drawable {
 		Drawable.initialize(params);
 
 		mY = params[:y];
-		mFont = Ui.loadResource(Rez.Fonts.SecondsFont);
+	}
+
+	function setFont(font) {
+		mFont = font;
 	}
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.

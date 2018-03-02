@@ -6,6 +6,10 @@ using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
 class CrystalView extends Ui.WatchFace {
+
+	private var mHoursFont;
+	private var mMinutesFont;
+	private var mSecondsFont;
 	
 	private var GOAL_TYPES = {
 		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
@@ -49,7 +53,14 @@ class CrystalView extends Ui.WatchFace {
 
 	// Load your resources here
 	function onLayout(dc) {
+		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
+		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
+		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
+
 		setLayout(Rez.Layouts.WatchFace(dc));
+
+		View.findDrawableById("Time").setFonts(mHoursFont, mMinutesFont, mSecondsFont);
+		View.findDrawableById("Date").setFont(mSecondsFont);
 	}
 
 	// Called when this View is brought to the foreground. Restore

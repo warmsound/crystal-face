@@ -31,15 +31,17 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
-		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
-		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
-
 		mSecondsY = params[:secondsY];
 		mSecondsMinYOffset = params[:secondsMinYOffset];
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
+	}
+
+	function setFonts(hoursFont, minutesFont, secondsFont) {
+		mHoursFont = hoursFont;
+		mMinutesFont = minutesFont;
+		mSecondsFont = secondsFont;
 	}
 	
 	function draw(dc) {
