@@ -3,6 +3,8 @@ using Toybox.WatchUi as Ui;
 
 class CrystalApp extends App.AppBase {
 
+	private var mView;
+
 	function initialize() {
 		AppBase.initialize();
 	}
@@ -17,11 +19,13 @@ class CrystalApp extends App.AppBase {
 
 	// Return the initial view of your application here
 	function getInitialView() {
-		return [ new CrystalView() ];
+		mView = new CrystalView();
+		return [mView];
 	}
 
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
+		mView.onSettingsChanged();
 		Ui.requestUpdate();
 	}
 

@@ -21,7 +21,9 @@ class GoalMeter extends Ui.Drawable {
 	private var mEmptyBuffer; // Bitmap buffer containing all empty segments;
 	private var mSegments; // Array of segment heights, in pixels, excluding separators.
 	private var mFillHeight; // Total height of filled segments, in pixels, including separators.
-	private var mBuffersDirty = true; // Buffers need to be redrawn on next draw() cycle.
+
+	private var mBuffersNeedRecreate = true; // Buffers need to be recreated on next draw() cycle.
+	private var mBuffersNeedRedraw = true; // Buffers need to be redrawn on next draw() cycle.
 
 	private var mCurrentValue = 0;
 	private var mMaxValue = 100;
@@ -39,24 +41,19 @@ class GoalMeter extends Ui.Drawable {
 		mSeparator = params[:separator];
 
 		mWidth = getWidth();
-
-		// Create buffers here; buffers are only drawn in response to initial setValues() call, and only when maxValue changes
-		// thereafter.
-		mEmptyBuffer = createSegmentBuffer();
-		mFilledBuffer = createSegmentBuffer();
 	}
 
 	function setValues(current, max) {
 
-		// If max value changes, recalculate and cache segment layout, and set mBuffersDirty flag. Can't redraw buffers here, as
-		// we don't have reference to screen DC, in order to determine its dimensions - do this later, in draw() (already in
+		// If max value changes, recalculate and cache segment layout, and set mBuffersNeedRedraw flag. Can't redraw buffers here,
+		// as we don't have reference to screen DC, in order to determine its dimensions - do this later, in draw() (already in
 		// draw cycle, so no real benefit in fetching screen width). Clear current value to force recalculation of fillHeight.
 		if (max != mMaxValue) {
 			mMaxValue = max;
 			mCurrentValue = null;
 
 			mSegments = getSegments();
-			mBuffersDirty = true;
+			mBuffersNeedRedraw = true;
 		}
 
 		// If current value changes, recalculate fill height, ahead of draw().
@@ -64,6 +61,10 @@ class GoalMeter extends Ui.Drawable {
 			mCurrentValue = current;
 			mFillHeight = getFillHeight(mSegments);			
 		}		
+	}
+
+	function onSettingsChanged() {
+		mBuffersNeedRecreate = true;
 	}
 
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
@@ -78,10 +79,23 @@ class GoalMeter extends Ui.Drawable {
 
 		var dcHeight = dc.getHeight();
 
-		if (mBuffersDirty) {			
-			drawBuffer(dc, mFilledBuffer.getDc(), App.getApp().getProperty("ThemeColour"), mSegments);
-			drawBuffer(dc, mEmptyBuffer.getDc(), App.getApp().getProperty("MeterBackgroundColour"), mSegments);
-			mBuffersDirty = false;
+		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
+		var themeColour = App.getApp().getProperty("ThemeColour");		
+
+		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
+		// change.
+		if (mBuffersNeedRecreate) {
+			mEmptyBuffer = createSegmentBuffer(meterBackgroundColour);
+			mFilledBuffer = createSegmentBuffer(themeColour);
+			mBuffersNeedRecreate = false;
+			mBuffersNeedRedraw = true; // Ensure newly-created buffers are drawn next.
+		}
+
+		// Redraw buffers only if maximum value changes.
+		if (mBuffersNeedRedraw) {
+			drawBuffer(dc, mEmptyBuffer.getDc(), meterBackgroundColour, mSegments);			
+			drawBuffer(dc, mFilledBuffer.getDc(), themeColour, mSegments);			
+			mBuffersNeedRedraw = false;
 		}
 
 		if (mSide == :left) {
@@ -133,11 +147,14 @@ class GoalMeter extends Ui.Drawable {
 		return width;
 	}
 
-	// Use system palette, to avoid having to recreate buffer when theme colour changes.
-	function createSegmentBuffer() {
+	// Use restricted palette, to conserve memory (four buffers per watchface).
+	function createSegmentBuffer(fillColour) {
 		return new Graphics.BufferedBitmap({
 			:width => mWidth,
-			:height => mHeight
+			:height => mHeight,
+
+			// First palette colour appears to determine initial colour of buffer.
+			:palette => [App.getApp().getProperty("BackgroundColour"), fillColour]
 		});
 	}
 
