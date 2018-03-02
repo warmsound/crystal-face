@@ -24,13 +24,13 @@
 	<label id="RightGoalMax" text="10" x="164" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<label id="LeftFieldIcon" text="3" x="80" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftFieldValue" text="0" x="80" y="44" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftFieldValue" text="0" x="80" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<label id="CenterFieldIcon" text="4" x="120" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="CenterFieldValue" text="75%" x="120" y="44" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="CenterFieldValue" text="75%" x="120" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<label id="RightFieldIcon" text="5" x="160" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightFieldValue" text="0" x="160" y="44" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="RightFieldValue" text="0" x="160" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="Date" class="DateLine">
 		<param name="y">76</param>
@@ -44,9 +44,9 @@
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">54</param>
+		<param name="x">52</param>
 		<param name="y">162</param>
-		<param name="width">82</param>
+		<param name="width">105</param>
 		<param name="height">9</param>
 		<param name="separator">3</param>
 	</drawable>

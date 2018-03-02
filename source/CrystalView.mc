@@ -73,6 +73,8 @@ class CrystalView extends Ui.WatchFace {
 	function onSettingsChanged() {
 		View.findDrawableById("LeftGoalMeter").onSettingsChanged();
 		View.findDrawableById("RightGoalMeter").onSettingsChanged();
+
+		View.findDrawableById("MoveBar").onSettingsChanged();
 	}
 
 	// Update the view
