@@ -7,7 +7,7 @@ Crystal, for clarity, and because it was mostly written during an unusual period
 Features:
 - Large, centralised time display, minutes and seconds distinguished by font weight.
 - 3 customisable data fields: HR history, battery, notifications, calories, distance.
-- 2 customisable goal meters: auto-scaling segments, current/max value display.
+- 2 customisable goal meters: auto-scaling segments, current/target value display.
 - Move bar.
 - 3 colour themes.
 
@@ -17,8 +17,8 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
-### 0.0.1
-Initial release for vívoactive® 3 only.
+### 0.1.0
+- Initial beta release for vívoactive® 3 only.
 
 ## Credits
 Icons:
