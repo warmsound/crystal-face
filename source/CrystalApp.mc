@@ -53,7 +53,7 @@ class CrystalApp extends App.AppBase {
 				break;
 
 			case :THEME_MONO_LIGHT:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_LT_GRAY);
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GRAY);
 				break;
 		}
 
@@ -64,19 +64,18 @@ class CrystalApp extends App.AppBase {
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
 
+				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
 				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
 				break;
 
 			case :THEME_MONO_LIGHT:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK); // (Inverted.)
+				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
 				
+				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
 				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
 				break;
 		}
-
-		// Common colours.
-		App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
 	}
 
 }
