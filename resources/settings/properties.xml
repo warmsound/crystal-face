@@ -1,9 +1,11 @@
 <properties>
 
-	<property id="BackgroundColour" type="number">0x000000</property>
+	<property id="Theme" type="number">0</property>
+
 	<property id="ThemeColour" type="number">0x00AAFF</property>
 	<property id="MonoLightColour" type="number">0xFFFFFF</property>
 	<property id="MonoDarkColour" type="number">0xAAAAAA</property>
+	<property id="BackgroundColour" type="number">0x000000</property>
 	<property id="MeterBackgroundColour" type="number">0x555555</property>
 
 	<property id="LeftGoalType" type="number">0</property>

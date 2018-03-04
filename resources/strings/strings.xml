@@ -3,10 +3,7 @@
 	<string id="AppName">Crystal</string>
 
 	<string id="BackgroundColourTitle">Background Colour</string>
-	<string id="ThemeColourTitle">Theme Colour</string>
-	<string id="MonoLightColourTitle">Mono Light Colour</string>
-	<string id="MonoDarkColourTitle">Mono Dark Colour</string>
-	<string id="MeterBackgroundColourTitle">Meter Background Colour</string>
+	<string id="ThemeTitle">Theme</string>
 	<string id="LeftGoalMeterTitle">Left Goal Meter</string>
 	<string id="RightGoalMeterTitle">Right Goal Meter</string>
 	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
@@ -14,20 +11,16 @@
 	<string id="CenterDataFieldTitle">Center Data Field</string>
 	<string id="RightDataFieldTitle">Right Data Field</string>
 
-	<string id="ColourBlack">Black</string>
-	<string id="ColourDarkGray">Dark Gray</string>
-	<string id="ColourLightGray">Light Gray</string>
-	<string id="ColourWhite">White</string>
-	<string id="ColourBlue">Blue</string>
-	<string id="ColourRed">Red</string>
-	<string id="ColourSkyBlue">Sky Blue</string>
+	<string id="ThemeBlueDark">Blue (Dark)</string>
+	<string id="ThemePinkDark">Pink (Dark)</string>
+	<string id="ThemeMonoLight">Mono (Light)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
 
 	<string id="Steps">Steps</string>
 	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes Weekly</string>
+	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
 
 	<string id="HeartRate">Heart Rate</string>
 	<string id="Battery">Battery</string>
