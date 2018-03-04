@@ -157,6 +157,7 @@ class CrystalView extends Ui.WatchFace {
 		iconLabel.setColor(info[:colour]);
 		
 		valueLabel.setText(info[:value]);
+		valueLabel.setColor(App.getApp().getProperty("MonoLightColour"));
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
@@ -251,6 +252,8 @@ class CrystalView extends Ui.WatchFace {
 
 	function updateGoalMeters() {
 		var themeColour = App.getApp().getProperty("ThemeColour");
+		var monoLightColour = App.getApp().getProperty("MonoLightColour");
+		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");
 		var info = ActivityMonitor.getInfo();
 
 		var leftGoalType = GOAL_TYPES[App.getApp().getProperty("LeftGoalType")];
@@ -261,8 +264,14 @@ class CrystalView extends Ui.WatchFace {
 		leftGoalIcon.setColor(themeColour);
 
 		View.findDrawableById("LeftGoalMeter").setValues(leftGoalValues[:current], leftGoalValues[:max]);
-		View.findDrawableById("LeftGoalCurrent").setText(leftGoalValues[:current].format("%d"));
-		View.findDrawableById("LeftGoalMax").setText(leftGoalValues[:max].format("%d"));
+
+		var leftGoalCurrent = View.findDrawableById("LeftGoalCurrent");
+		leftGoalCurrent.setText(leftGoalValues[:current].format("%d"));
+		leftGoalCurrent.setColor(monoLightColour);
+
+		var leftGoalMax = View.findDrawableById("LeftGoalMax");
+		leftGoalMax.setText(leftGoalValues[:max].format("%d"));
+		leftGoalMax.setColor(monoDarkColour);
 
 		var rightGoalType = GOAL_TYPES[App.getApp().getProperty("RightGoalType")];
 		var rightGoalValues = getValuesForGoalType(info, rightGoalType);
@@ -272,8 +281,14 @@ class CrystalView extends Ui.WatchFace {
 		rightGoalIcon.setColor(themeColour);
 
 		View.findDrawableById("RightGoalMeter").setValues(rightGoalValues[:current], rightGoalValues[:max]);
-		View.findDrawableById("RightGoalCurrent").setText(rightGoalValues[:current].format("%d"));
-		View.findDrawableById("RightGoalMax").setText(rightGoalValues[:max].format("%d"));
+
+		var rightGoalCurrent = View.findDrawableById("RightGoalCurrent");
+		rightGoalCurrent.setText(rightGoalValues[:current].format("%d"));
+		rightGoalCurrent.setColor(monoLightColour);
+
+		var rightGoalMax = View.findDrawableById("RightGoalMax");
+		rightGoalMax.setText(rightGoalValues[:max].format("%d"));
+		rightGoalMax.setColor(monoDarkColour);
 	}
 
 	function getValuesForGoalType(info, type) {
