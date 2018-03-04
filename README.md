@@ -2,8 +2,23 @@
 A Connect IQ watch face for Garmin watches.
 
 ## Description
+Crystal, for clarity, and because it was mostly written during an unusual period of sustained cold and snowy weather here in the UK.
+
+Features:
+- Large, centralised time display, minutes and seconds distinguished by font weight.
+- 3 customisable data fields: HR history, battery, notifications, calories, distance.
+- 2 customisable goal meters: auto-scaling segments, current/max value display.
+- Move bar.
+- 3 colour themes.
+
+The goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
+
+This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 0.0.1
+Initial release for vívoactive® 3 only.
 
 ## Credits
 Icons:
