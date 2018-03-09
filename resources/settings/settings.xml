@@ -4,7 +4,8 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
 			<listEntry value="1">@Strings.ThemePinkDark</listEntry>
-			<listEntry value="2">@Strings.ThemeMonoLight</listEntry>
+			<listEntry value="2">@Strings.ThemeGreenDark</listEntry>
+			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
 		</settingConfig>
 	</setting>
 
