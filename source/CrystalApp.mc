@@ -7,7 +7,8 @@ class CrystalApp extends App.AppBase {
 	private var THEMES = {
 		0 => :THEME_BLUE_DARK,
 		1 => :THEME_PINK_DARK,
-		2 => :THEME_MONO_LIGHT
+		2 => :THEME_GREEN_DARK,
+		3 => :THEME_MONO_LIGHT
 	};
 
 	function initialize() {
@@ -52,6 +53,10 @@ class CrystalApp extends App.AppBase {
 				App.getApp().setProperty("ThemeColour", Graphics.COLOR_PINK);
 				break;
 
+			case :THEME_GREEN_DARK:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_GREEN);
+				break;
+
 			case :THEME_MONO_LIGHT:
 				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GRAY);
 				break;
@@ -61,6 +66,7 @@ class CrystalApp extends App.AppBase {
 		switch (theme) {
 			case :THEME_BLUE_DARK:
 			case :THEME_PINK_DARK:
+			case :THEME_GREEN_DARK:
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
 

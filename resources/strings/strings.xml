@@ -13,7 +13,8 @@
 
 	<string id="ThemeBlueDark">Blue (Dark)</string>
 	<string id="ThemePinkDark">Pink (Dark)</string>
-	<string id="ThemeMonoLight">Mono (Light) [Experimental]</string>
+	<string id="ThemeGreenDark">Green (Dark)</string>
+	<string id="ThemeMonoLight">Mono (Light)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
