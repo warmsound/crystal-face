@@ -17,11 +17,8 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
-### 0.1.1
-- Added green theme, and improved promo graphics.
-
-### 0.1.0
-- Initial beta release for vívoactive® 3 only.
+### 1.0.0
+- Initial public release for vívoactive® 3 only.
 
 ## Credits
 Icons:
