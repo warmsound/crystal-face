@@ -28,6 +28,8 @@ class ThickThinTime extends Ui.Drawable {
 
 	private var mAnteMeridiem, mPostMeridiem;
 
+	private var AM_PM_X_OFFSET = 2;
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -100,7 +102,7 @@ class ThickThinTime extends Ui.Drawable {
 		// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
 		mSecondsRightX = x;
 
-		// If required, draw am/pm after minutes, vertically centred.
+		// If required, draw AM/PM after minutes, vertically centred.
 		if (!is24Hour) {
 			
 			var amPmText;
@@ -111,7 +113,7 @@ class ThickThinTime extends Ui.Drawable {
 			}
 
 			dc.drawText(
-				x,
+				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
 				halfDCHeight,
 				mSecondsFont,
 				amPmText,
