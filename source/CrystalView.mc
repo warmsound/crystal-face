@@ -41,6 +41,11 @@ class CrystalView extends Ui.WatchFace {
 
 	const BATTERY_FILL_WIDTH = 18;
 	const BATTERY_FILL_HEIGHT = 6;
+
+	const BATTERY_WIDTH_SMALL = 24;
+	const BATTERY_FILL_WIDTH_SMALL = 15;
+	const BATTERY_FILL_HEIGHT_SMALL = 4;
+
 	const BATTERY_LEVEL_LOW = 20;
 	const BATTERY_LEVEL_CRITICAL = 10;
 
@@ -112,6 +117,7 @@ class CrystalView extends Ui.WatchFace {
 	function fillBatteryMeter(dc, batteryIcon) {
 		var batteryLevel = Sys.getSystemStats().battery;
 		var colour;
+		var fillWidth, fillHeight;
 
 		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
 			colour = Graphics.COLOR_RED;
@@ -122,11 +128,20 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+
+		// Layout uses small battery icon.
+		if (batteryIcon.width == BATTERY_WIDTH_SMALL) {
+			fillWidth = BATTERY_FILL_WIDTH_SMALL;
+			fillHeight = BATTERY_FILL_HEIGHT_SMALL;
+		} else {
+			fillWidth = BATTERY_FILL_WIDTH;
+			fillHeight = BATTERY_FILL_HEIGHT;
+		}
 		dc.fillRectangle(
-			batteryIcon.locX - (BATTERY_FILL_WIDTH / 2) - 1,
-			batteryIcon.locY - (BATTERY_FILL_HEIGHT / 2) + 1,
-			Math.ceil(BATTERY_FILL_WIDTH * (batteryLevel / 100)), 
-			BATTERY_FILL_HEIGHT);
+			batteryIcon.locX - (fillWidth / 2) - 1,
+			batteryIcon.locY - (fillHeight / 2) + 1,
+			Math.ceil(fillWidth * (batteryLevel / 100)), 
+			fillHeight);	
 	}
 
 	function updateDataFields() {
