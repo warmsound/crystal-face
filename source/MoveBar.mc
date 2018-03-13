@@ -10,6 +10,7 @@ class MoveBar extends Ui.Drawable {
 	private var mBuffer;
 	private var mBufferNeedsRecreate = true;
 	private var mBufferNeedsRedraw = true;
+	private var mLastMoveBarLevel;
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -32,6 +33,9 @@ class MoveBar extends Ui.Drawable {
 		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
 		var backgroundColour = App.getApp().getProperty("BackgroundColour");
 
+		var info = ActivityMonitor.getInfo();
+		var currentMoveBarLevel = info.moveBarLevel;
+
 		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
 		// change.
 		if (mBufferNeedsRecreate) {
@@ -46,10 +50,14 @@ class MoveBar extends Ui.Drawable {
 			mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
 		}
 
-		// Redraw buffer only if move bar level changes.
+		// #7 Redraw buffer (only) if move bar level changes.
+		if (currentMoveBarLevel != mLastMoveBarLevel) {
+			mLastMoveBarLevel = currentMoveBarLevel;
+			mBufferNeedsRedraw = true;
+		}
+		
 		if (mBufferNeedsRedraw) {
-			var info = ActivityMonitor.getInfo();
-			var moveBarLevel = info.moveBarLevel;
+			
 			var barWidth = getBarWidth();
 			var thisBarWidth;
 			var thisBarColour = 0;
@@ -66,7 +74,7 @@ class MoveBar extends Ui.Drawable {
 				}
 
 				// Move bar at this level or greater, so show regardless of AlwaysShowMoveBar setting.
-				if (i <= moveBarLevel) {
+				if (i <= currentMoveBarLevel) {
 					thisBarColour = themeColour;
 
 				// Move bar below this level, so only show if AlwaysShowMoveBar setting is true.
