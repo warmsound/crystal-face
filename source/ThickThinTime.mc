@@ -60,9 +60,17 @@ class ThickThinTime extends Ui.Drawable {
 		var is24Hour = Sys.getDeviceSettings().is24Hour;
 		var isPm = false;
 
-		if (!is24Hour && (hours > 12)) {
-			hours = hours % 12;
-			isPm = true;
+		if (!is24Hour) {
+
+			// #6 Ensure noon is shown as PM.
+			if (hours >= 12) {
+				isPm = true;
+
+				// But ensure noon is shown as 12, not 00.
+				if (hours > 12) {
+					hours = hours % 12;
+				}
+			}
 		}
 
 		// Hours always have leading zero, regardless of hour mode, to allow more room for move bar.
