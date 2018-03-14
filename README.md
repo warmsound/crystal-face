@@ -17,6 +17,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.0.1
+- Fixed issue with showing noon as AM, rather than PM (with thanks to JACalvo for reporting this bug).
+- Fixed issue with move bar not updating correctly.
+
 ### 1.0.0
 - Initial public release for vívoactive® 3 only.
 
