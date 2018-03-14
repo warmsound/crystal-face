@@ -26,8 +26,9 @@ class ThickThinTime extends Ui.Drawable {
 			:height => 0
 	};
 
-	private var mAnteMeridiem, mPostMeridiem;
+	private var mHideSeconds = false;
 
+	private var mAnteMeridiem, mPostMeridiem;
 	private var AM_PM_X_OFFSET = 2;
 
 	function initialize(params) {
@@ -45,13 +46,19 @@ class ThickThinTime extends Ui.Drawable {
 		mMinutesFont = minutesFont;
 		mSecondsFont = secondsFont;
 	}
+
+	function setHideSeconds(hideSeconds) {
+		mHideSeconds = hideSeconds;
+	}
 	
 	function draw(dc) {
 		mThemeColour = App.getApp().getProperty("ThemeColour");
 		mBackgroundColour = App.getApp().getProperty("BackgroundColour");
 
 		drawHoursMinutes(dc);
-		drawSeconds(dc, /* isPartialUpdate */ false);
+		if (!mHideSeconds) {
+			drawSeconds(dc, /* isPartialUpdate */ false);
+		}
 	}
 
 	function drawHoursMinutes(dc) {    		

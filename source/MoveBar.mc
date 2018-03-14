@@ -5,19 +5,26 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 
 class MoveBar extends Ui.Drawable {
 
-	private var mX, mY, mWidth, mHeight, mSeparator;
+	private var mX, mY, mBaseWidth, mHeight, mSeparator;
 	private var mTailWidth;
 	private var mBuffer;
 	private var mBufferNeedsRecreate = true;
 	private var mBufferNeedsRedraw = true;
 	private var mLastMoveBarLevel;
 
+	// If set to true, move bar should be horizontally centred on the DC, with left end at mX.
+	// This is used when a watch face does not support per-second updates, and the seconds are therefore hidden in sleep mode.
+	private var mIsFullWidth = false;
+
+	// Either mBaseWidth, or a calculated full width.
+	private var mCurrentWidth;
+
 	function initialize(params) {
 		Drawable.initialize(params);
 		
 		mX = params[:x];
 		mY = params[:y];
-		mWidth = params[:width];
+		mBaseWidth = params[:width]; // mCurrentWidth calculated before buffer is (re-)created.
 		mHeight = params[:height];
 		mSeparator = params[:separator];
 
@@ -26,6 +33,13 @@ class MoveBar extends Ui.Drawable {
 
 	function onSettingsChanged() {
 		mBufferNeedsRecreate = true;
+	}
+
+	function setFullWidth(fullWidth) {
+		if (mIsFullWidth != fullWidth) {
+			mIsFullWidth = fullWidth;
+			mBufferNeedsRecreate = true;
+		}
 	}
 	
 	function draw(dc) {
@@ -36,11 +50,19 @@ class MoveBar extends Ui.Drawable {
 		var info = ActivityMonitor.getInfo();
 		var currentMoveBarLevel = info.moveBarLevel;
 
-		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
-		// change.
+		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
+		// move bar width changes from base width to full width.
 		if (mBufferNeedsRecreate) {
+			
+			// Calculate current width here, now that DC is accessible.
+			if (mIsFullWidth) {
+				mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
+			} else {
+				mCurrentWidth = mBaseWidth;
+			}
+
 			mBuffer = new Graphics.BufferedBitmap({
-				:width => mWidth,
+				:width => mCurrentWidth,
 				:height => mHeight,
 
 				// First palette colour appears to determine initial colour of buffer.
@@ -96,7 +118,7 @@ class MoveBar extends Ui.Drawable {
 		}
 
 		// Draw whole move bar from buffer, vertically centred at mY.
-		dc.setClip(mX, mY - (mHeight / 2), mWidth, mHeight);
+		dc.setClip(mX, mY - (mHeight / 2), mCurrentWidth, mHeight);
 		dc.drawBitmap(mX, mY - (mHeight / 2), mBuffer);
 		dc.clearClip();		
 	}
@@ -106,7 +128,7 @@ class MoveBar extends Ui.Drawable {
 		var numBars = ActivityMonitor.MOVE_BAR_LEVEL_MAX - ActivityMonitor.MOVE_BAR_LEVEL_MIN - 1;
 
 		// Subtract tail width, and total separator width.
-		var availableWidth = mWidth - mTailWidth - ((numBars - 1) * mSeparator);
+		var availableWidth = mCurrentWidth - mTailWidth - ((numBars - 1) * mSeparator);
 
 		var barWidth = availableWidth / (numBars + /* First bar is double width */ 1);
 

@@ -52,6 +52,9 @@ class CrystalView extends Ui.WatchFace {
 	const CM_PER_KM = 100000;
 	const MI_PER_KM = 0.621371;
 
+	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
+	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
+
 	function initialize() {
 		WatchFace.initialize();
 	}
@@ -364,10 +367,26 @@ class CrystalView extends Ui.WatchFace {
 
 	// The user has just looked at their watch. Timers and animations may be started here.
 	function onExitSleep() {
+		Sys.println("onExitSleep()");
+
+		// If watch does not support per-second updates, show seconds, and make move bar original width.
+		if (!PER_SECOND_UPDATES_SUPPORTED) {
+			View.findDrawableById("Time").setHideSeconds(false);
+			View.findDrawableById("MoveBar").setFullWidth(false);
+		}
 	}
 
 	// Terminate any active timers and prepare for slow updates.
 	function onEnterSleep() {
+		Sys.println("onEnterSleep()");
+		Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
+
+		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
+		// onUpdate() is about to be called one final time before entering sleep.
+		if (!PER_SECOND_UPDATES_SUPPORTED) {
+			View.findDrawableById("Time").setHideSeconds(true);
+			View.findDrawableById("MoveBar").setFullWidth(true);
+		}
 	}
 
 }
