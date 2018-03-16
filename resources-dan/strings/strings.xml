@@ -1,0 +1,24 @@
+<strings>
+
+	<string id="Sun">Søn</string>
+	<string id="Mon">Man</string>
+	<string id="Tue">Tir</string>
+	<string id="Wed">Ons</string>
+	<string id="Thu">Tor</string>
+	<string id="Fri">Fre</string>
+	<string id="Sat">Lør</string>
+
+	<string id="Jan">Jan</string>
+	<string id="Feb">Feb</string>
+	<string id="Mar">Mar</string>
+	<string id="Apr">Apr</string>
+	<string id="May">Maj</string>
+	<string id="Jun">Jun</string>
+	<string id="Jul">Jul</string>
+	<string id="Aug">Aug</string>
+	<string id="Sep">Sep</string>
+	<string id="Oct">Okt</string>
+	<string id="Nov">Nov</string>
+	<string id="Dec">Dec</string>
+
+</strings>

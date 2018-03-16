@@ -7,14 +7,19 @@
             <iq:uses-permission id="SensorHistory"/>
         </iq:permissions>
         <iq:languages>
+            <iq:language>dan</iq:language>
             <iq:language>deu</iq:language>
             <iq:language>dut</iq:language>
             <iq:language>eng</iq:language>
+            <iq:language>fin</iq:language>
             <iq:language>fre</iq:language>
+            <iq:language>hun</iq:language>
             <iq:language>ita</iq:language>
+            <iq:language>nob</iq:language>
             <iq:language>pol</iq:language>
             <iq:language>por</iq:language>
             <iq:language>spa</iq:language>
+            <iq:language>swe</iq:language>
         </iq:languages>
         <iq:barrels/>
     </iq:application>
