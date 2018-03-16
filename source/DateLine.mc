@@ -7,10 +7,39 @@ using Toybox.Time.Gregorian;
 class DateLine extends Ui.Drawable {
 
 	private var mY;
-	private var mFont;	
+
+	private var mDayOfWeekStrings;
+	private var mMonthStrings;
+
+	private var mFont;
 
 	function initialize(params) {
 		Drawable.initialize(params);
+
+		mDayOfWeekStrings = [
+			Ui.loadResource(Rez.Strings.Sun),
+			Ui.loadResource(Rez.Strings.Mon),
+			Ui.loadResource(Rez.Strings.Tue),
+			Ui.loadResource(Rez.Strings.Wed),
+			Ui.loadResource(Rez.Strings.Thu),
+			Ui.loadResource(Rez.Strings.Fri),
+			Ui.loadResource(Rez.Strings.Sat),
+		];
+
+		mMonthStrings = [
+			Ui.loadResource(Rez.Strings.Jan),
+			Ui.loadResource(Rez.Strings.Feb),
+			Ui.loadResource(Rez.Strings.Mar),
+			Ui.loadResource(Rez.Strings.Apr),
+			Ui.loadResource(Rez.Strings.May),
+			Ui.loadResource(Rez.Strings.Jun),
+			Ui.loadResource(Rez.Strings.Jul),
+			Ui.loadResource(Rez.Strings.Aug),
+			Ui.loadResource(Rez.Strings.Sep),
+			Ui.loadResource(Rez.Strings.Oct),
+			Ui.loadResource(Rez.Strings.Nov),
+			Ui.loadResource(Rez.Strings.Dec),
+		];
 
 		mY = params[:y];
 	}
@@ -21,11 +50,14 @@ class DateLine extends Ui.Drawable {
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.
 	function draw(dc) {
-		var now = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 
-		var dayOfWeek = now.day_of_week.toUpper();
+		// Supply DOW/month strings ourselves, rather than relying on Time.FORMAT_MEDIUM, as latter is inconsistent e.g. returns
+		// "Thurs" instead of "Thu".
+		var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+		var dayOfWeek = mDayOfWeekStrings[now.day_of_week - 1].toUpper(); // DOWs are zero-based, starting Sunday.
 		var day = now.day.format("%d");
-		var month = now.month.toUpper();
+		var month = mMonthStrings[now.month - 1].toUpper(); // Months are zero-based, starting January.
 
 		var dateString = Lang.format("$1$ $2$ $3$", [dayOfWeek, day, month]);
 		var length = dc.getTextWidthInPixels(dateString, mFont);

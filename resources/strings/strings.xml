@@ -29,4 +29,25 @@
 	<string id="Calories">Calories</string>
 	<string id="Distance">Distance</string>
 
+	<string id="Sun">Sun</string>
+	<string id="Mon">Mon</string>
+	<string id="Tue">Tue</string>
+	<string id="Wed">Wed</string>
+	<string id="Thu">Thu</string>
+	<string id="Fri">Fri</string>
+	<string id="Sat">Sat</string>
+
+	<string id="Jan">Jan</string>
+	<string id="Feb">Feb</string>
+	<string id="Mar">Mar</string>
+	<string id="Apr">Apr</string>
+	<string id="May">May</string>
+	<string id="Jun">Jun</string>
+	<string id="Jul">Jul</string>
+	<string id="Aug">Aug</string>
+	<string id="Sep">Sep</string>
+	<string id="Oct">Oct</string>
+	<string id="Nov">Nov</string>
+	<string id="Dec">Dec</string>
+
 </strings>
