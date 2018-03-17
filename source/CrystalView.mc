@@ -129,7 +129,8 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function fillBatteryMeter(dc, batteryIcon) {
-		var batteryLevel = Sys.getSystemStats().battery;
+		// #8: battery returned as float. Use ceil() for optimistic values. Must match getDisplayInfoForFieldType().
+		var batteryLevel = Math.ceil(Sys.getSystemStats().battery);
 		var colour;
 
 		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
@@ -210,7 +211,8 @@ class CrystalView extends Ui.WatchFace {
 				break;
 
 			case :FIELD_TYPE_BATTERY:
-				battery = Sys.getSystemStats().battery;
+				// #8: battery returned as float. Use ceil() for optimistic values. Must match fillBatteryMeter().
+				battery = Math.ceil(Sys.getSystemStats().battery);
 				info[:value] = battery.format("%d") + "%";
 				break;
 
