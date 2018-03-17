@@ -5,4 +5,7 @@
 	<font id="DateFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
 	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" />
 	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true" />
+
+	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
+	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-24.fnt" antialias="true"/>
 </fonts>

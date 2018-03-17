@@ -59,7 +59,18 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
-		mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
+		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
+		// string, then override font in code.
+		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
+		switch (dateFontOverride) {
+			case "ZHT":
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
+				break;
+
+			default:
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
+				break;
+		}
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
