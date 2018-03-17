@@ -63,6 +63,10 @@ class CrystalView extends Ui.WatchFace {
 		// string, then override font in code.
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
 		switch (dateFontOverride) {
+			case "ZHS":
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
+				break;
+
 			case "ZHT":
 				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
 				break;
