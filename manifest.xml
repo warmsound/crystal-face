@@ -7,6 +7,7 @@
             <iq:uses-permission id="SensorHistory"/>
         </iq:permissions>
         <iq:languages>
+            <iq:language>ces</iq:language>
             <iq:language>dan</iq:language>
             <iq:language>deu</iq:language>
             <iq:language>dut</iq:language>
@@ -18,6 +19,8 @@
             <iq:language>nob</iq:language>
             <iq:language>pol</iq:language>
             <iq:language>por</iq:language>
+            <iq:language>slo</iq:language>
+            <iq:language>slv</iq:language>
             <iq:language>spa</iq:language>
             <iq:language>swe</iq:language>
         </iq:languages>
