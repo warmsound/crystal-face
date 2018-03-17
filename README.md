@@ -17,6 +17,11 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.1.0
+- Internationalisation: added support for Chinese (Simplified/Traditional), Czech, Danish, Dutch, Finnish, French, German, Hungarian, Italian, Norwegian, Polish, Portugese, Slovak, Slovenian, Spanish, Swedish.
+- Force language to English for unsupported locales, to prevent garbled characters.
+- Fixed issue with battery meter not showing low/critical warning colours soon enough.
+
 ### 1.0.1
 - Fixed issue with showing noon as AM, rather than PM (with thanks to JACalvo for reporting this bug).
 - Fixed issue with move bar not updating correctly.
