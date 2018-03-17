@@ -10,6 +10,8 @@ class CrystalView extends Ui.WatchFace {
 	private var mHoursFont;
 	private var mMinutesFont;
 	private var mSecondsFont;
+
+	private var mDateFont;
 	
 	private var GOAL_TYPES = {
 		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
@@ -57,10 +59,12 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
+		mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
+
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		View.findDrawableById("Time").setFonts(mHoursFont, mMinutesFont, mSecondsFont);
-		View.findDrawableById("Date").setFont(mSecondsFont);
+		View.findDrawableById("Date").setFont(mDateFont);
 	}
 
 	// Called when this View is brought to the foreground. Restore
