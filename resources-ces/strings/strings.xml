@@ -1,0 +1,24 @@
+<strings>
+
+	<string id="Sun">Ne</string>
+	<string id="Mon">Po</string>
+	<string id="Tue">Út</string>
+	<string id="Wed">St</string>
+	<string id="Thu">Čt</string>
+	<string id="Fri">Pá</string>
+	<string id="Sat">So</string>
+
+	<string id="Jan">Led</string>
+	<string id="Feb">Úno</string>
+	<string id="Mar">Bře</string>
+	<string id="Apr">Dub</string>
+	<string id="May">Kvě</string>
+	<string id="Jun">Črv</string>
+	<string id="Jul">Čvc</string>
+	<string id="Aug">Srp</string>
+	<string id="Sep">Zář</string>
+	<string id="Oct">Říj</string>
+	<string id="Nov">Lis</string>
+	<string id="Dec">Pro</string>
+
+</strings>
