@@ -1,0 +1,26 @@
+<strings>
+
+	<string id="DATE_FONT_OVERRIDE">ZHT</string>
+
+	<string id="Sun">星期日</string>
+	<string id="Mon">星期一</string>
+	<string id="Tue">星期二</string>
+	<string id="Wed">星期三</string>
+	<string id="Thu">星期四</string>
+	<string id="Fri">星期五</string>
+	<string id="Sat">星期六</string>
+
+	<string id="Jan">一月</string>
+	<string id="Feb">二月</string>
+	<string id="Mar">三月</string>
+	<string id="Apr">四月</string>
+	<string id="May">五月</string>
+	<string id="Jun">六月</string>
+	<string id="Jul">七月</string>
+	<string id="Aug">八月</string>
+	<string id="Sep">九月</string>
+	<string id="Oct">十月</string>
+	<string id="Nov">十一月</string>
+	<string id="Dec">十二月</string>
+
+</strings>

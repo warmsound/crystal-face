@@ -10,6 +10,8 @@ class CrystalView extends Ui.WatchFace {
 	private var mHoursFont;
 	private var mMinutesFont;
 	private var mSecondsFont;
+
+	private var mDateFont;
 	
 	private var GOAL_TYPES = {
 		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
@@ -65,10 +67,27 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
+		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
+		// string, then override font in code.
+		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
+		switch (dateFontOverride) {
+			case "ZHS":
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
+				break;
+
+			case "ZHT":
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
+				break;
+
+			default:
+				mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
+				break;
+		}
+
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		View.findDrawableById("Time").setFonts(mHoursFont, mMinutesFont, mSecondsFont);
-		View.findDrawableById("Date").setFont(mSecondsFont);
+		View.findDrawableById("Date").setFont(mDateFont);
 	}
 
 	// Called when this View is brought to the foreground. Restore
@@ -118,7 +137,8 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function fillBatteryMeter(dc, batteryIcon) {
-		var batteryLevel = Sys.getSystemStats().battery;
+		// #8: battery returned as float. Use ceil() for optimistic values. Must match getDisplayInfoForFieldType().
+		var batteryLevel = Math.ceil(Sys.getSystemStats().battery);
 		var colour;
 		var fillWidth, fillHeight;
 
@@ -213,7 +233,8 @@ class CrystalView extends Ui.WatchFace {
 				break;
 
 			case :FIELD_TYPE_BATTERY:
-				battery = Sys.getSystemStats().battery;
+				// #8: battery returned as float. Use ceil() for optimistic values. Must match fillBatteryMeter().
+				battery = Math.ceil(Sys.getSystemStats().battery);
 				value = battery.format("%d") + "%";
 				break;
 
