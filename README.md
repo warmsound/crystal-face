@@ -9,7 +9,7 @@ Features:
 - 3 customisable data fields: HR history, battery, notifications, calories, distance.
 - 2 customisable goal meters: steps, floors climbed, active minutes (weekly). The meters have auto-scaling segments and current/target value display.
 - Move bar.
-- 4 colour themes.
+- 6 colour themes.
 
 The techie bit: to save your watch battery, the goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
 
@@ -17,8 +17,13 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+**N.B. Due to a vívoactive® 3 firmware bug, this watch face will be stuck on the language that was active at the time of the 3.30-3.40 firmware upgrade. Hopefully Garmin will fix this in a future firmware.**
+
+### 1.2.0
+- Added support for Approach® S60, D2™ Charlie, Descent™ Mk1, Forerunner® 645, Forerunner® 645 Music, Forerunner® 935, fēnix® 5, fēnix® 5X.
+- Added Cornflower Blue and Lemon Cream themes for better visibility.
+
 ### 1.1.0
-**N.B. Due to a vívoactive 3 firmware bug, this watch face will be stuck on the language that was active at the time of the 3.30-3.40 firmware upgrade. Hopefully Garmin will fix this in a future firmware.**
 - Internationalisation: added support for Chinese (Simplified/Traditional), Czech, Danish, Dutch, Finnish, French, German, Hungarian, Italian, Norwegian, Polish, Portugese, Slovak, Slovenian, Spanish, Swedish.
 - Force language to English for unsupported locales, to prevent garbled characters.
 - Fixed issue with battery meter not showing low/critical warning colours soon enough.
