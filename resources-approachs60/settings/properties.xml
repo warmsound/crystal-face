@@ -1,0 +1,7 @@
+<properties>
+
+	<property id="RightGoalType" type="number">2</property>
+
+	<property id="LeftFieldType" type="number">4</property>
+
+</properties>

@@ -171,21 +171,27 @@ class CrystalView extends Ui.WatchFace {
 
 	// "fieldType" parameter is raw property value (it's converted to symbol below).
 	function updateDataField(fieldType, iconLabel, valueLabel) {
-		var info = getDisplayInfoForFieldType(fieldType);
+		var value = getValueForFieldType(fieldType);
+		var colour;
+
+		// Grey out icon if no value was retrieved.
+		if (value.length() == 0) {
+			colour = App.getApp().getProperty("MeterBackgroundColour");
+		} else {
+			colour = App.getApp().getProperty("ThemeColour");
+		}
 
 		iconLabel.setText(ICON_FONT_CHARS[FIELD_TYPES[fieldType]]);
-		iconLabel.setColor(info[:colour]);
+		iconLabel.setColor(colour);
 		
-		valueLabel.setText(info[:value]);
+		valueLabel.setText(value);
 		valueLabel.setColor(App.getApp().getProperty("MonoLightColour"));
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
-	function getDisplayInfoForFieldType(type) {
-		var info = {
-			:colour => App.getApp().getProperty("ThemeColour"),
-			:value => ""
-		};
+	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
+	function getValueForFieldType(type) {
+		var value = "";
 
 		var activityInfo;
 		var iterator;
@@ -199,38 +205,31 @@ class CrystalView extends Ui.WatchFace {
 		switch (FIELD_TYPES[type]) {
 			case :FIELD_TYPE_HEART_RATE:
 				activityInfo = ActivityMonitor.getInfo();
-				iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
-				sample = iterator.next();
-				if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
-					info[:value] = sample.heartRate.format("%d");
-
-				// If no HR history available, grey out icon and do not show text.
-				} else {
-					info[:colour] = App.getApp().getProperty("MeterBackgroundColour");
+				if (activityInfo has :getHeartRateHistory) {
+					iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
+					sample = iterator.next();
+					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
+						value = sample.heartRate.format("%d");
+					}
 				}
 				break;
 
 			case :FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use ceil() for optimistic values. Must match fillBatteryMeter().
 				battery = Math.ceil(Sys.getSystemStats().battery);
-				info[:value] = battery.format("%d") + "%";
+				value = battery.format("%d") + "%";
 				break;
 
 			case :FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();
-				
+				settings = Sys.getDeviceSettings();				
 				if (settings.notificationCount > 0) {
-					info[:value] = settings.notificationCount.format("%d");
-
-				// If no notifications, grey out icon and do not show text.
-				} else {
-					info[:colour] = App.getApp().getProperty("MeterBackgroundColour");
+					value = settings.notificationCount.format("%d");
 				}
 				break;
 
 			case :FIELD_TYPE_CALORIES:
 				activityInfo = ActivityMonitor.getInfo();
-				info[:value] = activityInfo.calories.format("%d");
+				value = activityInfo.calories.format("%d");
 				break;
 
 			case :FIELD_TYPE_DISTANCE:
@@ -252,12 +251,12 @@ class CrystalView extends Ui.WatchFace {
 					format = "%d";
 				}
 
-				info[:value] = distance.format(format) + unit;
+				value = distance.format(format) + unit;
 				
 				break;
 		}
 
-		return info;
+		return value;
 	}
 
 	// Set colour of bluetooth indicator, depending on phone connection status.
@@ -272,68 +271,86 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateGoalMeters() {
-		var themeColour = App.getApp().getProperty("ThemeColour");
-		var monoLightColour = App.getApp().getProperty("MonoLightColour");
-		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");
-		var info = ActivityMonitor.getInfo();
+		updateGoalMeter(
+			GOAL_TYPES[App.getApp().getProperty("LeftGoalType")],
+			View.findDrawableById("LeftGoalMeter"),
+			View.findDrawableById("LeftGoalIcon"),
+			View.findDrawableById("LeftGoalCurrent"),
+			View.findDrawableById("LeftGoalMax")
+		);
 
-		var leftGoalType = GOAL_TYPES[App.getApp().getProperty("LeftGoalType")];
-		var leftGoalValues = getValuesForGoalType(info, leftGoalType);
-
-		var leftGoalIcon = View.findDrawableById("LeftGoalIcon");
-		leftGoalIcon.setText(ICON_FONT_CHARS[leftGoalType]);
-		leftGoalIcon.setColor(themeColour);
-
-		View.findDrawableById("LeftGoalMeter").setValues(leftGoalValues[:current], leftGoalValues[:max]);
-
-		var leftGoalCurrent = View.findDrawableById("LeftGoalCurrent");
-		leftGoalCurrent.setText(leftGoalValues[:current].format("%d"));
-		leftGoalCurrent.setColor(monoLightColour);
-
-		var leftGoalMax = View.findDrawableById("LeftGoalMax");
-		leftGoalMax.setText(leftGoalValues[:max].format("%d"));
-		leftGoalMax.setColor(monoDarkColour);
-
-		var rightGoalType = GOAL_TYPES[App.getApp().getProperty("RightGoalType")];
-		var rightGoalValues = getValuesForGoalType(info, rightGoalType);
-
-		var rightGoalIcon = View.findDrawableById("RightGoalIcon");
-		rightGoalIcon.setText(ICON_FONT_CHARS[rightGoalType]);
-		rightGoalIcon.setColor(themeColour);
-
-		View.findDrawableById("RightGoalMeter").setValues(rightGoalValues[:current], rightGoalValues[:max]);
-
-		var rightGoalCurrent = View.findDrawableById("RightGoalCurrent");
-		rightGoalCurrent.setText(rightGoalValues[:current].format("%d"));
-		rightGoalCurrent.setColor(monoLightColour);
-
-		var rightGoalMax = View.findDrawableById("RightGoalMax");
-		rightGoalMax.setText(rightGoalValues[:max].format("%d"));
-		rightGoalMax.setColor(monoDarkColour);
+		updateGoalMeter(
+			GOAL_TYPES[App.getApp().getProperty("RightGoalType")],
+			View.findDrawableById("RightGoalMeter"),
+			View.findDrawableById("RightGoalIcon"),
+			View.findDrawableById("RightGoalCurrent"),
+			View.findDrawableById("RightGoalMax")
+		);
 	}
 
-	function getValuesForGoalType(info, type) {
-		var current;
-		var max;
+	function updateGoalMeter(goalType, meter, iconLabel, currentLabel, maxLabel) {
+		var values = getValuesForGoalType(goalType);
+
+		// Meter.
+		meter.setValues(values[:current], values[:max]);
+
+		// Icon label.
+		iconLabel.setText(ICON_FONT_CHARS[goalType]);
+		if (values[:isValid]) {
+			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
+		} else {
+			iconLabel.setColor(App.getApp().getProperty("MeterBackgroundColour"));
+		}		
+
+		// Current label.
+		if (values[:isValid]) {
+			currentLabel.setText(values[:current].format("%d"));
+		} else {
+			currentLabel.setText("");
+		}
+		currentLabel.setColor(App.getApp().getProperty("MonoLightColour"));
+
+		// Max/target label.
+		if (values[:isValid]) {
+			maxLabel.setText(values[:max].format("%d"));
+		} else {
+			maxLabel.setText("");
+		}
+		maxLabel.setColor(App.getApp().getProperty("MonoDarkColour"));
+	}
+
+	function getValuesForGoalType(type) {
+		var values = {
+			:current => 0,
+			:max => 1,
+			:isValid => true
+		};
+
+		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
 			case :GOAL_TYPE_STEPS:
-				current = info.steps;
-				max = info.stepGoal;
+				values[:current] = info.steps;
+				values[:max] = info.stepGoal;
 				break;
 
 			case :GOAL_TYPE_FLOORS_CLIMBED:
-				current = info.floorsClimbed;
-				max = info.floorsClimbedGoal;
+				if (info has :floorsClimbed) {
+					values[:current] = info.floorsClimbed;
+					values[:max] = info.floorsClimbedGoal;
+				} else {
+					values[:isValid] = false;
+				}
+				
 				break;
 
 			case :GOAL_TYPE_ACTIVE_MINUTES:
-				current = info.activeMinutesWeek.total;
-				max = info.activeMinutesWeekGoal;
+				values[:current] = info.activeMinutesWeek.total;
+				values[:max] = info.activeMinutesWeekGoal;
 				break;
 		}
 
-		return { :current => current, :max => max };
+		return values;
 	}
 
 	// Set clipping region to previously-displayed seconds text only.
