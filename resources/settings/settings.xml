@@ -5,6 +5,8 @@
 			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
 			<listEntry value="1">@Strings.ThemePinkDark</listEntry>
 			<listEntry value="2">@Strings.ThemeGreenDark</listEntry>
+			<listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry>
+			<listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
 		</settingConfig>
 	</setting>
