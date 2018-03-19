@@ -235,7 +235,7 @@ class CrystalView extends Ui.WatchFace {
 			case :FIELD_TYPE_DISTANCE:
 				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance / CM_PER_KM;
+				distance = activityInfo.distance.toFloat() / CM_PER_KM; // #11: Ensure floating point division!
 
 				if (settings.distanceUnits == System.UNIT_METRIC) {
 					unit = "km";					
