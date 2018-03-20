@@ -1,0 +1,59 @@
+<settings>
+	<setting propertyKey="@Properties.Theme" title="@Strings.ThemeTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
+			<listEntry value="1">@Strings.ThemePinkDark</listEntry>
+			<listEntry value="2">@Strings.ThemeGreenDark</listEntry>
+			<!--listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry-->
+			<!--listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry-->
+			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Steps</listEntry>
+			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
+			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.RightGoalType" title="@Strings.RightGoalMeterTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Steps</listEntry>
+			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
+			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.CenterFieldType" title="@Strings.CenterDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.RightFieldType" title="@Strings.RightDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+		</settingConfig>
+	</setting>
+
+</settings>

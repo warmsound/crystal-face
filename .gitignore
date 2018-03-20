@@ -1,6 +1,4 @@
 
-bin/Crystal\.prg\.debug\.xml
-
-bin/Crystal\.prg
-
 build/
+
+bin/

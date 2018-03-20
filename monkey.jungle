@@ -1,1 +1,4 @@
 project.manifest = manifest.xml
+
+round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
+semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons

@@ -43,11 +43,19 @@ class CrystalView extends Ui.WatchFace {
 
 	const BATTERY_FILL_WIDTH = 18;
 	const BATTERY_FILL_HEIGHT = 6;
+
+	const BATTERY_WIDTH_SMALL = 24;
+	const BATTERY_FILL_WIDTH_SMALL = 15;
+	const BATTERY_FILL_HEIGHT_SMALL = 4;
+
 	const BATTERY_LEVEL_LOW = 20;
 	const BATTERY_LEVEL_CRITICAL = 10;
 
 	const CM_PER_KM = 100000;
 	const MI_PER_KM = 0.621371;
+
+	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
+	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
 	function initialize() {
 		WatchFace.initialize();
@@ -132,6 +140,7 @@ class CrystalView extends Ui.WatchFace {
 		// #8: battery returned as float. Use ceil() for optimistic values. Must match getDisplayInfoForFieldType().
 		var batteryLevel = Math.ceil(Sys.getSystemStats().battery);
 		var colour;
+		var fillWidth, fillHeight;
 
 		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
 			colour = Graphics.COLOR_RED;
@@ -142,11 +151,20 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+
+		// Layout uses small battery icon.
+		if (batteryIcon.width == BATTERY_WIDTH_SMALL) {
+			fillWidth = BATTERY_FILL_WIDTH_SMALL;
+			fillHeight = BATTERY_FILL_HEIGHT_SMALL;
+		} else {
+			fillWidth = BATTERY_FILL_WIDTH;
+			fillHeight = BATTERY_FILL_HEIGHT;
+		}
 		dc.fillRectangle(
-			batteryIcon.locX - (BATTERY_FILL_WIDTH / 2) - 1,
-			batteryIcon.locY - (BATTERY_FILL_HEIGHT / 2) + 1,
-			Math.ceil(BATTERY_FILL_WIDTH * (batteryLevel / 100)), 
-			BATTERY_FILL_HEIGHT);
+			batteryIcon.locX - (fillWidth / 2) - 1,
+			batteryIcon.locY - (fillHeight / 2) + 1,
+			Math.ceil(fillWidth * (batteryLevel / 100)), 
+			fillHeight);	
 	}
 
 	function updateDataFields() {
@@ -370,10 +388,26 @@ class CrystalView extends Ui.WatchFace {
 
 	// The user has just looked at their watch. Timers and animations may be started here.
 	function onExitSleep() {
+		Sys.println("onExitSleep()");
+
+		// If watch does not support per-second updates, show seconds, and make move bar original width.
+		if (!PER_SECOND_UPDATES_SUPPORTED) {
+			View.findDrawableById("Time").setHideSeconds(false);
+			View.findDrawableById("MoveBar").setFullWidth(false);
+		}
 	}
 
 	// Terminate any active timers and prepare for slow updates.
 	function onEnterSleep() {
+		Sys.println("onEnterSleep()");
+		Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
+
+		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
+		// onUpdate() is about to be called one final time before entering sleep.
+		if (!PER_SECOND_UPDATES_SUPPORTED) {
+			View.findDrawableById("Time").setHideSeconds(true);
+			View.findDrawableById("MoveBar").setFullWidth(true);
+		}
 	}
 
 }
