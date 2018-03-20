@@ -17,7 +17,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
-**N.B. Due to a vívoactive® 3 firmware bug, this watch face will be stuck on the language that was active at the time of the 3.30-3.40 firmware upgrade. Hopefully Garmin will fix this in a future firmware.**
+### 1.3.0
+- Added support for fēnix® 5S, fēnix® Chronos, Forerunner® 735XT.
+- Added Dayglo Orange theme.
 
 ### 1.2.1 
 - Fixed issue with distance value being too low (thanks to catana.remulus for reporting and assisting with this bug). 
@@ -25,6 +27,8 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 ### 1.2.0
 - Added support for Approach® S60, D2™ Charlie, Descent™ Mk1, Forerunner® 645, Forerunner® 645 Music, Forerunner® 935, fēnix® 5, fēnix® 5X.
 - Added Cornflower Blue and Lemon Cream themes for better visibility.
+
+**N.B. Due to a vívoactive® 3 firmware bug, this watch face will be stuck on the language that was active at the time of the 3.30-3.40 firmware upgrade. Hopefully Garmin will fix this in a future firmware.**
 
 ### 1.1.0
 - Internationalisation: added support for Chinese (Simplified/Traditional), Czech, Danish, Dutch, Finnish, French, German, Hungarian, Italian, Norwegian, Polish, Portugese, Slovak, Slovenian, Spanish, Swedish.
