@@ -9,13 +9,18 @@ Features (watch-dependent):
 - 3 customisable data fields: HR history, battery, notifications, calories, distance.
 - 2 customisable goal meters: steps, floors climbed, active minutes (weekly). The meters have auto-scaling segments and current/target value display.
 - Move bar.
-- 6 colour themes.
+- 8 colour themes.
 
 The techie bit: to save your watch battery, the goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
 
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 1.4.0
+- Reduce battery drain, part 1: reduce per-second update time from ~13ms to ~5ms (measured on Approach® S60, simulator).
+- Added Red (Dark) and Mono (Dark) themes.
+- Added support for vívoactive® HR.
 
 ### 1.3.0
 - Added support for fēnix® 5S, fēnix® Chronos, Forerunner® 735XT.
