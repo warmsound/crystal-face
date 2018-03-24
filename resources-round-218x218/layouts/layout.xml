@@ -39,8 +39,11 @@
 	<label id="Bluetooth" text="8" x="30" y="109" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsY">144</param>
-		<param name="secondsMinYOffset">8</param>
+		<param name="secondsX">147</param>
+		<param name="secondsY">129</param>		
+		<param name="secondsClipY">139</param>
+		<param name="secondsClipWidth">22</param>
+		<param name="secondsClipHeight">15</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
