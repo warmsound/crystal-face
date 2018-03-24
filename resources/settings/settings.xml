@@ -4,10 +4,12 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
 			<listEntry value="1">@Strings.ThemePinkDark</listEntry>
+			<listEntry value="7">@Strings.ThemeRedDark</listEntry>
 			<listEntry value="2">@Strings.ThemeGreenDark</listEntry>
 			<listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry>
 			<listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry>
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
+			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
 		</settingConfig>
 	</setting>
