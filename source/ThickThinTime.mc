@@ -201,11 +201,11 @@ class ThickThinTime extends Ui.Drawable {
 					mSecondsClipRect[:height]
 				);
 				mClipIsSet = true;
-
-				// Can also set DC colour once, at start of low power mode.
-				// N.B. assumes that nothing else modifies DC colour.
-				dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour );	
 			}
+
+			// Can't optimise setting colour once, at start of low power mode, at this goes wrong on real hardware: alternates
+			// every second with inverse (e.g. blue text on black, then black text on blue).
+			dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour);	
 
 			// Clear old rect (assume nothing overlaps seconds text).					
 			dc.clear();
