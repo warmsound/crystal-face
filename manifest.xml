@@ -13,6 +13,7 @@
             <iq:product id="fr735xt"/>
             <iq:product id="fr935"/>
             <iq:product id="vivoactive3"/>
+            <iq:product id="vivoactive_hr"/>
         </iq:products>
         <iq:permissions>
             <iq:uses-permission id="SensorHistory"/>

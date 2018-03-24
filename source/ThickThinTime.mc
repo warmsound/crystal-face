@@ -7,8 +7,8 @@ class ThickThinTime extends Ui.Drawable {
 	private var mThemeColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
 
-	// Right edge of seconds.
-	private var mSecondsRightX;
+	// Right edge of seconds for horizontal layouts; left edge of seconds for vertical layouts.
+	private var mSecondsX;
 	
 	// Seconds vertically-centred.
 	private var mSecondsY;
@@ -16,6 +16,9 @@ class ThickThinTime extends Ui.Drawable {
 	// Distance between top of font ascent and top of numeric glyph (corresponds to yoffset in .fnt file).
 	// Reduces height of clipping rectangle so that seconds can be vertically closer to minutes without clipping minutes text.
 	private var mSecondsMinYOffset;
+
+	// Non-null for vertical layouts i.e. hours above minutes.
+	private var mVerticalOffset;
 
 	// TODO: May need to specify mSecondsMaxHeight (maximum height of glyph).
 
@@ -36,6 +39,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		mSecondsY = params[:secondsY];
 		mSecondsMinYOffset = params[:secondsMinYOffset];
+		mVerticalOffset = params[:verticalOffset];
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
@@ -68,6 +72,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		var is24Hour = Sys.getDeviceSettings().is24Hour;
 		var isPm = false;
+		var amPmText = "";
 
 		if (!is24Hour) {
 
@@ -80,6 +85,12 @@ class ThickThinTime extends Ui.Drawable {
 					hours = hours % 12;
 				}
 			}
+							
+			if (isPm) {
+				amPmText = mPostMeridiem;
+			} else {
+				amPmText = mAnteMeridiem;
+			}
 		}
 
 		// Hours always have leading zero, regardless of hour mode, to allow more room for move bar.
@@ -87,61 +98,100 @@ class ThickThinTime extends Ui.Drawable {
 
 		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 
-		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
-		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
-		// minutes font is used to calculate total width. 
-		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
-		var x = (dc.getWidth() / 2) - (totalWidth / 2);
+		var x;
+		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = dc.getHeight() / 2;
 
-		// Draw hours.
-		dc.drawText(
-			x,
-			halfDCHeight,
-			mHoursFont,
-			hours,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-		x += dc.getTextWidthInPixels(hours, mHoursFont);
+		// Vertical (two-line) layout.
+		if (mVerticalOffset) {
 
-		// Draw minutes.
-		dc.drawText(
-			x,
-			halfDCHeight,
-			mMinutesFont,
-			minutes,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-		x += dc.getTextWidthInPixels(minutes, mMinutesFont);
+			// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
+			var hoursAscent = Graphics.getFontAscent(mHoursFont);
 
-		// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
-		mSecondsRightX = x;
+			// Draw hours, horizontally centred, vertically bottom aligned.
+			dc.drawText(
+				halfDCWidth,
+				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
+				mHoursFont,
+				hours,
+				Graphics.TEXT_JUSTIFY_CENTER
+			);
 
-		// If required, draw AM/PM after minutes, vertically centred.
-		if (!is24Hour) {
-			
-			var amPmText;
-			if (isPm) {
-				amPmText = mPostMeridiem;
-			} else {
-				amPmText = mAnteMeridiem;
+			// Draw minutes, horizontally centred, vertically top aligned.
+			dc.drawText(
+				halfDCWidth,
+				halfDCHeight + (mVerticalOffset / 2),
+				mMinutesFont,
+				minutes,
+				Graphics.TEXT_JUSTIFY_CENTER
+			);
+
+			x = halfDCWidth + (dc.getTextWidthInPixels(hours, mHoursFont) / 2) + AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
+
+			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
+			mSecondsX = x;
+
+			// If required, draw AM/PM after hours, vertically centred.
+			if (!is24Hour) {
+				dc.drawText(
+					x,
+					halfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
+					mSecondsFont,
+					amPmText,
+					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+				);
 			}
 
+		// Horizontal (single-line) layout.
+		} else {
+
+			// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
+			// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
+			// minutes font is used to calculate total width. 
+			var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
+			x = halfDCWidth - (totalWidth / 2);
+
+			// Draw hours.
 			dc.drawText(
-				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+				x,
 				halfDCHeight,
-				mSecondsFont,
-				amPmText,
+				mHoursFont,
+				hours,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
+			x += dc.getTextWidthInPixels(hours, mHoursFont);
+
+			// Draw minutes.
+			dc.drawText(
+				x,
+				halfDCHeight,
+				mMinutesFont,
+				minutes,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
+
+			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
+			mSecondsX = x;
+
+			// If required, draw AM/PM after minutes, vertically centred.
+			if (!is24Hour) {
+				dc.drawText(
+					x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+					halfDCHeight,
+					mSecondsFont,
+					amPmText,
+					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
 		}
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.
 	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: clear only the required rect, but also set
 	// the appropriate clip rect before drawring the new text.
-	// Seconds are right-aligned beneath minutes.
-	// Vertically centre-align with move bar.
+	// Horizontal layouts: seconds are right-aligned beneath minutes, vertically centre-align with move bar.
+	// Vertical layouts: seconds are left-aligned after minutes, and vertically bottom-aligned.
 	function drawSeconds(dc, isPartialUpdate) {
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
@@ -167,15 +217,30 @@ class ThickThinTime extends Ui.Drawable {
 
 		// Cache new seconds clip rect for low power mode.
 		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
+		var secondsAscent = Graphics.getFontAscent(mSecondsFont);
 
-		// Top-left corner of vertically centred text.
-		// Y-position adjusted for font y-offset, to reduce clipping height to absolute minimum.
-		mSecondsClipRect[:x] = mSecondsRightX - secondsDimensions[0];
-		mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2) + mSecondsMinYOffset;
+		if (mVerticalOffset) {
 
-		// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
-		mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-		mSecondsClipRect[:height] = secondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
+			// Top-left corner of bottom-aligned text.
+			mSecondsClipRect[:x] = mSecondsX;
+			mSecondsClipRect[:y] = mSecondsY - secondsAscent;
+
+			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
+			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
+			mSecondsClipRect[:height] = secondsDimensions[1] + 1; // mSecondsMaxHeight + 1;
+
+		} else {
+
+			// Top-left corner of vertically centred text.
+			// Y-position adjusted for font y-offset, to reduce clipping height to absolute minimum.
+			mSecondsClipRect[:x] = mSecondsX - secondsDimensions[0];
+			mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2) + mSecondsMinYOffset;
+
+			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
+			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
+			mSecondsClipRect[:height] = secondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
+
+		}
 
 		if (isPartialUpdate) {
 			dc.setClip(
@@ -186,13 +251,24 @@ class ThickThinTime extends Ui.Drawable {
 			);
 		}
 
-		dc.drawText(
-			mSecondsRightX, // Recalculated in draw().
-			mSecondsY,
-			mSecondsFont,
-			seconds,
-			Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+		if (mVerticalOffset) {
+			dc.drawText(
+				mSecondsX, // Recalculated in draw().
+				mSecondsY - secondsAscent,
+				mSecondsFont,
+				seconds,
+				Graphics.TEXT_JUSTIFY_LEFT
+			);
+		} else {
+			dc.drawText(
+				mSecondsX, // Recalculated in draw().
+				mSecondsY,
+				mSecondsFont,
+				seconds,
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
+		
 
 		if (isPartialUpdate) {
 			dc.clearClip();

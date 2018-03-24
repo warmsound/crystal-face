@@ -189,7 +189,7 @@ class GoalMeter extends Ui.Drawable {
 			bufferDc.drawCircle(circleCentreX, halfBufferDcHeight, radius);
 
 		} else {
-			// TODO.
+			bufferDc.fillRectangle(0, 0, mWidth, mHeight);
 		}
 
 		// Draw separators: horizontal transparent lines across meter fill.
