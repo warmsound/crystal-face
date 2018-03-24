@@ -12,6 +12,8 @@ class CrystalView extends Ui.WatchFace {
 	private var mSecondsFont;
 
 	private var mDateFont;
+
+	private var mTime;
 	
 	private var GOAL_TYPES = {
 		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
@@ -86,7 +88,10 @@ class CrystalView extends Ui.WatchFace {
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
-		View.findDrawableById("Time").setFonts(mHoursFont, mMinutesFont, mSecondsFont);
+		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
+		mTime = View.findDrawableById("Time");
+		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
+
 		View.findDrawableById("Date").setFont(mDateFont);
 	}
 
@@ -107,6 +112,9 @@ class CrystalView extends Ui.WatchFace {
 	// Update the view
 	function onUpdate(dc) {
 		System.println("onUpdate()");
+
+		// Clear any partial update clipping.
+		dc.clearClip();
 
 		updateGoalMeters();
 		updateDataFields();
@@ -376,8 +384,7 @@ class CrystalView extends Ui.WatchFace {
 	function onPartialUpdate(dc) {
 		System.println("onPartialUpdate()");
 	
-		var time = View.findDrawableById("Time");
-		time.drawSeconds(dc, /* isPartialUpdate */ true);
+		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
 
 	// Called when this View is removed from the screen. Save the
@@ -392,7 +399,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, show seconds, and make move bar original width.
 		if (!PER_SECOND_UPDATES_SUPPORTED) {
-			View.findDrawableById("Time").setHideSeconds(false);
+			mTime.setHideSeconds(false);
 			View.findDrawableById("MoveBar").setFullWidth(false);
 		}
 	}
@@ -405,7 +412,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		if (!PER_SECOND_UPDATES_SUPPORTED) {
-			View.findDrawableById("Time").setHideSeconds(true);
+			mTime.setHideSeconds(true);
 			View.findDrawableById("MoveBar").setFullWidth(true);
 		}
 	}

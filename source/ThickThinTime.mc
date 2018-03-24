@@ -7,27 +7,24 @@ class ThickThinTime extends Ui.Drawable {
 	private var mThemeColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
 
-	// Right edge of seconds for horizontal layouts; left edge of seconds for vertical layouts.
-	private var mSecondsX;
-	
-	// Seconds vertically-centred.
+	// "y" parameter passed to drawText(), read from layout.xml.
 	private var mSecondsY;
 	
-	// Distance between top of font ascent and top of numeric glyph (corresponds to yoffset in .fnt file).
-	// Reduces height of clipping rectangle so that seconds can be vertically closer to minutes without clipping minutes text.
-	private var mSecondsMinYOffset;
-
-	// Non-null for vertical layouts i.e. hours above minutes.
+	// Vertical layouts only: offset between bottom of hours and top of minutes.
 	private var mVerticalOffset;
 
-	// TODO: May need to specify mSecondsMaxHeight (maximum height of glyph).
-
+	// Tight clipping rectangle for drawing seconds during partial update.
+	// "y" corresponds to top of glyph, which will be lower than "y" parameter of drawText().
+	// drawText() starts from the top of the font ascent, which is above the top of most glyphs.
 	private var mSecondsClipRect = {
 			:x => 0,
 			:y => 0,
 			:width => 0,
 			:height => 0
 	};
+
+	// Has clipping rectangle previously been set for partial updates?
+	private var mClipIsSet = false;
 
 	private var mHideSeconds = false;
 
@@ -37,9 +34,14 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mSecondsY = params[:secondsY];
-		mSecondsMinYOffset = params[:secondsMinYOffset];
 		mVerticalOffset = params[:verticalOffset];
+
+		mSecondsY = params[:secondsY];
+
+		mSecondsClipRect[:x] = params[:secondsX];
+		mSecondsClipRect[:y] = params[:secondsClipY];
+		mSecondsClipRect[:width] = params[:secondsClipWidth];
+		mSecondsClipRect[:height] = params[:secondsClipHeight];
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
@@ -128,9 +130,6 @@ class ThickThinTime extends Ui.Drawable {
 
 			x = halfDCWidth + (dc.getTextWidthInPixels(hours, mHoursFont) / 2) + AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
 
-			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
-			mSecondsX = x;
-
 			// If required, draw AM/PM after hours, vertically centred.
 			if (!is24Hour) {
 				dc.drawText(
@@ -171,9 +170,6 @@ class ThickThinTime extends Ui.Drawable {
 			);
 			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
 
-			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
-			mSecondsX = x;
-
 			// If required, draw AM/PM after minutes, vertically centred.
 			if (!is24Hour) {
 				dc.drawText(
@@ -188,90 +184,46 @@ class ThickThinTime extends Ui.Drawable {
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.
-	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: clear only the required rect, but also set
-	// the appropriate clip rect before drawring the new text.
-	// Horizontal layouts: seconds are right-aligned beneath minutes, vertically centre-align with move bar.
-	// Vertical layouts: seconds are left-aligned after minutes, and vertically bottom-aligned.
+	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: set clip rectangle before clearing old text
+	// and drawing new. Clipping rectangle should not change between seconds.
 	function drawSeconds(dc, isPartialUpdate) {
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
 		if (isPartialUpdate) {
 
-			// Clear old rect (assume nothing overlaps seconds text).
-			dc.setColor(mThemeColour, mBackgroundColour);			
-			dc.setClip(
-				mSecondsClipRect[:x],
-				mSecondsClipRect[:y],
-				mSecondsClipRect[:width],
-				mSecondsClipRect[:height]
-			);
+			// Set clip once, at start of low power mode.
+			if (!mClipIsSet) {
+				dc.setClip(
+					mSecondsClipRect[:x],
+					mSecondsClipRect[:y],
+					mSecondsClipRect[:width],
+					mSecondsClipRect[:height]
+				);
+				mClipIsSet = true;
+
+				// Can also set DC colour once, at start of low power mode.
+				// N.B. assumes that nothing else modifies DC colour.
+				dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour );	
+			}
+
+			// Clear old rect (assume nothing overlaps seconds text).					
 			dc.clear();
 
 		} else {
+			mClipIsSet = false;
 
 			// Drawing will not be clipped, so ensure background is transparent in case font height overlaps with another
 			// drawable.
 			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 		}
 
-		// Cache new seconds clip rect for low power mode.
-		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
-		var secondsAscent = Graphics.getFontAscent(mSecondsFont);
-
-		if (mVerticalOffset) {
-
-			// Top-left corner of bottom-aligned text.
-			mSecondsClipRect[:x] = mSecondsX;
-			mSecondsClipRect[:y] = mSecondsY - secondsAscent;
-
-			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
-			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-			mSecondsClipRect[:height] = secondsDimensions[1] + 1; // mSecondsMaxHeight + 1;
-
-		} else {
-
-			// Top-left corner of vertically centred text.
-			// Y-position adjusted for font y-offset, to reduce clipping height to absolute minimum.
-			mSecondsClipRect[:x] = mSecondsX - secondsDimensions[0];
-			mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2) + mSecondsMinYOffset;
-
-			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
-			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-			mSecondsClipRect[:height] = secondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
-
-		}
-
-		if (isPartialUpdate) {
-			dc.setClip(
-				mSecondsClipRect[:x],
-				mSecondsClipRect[:y],
-				mSecondsClipRect[:width],
-				mSecondsClipRect[:height]
-			);
-		}
-
-		if (mVerticalOffset) {
-			dc.drawText(
-				mSecondsX, // Recalculated in draw().
-				mSecondsY - secondsAscent,
-				mSecondsFont,
-				seconds,
-				Graphics.TEXT_JUSTIFY_LEFT
-			);
-		} else {
-			dc.drawText(
-				mSecondsX, // Recalculated in draw().
-				mSecondsY,
-				mSecondsFont,
-				seconds,
-				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-		}
-		
-
-		if (isPartialUpdate) {
-			dc.clearClip();
-		}
+		dc.drawText(
+			mSecondsClipRect[:x],
+			mSecondsY,
+			mSecondsFont,
+			seconds,
+			Graphics.TEXT_JUSTIFY_LEFT
+		);	
 	}
 }

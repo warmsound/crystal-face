@@ -39,11 +39,15 @@
 	<label id="Bluetooth" text="8" x="30" y="102" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="Time" class="ThickThinTime">
-		<!-- secondsY is bottom-aligned for vertical layouts -->
-		<param name="secondsY">138</param>
+		<param name="verticalOffset">6</param> 
 
-		<param name="secondsMinYOffset">8</param>
-		<param name="verticalOffset">6</param>
+		<param name="secondsX">102</param>
+		<param name="secondsY">115</param>
+
+		<!-- Partial updates not supported -->	
+		<!-- param name="secondsClipY">124</param-->
+		<!-- param name="secondsClipWidth">22</param-->
+		<!-- param name="secondsClipHeight">15</param-->
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
