@@ -10,8 +10,11 @@ class ThickThinTime extends Ui.Drawable {
 	// Right edge of seconds for horizontal layouts; left edge of seconds for vertical layouts.
 	private var mSecondsX;
 	
-	// Seconds vertically-centred.
+	// Seconds vertically-centred for horizontal layouts; bottom-aligned for vertical layouts.
 	private var mSecondsY;
+
+	private var mSecondsAscent;
+	private var mSecondsDimensions;
 	
 	// Distance between top of font ascent and top of numeric glyph (corresponds to yoffset in .fnt file).
 	// Reduces height of clipping rectangle so that seconds can be vertically closer to minutes without clipping minutes text.
@@ -49,6 +52,8 @@ class ThickThinTime extends Ui.Drawable {
 		mHoursFont = hoursFont;
 		mMinutesFont = minutesFont;
 		mSecondsFont = secondsFont;
+
+		mSecondsAscent = Graphics.getFontAscent(mSecondsFont);
 	}
 
 	function setHideSeconds(hideSeconds) {
@@ -128,9 +133,6 @@ class ThickThinTime extends Ui.Drawable {
 
 			x = halfDCWidth + (dc.getTextWidthInPixels(hours, mHoursFont) / 2) + AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
 
-			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
-			mSecondsX = x;
-
 			// If required, draw AM/PM after hours, vertically centred.
 			if (!is24Hour) {
 				dc.drawText(
@@ -171,9 +173,6 @@ class ThickThinTime extends Ui.Drawable {
 			);
 			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
 
-			// Store right-align X-position of seconds, to avoid having to recalculate when drawing seconds only.
-			mSecondsX = x;
-
 			// If required, draw AM/PM after minutes, vertically centred.
 			if (!is24Hour) {
 				dc.drawText(
@@ -185,6 +184,10 @@ class ThickThinTime extends Ui.Drawable {
 				);
 			}
 		}
+
+		// Cache values for low power mode.
+		mSecondsX = x;
+		mSecondsDimensions = dc.getTextDimensions("00", mSecondsFont);
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.
@@ -215,30 +218,26 @@ class ThickThinTime extends Ui.Drawable {
 			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 		}
 
-		// Cache new seconds clip rect for low power mode.
-		var secondsDimensions = dc.getTextDimensions(seconds, mSecondsFont);
-		var secondsAscent = Graphics.getFontAscent(mSecondsFont);
-
 		if (mVerticalOffset) {
 
 			// Top-left corner of bottom-aligned text.
 			mSecondsClipRect[:x] = mSecondsX;
-			mSecondsClipRect[:y] = mSecondsY - secondsAscent;
+			mSecondsClipRect[:y] = mSecondsY - mSecondsAscent;
 
 			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
-			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-			mSecondsClipRect[:height] = secondsDimensions[1] + 1; // mSecondsMaxHeight + 1;
+			mSecondsClipRect[:width] = mSecondsDimensions[0] + 1;
+			mSecondsClipRect[:height] = mSecondsDimensions[1] + 1; // mSecondsMaxHeight + 1;
 
 		} else {
 
 			// Top-left corner of vertically centred text.
 			// Y-position adjusted for font y-offset, to reduce clipping height to absolute minimum.
-			mSecondsClipRect[:x] = mSecondsX - secondsDimensions[0];
-			mSecondsClipRect[:y] = mSecondsY - (secondsDimensions[1] / 2) + mSecondsMinYOffset;
+			mSecondsClipRect[:x] = mSecondsX - mSecondsDimensions[0];
+			mSecondsClipRect[:y] = mSecondsY - (mSecondsDimensions[1] / 2) + mSecondsMinYOffset;
 
 			// Add a pixel in each dimension, as rectangle dimensions appear to be exclusive.
-			mSecondsClipRect[:width] = secondsDimensions[0] + 1;
-			mSecondsClipRect[:height] = secondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
+			mSecondsClipRect[:width] = mSecondsDimensions[0] + 1;
+			mSecondsClipRect[:height] = mSecondsDimensions[1] - mSecondsMinYOffset + 1; // mSecondsMaxHeight + 1;
 
 		}
 
@@ -254,7 +253,7 @@ class ThickThinTime extends Ui.Drawable {
 		if (mVerticalOffset) {
 			dc.drawText(
 				mSecondsX, // Recalculated in draw().
-				mSecondsY - secondsAscent,
+				mSecondsY - mSecondsAscent,
 				mSecondsFont,
 				seconds,
 				Graphics.TEXT_JUSTIFY_LEFT
