@@ -36,18 +36,20 @@
 		<param name="y">51</param>
 	</drawable>
 
-	<label id="Bluetooth" text="8" x="38" y="102" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="Bluetooth" text="8" x="30" y="102" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsY">131</param>
+		<!-- secondsY is bottom-aligned for vertical layouts -->
+		<param name="secondsY">138</param>
+
 		<param name="secondsMinYOffset">8</param>
-		<param name="vertical">true</param>
+		<param name="verticalOffset">6</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">33</param>
 		<param name="y">152</param>
-		<param name="width">87</param>
+		<param name="width">85</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>
