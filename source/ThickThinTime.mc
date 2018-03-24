@@ -23,6 +23,9 @@ class ThickThinTime extends Ui.Drawable {
 			:height => 0
 	};
 
+	// Has clipping rectangle previously been set for partial updates?
+	private var mClipIsSet = false;
+
 	private var mHideSeconds = false;
 
 	private var mAnteMeridiem, mPostMeridiem;
@@ -181,38 +184,38 @@ class ThickThinTime extends Ui.Drawable {
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.
-	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: clear only the required rect, but also set
-	// the appropriate clip rect before drawing the new text.
+	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: set clip rectangle before clearing old text
+	// and drawing new. Clipping rectangle should not change between seconds.
 	function drawSeconds(dc, isPartialUpdate) {
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
 		if (isPartialUpdate) {
 
-			// Clear old rect (assume nothing overlaps seconds text).
-			dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour );			
-			dc.setClip(
-				mSecondsClipRect[:x],
-				mSecondsClipRect[:y],
-				mSecondsClipRect[:width],
-				mSecondsClipRect[:height]
-			);
+			// Set clip once, at start of low power mode.
+			if (!mClipIsSet) {
+				dc.setClip(
+					mSecondsClipRect[:x],
+					mSecondsClipRect[:y],
+					mSecondsClipRect[:width],
+					mSecondsClipRect[:height]
+				);
+				mClipIsSet = true;
+
+				// Can also set DC colour once, at start of low power mode.
+				// N.B. assumes that nothing else modifies DC colour.
+				dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour );	
+			}
+
+			// Clear old rect (assume nothing overlaps seconds text).					
 			dc.clear();
 
 		} else {
+			mClipIsSet = false;
 
 			// Drawing will not be clipped, so ensure background is transparent in case font height overlaps with another
 			// drawable.
 			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
-		}
-
-		if (isPartialUpdate) {
-			dc.setClip(
-				mSecondsClipRect[:x],
-				mSecondsClipRect[:y],
-				mSecondsClipRect[:width],
-				mSecondsClipRect[:height]
-			);
 		}
 
 		dc.drawText(
@@ -221,10 +224,6 @@ class ThickThinTime extends Ui.Drawable {
 			mSecondsFont,
 			seconds,
 			Graphics.TEXT_JUSTIFY_LEFT
-		);		
-
-		if (isPartialUpdate) {
-			dc.clearClip();
-		}
+		);	
 	}
 }
