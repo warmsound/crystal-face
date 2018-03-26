@@ -17,6 +17,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.4.1
+- Reduce battery drain, part 2: optimise per-minute updates (cache drawable references).
+- Allow meters to display battery level.
+
 ### 1.4.0
 - Reduce battery drain, part 1: reduce per-second update time from ~13ms to ~5ms (measured on Approach® S60, simulator).
 - Added Red (Dark) and Mono (Dark) themes.
