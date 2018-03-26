@@ -44,6 +44,9 @@ class CrystalView extends Ui.WatchFace {
 		:GOAL_TYPE_BATTERY => "9"
 	};
 
+	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
+	private var mDrawables = {};
+
 	const BATTERY_FILL_WIDTH = 18;
 	const BATTERY_FILL_HEIGHT = 6;
 
@@ -89,11 +92,44 @@ class CrystalView extends Ui.WatchFace {
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
+		cacheDrawables();
+
 		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
+		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
-		View.findDrawableById("Date").setFont(mDateFont);
+		mDrawables[:Date].setFont(mDateFont);
+	}
+
+	function cacheDrawables() {
+		mDrawables[:LeftGoalMeter] = View.findDrawableById("LeftGoalMeter");
+		mDrawables[:LeftGoalIcon] = View.findDrawableById("LeftGoalIcon");
+		mDrawables[:LeftGoalCurrent] = View.findDrawableById("LeftGoalCurrent");
+		mDrawables[:LeftGoalMax] = View.findDrawableById("LeftGoalMax");
+
+		mDrawables[:RightGoalMeter] = View.findDrawableById("RightGoalMeter");
+		mDrawables[:RightGoalIcon] = View.findDrawableById("RightGoalIcon");
+		mDrawables[:RightGoalCurrent] = View.findDrawableById("RightGoalCurrent");
+		mDrawables[:RightGoalMax] = View.findDrawableById("RightGoalMax");
+
+		mDrawables[:LeftFieldIcon] = View.findDrawableById("LeftFieldIcon");
+		mDrawables[:LeftFieldValue] = View.findDrawableById("LeftFieldValue");
+
+		mDrawables[:CenterFieldIcon] = View.findDrawableById("CenterFieldIcon");
+		mDrawables[:CenterFieldValue] = View.findDrawableById("CenterFieldValue");
+
+		mDrawables[:RightFieldIcon] = View.findDrawableById("RightFieldIcon");
+		mDrawables[:RightFieldValue] = View.findDrawableById("RightFieldValue");
+
+		mDrawables[:Date] = View.findDrawableById("Date");
+
+		mDrawables[:Bluetooth] = View.findDrawableById("Bluetooth");
+
+		// Use mTime instead.
+		//mDrawables[:Time] = View.findDrawableById("Time");
+
+		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
 
 	// Called when this View is brought to the foreground. Restore
@@ -104,10 +140,10 @@ class CrystalView extends Ui.WatchFace {
 
 	// Recreate background buffers for each meter, in case theme colour has changed.
 	function onSettingsChanged() {
-		View.findDrawableById("LeftGoalMeter").onSettingsChanged();
-		View.findDrawableById("RightGoalMeter").onSettingsChanged();
+		mDrawables[:LeftGoalMeter].onSettingsChanged();
+		mDrawables[:RightGoalMeter].onSettingsChanged();
 
-		View.findDrawableById("MoveBar").onSettingsChanged();
+		mDrawables[:MoveBar].onSettingsChanged();
 	}
 
 	// Update the view
@@ -133,15 +169,15 @@ class CrystalView extends Ui.WatchFace {
 
 		// Find any battery meter icons, and draw fill on top. 
 		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) {
-			fillBatteryMeter(dc, View.findDrawableById("LeftFieldIcon"));
+			fillBatteryMeter(dc, mDrawables[:LeftFieldIcon]);
 		}
 
 		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) {
-			fillBatteryMeter(dc, View.findDrawableById("CenterFieldIcon"));
+			fillBatteryMeter(dc, mDrawables[:CenterFieldIcon]);
 		}
 
 		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) {
-			fillBatteryMeter(dc, View.findDrawableById("RightFieldIcon"));
+			fillBatteryMeter(dc, mDrawables[:RightFieldIcon]);
 		}
 	}
 
@@ -179,20 +215,20 @@ class CrystalView extends Ui.WatchFace {
 	function updateDataFields() {
 		updateDataField(
 			App.getApp().getProperty("LeftFieldType"),
-			View.findDrawableById("LeftFieldIcon"),
-			View.findDrawableById("LeftFieldValue")
+			mDrawables[:LeftFieldIcon],
+			mDrawables[:LeftFieldValue]
 		);
 
 		updateDataField(
 			App.getApp().getProperty("CenterFieldType"),
-			View.findDrawableById("CenterFieldIcon"),
-			View.findDrawableById("CenterFieldValue")
+			mDrawables[:CenterFieldIcon],
+			mDrawables[:CenterFieldValue]
 		);
 
 		updateDataField(
 			App.getApp().getProperty("RightFieldType"),
-			View.findDrawableById("RightFieldIcon"),
-			View.findDrawableById("RightFieldValue")
+			mDrawables[:RightFieldIcon],
+			mDrawables[:RightFieldValue]
 		);
 	}
 
@@ -288,7 +324,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Set colour of bluetooth indicator, depending on phone connection status.
 	function updateBluetoothIndicator() {
-		var indicator = View.findDrawableById("Bluetooth");
+		var indicator = mDrawables[:Bluetooth];
 
 		if (Sys.getDeviceSettings().phoneConnected) {
 			indicator.setColor(App.getApp().getProperty("ThemeColour"));
@@ -300,18 +336,18 @@ class CrystalView extends Ui.WatchFace {
 	function updateGoalMeters() {
 		updateGoalMeter(
 			GOAL_TYPES[App.getApp().getProperty("LeftGoalType")],
-			View.findDrawableById("LeftGoalMeter"),
-			View.findDrawableById("LeftGoalIcon"),
-			View.findDrawableById("LeftGoalCurrent"),
-			View.findDrawableById("LeftGoalMax")
+			mDrawables[:LeftGoalMeter],
+			mDrawables[:LeftGoalIcon],
+			mDrawables[:LeftGoalCurrent],
+			mDrawables[:LeftGoalMax]
 		);
 
 		updateGoalMeter(
 			GOAL_TYPES[App.getApp().getProperty("RightGoalType")],
-			View.findDrawableById("RightGoalMeter"),
-			View.findDrawableById("RightGoalIcon"),
-			View.findDrawableById("RightGoalCurrent"),
-			View.findDrawableById("RightGoalMax")
+			mDrawables[:RightGoalMeter],
+			mDrawables[:RightGoalIcon],
+			mDrawables[:RightGoalCurrent],
+			mDrawables[:RightGoalMax]
 		);
 	}
 
@@ -411,7 +447,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, show seconds, and make move bar original width.
 		if (!PER_SECOND_UPDATES_SUPPORTED) {
 			mTime.setHideSeconds(false);
-			View.findDrawableById("MoveBar").setFullWidth(false);
+			mDrawables[:MoveBar].setFullWidth(false);
 		}
 	}
 
@@ -424,7 +460,7 @@ class CrystalView extends Ui.WatchFace {
 		// onUpdate() is about to be called one final time before entering sleep.
 		if (!PER_SECOND_UPDATES_SUPPORTED) {
 			mTime.setHideSeconds(true);
-			View.findDrawableById("MoveBar").setFullWidth(true);
+			mDrawables[:MoveBar].setFullWidth(true);
 		}
 	}
 
