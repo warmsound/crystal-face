@@ -40,7 +40,8 @@ class CrystalView extends Ui.WatchFace {
 		:FIELD_TYPE_NOTIFICATIONS => "5",
 		:FIELD_TYPE_CALORIES => "6",
 		:FIELD_TYPE_DISTANCE => "7",
-		:INDICATOR_BLUETOOTH => "8"
+		:INDICATOR_BLUETOOTH => "8",
+		:GOAL_TYPE_BATTERY => "9"
 	};
 
 	const BATTERY_FILL_WIDTH = 18;
@@ -338,7 +339,12 @@ class CrystalView extends Ui.WatchFace {
 
 		// Max/target label.
 		if (values[:isValid]) {
-			maxLabel.setText(values[:max].format("%d"));
+			if (goalType == :GOAL_TYPE_BATTERY) {
+				maxLabel.setText("%");
+			} else {
+				maxLabel.setText(values[:max].format("%d"));
+			}
+			
 		} else {
 			maxLabel.setText("");
 		}
@@ -373,6 +379,11 @@ class CrystalView extends Ui.WatchFace {
 			case :GOAL_TYPE_ACTIVE_MINUTES:
 				values[:current] = info.activeMinutesWeek.total;
 				values[:max] = info.activeMinutesWeekGoal;
+				break;
+
+			case :GOAL_TYPE_BATTERY:
+				values[:current] = Math.ceil(Sys.getSystemStats().battery);
+				values[:max] = 100;
 				break;
 		}
 

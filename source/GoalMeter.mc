@@ -25,8 +25,8 @@ class GoalMeter extends Ui.Drawable {
 	private var mBuffersNeedRecreate = true; // Buffers need to be recreated on next draw() cycle.
 	private var mBuffersNeedRedraw = true; // Buffers need to be redrawn on next draw() cycle.
 
-	private var mCurrentValue = 0;
-	private var mMaxValue = 100;
+	private var mCurrentValue;
+	private var mMaxValue;
 
 	private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
 	private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
