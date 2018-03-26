@@ -18,6 +18,7 @@
 			<listEntry value="0">@Strings.Steps</listEntry>
 			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+			<listEntry value="-1">@Strings.Battery</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -26,6 +27,7 @@
 			<listEntry value="0">@Strings.Steps</listEntry>
 			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
+			<listEntry value="-1">@Strings.Battery</listEntry>
 		</settingConfig>
 	</setting>
 

@@ -4,8 +4,8 @@
 
 	<string id="BackgroundColourTitle">Background Colour</string>
 	<string id="ThemeTitle">Theme</string>
-	<string id="LeftGoalMeterTitle">Left Goal Meter</string>
-	<string id="RightGoalMeterTitle">Right Goal Meter</string>
+	<string id="LeftGoalMeterTitle">Left Meter</string>
+	<string id="RightGoalMeterTitle">Right Meter</string>
 	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
 	<string id="LeftDataFieldTitle">Left Data Field</string>
 	<string id="CenterDataFieldTitle">Center Data Field</string>
