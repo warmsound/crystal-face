@@ -6,11 +6,13 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 class MoveBar extends Ui.Drawable {
 
 	private var mX, mY, mBaseWidth, mHeight, mSeparator;
-	private var mTailWidth;
-	private var mBuffer;
-	private var mBufferNeedsRecreate = true;
-	private var mBufferNeedsRedraw = true;
-	private var mLastMoveBarLevel;
+	private var mTailWidth;	
+
+	(:buffered) private var mBuffer;	
+	(:buffered) private var mBufferNeedsRedraw = true;
+	(:buffered) private var mLastMoveBarLevel;
+
+	private var mBufferNeedsRecreate = true; // Used in common code: do not exclude.
 
 	// If set to true, move bar should be horizontally centred on the DC, with left end at mX.
 	// This is used when a watch face does not support per-second updates, and the seconds are therefore hidden in sleep mode.
@@ -68,6 +70,7 @@ class MoveBar extends Ui.Drawable {
 		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel, themeColour, meterBackgroundColour);
 	}
 
+	(:buffered)
 	function drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
 		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
 		// move bar width changes from base width to full width.
@@ -93,6 +96,7 @@ class MoveBar extends Ui.Drawable {
 		dc.clearClip();	
 	}
 
+	(:buffered)
 	function recreateBuffer(themeColour, meterBackgroundColour) {
 		mBuffer = new Graphics.BufferedBitmap({
 			:width => mCurrentWidth,

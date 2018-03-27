@@ -9,6 +9,9 @@ semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-sma
 # Tall rectangle watches use smaller time font (but same seconds font as small time) and small icons.
 rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
 
-# CIQ 1.x watches only have 16 colours, so cannot support all themes. Also no floors or active minutes support, so default to
-# showing battery in right meter, and calories in the centre field.
+# CIQ 1.x watches only have 16 colours, so cannot support all themes.
+# No floors or active minutes support, so default to showing battery in right meter, and calories in the centre field.
+# No BufferedBitmap support, so exclude buffer-specific variables/functions.
+
 fr235.resourcePath = $(fr235.resourcePath);resources-ciq-1.x
+fr235.excludeAnnotations = buffered
