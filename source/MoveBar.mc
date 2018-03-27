@@ -24,7 +24,7 @@ class MoveBar extends Ui.Drawable {
 		
 		mX = params[:x];
 		mY = params[:y];
-		mBaseWidth = params[:width]; // mCurrentWidth calculated before buffer is (re-)created.
+		mBaseWidth = params[:width]; // mCurrentWidth calculated at start of draw(), when DC is available.
 		mHeight = params[:height];
 		mSeparator = params[:separator];
 
@@ -43,16 +43,32 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		if (!(Graphics has :BufferedBitmap)) {
-			return;
-		}
-
-		var themeColour = App.getApp().getProperty("ThemeColour");
-		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");	
-
 		var info = ActivityMonitor.getInfo();
 		var currentMoveBarLevel = info.moveBarLevel;
 
+		var themeColour = App.getApp().getProperty("ThemeColour");
+		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
+
+		// Calculate current width here, now that DC is accessible.
+		if (mIsFullWidth) {
+			mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
+		} else {
+			mCurrentWidth = mBaseWidth;
+		}
+
+		if (Graphics has :BufferedBitmap) {
+			drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
+		} else {
+			drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
+		}		
+	}
+
+	function drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
+		// Draw bars vertically centred on mY.
+		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel, themeColour, meterBackgroundColour);
+	}
+
+	function drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
 		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
 		// move bar width changes from base width to full width.
 		if (mBufferNeedsRecreate) {
@@ -66,22 +82,18 @@ class MoveBar extends Ui.Drawable {
 		}
 		
 		if (mBufferNeedsRedraw) {
-			drawBars(mBuffer.getDc(), currentMoveBarLevel, themeColour, meterBackgroundColour);
+			// Draw bars at top left of buffer.
+			drawBars(mBuffer.getDc(), 0, 0, currentMoveBarLevel, themeColour, meterBackgroundColour);
 			mBufferNeedsRedraw = false;
 		}
 
-		drawFromBuffer(dc);
+		// Draw whole move bar from buffer, vertically centred at mY. 
+		dc.setClip(mX, mY - (mHeight / 2), mCurrentWidth, mHeight);
+		dc.drawBitmap(mX, mY - (mHeight / 2), mBuffer);
+		dc.clearClip();	
 	}
 
 	function recreateBuffer(themeColour, meterBackgroundColour) {
-
-		// Calculate current width here, now that DC is accessible.
-		if (mIsFullWidth) {
-			mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
-		} else {
-			mCurrentWidth = mBaseWidth;
-		}
-
 		mBuffer = new Graphics.BufferedBitmap({
 			:width => mCurrentWidth,
 			:height => mHeight,
@@ -93,19 +105,13 @@ class MoveBar extends Ui.Drawable {
 		mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
 	}
 
-	// Draw whole move bar from buffer to supplied screen DC, vertically centred at mY.
-	function drawFromBuffer(dc) {		
-		dc.setClip(mX, mY - (mHeight / 2), mCurrentWidth, mHeight);
-		dc.drawBitmap(mX, mY - (mHeight / 2), mBuffer);
-		dc.clearClip();	
-	}
-
 	// Draw bars to supplied DC: screen or buffer, depending on drawing mode.
-	function drawBars(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
+	// x and y are co-ordinates of top-left corner of move bar.
+	function drawBars(dc, x, y, currentMoveBarLevel, themeColour, meterBackgroundColour) {
 		var barWidth = getBarWidth();
 		var thisBarWidth;
 		var thisBarColour = 0;
-		var x = mTailWidth;
+		var barX = x + mTailWidth;
 		var alwaysShowMoveBar = App.getApp().getProperty("AlwaysShowMoveBar");
 
 		for (var i = 1; i < ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
@@ -131,9 +137,9 @@ class MoveBar extends Ui.Drawable {
 			}
 
 			Sys.println("drawBar " + i + " at x=" + x);
-			drawBar(dc, thisBarColour, x, thisBarWidth);
+			drawBar(dc, thisBarColour, barX, y + (mHeight / 2), thisBarWidth);
 
-			x += thisBarWidth + mSeparator;
+			barX += thisBarWidth + mSeparator;
 		}
 	}
 
@@ -155,16 +161,18 @@ class MoveBar extends Ui.Drawable {
 	//   x        x + width
 	//  /        /
 	// ----------
-	function drawBar(dc, colour, x, width) {
+	//
+	// x and y refer to bar origin, marked "x" in diagram above.
+	function drawBar(dc, colour, x, y, width) {
 		var points = new [6];
 		var halfHeight = (mHeight / 2);
 
-		points[0] = [x, halfHeight];
-		points[1] = [x - mTailWidth, 0];
-		points[2] = [x - mTailWidth + width, 0];
-		points[3] = [x + width, halfHeight];
-		points[4] = [x - mTailWidth + width - /* Inclusive? */ 1, mHeight];
-		points[5] = [x - mTailWidth - /* Inclusive? */ 1, mHeight];
+		points[0] = [x, y];
+		points[1] = [x - mTailWidth, y - halfHeight];
+		points[2] = [x - mTailWidth + width, y - halfHeight];
+		points[3] = [x + width, y];
+		points[4] = [x - mTailWidth + width - /* Inclusive? */ 1, y + halfHeight + /* Exclusive? */ 1];
+		points[5] = [x - mTailWidth - /* Inclusive? */ 1, y + halfHeight + /* Exclusive? */ 1];
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.fillPolygon(points);
