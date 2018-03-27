@@ -48,8 +48,7 @@ class MoveBar extends Ui.Drawable {
 		}
 
 		var themeColour = App.getApp().getProperty("ThemeColour");
-		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
-		var backgroundColour = App.getApp().getProperty("BackgroundColour");
+		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");	
 
 		var info = ActivityMonitor.getInfo();
 		var currentMoveBarLevel = info.moveBarLevel;
@@ -57,23 +56,7 @@ class MoveBar extends Ui.Drawable {
 		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
 		// move bar width changes from base width to full width.
 		if (mBufferNeedsRecreate) {
-			
-			// Calculate current width here, now that DC is accessible.
-			if (mIsFullWidth) {
-				mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
-			} else {
-				mCurrentWidth = mBaseWidth;
-			}
-
-			mBuffer = new Graphics.BufferedBitmap({
-				:width => mCurrentWidth,
-				:height => mHeight,
-
-				// First palette colour appears to determine initial colour of buffer.
-				:palette => [Graphics.COLOR_TRANSPARENT, meterBackgroundColour, themeColour]
-			});
-			mBufferNeedsRecreate = false;
-			mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
+			recreateBuffer(themeColour, meterBackgroundColour);
 		}
 
 		// #7 Redraw buffer (only) if move bar level changes.
@@ -83,48 +66,75 @@ class MoveBar extends Ui.Drawable {
 		}
 		
 		if (mBufferNeedsRedraw) {
-			
-			var barWidth = getBarWidth();
-			var thisBarWidth;
-			var thisBarColour = 0;
-			var x = mTailWidth;
-			var alwaysShowMoveBar = App.getApp().getProperty("AlwaysShowMoveBar");
-
-			for (var i = 1; i < ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
-
-				// First bar is double width.
-				if (i == 1) {
-					thisBarWidth = 2 * barWidth;
-				} else {
-					thisBarWidth = barWidth;
-				}
-
-				// Move bar at this level or greater, so show regardless of AlwaysShowMoveBar setting.
-				if (i <= currentMoveBarLevel) {
-					thisBarColour = themeColour;
-
-				// Move bar below this level, so only show if AlwaysShowMoveBar setting is true.
-				} else if (alwaysShowMoveBar) {
-					thisBarColour = meterBackgroundColour;
-
-				// Otherwise, do not show this, or any higher level.
-				} else {
-					break;
-				}
-
-				Sys.println("drawBar " + i + " at x=" + x);
-				drawBar(mBuffer.getDc(), thisBarColour, x, thisBarWidth);
-
-				x += thisBarWidth + mSeparator;
-			}
-
+			drawBars(mBuffer.getDc(), currentMoveBarLevel, themeColour, meterBackgroundColour);
 			mBufferNeedsRedraw = false;
 		}
 
-		// Draw whole move bar from buffer, vertically centred at mY.
+		drawFromBuffer(dc);
+	}
+
+	function recreateBuffer(themeColour, meterBackgroundColour) {
+
+		// Calculate current width here, now that DC is accessible.
+		if (mIsFullWidth) {
+			mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
+		} else {
+			mCurrentWidth = mBaseWidth;
+		}
+
+		mBuffer = new Graphics.BufferedBitmap({
+			:width => mCurrentWidth,
+			:height => mHeight,
+
+			// First palette colour appears to determine initial colour of buffer.
+			:palette => [Graphics.COLOR_TRANSPARENT, meterBackgroundColour, themeColour]
+		});
+		mBufferNeedsRecreate = false;
+		mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
+	}
+
+	// Draw whole move bar from buffer to supplied screen DC, vertically centred at mY.
+	function drawFromBuffer(dc) {		
 		dc.setClip(mX, mY - (mHeight / 2), mCurrentWidth, mHeight);
 		dc.drawBitmap(mX, mY - (mHeight / 2), mBuffer);
-		dc.clearClip();		
+		dc.clearClip();	
+	}
+
+	// Draw bars to supplied DC: screen or buffer, depending on drawing mode.
+	function drawBars(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
+		var barWidth = getBarWidth();
+		var thisBarWidth;
+		var thisBarColour = 0;
+		var x = mTailWidth;
+		var alwaysShowMoveBar = App.getApp().getProperty("AlwaysShowMoveBar");
+
+		for (var i = 1; i < ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
+
+			// First bar is double width.
+			if (i == 1) {
+				thisBarWidth = 2 * barWidth;
+			} else {
+				thisBarWidth = barWidth;
+			}
+
+			// Move bar at this level or greater, so show regardless of AlwaysShowMoveBar setting.
+			if (i <= currentMoveBarLevel) {
+				thisBarColour = themeColour;
+
+			// Move bar below this level, so only show if AlwaysShowMoveBar setting is true.
+			} else if (alwaysShowMoveBar) {
+				thisBarColour = meterBackgroundColour;
+
+			// Otherwise, do not show this, or any higher level.
+			} else {
+				break;
+			}
+
+			Sys.println("drawBar " + i + " at x=" + x);
+			drawBar(dc, thisBarColour, x, thisBarWidth);
+
+			x += thisBarWidth + mSeparator;
+		}
 	}
 
 	function getBarWidth() {
