@@ -70,6 +70,10 @@ class GoalMeter extends Ui.Drawable {
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
 	// remaining height.
 	function draw(dc) {
+		if (!(Graphics has :BufferedBitmap)) {
+			return;
+		}
+
 		var left;
 		var top;
 

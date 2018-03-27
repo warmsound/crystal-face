@@ -43,6 +43,10 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
+		if (!(Graphics has :BufferedBitmap)) {
+			return;
+		}
+
 		var themeColour = App.getApp().getProperty("ThemeColour");
 		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
 		var backgroundColour = App.getApp().getProperty("BackgroundColour");
