@@ -17,10 +17,11 @@ class GoalMeter extends Ui.Drawable {
 	private var mHeight; // Clip height of meter.
 	private var mSeparator; // Stroke width of separator bars.
 
-	private var mFilledBuffer; // Bitmap buffer containing all full segments;
-	private var mEmptyBuffer; // Bitmap buffer containing all empty segments;
 	private var mSegments; // Array of segment heights, in pixels, excluding separators.
 	private var mFillHeight; // Total height of filled segments, in pixels, including separators.
+
+	(:buffered) private var mFilledBuffer; // Bitmap buffer containing all full segments;
+	(:buffered) private var mEmptyBuffer; // Bitmap buffer containing all empty segments;
 
 	private var mBuffersNeedRecreate = true; // Buffers need to be recreated on next draw() cycle.
 	private var mBuffersNeedRedraw = true; // Buffers need to be redrawn on next draw() cycle.
@@ -41,6 +42,24 @@ class GoalMeter extends Ui.Drawable {
 		mSeparator = params[:separator];
 
 		mWidth = getWidth();
+	}
+
+	function getWidth() {
+		var width;
+		
+		var halfScreenWidth;
+		var innerRadius;
+
+		if (mShape == :arc) {
+			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
+			innerRadius = halfScreenWidth - mStroke; 
+			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
+			width = Math.ceil(width); // Round up to cover partial pixels.
+		} else {
+			width = mStroke;
+		}
+
+		return width;
 	}
 
 	function setValues(current, max) {
@@ -67,13 +86,24 @@ class GoalMeter extends Ui.Drawable {
 		mBuffersNeedRecreate = true;
 	}
 
+	function draw(dc) {
+		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
+		var themeColour = App.getApp().getProperty("ThemeColour");
+
+		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)) {
+			drawBuffered(dc, themeColour, meterBackgroundColour);
+		} else {
+			drawUnbuffered(dc, themeColour, meterBackgroundColour);
+		}
+	}
+
+	function drawUnbuffered(dc, themeColour, meterBackgroundColour) {
+	}
+
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
 	// remaining height.
-	function draw(dc) {
-		if (!(Graphics has :BufferedBitmap)) {
-			return;
-		}
-
+	(:buffered)
+	function drawBuffered(dc, themeColour, meterBackgroundColour) {
 		var left;
 		var top;
 
@@ -81,10 +111,7 @@ class GoalMeter extends Ui.Drawable {
 		var clipTop;
 		var clipHeight;		
 
-		var dcHeight = dc.getHeight();
-
-		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
-		var themeColour = App.getApp().getProperty("ThemeColour");		
+		var dcHeight = dc.getHeight();	
 
 		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
 		// change.
@@ -133,25 +160,8 @@ class GoalMeter extends Ui.Drawable {
 		dc.clearClip();
 	}
 
-	function getWidth() {
-		var width;
-		
-		var halfScreenWidth;
-		var innerRadius;
-
-		if (mShape == :arc) {
-			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
-			innerRadius = halfScreenWidth - mStroke; 
-			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
-			width = Math.ceil(width); // Round up to cover partial pixels.
-		} else {
-			width = mStroke;
-		}
-
-		return width;
-	}
-
 	// Use restricted palette, to conserve memory (four buffers per watchface).
+	(:buffered)
 	function createSegmentBuffer(fillColour) {
 		return new Graphics.BufferedBitmap({
 			:width => mWidth,
