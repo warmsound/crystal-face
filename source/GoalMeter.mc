@@ -109,12 +109,22 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	function drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour) {
+
+		// Filled segments: 0 --> fill height.
+		drawSegments(dc, left, top, themeColour, mSegments, 0, mFillHeight);
+
+		// Unfilled segments: fill height --> height.
+		drawSegments(dc, left, top, meterBackgroundColour, mSegments, mFillHeight, mHeight);		
 	}
 
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
 	// remaining height.
 	(:buffered)
 	function drawBuffered(dc, left, top, themeColour, meterBackgroundColour) {
+		var backgroundColour = App.getApp().getProperty("BackgroundColour");
+		var emptyBufferDc;
+		var filledBufferDc;
+
 		var clipBottom;
 		var clipTop;
 		var clipHeight;		
@@ -131,9 +141,18 @@ class GoalMeter extends Ui.Drawable {
 		// Redraw buffers only if maximum value changes.
 		if (mBuffersNeedRedraw) {
 
+			// Clear both buffers with background colour.	
+			emptyBufferDc = mEmptyBuffer.getDc();
+			emptyBufferDc.setColor(Graphics.COLOR_TRANSPARENT, backgroundColour);
+			emptyBufferDc.clear();
+
+			filledBufferDc = mFilledBuffer.getDc();			
+			filledBufferDc.setColor(Graphics.COLOR_TRANSPARENT, backgroundColour);
+			filledBufferDc.clear();
+
 			// Draw full fill height for each buffer.
-			drawSegments(mEmptyBuffer.getDc(), 0, 0, meterBackgroundColour, mSegments, 0, mHeight);
-			drawSegments(mFilledBuffer.getDc(), 0, 0, themeColour, mSegments, 0, mHeight);
+			drawSegments(emptyBufferDc, 0, 0, meterBackgroundColour, mSegments, 0, mHeight);
+			drawSegments(filledBufferDc, 0, 0, themeColour, mSegments, 0, mHeight);
 
 			mBuffersNeedRedraw = false;
 		}
@@ -177,14 +196,52 @@ class GoalMeter extends Ui.Drawable {
 	// x and y are co-ordinates of top-left corner of meter.
 	// start/endFillHeight are pixel fill heights including separators, starting from zero at bottom.
 	function drawSegments(dc, x, y, fillColour, segments, startFillHeight, endFillHeight) {
+		var segmentStart = 0;
+		var segmentEnd;
+
+		var fillStart;
+		var fillEnd;
+		var fillHeight;
+
 		y += mHeight; // Start from bottom.
 
 		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
 
 		// Draw rectangles, separator-width apart vertically, starting from bottom.
-		for (var i = 0; i < segments.size(); ++i) {
-			dc.fillRectangle(x, y - segments[i], mWidth, segments[i]);
-			y -= segments[i] + mSeparator;
+		for (var i = 0; i < segments.size(); ++i) {			
+			segmentEnd = segmentStart + segments[i];
+
+			// Full segment is filled.
+			if ((segmentStart >= startFillHeight) && (segmentEnd <= endFillHeight)) {
+				fillStart = segmentStart;
+				fillEnd = segmentEnd;
+
+			// Bottom of this segment is filled.
+			} else if (segmentStart >= startFillHeight) {
+				fillStart = segmentStart;
+				fillEnd = endFillHeight;
+
+			// Top of this segment is filled.
+			} else if (segmentEnd <= endFillHeight) {
+				fillStart = startFillHeight;
+				fillEnd = segmentEnd;
+			
+			// Segment is not filled.
+			} else {
+				fillStart = 0;
+				fillEnd = 0;
+			}
+
+			//Sys.println("segment     : " + segmentStart + "-->" + segmentEnd);
+			//Sys.println("segment fill: " + fillStart + "-->" + fillEnd);
+
+			fillHeight = fillEnd - fillStart;
+			if (fillHeight) {
+				//Sys.println("draw segment: " + x + ", " + (y - fillStart - fillHeight) + ", " + mWidth + ", " + fillHeight);
+				dc.fillRectangle(x, y - fillStart - fillHeight, mWidth, fillHeight);
+			}
+
+			segmentStart = segmentEnd + mSeparator;
 		}
 	}
 
