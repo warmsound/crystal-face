@@ -87,31 +87,37 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	function draw(dc) {
+		var left;
+		var top;
+
+		if (mSide == :left) {
+			left = 0;
+		} else {
+			left = dc.getWidth() - mWidth;
+		}
+
+		top = (dc.getHeight() - mHeight) / 2;
+
 		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
 		var themeColour = App.getApp().getProperty("ThemeColour");
 
 		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)) {
-			drawBuffered(dc, themeColour, meterBackgroundColour);
+			drawBuffered(dc, left, top, themeColour, meterBackgroundColour);
 		} else {
-			drawUnbuffered(dc, themeColour, meterBackgroundColour);
+			drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour);
 		}
 	}
 
-	function drawUnbuffered(dc, themeColour, meterBackgroundColour) {
+	function drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour) {
 	}
 
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
 	// remaining height.
 	(:buffered)
-	function drawBuffered(dc, themeColour, meterBackgroundColour) {
-		var left;
-		var top;
-
+	function drawBuffered(dc, left, top, themeColour, meterBackgroundColour) {
 		var clipBottom;
 		var clipTop;
 		var clipHeight;		
-
-		var dcHeight = dc.getHeight();	
 
 		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
 		// change.
@@ -124,21 +130,16 @@ class GoalMeter extends Ui.Drawable {
 
 		// Redraw buffers only if maximum value changes.
 		if (mBuffersNeedRedraw) {
-			drawBuffer(mEmptyBuffer.getDc(), meterBackgroundColour, mSegments);			
-			drawBuffer(mFilledBuffer.getDc(), themeColour, mSegments);			
+
+			// Draw full fill height for each buffer.
+			drawSegments(mEmptyBuffer.getDc(), 0, 0, meterBackgroundColour, mSegments, 0, mHeight);
+			drawSegments(mFilledBuffer.getDc(), 0, 0, themeColour, mSegments, 0, mHeight);
+
 			mBuffersNeedRedraw = false;
 		}
 
-		if (mSide == :left) {
-			left = 0;
-		} else {
-			left = dc.getWidth() - mWidth;
-		}
-
-		top = (dcHeight - mHeight) / 2;
-
 		// Draw filled segments.		
-		clipBottom = dcHeight - top;
+		clipBottom = dc.getHeight() - top;
 		clipTop = clipBottom - mFillHeight - 1;
 		clipHeight = clipBottom - clipTop;
 
@@ -172,17 +173,18 @@ class GoalMeter extends Ui.Drawable {
 		});
 	}
 
-	// bufferDc is the same size as meter clip rectangle: mWidth calculated on initialisation, mHeight from layout param.
-	function drawBuffer(bufferDc, fillColour, segments) {
-		var baseX = 0;
-		var baseY = 0;
+	// dc can be screen or buffer DC, depending on drawing mode.
+	// x and y are co-ordinates of top-left corner of meter.
+	// start/endFillHeight are pixel fill heights including separators, starting from zero at bottom.
+	function drawSegments(dc, x, y, fillColour, segments, startFillHeight, endFillHeight) {
+		y += mHeight; // Start from bottom.
 
-		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
+		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
 
-		// Draw rectangles, separator-width apart, starting from bottom.
+		// Draw rectangles, separator-width apart vertically, starting from bottom.
 		for (var i = 0; i < segments.size(); ++i) {
-			bufferDc.fillRectangle(baseX, baseY, mWidth, segments[i]);
-			baseY += segments[i] + mSeparator;
+			dc.fillRectangle(x, y - segments[i], mWidth, segments[i]);
+			y -= segments[i] + mSeparator;
 		}
 	}
 
