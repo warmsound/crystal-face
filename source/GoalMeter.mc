@@ -97,8 +97,8 @@ class GoalMeter extends Ui.Drawable {
 
 		// Redraw buffers only if maximum value changes.
 		if (mBuffersNeedRedraw) {
-			drawBuffer(dc, mEmptyBuffer.getDc(), meterBackgroundColour, mSegments);			
-			drawBuffer(dc, mFilledBuffer.getDc(), themeColour, mSegments);			
+			drawBuffer(mEmptyBuffer.getDc(), meterBackgroundColour, mSegments);			
+			drawBuffer(mFilledBuffer.getDc(), themeColour, mSegments);			
 			mBuffersNeedRedraw = false;
 		}
 
@@ -163,52 +163,16 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	// bufferDc is the same size as meter clip rectangle: mWidth calculated on initialisation, mHeight from layout param.
-	function drawBuffer(screenDc, bufferDc, fillColour, segments) {
-		var halfScreenDcWidth = screenDc.getWidth() / 2.0;
-		var bufferDcWidth = bufferDc.getWidth();
-		var halfBufferDcHeight = bufferDc.getHeight() / 2.0;
+	function drawBuffer(bufferDc, fillColour, segments) {
+		var baseX = 0;
+		var baseY = 0;
 
-		var circleCentreX;
-		var radius;
-
-		var separatorY;
-
-		// Draw meter fill.
 		bufferDc.setColor(fillColour, Graphics.COLOR_TRANSPARENT /* Graphics.COLOR_RED */);
-		//bufferDc.clear();
-		bufferDc.setPenWidth(mStroke);
 
-		if (mShape == :arc) {
-
-			if (mSide == :left) {
-				circleCentreX = halfScreenDcWidth; // Beyond right edge of bufferDc.
-			} else {
-				circleCentreX = mWidth - halfScreenDcWidth; // Beyond left edge of bufferDc.
-			}
-
-			radius = halfScreenDcWidth - (mStroke / 2.0);
-
-			// Previously attempted to use drawArc() to minimise drawing calculations, but does not track edge of round screen as
-			// well as drawCircle() - different algorithms!
-			bufferDc.drawCircle(circleCentreX, halfBufferDcHeight, radius);
-
-		} else {
-			bufferDc.fillRectangle(0, 0, mWidth, mHeight);
-		}
-
-		// Draw separators: horizontal transparent lines across meter fill.
-		// Drawing transparent lines should be faster than drawing clipped filled arcs.
-		bufferDc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
-		bufferDc.setPenWidth(mSeparator);
-
-		// Skip segment, draw separator, skip separator... starting from the bottom, working upwards.
-		separatorY = bufferDc.getHeight();
+		// Draw rectangles, separator-width apart, starting from bottom.
 		for (var i = 0; i < segments.size(); ++i) {
-			separatorY -= segments[i];
-
-			bufferDc.drawLine(0, separatorY, bufferDcWidth, separatorY);
-
-			separatorY -= mSeparator;
+			bufferDc.fillRectangle(baseX, baseY, mWidth, segments[i]);
+			baseY += segments[i] + mSeparator;
 		}
 	}
 
@@ -264,7 +228,7 @@ class GoalMeter extends Ui.Drawable {
 			if (remainingFillHeight > 0) {
 				fillHeight += mSeparator; // Fill extends beyond end of this segment, so add separator height.
 			} else {
-				break; // Fill does not extend beyond end of this sgement, because this segment is not full.
+				break; // Fill does not extend beyond end of this segment, because this segment is not full.
 			}			
 		}
 
