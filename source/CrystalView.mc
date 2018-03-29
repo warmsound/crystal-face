@@ -7,6 +7,7 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
+	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
 
 	private var mHoursFont;
 	private var mMinutesFont;
@@ -141,23 +142,38 @@ class CrystalView extends Ui.WatchFace {
 	function onShow() {
 	}
 
-	// Recreate background buffers for each meter, in case theme colour has changed.
+	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
+	// update the full screen immediately. This is true on real hardware, but not in the simulator, which calls onUpdate()
+	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
+		mSettingsChangedSinceLastDraw = true;
+	}
+
+	function onSettingsChangedSinceLastDraw() {
+
+		// Recreate background buffers for each meter, in case theme colour has changed.
 		mDrawables[:LeftGoalMeter].onSettingsChanged();
 		mDrawables[:RightGoalMeter].onSettingsChanged();
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
-		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not
-		// update. Instead, wait for next onExitSleep().
-		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) {
-			setHideSeconds(App.getApp().getProperty("HideSeconds"));
-		}
+		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
+		// update. Instead, wait for next onExitSleep(). 
+		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
+			setHideSeconds(App.getApp().getProperty("HideSeconds")); 
+		} 
+
+		mSettingsChangedSinceLastDraw = false;
 	}
 
 	// Update the view
 	function onUpdate(dc) {
 		System.println("onUpdate()");
+
+		// Respond now to any settings change since last full draw, as we can now update the full screen.
+		if (mSettingsChangedSinceLastDraw) {
+			onSettingsChangedSinceLastDraw();
+		}
 
 		// Clear any partial update clipping.
 		dc.clearClip();
