@@ -66,4 +66,8 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
+		<settingConfig type="boolean"/>
+	</setting>
+
 </settings>
