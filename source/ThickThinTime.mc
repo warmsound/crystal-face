@@ -62,9 +62,7 @@ class ThickThinTime extends Ui.Drawable {
 		mBackgroundColour = App.getApp().getProperty("BackgroundColour");
 
 		drawHoursMinutes(dc);
-		if (!mHideSeconds) {
-			drawSeconds(dc, /* isPartialUpdate */ false);
-		}
+		drawSeconds(dc, /* isPartialUpdate */ false);
 	}
 
 	function drawHoursMinutes(dc) {    		
@@ -187,6 +185,10 @@ class ThickThinTime extends Ui.Drawable {
 	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: set clip rectangle before clearing old text
 	// and drawing new. Clipping rectangle should not change between seconds.
 	function drawSeconds(dc, isPartialUpdate) {
+		if (mHideSeconds) {
+			return;
+		}
+		
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 

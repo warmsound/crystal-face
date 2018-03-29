@@ -16,5 +16,7 @@
 	<property id="RightFieldType" type="number">2</property>
 
 	<property id="AlwaysShowMoveBar" type="boolean">true</property>
+	
+	<property id="HideSeconds" type="boolean">false</property>
 
 </properties>
