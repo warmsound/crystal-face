@@ -6,6 +6,7 @@ using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
 class CrystalView extends Ui.WatchFace {
+	private var mIsSleeping = false;
 
 	private var mHoursFont;
 	private var mMinutesFont;
@@ -100,6 +101,8 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
 		mDrawables[:Date].setFont(mDateFont);
+
+		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
 
 	function cacheDrawables() {
@@ -145,7 +148,11 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
-		setHideSeconds(App.getApp().getProperty("HideSeconds"));
+		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not
+		// update. Instead, wait for next onExitSleep().
+		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) {
+			setHideSeconds(App.getApp().getProperty("HideSeconds"));
+		}
 	}
 
 	// Update the view
@@ -444,6 +451,8 @@ class CrystalView extends Ui.WatchFace {
 
 	// The user has just looked at their watch. Timers and animations may be started here.
 	function onExitSleep() {
+		mIsSleeping = false;
+
 		Sys.println("onExitSleep()");
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
@@ -455,12 +464,14 @@ class CrystalView extends Ui.WatchFace {
 
 	// Terminate any active timers and prepare for slow updates.
 	function onEnterSleep() {
+		mIsSleeping = true;
+
 		Sys.println("onEnterSleep()");
 		Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
 
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
-		// If HideSeconds property is false, do not wastefully hide seconds again.
+		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(true);
 		}
