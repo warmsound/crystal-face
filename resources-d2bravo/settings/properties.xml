@@ -1,8 +1,0 @@
-<properties>
-
-	<!-- Inherits CIQ 1.x defaults -->
-
-	<!-- Distance, because HR not supported -->
-	<property id="LeftFieldType" type="number">4</property>
-
-</properties>

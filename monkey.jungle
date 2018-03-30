@@ -14,17 +14,20 @@ rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-sma
 # No BufferedBitmap support, so exclude buffer-specific variables/functions.
 # No clip support, so goal meter mask required for round/semiround watches.
 
-d2bravo.resourcePath = $(d2bravo.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+d2bravo.resourcePath = $(d2bravo.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
 d2bravo.excludeAnnotations = buffered
 
-d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
 d2bravo_titanium.excludeAnnotations = buffered
 
-fenix3.resourcePath = $(fenix3.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+fenix3.resourcePath = $(fenix3.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
 fenix3.excludeAnnotations = buffered
 
-fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
 fenix3_hr.excludeAnnotations = buffered
 
-fr235.resourcePath = $(fr235.resourcePath);resources-ciq-1.x;resources-semiround-215x180-ciq-1.x
+fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no-hr
+fr230.excludeAnnotations = buffered
+
+fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
 fr235.excludeAnnotations = buffered
