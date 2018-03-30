@@ -174,7 +174,7 @@ class ThickThinTime extends Ui.Drawable {
 			if (!is24Hour) {
 				if (mMeridiemSide == :left) {
 					dc.drawText(
-						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
 						halfDCHeight,
 						mSecondsFont,
 						amPmText,
