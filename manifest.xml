@@ -2,6 +2,8 @@
     <iq:application entry="CrystalApp" id="bde5c058244911e8b4670ed5f89f718b" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="1.4.0" name="@Strings.AppName" type="watchface" version="1.4.2">
         <iq:products>
             <iq:product id="approachs60"/>
+            <iq:product id="d2bravo"/>
+            <iq:product id="d2bravo_titanium"/>
             <iq:product id="d2charlie"/>
             <iq:product id="descentmk1"/>
             <iq:product id="fenix5"/>

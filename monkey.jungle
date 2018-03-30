@@ -14,5 +14,11 @@ rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-sma
 # No BufferedBitmap support, so exclude buffer-specific variables/functions.
 # No clip support, so goal meter mask required for round/semiround watches.
 
+d2bravo.resourcePath = $(d2bravo.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+d2bravo.excludeAnnotations = buffered
+
+d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-ciq-1.x;resources-round-218x218-ciq-1.x
+d2bravo_titanium.excludeAnnotations = buffered
+
 fr235.resourcePath = $(fr235.resourcePath);resources-ciq-1.x;resources-semiround-215x180-ciq-1.x
 fr235.excludeAnnotations = buffered
