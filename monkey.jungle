@@ -12,6 +12,7 @@ rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-sma
 # CIQ 1.x watches only have 16 colours, so cannot support all themes.
 # No floors or active minutes support, so default to showing battery in right meter, and calories in the centre field.
 # No BufferedBitmap support, so exclude buffer-specific variables/functions.
+# No clip support, so goal meter mask required for round/semiround watches.
 
-fr235.resourcePath = $(fr235.resourcePath);resources-ciq-1.x
+fr235.resourcePath = $(fr235.resourcePath);resources-ciq-1.x;resources-semiround-215x180-ciq-1.x
 fr235.excludeAnnotations = buffered

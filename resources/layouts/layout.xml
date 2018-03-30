@@ -17,10 +17,6 @@
 		<param name="separator">2</param>
 	</drawable>
 
-	<drawable class="GoalMeterMask">
-		<param name="stroke">8</param>
-	</drawable>
-
 	<label id="LeftGoalIcon" text="0" x="49" y="188" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
 	<label id="LeftGoalCurrent" text="3500" x="76" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 	<label id="LeftGoalMax" text="5000" x="76" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>

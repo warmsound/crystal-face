@@ -86,6 +86,15 @@ class GoalMeter extends Ui.Drawable {
 		mBuffersNeedRecreate = true;
 	}
 
+	// Different draw algorithms have been tried:
+	// 1. Draw each segment as a circle, clipped to a rectangle of the desired height, direct to screen DC.
+	//    Intuitive, but expensive.
+	// 2. Buffered drawing: a buffer each for filled and unfilled segments (full height). Each buffer drawn as a single circle
+	//    (only the part that overlaps the buffer DC is visible). Segments created by drawing horizontal lines of background
+	//    colour. Screen DC is drawn from combination of two buffers, clipped to the desired fill height.
+	// 3. Unbuffered drawing: no buffer, and no clip support. Want common drawBuffer() function, so draw each segment as
+	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
+	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
 	function draw(dc) {
 		var left;
 		var top;
@@ -127,7 +136,11 @@ class GoalMeter extends Ui.Drawable {
 
 		var clipBottom;
 		var clipTop;
-		var clipHeight;		
+		var clipHeight;
+
+		var halfScreenDcWidth = (dc.getWidth() / 2);
+		var x;
+		var radius;
 
 		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
 		// change.
@@ -153,6 +166,24 @@ class GoalMeter extends Ui.Drawable {
 			// Draw full fill height for each buffer.
 			drawSegments(emptyBufferDc, 0, 0, meterBackgroundColour, mSegments, 0, mHeight);
 			drawSegments(filledBufferDc, 0, 0, themeColour, mSegments, 0, mHeight);
+
+			// For arc meters, draw circular mask for each buffer.
+			if (mShape == :arc) {
+
+				if (mSide == :left) {
+					x = halfScreenDcWidth; // Beyond right edge of bufferDc.
+				} else {
+					x = mWidth - halfScreenDcWidth - 1; // Beyond left edge of bufferDc.
+				}
+				radius = halfScreenDcWidth - mStroke;
+
+				emptyBufferDc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				emptyBufferDc.fillCircle(x, (mHeight / 2), radius);
+
+				filledBufferDc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				filledBufferDc.fillCircle(x, (mHeight / 2), radius);
+
+			}
 
 			mBuffersNeedRedraw = false;
 		}
