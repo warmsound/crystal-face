@@ -35,7 +35,7 @@
 	<label id="RightFieldValue" text="0" x="174" y="35" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="Date" class="DateLine">
-		<param name="x">14</param>		
+		<param name="x">15</param>		
 		<param name="y">16</param>
 		<param name="yLine2">35</param>
 	</drawable>

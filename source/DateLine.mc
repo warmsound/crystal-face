@@ -120,24 +120,25 @@ class DateLine extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
-		// Draw day, left-aligned at (mX, mYLine2).
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
+		// Draw month, left-aligned at (mX, mYLine2).
 		dc.drawText(
 			mX,
-			mYLine2,
-			mFont,
-			day,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-
-		// Draw month after day.
-		dc.setColor(App.getApp().getProperty("MonoDarkColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			mX + dc.getTextWidthInPixels(day + " ", mFont),
 			mYLine2,
 			mFont,
 			month,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
+
+		// Draw day, after day of week.
+		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			mX + dc.getTextWidthInPixels(dayOfWeek + " ", mFont),
+			mY,
+			mFont,
+			day,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+
 	}
 }
