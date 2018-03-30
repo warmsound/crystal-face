@@ -26,8 +26,11 @@ fenix3.excludeAnnotations = buffered
 fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
 fenix3_hr.excludeAnnotations = buffered
 
-fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no-hr
+fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
 fr230.excludeAnnotations = buffered
 
 fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
 fr235.excludeAnnotations = buffered
+
+fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
+fr630.excludeAnnotations = buffered
