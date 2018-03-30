@@ -6,11 +6,12 @@ round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 # Flat tyre watches use small time font and small icons.
 semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
 
-# Tall rectangle watches use smaller time font (but same seconds font as small time) and small icons.
-rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
+# Rectangle watches use smaller time font (but same seconds font as small time) and small icons.
+rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
 
 # CIQ 1.x watches only have 16 colours, so cannot support all themes.
-# No floors or active minutes support, so default to showing battery in right meter, and calories in the centre field.
+# No Floors or Active Minutes support, so default to showing Battery in right meter, and Calories in the centre field.
+# If a watch also has no HR support, show Distance in left field.
 # No BufferedBitmap support, so exclude buffer-specific variables/functions.
 # No clip support, so goal meter mask required for round/semiround watches.
 
@@ -34,3 +35,9 @@ fr235.excludeAnnotations = buffered
 
 fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
 fr630.excludeAnnotations = buffered
+
+fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
+fr920xt.excludeAnnotations = buffered
+
+vivoactive.resourcePath = $(vivoactive.resourcePath);resources-ciq_1.x-no_hr
+vivoactive.excludeAnnotations = buffered
