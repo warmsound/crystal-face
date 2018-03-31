@@ -1,5 +1,45 @@
 <strings>
 
+	<string id="AppName">Crystal</string>
+
+	<string id="BackgroundColourTitle">Background Colour</string>
+	<string id="ThemeTitle">Theme</string>
+	<string id="LeftGoalMeterTitle">Left Meter</string>
+	<string id="RightGoalMeterTitle">Right Meter</string>
+	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
+	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
+	<string id="HideSecondsTitle">Hide Seconds</string>
+	<string id="LeftDataFieldTitle">Left Data Field</string>
+	<string id="CenterDataFieldTitle">Center Data Field</string>
+	<string id="RightDataFieldTitle">Right Data Field</string>
+
+	<string id="ThemeBlueDark">Blue (Dark)</string>
+	<string id="ThemePinkDark">Pink (Dark)</string>
+	<string id="ThemeRedDark">Red (Dark)</string>
+	<string id="ThemeGreenDark">Green (Dark)</string>
+	<string id="ThemeCornflowerBlueDark">Cornflower Blue (Dark)</string>
+	<string id="ThemeLemonCreamDark">Lemon Cream (Dark)</string>
+	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
+	<string id="ThemeMonoDark">Mono (Dark)</string>
+	<string id="ThemeMonoLight">Mono (Light)</string>
+
+	<string id="AnteMeridiem">A</string>
+	<string id="PostMeridiem">P</string>
+
+	<string id="Steps">Steps</string>
+	<string id="FloorsClimbed">Floors Climbed</string>
+	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
+	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+
+	<string id="HeartRate">Heart Rate</string>
+	<string id="Battery">Battery</string>
+	<string id="Notifications">Notifications</string>
+	<string id="Calories">Calories</string>
+	<string id="Distance">Distance</string>
+
+	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
+	<string id="DATE_FONT_OVERRIDE"></string>	
+
 	<string id="Sun">Dom</string>
 	<string id="Mon">Seg</string>
 	<string id="Tue">Ter</string>
