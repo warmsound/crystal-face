@@ -108,7 +108,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// Draw filled segments.		
 		clipBottom = dcHeight - top;
-		clipTop = clipBottom - mFillHeight - 1;
+		clipTop = clipBottom - mFillHeight;
 		clipHeight = clipBottom - clipTop;
 
 		if (clipHeight > 0) {
@@ -252,7 +252,7 @@ class GoalMeter extends Ui.Drawable {
 			totalSegmentHeight += segments[i];
 		}
 
-		var remainingFillHeight = Math.round((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight); // Excluding separators.
+		var remainingFillHeight = Math.floor((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight); // Excluding separators.
 		fillHeight = remainingFillHeight;
 
 		for (i = 0; i < segments.size(); ++i) {
@@ -264,6 +264,7 @@ class GoalMeter extends Ui.Drawable {
 			}			
 		}
 
+		Sys.println("fillHeight " + fillHeight);
 		return fillHeight;
 	}
 
