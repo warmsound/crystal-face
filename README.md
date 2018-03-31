@@ -5,11 +5,11 @@ A Garmin Connect IQ watch face.
 A crystal clear watch face, with LCD-like goal meter segments, written while snow crystals were falling during an unusually cold spell of weather here in England.
 
 Features (watch-dependent):
-- Big time digits right in the middle, with hours in bold.
+- Big time digits right in the middle, with hours in bold. Seconds can be hidden.
 - 3 customisable data fields: HR history, battery, notifications, calories, distance.
-- 2 customisable goal meters: steps, floors climbed, active minutes (weekly). The meters have auto-scaling segments and current/target value display.
+- 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
-- 8 colour themes.
+- 9 colour themes.
 
 The techie bit: to save your watch battery, the goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
 
