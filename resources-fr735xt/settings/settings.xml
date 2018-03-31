@@ -33,34 +33,4 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">
-		<settingConfig type="list">
-			<listEntry value="0">@Strings.HeartRate</listEntry>
-			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Notifications</listEntry>
-			<listEntry value="3">@Strings.Calories</listEntry>
-			<listEntry value="4">@Strings.Distance</listEntry>
-		</settingConfig>
-	</setting>
-
-	<setting propertyKey="@Properties.CenterFieldType" title="@Strings.CenterDataFieldTitle">
-		<settingConfig type="list">
-			<listEntry value="0">@Strings.HeartRate</listEntry>
-			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Notifications</listEntry>
-			<listEntry value="3">@Strings.Calories</listEntry>
-			<listEntry value="4">@Strings.Distance</listEntry>
-		</settingConfig>
-	</setting>
-
-	<setting propertyKey="@Properties.RightFieldType" title="@Strings.RightDataFieldTitle">
-		<settingConfig type="list">
-			<listEntry value="0">@Strings.HeartRate</listEntry>
-			<listEntry value="1">@Strings.Battery</listEntry>
-			<listEntry value="2">@Strings.Notifications</listEntry>
-			<listEntry value="3">@Strings.Calories</listEntry>
-			<listEntry value="4">@Strings.Distance</listEntry>
-		</settingConfig>
-	</setting>
-
 </settings>

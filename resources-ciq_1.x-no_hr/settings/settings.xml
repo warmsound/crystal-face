@@ -19,6 +19,7 @@
 			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
+			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -28,6 +29,7 @@
 			<!--listEntry value="1">@Strings.FloorsClimbed</listEntry-->
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
+			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
 		</settingConfig>
 	</setting>
 
