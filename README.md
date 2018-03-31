@@ -17,6 +17,11 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.4.3
+- Meters can now show a custom calories goal, specified in settings.
+- Fixed issue with wrong strings or crash when changing settings via Garmin Express in non-English locales (thanks to Ezio Pillan for reporting this bug).
+- Added app version to settings page.
+
 ### 1.4.2
 - Allow hiding of seconds.
 
