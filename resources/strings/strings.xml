@@ -1,11 +1,13 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
+	<string id="AppVersionTitle">App Version</string>
 
 	<string id="BackgroundColourTitle">Background Colour</string>
 	<string id="ThemeTitle">Theme</string>
 	<string id="LeftGoalMeterTitle">Left Meter</string>
 	<string id="RightGoalMeterTitle">Right Meter</string>
+	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
 	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
 	<string id="LeftDataFieldTitle">Left Data Field</string>
@@ -28,6 +30,7 @@
 	<string id="Steps">Steps</string>
 	<string id="FloorsClimbed">Floors Climbed</string>
 	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
+	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
 
 	<string id="HeartRate">Heart Rate</string>
 	<string id="Battery">Battery</string>

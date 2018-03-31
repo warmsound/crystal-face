@@ -1,5 +1,7 @@
 <properties>
 
+	<property id="AppVersion" type="string">1.4.3</property>
+
 	<property id="Theme" type="number">0</property>
 
 	<property id="ThemeColour" type="number">0x00AAFF</property>
@@ -10,6 +12,7 @@
 
 	<property id="LeftGoalType" type="number">0</property>
 	<property id="RightGoalType" type="number">1</property>
+	<property id="CaloriesGoal" type="number">2000</property>
 
 	<property id="LeftFieldType" type="number">0</property>
 	<property id="CenterFieldType" type="number">1</property>
