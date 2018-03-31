@@ -20,6 +20,7 @@
 			<listEntry value="1">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
+			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -29,7 +30,12 @@
 			<listEntry value="1">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
+			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
 		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.CaloriesGoal" title="@Strings.CaloriesGoalTitle">
+		<settingConfig type="numeric" min="1" max="10000" required="true"/>
 	</setting>
 
 	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">

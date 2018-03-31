@@ -22,7 +22,8 @@ class CrystalView extends Ui.WatchFace {
 		App.GOAL_TYPE_FLOORS_CLIMBED => :GOAL_TYPE_FLOORS_CLIMBED,
 		App.GOAL_TYPE_ACTIVE_MINUTES => :GOAL_TYPE_ACTIVE_MINUTES,
 		
-		-1 => :GOAL_TYPE_BATTERY
+		-1 => :GOAL_TYPE_BATTERY,
+		-2 => :GOAL_TYPE_CALORIES
 	};
 
 	private var FIELD_TYPES = {
@@ -41,6 +42,7 @@ class CrystalView extends Ui.WatchFace {
 		:FIELD_TYPE_BATTERY => "4",
 		:FIELD_TYPE_NOTIFICATIONS => "5",
 		:FIELD_TYPE_CALORIES => "6",
+		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
 		:FIELD_TYPE_DISTANCE => "7",
 		:INDICATOR_BLUETOOTH => "8",
 		:GOAL_TYPE_BATTERY => "9"
@@ -207,8 +209,8 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function fillBatteryMeter(dc, batteryIcon) {
-		// #8: battery returned as float. Use ceil() for optimistic values. Must match getDisplayInfoForFieldType().
-		var batteryLevel = Math.ceil(Sys.getSystemStats().battery);
+		// #8: battery returned as float. Use floor() to match native. Must match getDisplayInfoForFieldType().
+		var batteryLevel = Math.floor(Sys.getSystemStats().battery);
 		var colour;
 		var fillWidth, fillHeight;
 
@@ -303,8 +305,8 @@ class CrystalView extends Ui.WatchFace {
 				break;
 
 			case :FIELD_TYPE_BATTERY:
-				// #8: battery returned as float. Use ceil() for optimistic values. Must match fillBatteryMeter().
-				battery = Math.ceil(Sys.getSystemStats().battery);
+				// #8: battery returned as float. Use floor() to match native. Must match fillBatteryMeter().
+				battery = Math.floor(Sys.getSystemStats().battery);
 				value = battery.format("%d") + "%";
 				break;
 
@@ -443,8 +445,14 @@ class CrystalView extends Ui.WatchFace {
 				break;
 
 			case :GOAL_TYPE_BATTERY:
-				values[:current] = Math.ceil(Sys.getSystemStats().battery);
+				// #8: floor() battery to be consistent.
+				values[:current] = Math.floor(Sys.getSystemStats().battery);
 				values[:max] = 100;
+				break;
+
+			case :GOAL_TYPE_CALORIES:
+				values[:current] = info.calories;
+				values[:max] = App.getApp().getProperty("CaloriesGoal");
 				break;
 		}
 
