@@ -39,5 +39,6 @@ fr630.excludeAnnotations = buffered
 fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
 fr920xt.excludeAnnotations = buffered
 
-vivoactive.resourcePath = $(vivoactive.resourcePath);resources-ciq_1.x-no_hr
+# Reverse order of resources so that 64-colour themes are permitted.
+vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
 vivoactive.excludeAnnotations = buffered
