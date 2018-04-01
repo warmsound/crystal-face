@@ -17,6 +17,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.5.1
+- Added alarms data field option.
+- Rollout to CIQ 1.x devices, part 2: Forerunner® 230, Forerunner® 235, Forerunner® 630.
+
 ### 1.5.0
 - Rollout to CIQ 1.x devices, part 1: D2™ Bravo, D2™ Bravo Titanium, fēnix® 3, fēnix® 3 HR.
 
