@@ -1,0 +1,66 @@
+<layout id="WatchFace">
+	<drawable class="Background" />
+
+	<drawable id="LeftGoalMeter" class="GoalMeter">
+		<param name="side">:left</param>
+		<param name="shape">:arc</param>
+		<param name="stroke">8</param>
+		<param name="height">138</param>
+		<param name="separator">2</param>
+	</drawable>
+
+	<drawable id="RightGoalMeter" class="GoalMeter">
+		<param name="side">:right</param>
+		<param name="shape">:arc</param>
+		<param name="stroke">8</param>
+		<param name="height">138</param>
+		<param name="separator">2</param>
+	</drawable>
+
+	<!-- Mask required for goal meter drawing without clip support -->
+	<drawable class="GoalMeterMask">
+		<param name="stroke">8</param>
+	</drawable>
+
+	<label id="LeftGoalIcon" text="0" x="40" y="166" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+	<label id="LeftGoalCurrent" text="3500" x="67" y="170" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftGoalMax" text="5000" x="67" y="186" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<label id="RightGoalIcon" text="1" x="178" y="166" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+	<label id="RightGoalCurrent" text="6" x="151" y="170" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="RightGoalMax" text="10" x="151" y="186" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<label id="LeftFieldIcon" text="3" x="69" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftFieldValue" text="0" x="69" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<label id="CenterFieldIcon" text="4" x="109" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="CenterFieldValue" text="75%" x="109" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<label id="RightFieldIcon" text="5" x="149" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="RightFieldValue" text="0" x="149" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<drawable id="Date" class="DateLine">
+		<param name="y">72</param>
+	</drawable>
+
+	<label id="Bluetooth" text="8" x="30" y="109" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
+	<drawable id="Time" class="ThickThinTime">
+		<param name="secondsX">147</param>
+		<param name="secondsY">129</param>
+
+		<!-- Partial updates not supported -->	
+		<!--param name="secondsClipY">139</param-->
+		<!--param name="secondsClipWidth">22</param-->
+		<!--param name="secondsClipHeight">15</param-->
+	</drawable>
+
+	<drawable id="MoveBar" class="MoveBar">
+		<param name="x">50</param>
+		<param name="y">146</param>
+		<param name="width">90</param>
+		<param name="height">9</param>
+		<param name="separator">3</param>
+	</drawable>
+	
+</layout>

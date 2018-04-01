@@ -30,6 +30,7 @@ class ThickThinTime extends Ui.Drawable {
 
 	private var mAnteMeridiem, mPostMeridiem;
 	private var AM_PM_X_OFFSET = 2;
+	private var mMeridiemSide;
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -45,6 +46,8 @@ class ThickThinTime extends Ui.Drawable {
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
+
+		mMeridiemSide = params[:meridiemSide];
 	}
 
 	function setFonts(hoursFont, minutesFont, secondsFont) {
@@ -166,17 +169,27 @@ class ThickThinTime extends Ui.Drawable {
 				minutes,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
-			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
 
-			// If required, draw AM/PM after minutes, vertically centred.
+			// If required, draw AM/PM after minutes, or before hours, vertically centred.
 			if (!is24Hour) {
-				dc.drawText(
-					x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
-					halfDCHeight,
-					mSecondsFont,
-					amPmText,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+				if (mMeridiemSide == :left) {
+					dc.drawText(
+						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
+						halfDCHeight,
+						mSecondsFont,
+						amPmText,
+						Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+					);
+				} else {
+					x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
+					dc.drawText(
+						x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+						halfDCHeight,
+						mSecondsFont,
+						amPmText,
+						Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+					);
+				}
 			}
 		}
 	}

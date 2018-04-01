@@ -1,5 +1,44 @@
 project.manifest = manifest.xml
 
+# Smaller round watches use small time font.
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
+
+# Flat tyre watches use small time font and small icons.
 semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
-rectangle-148x205.resourcePath = $(rectangle-148x205.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
+
+# Rectangle watches use smaller time font (but same seconds font as small time) and small icons.
+rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
+
+# CIQ 1.x watches only have 16 colours, so cannot support all themes.
+# No Floors or Active Minutes support, so default to showing Battery in right meter, and Calories in the centre field.
+# If a watch also has no HR support, show Distance in left field.
+# No BufferedBitmap support, so exclude buffer-specific variables/functions.
+# No clip support, so goal meter mask required for round/semiround watches.
+
+d2bravo.resourcePath = $(d2bravo.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
+d2bravo.excludeAnnotations = buffered
+
+d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
+d2bravo_titanium.excludeAnnotations = buffered
+
+fenix3.resourcePath = $(fenix3.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
+fenix3.excludeAnnotations = buffered
+
+fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
+fenix3_hr.excludeAnnotations = buffered
+
+fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
+fr230.excludeAnnotations = buffered
+
+fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
+fr235.excludeAnnotations = buffered
+
+fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
+fr630.excludeAnnotations = buffered
+
+fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
+fr920xt.excludeAnnotations = buffered
+
+# Reverse order of resources so that 64-colour themes are permitted.
+vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
+vivoactive.excludeAnnotations = buffered

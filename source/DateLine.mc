@@ -6,7 +6,9 @@ using Toybox.Time.Gregorian;
 
 class DateLine extends Ui.Drawable {
 
-	private var mY;
+	private var mX;
+	private var mY;	
+	private var mYLine2;
 
 	private var mDayOfWeekStrings;
 	private var mMonthStrings;
@@ -41,7 +43,9 @@ class DateLine extends Ui.Drawable {
 			Ui.loadResource(Rez.Strings.Dec),
 		];
 
+		mX = params[:x];
 		mY = params[:y];
+		mYLine2 = params[:yLine2];
 	}
 
 	function setFont(font) {
@@ -59,6 +63,14 @@ class DateLine extends Ui.Drawable {
 		var day = now.day.format("%d");
 		var month = mMonthStrings[now.month - 1].toUpper(); // Months are zero-based, starting January.
 
+		if (mYLine2 != null) {
+			drawDoubleLine(dc, dayOfWeek, day, month);
+		} else {
+			drawSingleLine(dc, dayOfWeek, day, month);
+		}
+	}
+
+	function drawSingleLine(dc, dayOfWeek, day, month) {
 		var dateString = Lang.format("$1$ $2$ $3$", [dayOfWeek, day, month]);
 		var length = dc.getTextWidthInPixels(dateString, mFont);
 		var x = (dc.getWidth() / 2) - (length / 2);
@@ -94,5 +106,39 @@ class DateLine extends Ui.Drawable {
 			month,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
+	}
+
+	function drawDoubleLine(dc, dayOfWeek, day, month) {
+
+		// Draw day of week, left-aligned at (mX, mY).
+		dc.setColor(App.getApp().getProperty("MonoDarkColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			mX,
+			mY,
+			mFont,
+			dayOfWeek,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// Draw month, left-aligned at (mX, mYLine2).
+		dc.drawText(
+			mX,
+			mYLine2,
+			mFont,
+			month,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// Draw day, after day of week.
+		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			mX + dc.getTextWidthInPixels(dayOfWeek + " ", mFont),
+			mY,
+			mFont,
+			day,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+
 	}
 }

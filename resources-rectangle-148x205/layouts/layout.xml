@@ -8,9 +8,6 @@
 		<param name="height">205</param>
 		<param name="separator">2</param>
 	</drawable>
-	<label id="LeftGoalIcon" text="0" x="11" y="172" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-	<label id="LeftGoalCurrent" text="3500" x="34" y="174" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftGoalMax" text="5000" x="34" y="190" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
 	<drawable id="RightGoalMeter" class="GoalMeter">
 		<param name="side">:right</param>
@@ -19,6 +16,11 @@
 		<param name="height">205</param>
 		<param name="separator">2</param>
 	</drawable>
+
+	<label id="LeftGoalIcon" text="0" x="11" y="172" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+	<label id="LeftGoalCurrent" text="3500" x="34" y="174" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftGoalMax" text="5000" x="34" y="190" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+
 	<label id="RightGoalIcon" text="1" x="137" y="172" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
 	<label id="RightGoalCurrent" text="6" x="114" y="174" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 	<label id="RightGoalMax" text="10" x="114" y="190" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>

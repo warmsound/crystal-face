@@ -178,7 +178,9 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// Clear any partial update clipping.
-		dc.clearClip();
+		if (dc has :clearClip) {
+			dc.clearClip();
+		}
 
 		updateGoalMeters();
 		updateDataFields();
@@ -440,8 +442,12 @@ class CrystalView extends Ui.WatchFace {
 				break;
 
 			case :GOAL_TYPE_ACTIVE_MINUTES:
-				values[:current] = info.activeMinutesWeek.total;
-				values[:max] = info.activeMinutesWeekGoal;
+				if (info has :activeMinutesWeek) {
+					values[:current] = info.activeMinutesWeek.total;
+					values[:max] = info.activeMinutesWeekGoal;
+				} else {
+					values[:isValid] = false;
+				}
 				break;
 
 			case :GOAL_TYPE_BATTERY:
