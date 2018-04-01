@@ -17,6 +17,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.5.0
+- Rollout to CIQ 1.x devices, part 1: D2™ Bravo, D2™ Bravo Titanium, fēnix® 3, fēnix® 3 HR.
+
 ### 1.4.3
 - Meters can now show a custom calories goal, specified in settings.
 - Fixed issue with wrong strings or crash when changing settings via Garmin Express in non-English locales (thanks to Ezio Pillan for reporting this bug).
