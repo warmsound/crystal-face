@@ -49,6 +49,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -59,6 +60,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -69,6 +71,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
 		</settingConfig>
 	</setting>
 

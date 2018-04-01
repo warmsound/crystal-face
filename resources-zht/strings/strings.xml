@@ -37,6 +37,7 @@
 	<string id="Notifications">Notifications</string>
 	<string id="Calories">Calories</string>
 	<string id="Distance">Distance</string>
+	<string id="Alarms">Alarms</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE">ZHT</string>

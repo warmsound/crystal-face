@@ -31,7 +31,8 @@ class CrystalView extends Ui.WatchFace {
 		1 => :FIELD_TYPE_BATTERY,
 		2 => :FIELD_TYPE_NOTIFICATIONS,
 		3 => :FIELD_TYPE_CALORIES,
-		4 => :FIELD_TYPE_DISTANCE
+		4 => :FIELD_TYPE_DISTANCE,
+		5 => :FIELD_TYPE_ALARMS
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -45,7 +46,8 @@ class CrystalView extends Ui.WatchFace {
 		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
 		:FIELD_TYPE_DISTANCE => "7",
 		:INDICATOR_BLUETOOTH => "8",
-		:GOAL_TYPE_BATTERY => "9"
+		:GOAL_TYPE_BATTERY => "9",
+		:FIELD_TYPE_ALARMS => ":"
 	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
@@ -345,6 +347,13 @@ class CrystalView extends Ui.WatchFace {
 
 				value = distance.format(format) + unit;
 				
+				break;
+
+			case :FIELD_TYPE_ALARMS:
+				settings = Sys.getDeviceSettings();
+				if (settings.alarmCount > 0) {
+					value = settings.alarmCount.format("%d");
+				}
 				break;
 		}
 
