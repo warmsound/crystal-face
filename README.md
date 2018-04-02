@@ -6,7 +6,7 @@ A crystal clear watch face, with LCD-like goal meter segments, written while sno
 
 Features (watch-dependent):
 - Big time digits right in the middle, with hours in bold. Seconds can be hidden.
-- 3 customisable data fields: HR history, battery, notifications, calories, distance.
+- 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms.
 - 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
 - 9 colour themes.
@@ -19,7 +19,7 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ### 1.5.1
 - Added alarms data field option.
-- Rollout to CIQ 1.x devices, part 2: Forerunner® 230, Forerunner® 235, Forerunner® 630.
+- Rollout to CIQ 1.x devices, part 2: Forerunner® 230, Forerunner® 235, Forerunner® 630, Forerunner® 920XT, vívoactive®.
 
 ### 1.5.0
 - Rollout to CIQ 1.x devices, part 1: D2™ Bravo, D2™ Bravo Titanium, fēnix® 3, fēnix® 3 HR.
