@@ -471,6 +471,13 @@ class CrystalView extends Ui.WatchFace {
 				break;
 		}
 
+		// #16: If user has set goal to zero, or negative (in simulator), show as invalid. Set max to 1 to avoid divide-by-zero
+		// crash in GoalMeter.getSegmentScale().
+		if (values[:max] < 1) {
+			values[:max] = 1;
+			values[:isValid] = false;
+		}
+
 		return values;
 	}
 
