@@ -1,6 +1,6 @@
 <properties>
 
-	<property id="AppVersion" type="string">1.5.1</property>
+	<property id="AppVersion" type="string">1.5.2</property>
 
 	<property id="Theme" type="number">0</property>
 

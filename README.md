@@ -2,6 +2,9 @@
 A Garmin Connect IQ watch face.
 
 ## Description
+**Instructions on how to change watch face settings:**
+https://support.garmin.com/faqSearch/en-US/faq/content/SPo0TFvhQO04O36Y5TYRh5
+
 A crystal clear watch face, with LCD-like goal meter segments, written while snow crystals were falling during an unusually cold spell of weather here in England.
 
 Features (watch-dependent):
@@ -16,6 +19,9 @@ The techie bit: to save your watch battery, the goal meters and move bar are dra
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 1.5.2
+- Technical update to CIQ 2.4.4 SDK.
 
 ### 1.5.1
 - Added alarms data field option.
