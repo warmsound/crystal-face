@@ -20,6 +20,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.5.3
+- Fix crash if floors or active minutes goal is set to 0: show disabled meter instead.
+
 ### 1.5.2
 - Technical update to CIQ 2.4.4 SDK.
 
