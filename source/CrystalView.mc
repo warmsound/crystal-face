@@ -94,7 +94,6 @@ class CrystalView extends Ui.WatchFace {
 				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
 				break;
 
-			case "NONE":
 			default:
 				mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
 				break;
