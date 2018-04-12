@@ -39,8 +39,8 @@
 	<string id="Distance">Distance</string>
 	<string id="Alarms">Alarms</string>
 
-	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
-	<string id="DATE_FONT_OVERRIDE"></string>	
+	<!-- Internal use only. Required because fonts cannot be overridden by locale. #20: Set to NONE for no override. -->
+	<string id="DATE_FONT_OVERRIDE">NONE</string>	
 
 	<string id="Sun">Ned</string>
 	<string id="Mon">Pon</string>
