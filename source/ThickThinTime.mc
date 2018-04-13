@@ -110,8 +110,6 @@ class ThickThinTime extends Ui.Drawable {
 		}
 		isLeadingZeroHidden = (hours.length() == 1);
 
-		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
-
 		var x;
 		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = dc.getHeight() / 2;
@@ -128,6 +126,7 @@ class ThickThinTime extends Ui.Drawable {
 			x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
 
 			// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
+			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
@@ -137,6 +136,7 @@ class ThickThinTime extends Ui.Drawable {
 			);
 
 			// Draw minutes, horizontally centred, vertically top aligned.
+			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight + (mVerticalOffset / 2),
@@ -149,6 +149,7 @@ class ThickThinTime extends Ui.Drawable {
 
 			// If required, draw AM/PM after hours, vertically centred.
 			if (!is24Hour) {
+				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 				dc.drawText(
 					x,
 					halfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
@@ -168,6 +169,7 @@ class ThickThinTime extends Ui.Drawable {
 			x = halfDCWidth - (totalWidth / 2);
 
 			// Draw hours.
+			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight,
@@ -178,6 +180,7 @@ class ThickThinTime extends Ui.Drawable {
 			x += dc.getTextWidthInPixels(hours, mHoursFont);
 
 			// Draw minutes.
+			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight,
@@ -188,6 +191,8 @@ class ThickThinTime extends Ui.Drawable {
 
 			// If required, draw AM/PM after minutes, or before hours, vertically centred.
 			if (!is24Hour) {
+				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+
 				if (mMeridiemSide == :left) {
 					dc.drawText(
 						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.

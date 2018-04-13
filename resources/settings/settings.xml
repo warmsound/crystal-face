@@ -75,6 +75,22 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.HoursColourOverride" title="@Strings.HoursColourTitle">
+		<settingConfig type="list">
+			<listEntry value="-1">@Strings.FromTheme</listEntry>
+			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
+			<listEntry value="-3">@Strings.Mono</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.MinutesColourOverride" title="@Strings.MinutesColourTitle">
+		<settingConfig type="list">
+			<listEntry value="-1">@Strings.FromTheme</listEntry>
+			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
+			<listEntry value="-3">@Strings.Mono</listEntry>
+		</settingConfig>
+	</setting>
+
 	<setting propertyKey="@Properties.HideHoursLeadingZero" title="@Strings.HideHoursLeadingZeroTitle">
 		<settingConfig type="boolean"/>
 	</setting>
