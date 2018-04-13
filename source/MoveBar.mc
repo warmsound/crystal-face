@@ -58,7 +58,8 @@ class MoveBar extends Ui.Drawable {
 			mCurrentWidth = mBaseWidth;
 		}
 
-		if (Graphics has :BufferedBitmap) {
+		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
+		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
 			drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
 		} else {
 			drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
