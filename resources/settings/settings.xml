@@ -75,11 +75,15 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.AlwaysShowMoveBar" title="@Strings.AlwaysShowMoveBarTitle">
+	<setting propertyKey="@Properties.HideHoursLeadingZero" title="@Strings.HideHoursLeadingZeroTitle">
 		<settingConfig type="boolean"/>
 	</setting>
 
 	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.AlwaysShowMoveBar" title="@Strings.AlwaysShowMoveBarTitle">
 		<settingConfig type="boolean"/>
 	</setting>
 

@@ -21,5 +21,6 @@
 	<property id="AlwaysShowMoveBar" type="boolean">true</property>
 	
 	<property id="HideSeconds" type="boolean">false</property>
+	<property id="HideHoursLeadingZero" type="boolean">false</property>
 
 </properties>
