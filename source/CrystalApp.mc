@@ -14,6 +14,9 @@ class CrystalApp extends App.AppBase {
 		6 => :THEME_DAYGLO_ORANGE_DARK,
 		7 => :THEME_RED_DARK,
 		8 => :THEME_MONO_DARK,
+		9 => :THEME_BLUE_LIGHT,
+		10 => :THEME_GREEN_LIGHT,
+		11 => :THEME_RED_LIGHT,
 	};
 
 	private var COLOUR_OVERRIDES = {
@@ -25,6 +28,7 @@ class CrystalApp extends App.AppBase {
 	function initialize() {
 		AppBase.initialize();
 		updateThemeColours();
+		updateHoursMinutesColours();
 	}
 
 	// onStart() is called on application start up
@@ -94,6 +98,18 @@ class CrystalApp extends App.AppBase {
 			case :THEME_MONO_DARK:
 				App.getApp().setProperty("ThemeColour", Graphics.COLOR_WHITE);
 				break;
+
+			case :THEME_BLUE_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_BLUE);
+				break;
+
+			case :THEME_GREEN_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GREEN);
+				break;
+
+			case :THEME_RED_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_RED);
+				break;
 		}
 
 		// Light/dark-specific colours.
@@ -114,6 +130,9 @@ class CrystalApp extends App.AppBase {
 				break;
 
 			case :THEME_MONO_LIGHT:
+			case :THEME_BLUE_LIGHT:
+			case :THEME_GREEN_LIGHT:
+			case :THEME_RED_LIGHT:
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
 				

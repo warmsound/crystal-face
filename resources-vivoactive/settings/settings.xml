@@ -13,6 +13,9 @@
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
+			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
+			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
+			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
 		</settingConfig>
 	</setting>
 
