@@ -10,6 +10,7 @@
 	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
 	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
+	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
 	<string id="LeftDataFieldTitle">Left Data Field</string>
 	<string id="CenterDataFieldTitle">Center Data Field</string>
 	<string id="RightDataFieldTitle">Right Data Field</string>
