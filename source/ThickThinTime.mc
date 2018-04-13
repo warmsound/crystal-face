@@ -99,7 +99,7 @@ class ThickThinTime extends Ui.Drawable {
 		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
 		if (!is24Hour && App.getApp().getProperty("HideHoursLeadingZero")) {
 			hours = hours.format("%d");
-			
+
 		// Otherwise, show leading zero.
 		} else {
 			hours = hours.format("%02d");
@@ -117,25 +117,30 @@ class ThickThinTime extends Ui.Drawable {
 			// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
 			var hoursAscent = Graphics.getFontAscent(mHoursFont);
 
-			// Draw hours, horizontally centred, vertically bottom aligned.
+			// #10 hours may be single digit, but calculate layout as if always double-digit.
+			// N.B. Assumes font has tabular (monospaced) numerals.
+			var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
+			x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
+
+			// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
 			dc.drawText(
-				halfDCWidth,
+				x,
 				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
 				mHoursFont,
 				hours,
-				Graphics.TEXT_JUSTIFY_CENTER
+				Graphics.TEXT_JUSTIFY_RIGHT
 			);
 
 			// Draw minutes, horizontally centred, vertically top aligned.
 			dc.drawText(
-				halfDCWidth,
+				x,
 				halfDCHeight + (mVerticalOffset / 2),
 				mMinutesFont,
 				minutes,
-				Graphics.TEXT_JUSTIFY_CENTER
+				Graphics.TEXT_JUSTIFY_RIGHT
 			);
 
-			x = halfDCWidth + (dc.getTextWidthInPixels(hours, mHoursFont) / 2) + AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
+			x += AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
 
 			// If required, draw AM/PM after hours, vertically centred.
 			if (!is24Hour) {
