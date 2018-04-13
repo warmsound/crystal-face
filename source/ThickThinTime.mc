@@ -96,8 +96,14 @@ class ThickThinTime extends Ui.Drawable {
 			}
 		}
 
-		// Hours always have leading zero, regardless of hour mode, to allow more room for move bar.
-		hours = hours.format("%02d");
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		if (!is24Hour && App.getApp().getProperty("HideHoursLeadingZero")) {
+			hours = hours.format("%d");
+			
+		// Otherwise, show leading zero.
+		} else {
+			hours = hours.format("%02d");
+		}
 
 		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 
