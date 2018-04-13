@@ -32,6 +32,9 @@ class ThickThinTime extends Ui.Drawable {
 	private var AM_PM_X_OFFSET = 2;
 	private var mMeridiemSide;
 
+	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
+	private var mSecondsClipXAdjust = 0;
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -97,6 +100,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		var isLeadingZeroHidden;
 		if (!is24Hour && App.getApp().getProperty("HideHoursLeadingZero")) {
 			hours = hours.format("%d");
 
@@ -104,6 +108,7 @@ class ThickThinTime extends Ui.Drawable {
 		} else {
 			hours = hours.format("%02d");
 		}
+		isLeadingZeroHidden = (hours.length() == 1);
 
 		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 
@@ -191,6 +196,17 @@ class ThickThinTime extends Ui.Drawable {
 						amPmText,
 						Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 					);
+
+					// #10 If mMeridiemSide is left, then assume this is a rectangle-205x148 layout, i.e. single-line layout with
+					// seconds immediately to right of minutes (rather than beneath minutes).
+					// If no leading hours zero is shown, move seconds left by half the width of an hours character.
+					// N.B. Assumes font has tabular (monospaced) numerals.
+					if (isLeadingZeroHidden) {
+						mSecondsClipXAdjust = -dc.getTextWidthInPixels("0", mHoursFont) / 2;
+					} else {
+						mSecondsClipXAdjust = 0;
+					}
+					
 				} else {
 					x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
 					dc.drawText(
@@ -221,7 +237,7 @@ class ThickThinTime extends Ui.Drawable {
 			// Set clip once, at start of low power mode.
 			if (!mClipIsSet) {
 				dc.setClip(
-					mSecondsClipRect[:x],
+					mSecondsClipRect[:x] + mSecondsClipXAdjust,
 					mSecondsClipRect[:y],
 					mSecondsClipRect[:width],
 					mSecondsClipRect[:height]
@@ -245,7 +261,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		dc.drawText(
-			mSecondsClipRect[:x],
+			mSecondsClipRect[:x] + mSecondsClipXAdjust,
 			mSecondsY,
 			mSecondsFont,
 			seconds,
