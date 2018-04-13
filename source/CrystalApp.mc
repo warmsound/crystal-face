@@ -16,6 +16,12 @@ class CrystalApp extends App.AppBase {
 		8 => :THEME_MONO_DARK,
 	};
 
+	private var COLOUR_OVERRIDES = {
+		-1 => :FROM_THEME,
+		-2 => :MONO_HIGHLIGHT,
+		-3 => :MONO
+	};
+
 	function initialize() {
 		AppBase.initialize();
 		updateThemeColours();
@@ -39,6 +45,9 @@ class CrystalApp extends App.AppBase {
 	function onSettingsChanged() {
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
+
+		// Update hours/minutes colours after theme colours have been set.
+		updateHoursMinutesColours();
 
 		mView.onSettingsChanged();
 
@@ -110,6 +119,39 @@ class CrystalApp extends App.AppBase {
 				
 				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
 				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+				break;
+		}
+	}
+
+	function updateHoursMinutesColours() {
+
+		// Hours colour.
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
+			case :FROM_THEME:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("ThemeColour"));
+				break;
+
+			case :MONO_HIGHLIGHT:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoLightColour"));
+				break;
+
+			case :MONO:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoDarkColour"));
+				break;
+		}
+
+		// Minutes colour.
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
+			case :FROM_THEME:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("ThemeColour"));
+				break;
+
+			case :MONO_HIGHLIGHT:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoLightColour"));
+				break;
+
+			case :MONO:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoDarkColour"));
 				break;
 		}
 	}
