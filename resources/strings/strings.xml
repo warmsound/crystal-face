@@ -30,6 +30,12 @@
 	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
 	<string id="ThemeMonoDark">Mono (Dark)</string>
 	<string id="ThemeMonoLight">Mono (Light)</string>
+	<string id="ThemeBlueLight">Blue (Light)</string>
+	<string id="ThemeRedLight">Red (Light)</string>
+	<string id="ThemeGreenLight">Green (Light)</string>
+	<string id="ThemeBlueLight">Blue (Light)</string>
+	<string id="ThemeRedLight">Red (Light)</string>
+	<string id="ThemeGreenLight">Green (Light)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
