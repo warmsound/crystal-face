@@ -8,17 +8,23 @@ https://support.garmin.com/faqSearch/en-US/faq/content/SPo0TFvhQO04O36Y5TYRh5
 A crystal clear watch face, with LCD-like goal meter segments, written while snow crystals were falling during an unusually cold spell of weather here in England.
 
 Features (watch-dependent):
-- Big time digits right in the middle, with hours in bold. Seconds can be hidden.
+- Big time digits right in the middle, with hours in bold. Leading zero can be hidden in 12 hr mode. Hours and minutes colours can be set independently. Seconds can be hidden.
 - 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms.
 - 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
-- 9 colour themes.
+- 12 colour themes.
 
 The techie bit: to save your watch battery, the goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
 
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 1.6.0
+- Added blue, red and green light themes.
+- Allow colour of hours and minutes to be overridden independently.
+- Allow hiding of hours leading zero in 12 hr mode.
+- Prevent overlapping goal numbers on semi-round watches (thanks to G_stijn for reporting this).
 
 ### 1.5.3
 - Fix crash if floors or active minutes goal is set to 0: show disabled meter instead.

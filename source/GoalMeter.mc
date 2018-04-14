@@ -110,7 +110,7 @@ class GoalMeter extends Ui.Drawable {
 		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
 		var themeColour = App.getApp().getProperty("ThemeColour");
 
-		// #21 Force unbuffered drawing on 735xt to reduce memory usage.
+		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)
 			&& (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
 
