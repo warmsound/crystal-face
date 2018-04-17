@@ -4,6 +4,7 @@ using Toybox.System as Sys;
 using Toybox.Lang as Lang;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
+using Toybox.SensorHistory as SensorHistory;
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
@@ -32,7 +33,8 @@ class CrystalView extends Ui.WatchFace {
 		2 => :FIELD_TYPE_NOTIFICATIONS,
 		3 => :FIELD_TYPE_CALORIES,
 		4 => :FIELD_TYPE_DISTANCE,
-		5 => :FIELD_TYPE_ALARMS
+		5 => :FIELD_TYPE_ALARMS,
+		6 => :FIELD_TYPE_ALTITUDE,
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -47,7 +49,8 @@ class CrystalView extends Ui.WatchFace {
 		:FIELD_TYPE_DISTANCE => "7",
 		:INDICATOR_BLUETOOTH => "8",
 		:GOAL_TYPE_BATTERY => "9",
-		:FIELD_TYPE_ALARMS => ":"
+		:FIELD_TYPE_ALARMS => ":",
+		:FIELD_TYPE_ALTITUDE => ";"
 	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
@@ -293,14 +296,14 @@ class CrystalView extends Ui.WatchFace {
 		var battery;
 		var settings;
 		var distance;
+		var altitude;
 		var format;
 		var unit;
 
 		switch (FIELD_TYPES[type]) {
 			case :FIELD_TYPE_HEART_RATE:
-				activityInfo = ActivityMonitor.getInfo();
-				if (activityInfo has :getHeartRateHistory) {
-					iterator = activityInfo.getHeartRateHistory(1, /* newestFirst */ true);
+				if (ActivityMonitor has :getHeartRateHistory) {
+					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
 					sample = iterator.next();
 					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
 						value = sample.heartRate.format("%d");
@@ -338,14 +341,12 @@ class CrystalView extends Ui.WatchFace {
 					unit = "mi";
 				}
 
-				//  Show decimal point only if distance less than 10, to save space.
-				if (distance < 10) {
-					format = "%.1f";
-				} else {
-					format = "%d";
-				}
+				value = distance.format("%.1f");
 
-				value = distance.format(format) + unit;
+				// Show unit only if distance is less than 10, to save space.
+				if (distance < 10) {
+					value += unit;
+				}
 				
 				break;
 
@@ -353,6 +354,22 @@ class CrystalView extends Ui.WatchFace {
 				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
 					value = settings.alarmCount.format("%d");
+				}
+				break;
+
+			case :FIELD_TYPE_ALTITUDE:
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
+					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
+					sample = iterator.next();
+					if ((sample != null) && (sample.data != null)) {
+						altitude = sample.data;
+						value = altitude.format("%d");
+
+						// Show unit only if altitude is less than 1000, to save space.
+						if (altitude < 1000) {
+							value += "m";
+						}
+					}
 				}
 				break;
 		}
