@@ -90,6 +90,10 @@ class ThickThinTime extends Ui.Drawable {
 				if (hours > 12) {
 					hours = hours % 12;
 				}
+
+			// #27 Ensure midnight is shown as 12, not 00.
+			} else if (hours == 0) {
+				hours = 12;
 			}
 							
 			if (isPm) {
