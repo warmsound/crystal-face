@@ -365,8 +365,8 @@ class CrystalView extends Ui.WatchFace {
 						altitude = sample.data;
 						value = altitude.format("%d");
 
-						// Show unit only if altitude is less than 1000, to save space.
-						if (altitude < 1000) {
+						// Show unit only if formatted altitude is 3 characters or less, including any minus, to save space.
+						if (value.length() <= 3) {
 							value += "m";
 						}
 					}
