@@ -23,6 +23,7 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 ### 1.6.1
 - Added barometric altitude for supported CIX 2.x devices.
 - Show midnight as "12" instead of "00" in 12-hour mode.
+- Fixed incorrect default settings for vívoactive®.
 
 ### 1.6.0
 - Added blue, red and green light themes.

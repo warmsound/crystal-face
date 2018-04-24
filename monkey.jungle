@@ -40,7 +40,8 @@ fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
 fr920xt.excludeAnnotations = buffered
 
 # Reverse order of resources so that 64-colour themes are permitted.
-vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
+# #25: Repeat ciq_1.x-no_hr properties within resources-vivoactive, as properties were not correctly inherited.
+#vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
 vivoactive.excludeAnnotations = buffered
 
 # #21: Treat fr735xt as CIQ 1.x i.e. unbuffered drawing, due to insufficient memory.
