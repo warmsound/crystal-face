@@ -10,6 +10,9 @@
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
+			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
+			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
+			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -30,6 +33,42 @@
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.CenterFieldType" title="@Strings.CenterDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.RightFieldType" title="@Strings.RightDataFieldTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.HeartRate</listEntry>
+			<listEntry value="1">@Strings.Battery</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.Calories</listEntry>
+			<listEntry value="4">@Strings.Distance</listEntry>
+			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
 		</settingConfig>
 	</setting>
 

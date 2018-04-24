@@ -32,6 +32,9 @@ class ThickThinTime extends Ui.Drawable {
 	private var AM_PM_X_OFFSET = 2;
 	private var mMeridiemSide;
 
+	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
+	private var mSecondsClipXAdjust = 0;
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -87,6 +90,10 @@ class ThickThinTime extends Ui.Drawable {
 				if (hours > 12) {
 					hours = hours % 12;
 				}
+
+			// #27 Ensure midnight is shown as 12, not 00.
+			} else if (hours == 0) {
+				hours = 12;
 			}
 							
 			if (isPm) {
@@ -96,10 +103,16 @@ class ThickThinTime extends Ui.Drawable {
 			}
 		}
 
-		// Hours always have leading zero, regardless of hour mode, to allow more room for move bar.
-		hours = hours.format("%02d");
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		var isLeadingZeroHidden;
+		if (!is24Hour && App.getApp().getProperty("HideHoursLeadingZero")) {
+			hours = hours.format("%d");
 
-		dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+		// Otherwise, show leading zero.
+		} else {
+			hours = hours.format("%02d");
+		}
+		isLeadingZeroHidden = (hours.length() == 1);
 
 		var x;
 		var halfDCWidth = dc.getWidth() / 2;
@@ -111,28 +124,36 @@ class ThickThinTime extends Ui.Drawable {
 			// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
 			var hoursAscent = Graphics.getFontAscent(mHoursFont);
 
-			// Draw hours, horizontally centred, vertically bottom aligned.
+			// #10 hours may be single digit, but calculate layout as if always double-digit.
+			// N.B. Assumes font has tabular (monospaced) numerals.
+			var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
+			x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
+
+			// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
+			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
-				halfDCWidth,
+				x,
 				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
 				mHoursFont,
 				hours,
-				Graphics.TEXT_JUSTIFY_CENTER
+				Graphics.TEXT_JUSTIFY_RIGHT
 			);
 
 			// Draw minutes, horizontally centred, vertically top aligned.
+			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
-				halfDCWidth,
+				x,
 				halfDCHeight + (mVerticalOffset / 2),
 				mMinutesFont,
 				minutes,
-				Graphics.TEXT_JUSTIFY_CENTER
+				Graphics.TEXT_JUSTIFY_RIGHT
 			);
 
-			x = halfDCWidth + (dc.getTextWidthInPixels(hours, mHoursFont) / 2) + AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
+			x += AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
 
 			// If required, draw AM/PM after hours, vertically centred.
 			if (!is24Hour) {
+				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 				dc.drawText(
 					x,
 					halfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
@@ -152,6 +173,7 @@ class ThickThinTime extends Ui.Drawable {
 			x = halfDCWidth - (totalWidth / 2);
 
 			// Draw hours.
+			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight,
@@ -162,6 +184,7 @@ class ThickThinTime extends Ui.Drawable {
 			x += dc.getTextWidthInPixels(hours, mHoursFont);
 
 			// Draw minutes.
+			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight,
@@ -172,6 +195,8 @@ class ThickThinTime extends Ui.Drawable {
 
 			// If required, draw AM/PM after minutes, or before hours, vertically centred.
 			if (!is24Hour) {
+				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+
 				if (mMeridiemSide == :left) {
 					dc.drawText(
 						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
@@ -180,6 +205,17 @@ class ThickThinTime extends Ui.Drawable {
 						amPmText,
 						Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 					);
+
+					// #10 If mMeridiemSide is left, then assume this is a rectangle-205x148 layout, i.e. single-line layout with
+					// seconds immediately to right of minutes (rather than beneath minutes).
+					// If no leading hours zero is shown, move seconds left by half the width of an hours character.
+					// N.B. Assumes font has tabular (monospaced) numerals.
+					if (isLeadingZeroHidden) {
+						mSecondsClipXAdjust = -dc.getTextWidthInPixels("0", mHoursFont) / 2;
+					} else {
+						mSecondsClipXAdjust = 0;
+					}
+					
 				} else {
 					x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
 					dc.drawText(
@@ -210,7 +246,7 @@ class ThickThinTime extends Ui.Drawable {
 			// Set clip once, at start of low power mode.
 			if (!mClipIsSet) {
 				dc.setClip(
-					mSecondsClipRect[:x],
+					mSecondsClipRect[:x] + mSecondsClipXAdjust,
 					mSecondsClipRect[:y],
 					mSecondsClipRect[:width],
 					mSecondsClipRect[:height]
@@ -234,7 +270,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		dc.drawText(
-			mSecondsClipRect[:x],
+			mSecondsClipRect[:x] + mSecondsClipXAdjust,
 			mSecondsY,
 			mSecondsFont,
 			seconds,

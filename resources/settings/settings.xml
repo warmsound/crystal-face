@@ -15,6 +15,9 @@
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
+			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
+			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
+			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -50,6 +53,7 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<listEntry value="6">@Strings.Altitude</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -61,6 +65,7 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<listEntry value="6">@Strings.Altitude</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -72,14 +77,35 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<listEntry value="6">@Strings.Altitude</listEntry>
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.AlwaysShowMoveBar" title="@Strings.AlwaysShowMoveBarTitle">
+	<setting propertyKey="@Properties.HoursColourOverride" title="@Strings.HoursColourTitle">
+		<settingConfig type="list">
+			<listEntry value="-1">@Strings.FromTheme</listEntry>
+			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
+			<listEntry value="-3">@Strings.Mono</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.MinutesColourOverride" title="@Strings.MinutesColourTitle">
+		<settingConfig type="list">
+			<listEntry value="-1">@Strings.FromTheme</listEntry>
+			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
+			<listEntry value="-3">@Strings.Mono</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.HideHoursLeadingZero" title="@Strings.HideHoursLeadingZeroTitle">
 		<settingConfig type="boolean"/>
 	</setting>
 
 	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.AlwaysShowMoveBar" title="@Strings.AlwaysShowMoveBarTitle">
 		<settingConfig type="boolean"/>
 	</setting>
 

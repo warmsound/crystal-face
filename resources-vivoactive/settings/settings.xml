@@ -13,6 +13,9 @@
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
+			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
+			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
+			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -44,6 +47,7 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
 		</settingConfig>
 	</setting>
 
@@ -55,6 +59,7 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
 		</settingConfig>
 	</setting>
 
@@ -66,6 +71,7 @@
 			<listEntry value="3">@Strings.Calories</listEntry>
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
+			<!--listEntry value="6">@Strings.Altitude</listEntry-->
 		</settingConfig>
 	</setting>
 

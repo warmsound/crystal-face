@@ -14,11 +14,21 @@ class CrystalApp extends App.AppBase {
 		6 => :THEME_DAYGLO_ORANGE_DARK,
 		7 => :THEME_RED_DARK,
 		8 => :THEME_MONO_DARK,
+		9 => :THEME_BLUE_LIGHT,
+		10 => :THEME_GREEN_LIGHT,
+		11 => :THEME_RED_LIGHT,
+	};
+
+	private var COLOUR_OVERRIDES = {
+		-1 => :FROM_THEME,
+		-2 => :MONO_HIGHLIGHT,
+		-3 => :MONO
 	};
 
 	function initialize() {
 		AppBase.initialize();
 		updateThemeColours();
+		updateHoursMinutesColours();
 	}
 
 	// onStart() is called on application start up
@@ -39,6 +49,9 @@ class CrystalApp extends App.AppBase {
 	function onSettingsChanged() {
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
+
+		// Update hours/minutes colours after theme colours have been set.
+		updateHoursMinutesColours();
 
 		mView.onSettingsChanged();
 
@@ -85,6 +98,18 @@ class CrystalApp extends App.AppBase {
 			case :THEME_MONO_DARK:
 				App.getApp().setProperty("ThemeColour", Graphics.COLOR_WHITE);
 				break;
+
+			case :THEME_BLUE_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_BLUE);
+				break;
+
+			case :THEME_GREEN_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GREEN);
+				break;
+
+			case :THEME_RED_LIGHT:
+				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_RED);
+				break;
 		}
 
 		// Light/dark-specific colours.
@@ -105,11 +130,47 @@ class CrystalApp extends App.AppBase {
 				break;
 
 			case :THEME_MONO_LIGHT:
+			case :THEME_BLUE_LIGHT:
+			case :THEME_GREEN_LIGHT:
+			case :THEME_RED_LIGHT:
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
 				
 				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
 				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+				break;
+		}
+	}
+
+	function updateHoursMinutesColours() {
+
+		// Hours colour.
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
+			case :FROM_THEME:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("ThemeColour"));
+				break;
+
+			case :MONO_HIGHLIGHT:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoLightColour"));
+				break;
+
+			case :MONO:
+				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoDarkColour"));
+				break;
+		}
+
+		// Minutes colour.
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
+			case :FROM_THEME:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("ThemeColour"));
+				break;
+
+			case :MONO_HIGHLIGHT:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoLightColour"));
+				break;
+
+			case :MONO:
+				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoDarkColour"));
 				break;
 		}
 	}

@@ -5,14 +5,21 @@
 
 	<string id="BackgroundColourTitle">Background Colour</string>
 	<string id="ThemeTitle">Theme</string>
+	<string id="HoursColourTitle">Hours Colour</string>
+	<string id="MinutesColourTitle">Minutes Colour</string>
 	<string id="LeftGoalMeterTitle">Left Meter</string>
 	<string id="RightGoalMeterTitle">Right Meter</string>
 	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
 	<string id="AlwaysShowMoveBarTitle">Always Show Move Bar</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
+	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
 	<string id="LeftDataFieldTitle">Left Data Field</string>
 	<string id="CenterDataFieldTitle">Center Data Field</string>
 	<string id="RightDataFieldTitle">Right Data Field</string>
+
+	<string id="FromTheme">(From Theme)</string>
+	<string id="MonoHighlight">Mono Highlight</string>
+	<string id="Mono">Mono</string>
 
 	<string id="ThemeBlueDark">Blue (Dark)</string>
 	<string id="ThemePinkDark">Pink (Dark)</string>
@@ -23,6 +30,9 @@
 	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
 	<string id="ThemeMonoDark">Mono (Dark)</string>
 	<string id="ThemeMonoLight">Mono (Light)</string>
+	<string id="ThemeBlueLight">Blue (Light)</string>
+	<string id="ThemeRedLight">Red (Light)</string>
+	<string id="ThemeGreenLight">Green (Light)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
@@ -38,6 +48,7 @@
 	<string id="Calories">Calories</string>
 	<string id="Distance">Distance</string>
 	<string id="Alarms">Alarms</string>
+	<string id="Altitude">Altitude</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. #20: Set to NONE for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
