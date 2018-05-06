@@ -17,6 +17,7 @@ class CrystalApp extends App.AppBase {
 		9 => :THEME_BLUE_LIGHT,
 		10 => :THEME_GREEN_LIGHT,
 		11 => :THEME_RED_LIGHT,
+		12 => :THEME_VIVID_YELLOW_DARK,
 	};
 
 	private var COLOUR_OVERRIDES = {
@@ -87,6 +88,10 @@ class CrystalApp extends App.AppBase {
 				App.getApp().setProperty("ThemeColour", 0xFFFFAA);
 				break;
 
+			case :THEME_VIVID_YELLOW_DARK:
+				App.getApp().setProperty("ThemeColour", 0xFFFF00);
+				break;
+
 			case :THEME_DAYGLO_ORANGE_DARK:
 				App.getApp().setProperty("ThemeColour", Graphics.COLOR_ORANGE);
 				break;
@@ -119,6 +124,7 @@ class CrystalApp extends App.AppBase {
 			case :THEME_GREEN_DARK:
 			case :THEME_CORNFLOWER_BLUE_DARK:
 			case :THEME_LEMON_CREAM_DARK:
+			case :THEME_VIVID_YELLOW_DARK:
 			case :THEME_DAYGLO_ORANGE_DARK:
 			case :THEME_RED_DARK:
 			case :THEME_MONO_DARK:

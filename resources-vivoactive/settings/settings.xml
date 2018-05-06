@@ -9,6 +9,7 @@
             <!-- vivoactive is the only CIQ 1.x watch to support 64 colours (rather than the usual 16) -->
 			<listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry>
 			<listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry>
+			<listEntry value="12">@Strings.ThemeVividYellowDark</listEntry>
             
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
