@@ -23,7 +23,7 @@
 	<property id="CenterFieldType" type="number">1</property>
 	<property id="RightFieldType" type="number">2</property>
 
-	<property id="AlwaysShowMoveBar" type="boolean">true</property>
+	<property id="MoveBar" type="number">0</property>
 	
 	<property id="HideSeconds" type="boolean">false</property>
 	<property id="HideHoursLeadingZero" type="boolean">false</property>
