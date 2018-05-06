@@ -14,8 +14,6 @@ class CrystalView extends Ui.WatchFace {
 	private var mMinutesFont;
 	private var mSecondsFont;
 
-	private var mDateFont;
-
 	private var mTime;
 	
 	private var GOAL_TYPES = {
@@ -82,23 +80,6 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
-		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
-		// string, then override font in code.
-		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
-		switch (dateFontOverride) {
-			case "ZHS":
-				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
-				break;
-
-			case "ZHT":
-				mDateFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
-				break;
-
-			default:
-				mDateFont  = Ui.loadResource(Rez.Fonts.DateFont);
-				break;
-		}
-
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		cacheDrawables();
@@ -107,8 +88,6 @@ class CrystalView extends Ui.WatchFace {
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
-
-		mDrawables[:Date].setFont(mDateFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}

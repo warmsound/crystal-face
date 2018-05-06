@@ -43,13 +43,26 @@ class DateLine extends Ui.Drawable {
 			Ui.loadResource(Rez.Strings.Dec),
 		];
 
+		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
+		// string, then override font in code.
+		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
+		switch (dateFontOverride) {
+			case "ZHS":
+				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
+				break;
+
+			case "ZHT":
+				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
+				break;
+
+			default:
+				mFont  = Ui.loadResource(Rez.Fonts.DateFont);
+				break;
+		}
+
 		mX = params[:x];
 		mY = params[:y];
 		mYLine2 = params[:yLine2];
-	}
-
-	function setFont(font) {
-		mFont = font;
 	}
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.
@@ -138,7 +151,5 @@ class DateLine extends Ui.Drawable {
 			day,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
-
-
 	}
 }
