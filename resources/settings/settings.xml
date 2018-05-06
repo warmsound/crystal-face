@@ -109,11 +109,11 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
-	<setting propertyKey="@Properties.MoveBar" title="@Strings.MoveBarTitle">
+	<setting propertyKey="@Properties.MoveBarStyle" title="@Strings.MoveBarStyleTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ShowAllSegments</listEntry>
 			<listEntry value="1">@Strings.ShowFilledSegments</listEntry>
-			<listEntry value="2">@Strings.Hide</listEntry>
+			<listEntry value="2">@Strings.Hidden</listEntry>
 		</settingConfig>
 	</setting>
 
