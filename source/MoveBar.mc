@@ -3,6 +3,12 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
+private var SETTING = {
+	0 => :SHOW_ALL_SEGMENTS,
+	1 => :SHOW_FILLED_SEGMENTS,
+	2 => :HIDE
+};
+
 class MoveBar extends Ui.Drawable {
 
 	private var mX, mY, mBaseWidth, mHeight, mSeparator;
@@ -45,6 +51,10 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
+		if (SETTING[App.getApp().getProperty("MoveBar")] == :HIDE) {
+			return;
+		}
+
 		var info = ActivityMonitor.getInfo();
 		var currentMoveBarLevel = info.moveBarLevel;
 
@@ -117,7 +127,7 @@ class MoveBar extends Ui.Drawable {
 		var thisBarWidth;
 		var thisBarColour = 0;
 		var barX = x + mTailWidth;
-		var alwaysShowMoveBar = App.getApp().getProperty("AlwaysShowMoveBar");
+		var setting = SETTING[App.getApp().getProperty("MoveBar")];
 
 		for (var i = 1; i < ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
 
@@ -128,12 +138,12 @@ class MoveBar extends Ui.Drawable {
 				thisBarWidth = barWidth;
 			}
 
-			// Move bar at this level or greater, so show regardless of AlwaysShowMoveBar setting.
+			// Move bar at this level or greater, so show regardless of MoveBar setting.
 			if (i <= currentMoveBarLevel) {
 				thisBarColour = themeColour;
 
-			// Move bar below this level, so only show if AlwaysShowMoveBar setting is true.
-			} else if (alwaysShowMoveBar) {
+			// Move bar below this level, so only show if MoveBar setting is SHOW_ALL_SEGMENTS.
+			} else if (setting == :SHOW_ALL_SEGMENTS) {
 				thisBarColour = meterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.
