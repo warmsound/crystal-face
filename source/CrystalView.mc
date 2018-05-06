@@ -33,6 +33,7 @@ class CrystalView extends Ui.WatchFace {
 		4 => :FIELD_TYPE_DISTANCE,
 		5 => :FIELD_TYPE_ALARMS,
 		6 => :FIELD_TYPE_ALTITUDE,
+		7 => :FIELD_TYPE_TEMPERATURE,
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -48,7 +49,8 @@ class CrystalView extends Ui.WatchFace {
 		:INDICATOR_BLUETOOTH => "8",
 		:GOAL_TYPE_BATTERY => "9",
 		:FIELD_TYPE_ALARMS => ":",
-		:FIELD_TYPE_ALTITUDE => ";"
+		:FIELD_TYPE_ALTITUDE => ";",
+		:FIELD_TYPE_TEMPERATURE => "<"
 	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
@@ -276,6 +278,7 @@ class CrystalView extends Ui.WatchFace {
 		var settings;
 		var distance;
 		var altitude;
+		var temperature;
 		var format;
 		var unit;
 
@@ -347,6 +350,31 @@ class CrystalView extends Ui.WatchFace {
 						// Show unit only if formatted altitude is 3 characters or less, including any minus, to save space.
 						if (value.length() <= 3) {
 							value += "m";
+						}
+					}
+				}
+				break;
+
+			case :FIELD_TYPE_TEMPERATURE:
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
+					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
+					sample = iterator.next();
+					if ((sample != null) && (sample.data != null)) {
+						temperature = sample.data;
+
+						settings = Sys.getDeviceSettings();
+						if (settings.temperatureUnits == System.UNIT_METRIC) {
+							unit = "°C";
+						} else {
+							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
+							unit = "°F";
+						}
+
+						value = temperature.format("%d");
+
+						// Show unit only if formatted temperature is 2 characters or less, including any minus, to save space.
+						if (value.length() <= 2) {
+							value += unit;
 						}
 					}
 				}
