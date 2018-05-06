@@ -55,6 +55,7 @@
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
+			<listEntry value="7">@Strings.Temperature</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -67,6 +68,7 @@
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
+			<listEntry value="7">@Strings.Temperature</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -79,6 +81,7 @@
 			<listEntry value="4">@Strings.Distance</listEntry>
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
+			<listEntry value="7">@Strings.Temperature</listEntry>
 		</settingConfig>
 	</setting>
 
