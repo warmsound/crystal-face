@@ -15,7 +15,8 @@ class GoalMeter extends Ui.Drawable {
 	private var mStroke; // Stroke width.
 	private var mWidth; // Clip width of meter.
 	private var mHeight; // Clip height of meter.
-	private var mSeparator; // Stroke width of separator bars.
+	private var mSeparator; // Current stroke width of separator bars.
+	private var mLayoutSeparator; // Stroke with of separator bars specified in layout.
 
 	private var mSegments; // Array of segment heights, in pixels, excluding separators.
 	private var mFillHeight; // Total height of filled segments, in pixels, including separators.
@@ -32,6 +33,12 @@ class GoalMeter extends Ui.Drawable {
 	private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
 	private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
+	private var GOAL_METER_STYLE = {
+		0 => :MULTI_SEGMENTS,
+		1 => :SINGLE_SEGMENT,
+		2 => :HIDDEN
+	};
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -39,7 +46,10 @@ class GoalMeter extends Ui.Drawable {
 		mShape = params[:shape];
 		mStroke = params[:stroke];
 		mHeight = params[:height];
-		mSeparator = params[:separator];
+		mLayoutSeparator = params[:separator];
+
+		// Read meter style setting to determine current separator width.
+		onSettingsChanged();
 
 		mWidth = getWidth();
 	}
@@ -84,6 +94,26 @@ class GoalMeter extends Ui.Drawable {
 
 	function onSettingsChanged() {
 		mBuffersNeedRecreate = true;
+
+		// #18 Only read separator width from layout if multi segment style is selected.
+		if (GOAL_METER_STYLE[App.getApp().getProperty("GoalMeterStyle")] == :MULTI_SEGMENTS) {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != mLayoutSeparator) {
+				mMaxValue = null;
+			}
+
+			mSeparator = mLayoutSeparator;
+			
+		} else {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != 0) {
+				mMaxValue = null;
+			}
+
+			mSeparator = 0;
+		}
 	}
 
 	// Different draw algorithms have been tried:
@@ -96,6 +126,10 @@ class GoalMeter extends Ui.Drawable {
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
 	function draw(dc) {
+		if (GOAL_METER_STYLE[App.getApp().getProperty("GoalMeterStyle")] == :HIDDEN) {
+			return;
+		}
+
 		var left;
 		var top;
 

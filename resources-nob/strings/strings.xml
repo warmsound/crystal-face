@@ -10,6 +10,7 @@
 	<string id="LeftGoalMeterTitle">Left Meter</string>
 	<string id="RightGoalMeterTitle">Right Meter</string>
 	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
+	<string id="GoalMeterStyleTitle">Meter Style</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
 	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
@@ -21,6 +22,8 @@
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
+	<string id="MultiSegments">Multi Segments</string>
+	<string id="SingleSegment">Single Segment</string>
 	<string id="ShowAllSegments">Show All Segments</string>
 	<string id="ShowFilledSegments">Show Filled Segments</string>
 	<string id="Hidden">Hidden</string>
