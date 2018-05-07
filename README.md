@@ -9,7 +9,7 @@ A crystal clear watch face, with LCD-like goal meter segments, written while sno
 
 Features (watch-dependent):
 - Big time digits right in the middle, with hours in bold. Leading zero can be hidden in 12 hr mode. Hours and minutes colours can be set independently. Seconds can be hidden.
-- 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms.
+- 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms, altitude, temperature.
 - 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
 - 12 colour themes.
@@ -19,6 +19,15 @@ The techie bit: to save your watch battery, the goal meters and move bar are dra
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 1.7.0
+- Added temperature data field option.
+- Added vivid yellow dark theme.
+- Added meter style setting.
+- Added move bar style setting.
+- Corrected German translations (thanks to Christoph Heymann for help with this).
+- Temporarily removed support for Approach® S60 and Forerunner® 920XT, pending fixes from Garmin - many thanks for your patience.
+- Technical update to CIQ 2.4.5 SDK.
 
 ### 1.6.1
 - Added barometric altitude for supported CIQ 2.x devices.
