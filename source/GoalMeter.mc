@@ -97,8 +97,21 @@ class GoalMeter extends Ui.Drawable {
 
 		// #18 Only read separator width from layout if multi segment style is selected.
 		if (GOAL_METER_STYLE[App.getApp().getProperty("GoalMeterStyle")] == :MULTI_SEGMENTS) {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != mLayoutSeparator) {
+				mMaxValue = null;
+			}
+
 			mSeparator = mLayoutSeparator;
+			
 		} else {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != 0) {
+				mMaxValue = null;
+			}
+
 			mSeparator = 0;
 		}
 	}
