@@ -20,6 +20,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.7.1
+- Re-enabled Forerunner® 920XT, following non-anti-aliased custom font workaround provided by Coleman at Garmin.
+- Corrected French translation (thanks to Ju Neusch).
+
 ### 1.7.0
 - Added temperature data field option.
 - Added vivid yellow dark theme.
