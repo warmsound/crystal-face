@@ -1,0 +1,24 @@
+<!-- #17 Anti-aliased custom fonts not supported on fr920xt. -->
+<fonts>
+
+	<!-- Symlinked from resources-smaller-time/fonts. -->
+	<font id="HoursFont" filename="titillium-web-bold-48.fnt" antialias="false" />
+	<font id="MinutesFont" filename="titillium-web-light-48.fnt" antialias="false" />
+
+	<!-- Symlinked from resources-small-time/fonts. -->
+	<font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
+
+	<!-- Symlinked from resources-smaller-time/fonts. -->
+	<font id="DateFont" filename="titillium-web-semibold-16-date.fnt" antialias="false" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
+
+	<!-- Symlinked from resources/fonts. -->
+	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" />
+
+	<!-- Symlinked from resources-small-icons/fonts. -->
+	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="false" />
+
+	<!-- Symlinked from resources-smaller-time/fonts. -->
+	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
+	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
+</fonts>
