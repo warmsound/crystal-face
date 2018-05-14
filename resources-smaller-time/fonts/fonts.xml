@@ -3,7 +3,7 @@
 	<font id="MinutesFont" filename="titillium-web-light-48.fnt" antialias="true" />
 
 	<!-- Same SecondsFont as resources-small-time -->
-	<!--font id="SecondsFont" filename="titillium-web-semibold-16.fnt" antialias="true" filter="0123456789AP"/-->
+	<!--font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="true" filter="0123456789AP"/-->
 
 	<!-- titillium-web-semibold-16-date.fnt contains more glyphs than titillium-web-semibold-16.fnt -->
 	<font id="DateFont" filename="titillium-web-semibold-16-date.fnt" antialias="true" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
