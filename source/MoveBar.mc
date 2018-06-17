@@ -129,7 +129,8 @@ class MoveBar extends Ui.Drawable {
 		var barX = x + mTailWidth;
 		var moveBarStyle = MOVE_BAR_STYLE[App.getApp().getProperty("MoveBarStyle")];
 
-		for (var i = 1; i < ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
+		// One-based, to correspond with move bar level (zero means no bars).
+		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
 
 			// First bar is double width.
 			if (i == 1) {
@@ -151,7 +152,7 @@ class MoveBar extends Ui.Drawable {
 				break;
 			}
 
-			Sys.println("drawBar " + i + " at x=" + x);
+			Sys.println("drawBar " + i + " at x=" + barX);
 			drawBar(dc, thisBarColour, barX, y + (mHeight / 2), thisBarWidth);
 
 			barX += thisBarWidth + mSeparator;
@@ -160,7 +161,7 @@ class MoveBar extends Ui.Drawable {
 
 	function getBarWidth() {
 		// Maximum number of bars actually shown.
-		var numBars = ActivityMonitor.MOVE_BAR_LEVEL_MAX - ActivityMonitor.MOVE_BAR_LEVEL_MIN - 1;
+		var numBars = ActivityMonitor.MOVE_BAR_LEVEL_MAX - ActivityMonitor.MOVE_BAR_LEVEL_MIN;
 
 		// Subtract tail width, and total separator width.
 		var availableWidth = mCurrentWidth - mTailWidth - ((numBars - 1) * mSeparator);
