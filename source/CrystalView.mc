@@ -34,6 +34,7 @@ class CrystalView extends Ui.WatchFace {
 		5 => :FIELD_TYPE_ALARMS,
 		6 => :FIELD_TYPE_ALTITUDE,
 		7 => :FIELD_TYPE_TEMPERATURE,
+		8 => :FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -42,6 +43,7 @@ class CrystalView extends Ui.WatchFace {
 		:GOAL_TYPE_ACTIVE_MINUTES => "2",
 		:FIELD_TYPE_HEART_RATE => "3",
 		:FIELD_TYPE_BATTERY => "4",
+		:FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
 		:FIELD_TYPE_NOTIFICATIONS => "5",
 		:FIELD_TYPE_CALORIES => "6",
 		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
@@ -183,15 +185,18 @@ class CrystalView extends Ui.WatchFace {
 	function onPostUpdate(dc) {
 
 		// Find any battery meter icons, and draw fill on top. 
-		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:LeftFieldIcon]);
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:CenterFieldIcon]);
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:RightFieldIcon]);
 		}
 	}
@@ -253,7 +258,8 @@ class CrystalView extends Ui.WatchFace {
 		var colour;
 
 		// Grey out icon if no value was retrieved.
-		if (value.length() == 0) {
+		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
+		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
@@ -299,8 +305,12 @@ class CrystalView extends Ui.WatchFace {
 				value = battery.format("%d") + "%";
 				break;
 
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
+				break;
+
 			case :FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();				
+				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format("%d");
 				}
