@@ -70,6 +70,9 @@ class CrystalView extends Ui.WatchFace {
 
 	const CM_PER_KM = 100000;
 	const MI_PER_KM = 0.621371;
+	const FT_PER_M = 3.28084;
+
+	const MAX_FIELD_LENGTH = 4; // Maximum number of characters per field;
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -355,11 +358,24 @@ class CrystalView extends Ui.WatchFace {
 					sample = iterator.next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
+
+						settings = Sys.getDeviceSettings();
+
+						// Metres (no conversion necessary).
+						if (settings.distanceUnits == System.UNIT_METRIC) {
+							unit = "m";
+
+						// Feet.
+						} else {
+							altitude *= FT_PER_M;
+							unit = "ft";
+						}
+
 						value = altitude.format("%d");
 
-						// Show unit only if formatted altitude is 3 characters or less, including any minus, to save space.
-						if (value.length() <= 3) {
-							value += "m";
+						// Show unit only if value plus unit fits within maximum field length.
+						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
+							value += unit;
 						}
 					}
 				}
@@ -382,8 +398,8 @@ class CrystalView extends Ui.WatchFace {
 
 						value = temperature.format("%d");
 
-						// Show unit only if formatted temperature is 2 characters or less, including any minus, to save space.
-						if (value.length() <= 2) {
+						// Show unit only if value plus unit fits within maximum field length.
+						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
 							value += unit;
 						}
 					}
