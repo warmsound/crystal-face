@@ -2,12 +2,12 @@
 A Garmin Connect IQ watch face.
 
 ## Description
-**Instructions on how to change watch face settings:**
-https://support.garmin.com/faqSearch/en-US/faq/content/SPo0TFvhQO04O36Y5TYRh5
+**FAQs, including how to change watch face settings:**
+https://github.com/warmsound/crystal-face/wiki/FAQ
 
 A crystal clear watch face, with LCD-like goal meter segments, written while snow crystals were falling during an unusually cold spell of weather here in England.
 
-Features (watch-dependent):
+Features (depending on watch support):
 - Big time digits right in the middle, with hours in bold. Leading zero can be hidden in 12 hr mode. Hours and minutes colours can be set independently. Seconds can be hidden.
 - 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms, altitude, temperature.
 - 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
@@ -19,6 +19,12 @@ The techie bit: to save your watch battery, the goal meters and move bar are dra
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 1.7.2
+- Altitude units now obey statue/metric setting (thanks to Rick Gorham).
+- Added "Battery (Hide Percentage)" data field (thanks to Paolo Avezzano).
+- Corrected number of move bar segments to 5 (thanks to Viorel).
+- Technical update to CIQ 2.4.6 SDK.
 
 ### 1.7.1
 - Re-enabled Forerunner® 920XT, following non-anti-aliased custom font workaround provided by Coleman at Garmin.
