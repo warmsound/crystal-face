@@ -362,7 +362,7 @@ class CrystalView extends Ui.WatchFace {
 						settings = Sys.getDeviceSettings();
 
 						// Metres (no conversion necessary).
-						if (settings.distanceUnits == System.UNIT_METRIC) {
+						if (settings.elevationUnits == System.UNIT_METRIC) {
 							unit = "m";
 
 						// Feet.
