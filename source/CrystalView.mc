@@ -29,18 +29,6 @@ class CrystalView extends Ui.WatchFace {
 		-2 => :GOAL_TYPE_CALORIES
 	};
 
-	private var FIELD_TYPES = {
-		0 => :FIELD_TYPE_HEART_RATE,
-		1 => :FIELD_TYPE_BATTERY,
-		2 => :FIELD_TYPE_NOTIFICATIONS,
-		3 => :FIELD_TYPE_CALORIES,
-		4 => :FIELD_TYPE_DISTANCE,
-		5 => :FIELD_TYPE_ALARMS,
-		6 => :FIELD_TYPE_ALTITUDE,
-		7 => :FIELD_TYPE_TEMPERATURE,
-		8 => :FIELD_TYPE_BATTERY_HIDE_PERCENT,
-	};
-
 	private var ICON_FONT_CHARS = {
 		:GOAL_TYPE_STEPS => "0",
 		:GOAL_TYPE_FLOORS_CLIMBED => "1",
@@ -136,6 +124,9 @@ class CrystalView extends Ui.WatchFace {
 		// Use mTime instead.
 		//mDrawables[:Time] = View.findDrawableById("Time");
 
+		// Use mFields instead.
+		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
+
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
 
@@ -184,7 +175,6 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		updateGoalMeters();
-		//updateDataFields();
 		updateBluetoothIndicator();
 
 		// Call the parent onUpdate function to redraw the layout
@@ -243,181 +233,6 @@ class CrystalView extends Ui.WatchFace {
 			batteryIcon.locY - (fillHeight / 2) + 1,
 			Math.ceil(fillWidth * (batteryLevel / 100)), 
 			fillHeight);	
-	}
-
-	function updateDataFields() {
-		updateDataField(
-			App.getApp().getProperty("Field1Type"),
-			mDrawables[:LeftFieldIcon],
-			mDrawables[:LeftFieldValue]
-		);
-
-		updateDataField(
-			App.getApp().getProperty("Field2Type"),
-			mDrawables[:CenterFieldIcon],
-			mDrawables[:CenterFieldValue]
-		);
-
-		updateDataField(
-			App.getApp().getProperty("Field3Type"),
-			mDrawables[:RightFieldIcon],
-			mDrawables[:RightFieldValue]
-		);
-	}
-
-	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	function updateDataField(fieldType, iconLabel, valueLabel) {
-		var value = getValueForFieldType(fieldType);
-		var colour;
-
-		// Grey out icon if no value was retrieved.
-		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
-		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
-		} else {
-			colour = App.getApp().getProperty("ThemeColour");
-		}
-
-		iconLabel.setText(ICON_FONT_CHARS[FIELD_TYPES[fieldType]]);
-		iconLabel.setColor(colour);
-		
-		valueLabel.setText(value);
-		valueLabel.setColor(App.getApp().getProperty("MonoLightColour"));
-	}
-
-	// "type" parameter is raw property value (it's converted to symbol below).
-	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
-	function getValueForFieldType(type) {
-		var value = "";
-
-		var activityInfo;
-		var iterator;
-		var sample;
-		var battery;
-		var settings;
-		var distance;
-		var altitude;
-		var temperature;
-		var format;
-		var unit;
-
-		switch (FIELD_TYPES[type]) {
-			case :FIELD_TYPE_HEART_RATE:
-				if (ActivityMonitor has :getHeartRateHistory) {
-					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
-					sample = iterator.next();
-					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
-						value = sample.heartRate.format("%d");
-					}
-				}
-				break;
-
-			case :FIELD_TYPE_BATTERY:
-				// #8: battery returned as float. Use floor() to match native. Must match fillBatteryMeter().
-				battery = Math.floor(Sys.getSystemStats().battery);
-				value = battery.format("%d") + "%";
-				break;
-
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
-				break;
-
-			case :FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();
-				if (settings.notificationCount > 0) {
-					value = settings.notificationCount.format("%d");
-				}
-				break;
-
-			case :FIELD_TYPE_CALORIES:
-				activityInfo = ActivityMonitor.getInfo();
-				value = activityInfo.calories.format("%d");
-				break;
-
-			case :FIELD_TYPE_DISTANCE:
-				settings = Sys.getDeviceSettings();
-				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance.toFloat() / CM_PER_KM; // #11: Ensure floating point division!
-
-				if (settings.distanceUnits == System.UNIT_METRIC) {
-					unit = "km";					
-				} else {
-					distance *= MI_PER_KM;
-					unit = "mi";
-				}
-
-				value = distance.format("%.1f");
-
-				// Show unit only if distance is less than 10, to save space.
-				if (distance < 10) {
-					value += unit;
-				}
-				
-				break;
-
-			case :FIELD_TYPE_ALARMS:
-				settings = Sys.getDeviceSettings();
-				if (settings.alarmCount > 0) {
-					value = settings.alarmCount.format("%d");
-				}
-				break;
-
-			case :FIELD_TYPE_ALTITUDE:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
-					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
-					if ((sample != null) && (sample.data != null)) {
-						altitude = sample.data;
-
-						settings = Sys.getDeviceSettings();
-
-						// Metres (no conversion necessary).
-						if (settings.elevationUnits == System.UNIT_METRIC) {
-							unit = "m";
-
-						// Feet.
-						} else {
-							altitude *= FT_PER_M;
-							unit = "ft";
-						}
-
-						value = altitude.format("%d");
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
-							value += unit;
-						}
-					}
-				}
-				break;
-
-			case :FIELD_TYPE_TEMPERATURE:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
-					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
-					if ((sample != null) && (sample.data != null)) {
-						temperature = sample.data;
-
-						settings = Sys.getDeviceSettings();
-						if (settings.temperatureUnits == System.UNIT_METRIC) {
-							unit = "°C";
-						} else {
-							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
-							unit = "°F";
-						}
-
-						value = temperature.format("%d");
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
-							value += unit;
-						}
-					}
-				}
-				break;
-		}
-
-		return value;
 	}
 
 	// Set colour of bluetooth indicator, depending on phone connection status.
