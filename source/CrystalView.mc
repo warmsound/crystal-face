@@ -188,18 +188,18 @@ class CrystalView extends Ui.WatchFace {
 	function onPostUpdate(dc) {
 
 		// Find any battery meter icons, and draw fill on top. 
-		if ((FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((FIELD_TYPES[App.getApp().getProperty("Field1Type")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("Field1Type")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:LeftFieldIcon]);
 		}
 
-		if ((FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((FIELD_TYPES[App.getApp().getProperty("Field2Type")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("Field2Type")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:CenterFieldIcon]);
 		}
 
-		if ((FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((FIELD_TYPES[App.getApp().getProperty("Field3Type")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("Field3Type")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:RightFieldIcon]);
 		}
 	}
@@ -237,19 +237,19 @@ class CrystalView extends Ui.WatchFace {
 
 	function updateDataFields() {
 		updateDataField(
-			App.getApp().getProperty("LeftFieldType"),
+			App.getApp().getProperty("Field1Type"),
 			mDrawables[:LeftFieldIcon],
 			mDrawables[:LeftFieldValue]
 		);
 
 		updateDataField(
-			App.getApp().getProperty("CenterFieldType"),
+			App.getApp().getProperty("Field2Type"),
 			mDrawables[:CenterFieldIcon],
 			mDrawables[:CenterFieldValue]
 		);
 
 		updateDataField(
-			App.getApp().getProperty("RightFieldType"),
+			App.getApp().getProperty("Field3Type"),
 			mDrawables[:RightFieldIcon],
 			mDrawables[:RightFieldValue]
 		);

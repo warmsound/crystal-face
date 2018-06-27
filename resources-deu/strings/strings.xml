@@ -14,9 +14,9 @@
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
 	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
-	<string id="LeftDataFieldTitle">Left Data Field</string>
-	<string id="CenterDataFieldTitle">Center Data Field</string>
-	<string id="RightDataFieldTitle">Right Data Field</string>
+	<string id="DataField1Title">Data Field 1</string>
+	<string id="DataField2Title">Data Field 2</string>
+	<string id="DataField3Title">Data Field 3</string>
 
 	<string id="FromTheme">(From Theme)</string>
 	<string id="MonoHighlight">Mono Highlight</string>

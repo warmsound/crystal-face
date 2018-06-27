@@ -4,6 +4,6 @@
 	<property id="RightGoalType" type="number">2</property>
 
 	<!-- Distance, because HR not supported -->
-	<property id="LeftFieldType" type="number">4</property>
+	<property id="Field1Type" type="number">4</property>
 
 </properties>
