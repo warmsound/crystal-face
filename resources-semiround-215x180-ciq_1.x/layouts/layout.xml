@@ -30,15 +30,13 @@
 	<label id="RightGoalCurrent" text="6" x="150" y="147" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 	<label id="RightGoalMax" text="10" x="150" y="163" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
-	<label id="LeftFieldIcon" text="3" x="68" y="13" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftFieldValue" text="0" x="68" y="32" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
-	<label id="CenterFieldIcon" text="4" x="108" y="13" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="CenterFieldValue" text="75%" x="108" y="32" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
-	<label id="RightFieldIcon" text="5" x="147" y="13" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightFieldValue" text="0" x="147" y="32" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
+	<drawable id="DataFields" class="DataFields">
+		<param name="left">68</param>
+		<param name="right">147</param>
+		<param name="top">13</param>
+		<param name="bottom">32</param>
+	</drawable>
+	
 	<drawable id="Date" class="DateLine">
 		<param name="y">55</param>
 	</drawable>
