@@ -45,6 +45,19 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_TEMPERATURE => "<"
 	};
 
+	const BATTERY_FILL_WIDTH = 18;
+	const BATTERY_FILL_HEIGHT = 6;
+
+	const BATTERY_WIDTH_SMALL = 24;
+	const BATTERY_FILL_WIDTH_SMALL = 15;
+	const BATTERY_FILL_HEIGHT_SMALL = 4;
+
+	const BATTERY_LEVEL_LOW = 20;
+	const BATTERY_LEVEL_CRITICAL = 10;
+
+	const CM_PER_KM = 100000;
+	const MI_PER_KM = 0.621371;
+	const FT_PER_M = 3.28084;
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -111,6 +124,14 @@ class DataFields extends Ui.Drawable {
 			value,
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
+
+		// Battery meter.
+		switch (FIELD_TYPES[fieldType]) {
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				fillBatteryMeter(dc, x);
+				break;
+		}
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
@@ -246,5 +267,36 @@ class DataFields extends Ui.Drawable {
 		}
 
 		return value;
+	}
+
+	function fillBatteryMeter(dc, x) {
+		// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
+		var batteryLevel = Math.floor(Sys.getSystemStats().battery);
+		var colour;
+		var fillWidth, fillHeight;
+
+		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
+			colour = Graphics.COLOR_RED;
+		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
+			colour = Graphics.COLOR_YELLOW;
+		} else {
+			colour = App.getApp().getProperty("ThemeColour");
+		}
+
+		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+
+		// Layout uses small battery icon.
+		if (dc.getTextWidthInPixels(ICON_FONT_CHARS[:FIELD_TYPE_BATTERY], mIconsFont) == BATTERY_WIDTH_SMALL) {
+			fillWidth = BATTERY_FILL_WIDTH_SMALL;
+			fillHeight = BATTERY_FILL_HEIGHT_SMALL;
+		} else {
+			fillWidth = BATTERY_FILL_WIDTH;
+			fillHeight = BATTERY_FILL_HEIGHT;
+		}
+		dc.fillRectangle(
+			x - (fillWidth / 2) - 1,
+			mTop - (fillHeight / 2) + 1,
+			Math.ceil(fillWidth * (batteryLevel / 100)), 
+			fillHeight);	
 	}
 }
