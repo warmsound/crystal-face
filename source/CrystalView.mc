@@ -14,7 +14,11 @@ class CrystalView extends Ui.WatchFace {
 	private var mMinutesFont;
 	private var mSecondsFont;
 
+	private var mIconsFont;
+	private var mNormalFont;
+
 	private var mTime;
+	private var mFields;
 	
 	private var GOAL_TYPES = {
 		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
@@ -87,6 +91,9 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
+		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		cacheDrawables();
@@ -95,6 +102,9 @@ class CrystalView extends Ui.WatchFace {
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
+
+		mFields = View.findDrawableById("DataFields");
+		mFields.setFonts(mIconsFont, mNormalFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
@@ -174,7 +184,7 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		updateGoalMeters();
-		updateDataFields();
+		//updateDataFields();
 		updateBluetoothIndicator();
 
 		// Call the parent onUpdate function to redraw the layout
@@ -182,7 +192,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// Additional drawing on top of drawables.
 		// TODO: Solving z-order issue forces ugly repetition (retrieval of battery value, etc.); can this be avoided?
-		onPostUpdate(dc);
+		//onPostUpdate(dc);
 	}
 
 	function onPostUpdate(dc) {
