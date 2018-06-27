@@ -54,6 +54,10 @@
 		<settingConfig type="numeric" min="1" max="10000" required="true"/>
 	</setting>
 
+	<setting propertyKey="@Properties.FieldCount" title="@Strings.FieldCountTitle">
+		<settingConfig type="numeric" min="0" max="3" required="true"/>
+	</setting>
+
 	<setting propertyKey="@Properties.Field1Type" title="@Strings.DataField1Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
