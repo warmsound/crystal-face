@@ -18,6 +18,9 @@ class DataFields extends Ui.Drawable {
 	private var mIconsFont;
 	private var mLabelFont;
 
+	private var mFieldCount;
+	private var mMaxFieldLength; // Maximum number of characters per field.
+
 	private var FIELD_TYPES = {
 		0 => :FIELD_TYPE_HEART_RATE,
 		1 => :FIELD_TYPE_BATTERY,
@@ -65,6 +68,9 @@ class DataFields extends Ui.Drawable {
 
 		mBatteryFillWidth = params[:batteryFillWidth];
 		mBatteryFillHeight = params[:batteryFillHeight];
+
+		// Initialise mFieldCount and mMaxFieldLength.
+		onSettingsChanged();
 	}
 
 	function setFonts(iconsFont, labelFont) {
@@ -72,8 +78,25 @@ class DataFields extends Ui.Drawable {
 		mLabelFont = labelFont;
 	}
 
+	// Cache FieldCount setting, and determine appropriate maximum field length.
+	function onSettingsChanged() {
+		mFieldCount = App.getApp().getProperty("FieldCount");
+
+		switch (mFieldCount) {
+			case 3:
+				mMaxFieldLength = 4;
+				break;
+			case 2:
+				mMaxFieldLength = 6;
+				break;
+			case 1:
+				mMaxFieldLength = 8;
+				break;
+		}
+	}
+
 	function draw(dc) {
-		switch (App.getApp().getProperty("FieldCount")) {
+		switch (mFieldCount) {
 			case 3:
 				drawDataField(dc, App.getApp().getProperty("Field1Type"), mLeft);
 				drawDataField(dc, App.getApp().getProperty("Field2Type"), (mRight + mLeft) / 2);
@@ -196,8 +219,8 @@ class DataFields extends Ui.Drawable {
 
 				value = distance.format("%.1f");
 
-				// Show unit only if distance is less than 10, to save space.
-				if (distance < 10) {
+				// Show unit only if value plus unit fits within maximum field length.
+				if ((value.length() + unit.length()) <= mMaxFieldLength) {
 					value += unit;
 				}
 				
@@ -232,7 +255,7 @@ class DataFields extends Ui.Drawable {
 						value = altitude.format("%d");
 
 						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
+						if ((value.length() + unit.length()) <= mMaxFieldLength) {
 							value += unit;
 						}
 					}
@@ -257,7 +280,7 @@ class DataFields extends Ui.Drawable {
 						value = temperature.format("%d");
 
 						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
+						if ((value.length() + unit.length()) <= mMaxFieldLength) {
 							value += unit;
 						}
 					}

@@ -48,8 +48,6 @@ class CrystalView extends Ui.WatchFace {
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
 
-	const MAX_FIELD_LENGTH = 4; // Maximum number of characters per field;
-
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
@@ -134,6 +132,8 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:RightGoalMeter].onSettingsChanged();
 
 		mDrawables[:MoveBar].onSettingsChanged();
+
+		mFields.onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
