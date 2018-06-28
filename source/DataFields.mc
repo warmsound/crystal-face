@@ -12,6 +12,9 @@ class DataFields extends Ui.Drawable {
 	private var mTop;
 	private var mBottom;
 
+	private var mBatteryFillWidth;
+	private var mBatteryFillHeight;
+
 	private var mIconsFont;
 	private var mLabelFont;
 
@@ -45,13 +48,6 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_TEMPERATURE => "<"
 	};
 
-	const BATTERY_FILL_WIDTH = 18;
-	const BATTERY_FILL_HEIGHT = 6;
-
-	const BATTERY_WIDTH_SMALL = 24;
-	const BATTERY_FILL_WIDTH_SMALL = 15;
-	const BATTERY_FILL_HEIGHT_SMALL = 4;
-
 	const BATTERY_LEVEL_LOW = 20;
 	const BATTERY_LEVEL_CRITICAL = 10;
 
@@ -66,6 +62,9 @@ class DataFields extends Ui.Drawable {
 		mRight = params[:right];
 		mTop = params[:top];
 		mBottom = params[:bottom];
+
+		mBatteryFillWidth = params[:batteryFillWidth];
+		mBatteryFillHeight = params[:batteryFillHeight];
 	}
 
 	function setFonts(iconsFont, labelFont) {
@@ -81,8 +80,8 @@ class DataFields extends Ui.Drawable {
 				drawDataField(dc, App.getApp().getProperty("Field3Type"), mRight);
 				break;
 			case 2:
-				drawDataField(dc, App.getApp().getProperty("Field1Type"), mLeft + ((mRight - mLeft) * 0.125));
-				drawDataField(dc, App.getApp().getProperty("Field2Type"), mLeft + ((mRight - mLeft) * 0.875));
+				drawDataField(dc, App.getApp().getProperty("Field1Type"), mLeft + ((mRight - mLeft) * 0.15));
+				drawDataField(dc, App.getApp().getProperty("Field2Type"), mLeft + ((mRight - mLeft) * 0.85));
 				break;
 			case 1:
 				drawDataField(dc, App.getApp().getProperty("Field1Type"), (mRight + mLeft) / 2);
@@ -275,6 +274,7 @@ class DataFields extends Ui.Drawable {
 		var colour;
 		var fillWidth, fillHeight;
 
+		// Fill colour based on battery level.
 		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
 			colour = Graphics.COLOR_RED;
 		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
@@ -285,18 +285,10 @@ class DataFields extends Ui.Drawable {
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 
-		// Layout uses small battery icon.
-		if (dc.getTextWidthInPixels(ICON_FONT_CHARS[:FIELD_TYPE_BATTERY], mIconsFont) == BATTERY_WIDTH_SMALL) {
-			fillWidth = BATTERY_FILL_WIDTH_SMALL;
-			fillHeight = BATTERY_FILL_HEIGHT_SMALL;
-		} else {
-			fillWidth = BATTERY_FILL_WIDTH;
-			fillHeight = BATTERY_FILL_HEIGHT;
-		}
 		dc.fillRectangle(
-			x - (fillWidth / 2) - 1,
-			mTop - (fillHeight / 2) + 1,
-			Math.ceil(fillWidth * (batteryLevel / 100)), 
-			fillHeight);	
+			x - (mBatteryFillWidth / 2) - 1,
+			mTop - (mBatteryFillHeight / 2) + 1,
+			Math.ceil(mBatteryFillWidth * (batteryLevel / 100)), 
+			mBatteryFillHeight);	
 	}
 }
