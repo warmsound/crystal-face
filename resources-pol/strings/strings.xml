@@ -45,19 +45,19 @@
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
 
-	<string id="Steps">Steps</string>
-	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
-	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="Steps">Kroki</string>
+	<string id="FloorsClimbed">Pokonane Piętra</string>
+	<string id="ActiveMinutes">Aktywne Minuty (Tygodniowo)</string>
+	<string id="CaloriesManualGoal">Spalone Kalorie (Ręczny Cel)</string>
 
-	<string id="HeartRate">Heart Rate</string>
-	<string id="Battery">Battery</string>
-	<string id="Notifications">Notifications</string>
-	<string id="Calories">Calories</string>
-	<string id="Distance">Distance</string>
-	<string id="Alarms">Alarms</string>
-	<string id="Altitude">Altitude</string>
-	<string id="Temperature">Temperature</string>
+	<string id="HeartRate">Tętno</string>
+	<string id="Battery">Bateria</string>
+	<string id="Notifications">Powiadomienia</string>
+	<string id="Calories">Kalorie</string>
+	<string id="Distance">Odległość</string>
+	<string id="Alarms">Budziki</string>
+	<string id="Altitude">Wysokość</string>
+	<string id="Temperature">Temperatura</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	
