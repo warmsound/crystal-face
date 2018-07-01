@@ -34,6 +34,7 @@ class CrystalView extends Ui.WatchFace {
 		5 => :FIELD_TYPE_ALARMS,
 		6 => :FIELD_TYPE_ALTITUDE,
 		7 => :FIELD_TYPE_TEMPERATURE,
+		8 => :FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	};
 
 	private var ICON_FONT_CHARS = {
@@ -42,6 +43,7 @@ class CrystalView extends Ui.WatchFace {
 		:GOAL_TYPE_ACTIVE_MINUTES => "2",
 		:FIELD_TYPE_HEART_RATE => "3",
 		:FIELD_TYPE_BATTERY => "4",
+		:FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
 		:FIELD_TYPE_NOTIFICATIONS => "5",
 		:FIELD_TYPE_CALORIES => "6",
 		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
@@ -68,6 +70,9 @@ class CrystalView extends Ui.WatchFace {
 
 	const CM_PER_KM = 100000;
 	const MI_PER_KM = 0.621371;
+	const FT_PER_M = 3.28084;
+
+	const MAX_FIELD_LENGTH = 4; // Maximum number of characters per field;
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -183,15 +188,18 @@ class CrystalView extends Ui.WatchFace {
 	function onPostUpdate(dc) {
 
 		// Find any battery meter icons, and draw fill on top. 
-		if (FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:LeftFieldIcon]);
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:CenterFieldIcon]);
 		}
 
-		if (FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) {
+		if ((FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) ||
+			(FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			fillBatteryMeter(dc, mDrawables[:RightFieldIcon]);
 		}
 	}
@@ -253,7 +261,8 @@ class CrystalView extends Ui.WatchFace {
 		var colour;
 
 		// Grey out icon if no value was retrieved.
-		if (value.length() == 0) {
+		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
+		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
@@ -299,8 +308,12 @@ class CrystalView extends Ui.WatchFace {
 				value = battery.format("%d") + "%";
 				break;
 
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
+				break;
+
 			case :FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();				
+				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format("%d");
 				}
@@ -345,11 +358,24 @@ class CrystalView extends Ui.WatchFace {
 					sample = iterator.next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
+
+						settings = Sys.getDeviceSettings();
+
+						// Metres (no conversion necessary).
+						if (settings.elevationUnits == System.UNIT_METRIC) {
+							unit = "m";
+
+						// Feet.
+						} else {
+							altitude *= FT_PER_M;
+							unit = "ft";
+						}
+
 						value = altitude.format("%d");
 
-						// Show unit only if formatted altitude is 3 characters or less, including any minus, to save space.
-						if (value.length() <= 3) {
-							value += "m";
+						// Show unit only if value plus unit fits within maximum field length.
+						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
+							value += unit;
 						}
 					}
 				}
@@ -372,8 +398,8 @@ class CrystalView extends Ui.WatchFace {
 
 						value = temperature.format("%d");
 
-						// Show unit only if formatted temperature is 2 characters or less, including any minus, to save space.
-						if (value.length() <= 2) {
+						// Show unit only if value plus unit fits within maximum field length.
+						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
 							value += unit;
 						}
 					}
