@@ -21,35 +21,17 @@ class DataFields extends Ui.Drawable {
 	private var mFieldCount;
 	private var mMaxFieldLength; // Maximum number of characters per field.
 
-	private var FIELD_TYPES = {
-		0 => :FIELD_TYPE_HEART_RATE,
-		1 => :FIELD_TYPE_BATTERY,
-		2 => :FIELD_TYPE_NOTIFICATIONS,
-		3 => :FIELD_TYPE_CALORIES,
-		4 => :FIELD_TYPE_DISTANCE,
-		5 => :FIELD_TYPE_ALARMS,
-		6 => :FIELD_TYPE_ALTITUDE,
-		7 => :FIELD_TYPE_TEMPERATURE,
-		8 => :FIELD_TYPE_BATTERY_HIDE_PERCENT,
-	};
-
-	private var ICON_FONT_CHARS = {
-		:GOAL_TYPE_STEPS => "0",
-		:GOAL_TYPE_FLOORS_CLIMBED => "1",
-		:GOAL_TYPE_ACTIVE_MINUTES => "2",
-		:FIELD_TYPE_HEART_RATE => "3",
-		:FIELD_TYPE_BATTERY => "4",
-		:FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
-		:FIELD_TYPE_NOTIFICATIONS => "5",
-		:FIELD_TYPE_CALORIES => "6",
-		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
-		:FIELD_TYPE_DISTANCE => "7",
-		:INDICATOR_BLUETOOTH => "8",
-		:GOAL_TYPE_BATTERY => "9",
-		:FIELD_TYPE_ALARMS => ":",
-		:FIELD_TYPE_ALTITUDE => ";",
-		:FIELD_TYPE_TEMPERATURE => "<"
-	};
+	private var FIELD_TYPES = [
+		:FIELD_TYPE_HEART_RATE,
+		:FIELD_TYPE_BATTERY,
+		:FIELD_TYPE_NOTIFICATIONS,
+		:FIELD_TYPE_CALORIES,
+		:FIELD_TYPE_DISTANCE,
+		:FIELD_TYPE_ALARMS,
+		:FIELD_TYPE_ALTITUDE,
+		:FIELD_TYPE_TEMPERATURE,
+		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
+	];
 
 	const BATTERY_LEVEL_LOW = 20;
 	const BATTERY_LEVEL_CRITICAL = 10;
@@ -133,7 +115,7 @@ class DataFields extends Ui.Drawable {
 			x,
 			mTop,
 			mIconsFont,
-			ICON_FONT_CHARS[FIELD_TYPES[fieldType]],
+			getIconFontChar(FIELD_TYPES[fieldType]),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
@@ -153,6 +135,40 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				fillBatteryMeter(dc, x);
 				break;
+		}
+	}
+
+	// Replace dictionary with function to save memory.
+	function getIconFontChar(fieldType) {
+		switch (fieldType) {
+			case :GOAL_TYPE_STEPS:
+				return "0";
+			case :GOAL_TYPE_FLOORS_CLIMBED:
+				return "1";
+			case :GOAL_TYPE_ACTIVE_MINUTES:
+				return "2";
+			case :FIELD_TYPE_HEART_RATE:
+				return "3";
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				return "4";
+			case :FIELD_TYPE_NOTIFICATIONS:
+				return "5";
+			case :FIELD_TYPE_CALORIES:
+			case :GOAL_TYPE_CALORIES:
+				return "6"; // Use calories icon for both field and goal.
+			case :FIELD_TYPE_DISTANCE:
+				return "7";
+			case :INDICATOR_BLUETOOTH:
+				return "8";
+			case :GOAL_TYPE_BATTERY:
+				return "9";
+			case :FIELD_TYPE_ALARMS:
+				return ":";
+			case :FIELD_TYPE_ALTITUDE:
+				return ";";
+			case :FIELD_TYPE_TEMPERATURE:
+				return "<";
 		}
 	}
 

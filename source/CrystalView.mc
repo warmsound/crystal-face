@@ -17,33 +17,6 @@ class CrystalView extends Ui.WatchFace {
 
 	private var mTime;
 	private var mFields;
-	
-	private var GOAL_TYPES = {
-		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
-		App.GOAL_TYPE_FLOORS_CLIMBED => :GOAL_TYPE_FLOORS_CLIMBED,
-		App.GOAL_TYPE_ACTIVE_MINUTES => :GOAL_TYPE_ACTIVE_MINUTES,
-		
-		-1 => :GOAL_TYPE_BATTERY,
-		-2 => :GOAL_TYPE_CALORIES
-	};
-
-	private var ICON_FONT_CHARS = {
-		:GOAL_TYPE_STEPS => "0",
-		:GOAL_TYPE_FLOORS_CLIMBED => "1",
-		:GOAL_TYPE_ACTIVE_MINUTES => "2",
-		:FIELD_TYPE_HEART_RATE => "3",
-		:FIELD_TYPE_BATTERY => "4",
-		:FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
-		:FIELD_TYPE_NOTIFICATIONS => "5",
-		:FIELD_TYPE_CALORIES => "6",
-		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
-		:FIELD_TYPE_DISTANCE => "7",
-		:INDICATOR_BLUETOOTH => "8",
-		:GOAL_TYPE_BATTERY => "9",
-		:FIELD_TYPE_ALARMS => ":",
-		:FIELD_TYPE_ALTITUDE => ";",
-		:FIELD_TYPE_TEMPERATURE => "<"
-	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -178,7 +151,7 @@ class CrystalView extends Ui.WatchFace {
 
 	function updateGoalMeters() {
 		updateGoalMeter(
-			GOAL_TYPES[App.getApp().getProperty("LeftGoalType")],
+			getGoalType(App.getApp().getProperty("LeftGoalType")),
 			mDrawables[:LeftGoalMeter],
 			mDrawables[:LeftGoalIcon],
 			mDrawables[:LeftGoalCurrent],
@@ -186,7 +159,7 @@ class CrystalView extends Ui.WatchFace {
 		);
 
 		updateGoalMeter(
-			GOAL_TYPES[App.getApp().getProperty("RightGoalType")],
+			getGoalType(App.getApp().getProperty("RightGoalType")),
 			mDrawables[:RightGoalMeter],
 			mDrawables[:RightGoalIcon],
 			mDrawables[:RightGoalCurrent],
@@ -201,7 +174,7 @@ class CrystalView extends Ui.WatchFace {
 		meter.setValues(values[:current], values[:max]);
 
 		// Icon label.
-		iconLabel.setText(ICON_FONT_CHARS[goalType]);
+		iconLabel.setText(getIconFontChar(goalType));
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
@@ -228,6 +201,56 @@ class CrystalView extends Ui.WatchFace {
 			maxLabel.setText("");
 		}
 		maxLabel.setColor(App.getApp().getProperty("MonoDarkColour"));
+	}
+
+	// Replace dictionary with function to save memory.
+	function getGoalType(goalProperty) {
+		switch (goalProperty) {
+			case App.GOAL_TYPE_STEPS:
+				return :GOAL_TYPE_STEPS;
+			case App.GOAL_TYPE_FLOORS_CLIMBED:
+				return :GOAL_TYPE_FLOORS_CLIMBED;
+			case App.GOAL_TYPE_ACTIVE_MINUTES:
+				return :GOAL_TYPE_ACTIVE_MINUTES;
+			case -1:
+				return :GOAL_TYPE_BATTERY;
+			case -2:
+				return :GOAL_TYPE_CALORIES;
+		}
+	}
+
+	// Replace dictionary with function to save memory.
+	function getIconFontChar(fieldType) {
+		switch (fieldType) {
+			case :GOAL_TYPE_STEPS:
+				return "0";
+			case :GOAL_TYPE_FLOORS_CLIMBED:
+				return "1";
+			case :GOAL_TYPE_ACTIVE_MINUTES:
+				return "2";
+			case :FIELD_TYPE_HEART_RATE:
+				return "3";
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				return "4";
+			case :FIELD_TYPE_NOTIFICATIONS:
+				return "5";
+			case :FIELD_TYPE_CALORIES:
+			case :GOAL_TYPE_CALORIES:
+				return "6"; // Use calories icon for both field and goal.
+			case :FIELD_TYPE_DISTANCE:
+				return "7";
+			case :INDICATOR_BLUETOOTH:
+				return "8";
+			case :GOAL_TYPE_BATTERY:
+				return "9";
+			case :FIELD_TYPE_ALARMS:
+				return ":";
+			case :FIELD_TYPE_ALTITUDE:
+				return ";";
+			case :FIELD_TYPE_TEMPERATURE:
+				return "<";
+		}
 	}
 
 	function getValuesForGoalType(type) {
