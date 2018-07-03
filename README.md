@@ -20,6 +20,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.7.4
+- Polish translation for settings screen (thanks to Flugcojt).
+- Swedish translation for settings screen (thanks to hasselrot).
+
 ### 1.7.3
 - Update to CIQ 2.4.7 SDK, to add support for fēnix® 5 Plus, fēnix® 5S Plus, fēnix® 5X Plus, vívoactive® 3 Music.
 - Fixed issue with "ft" altitude units displaying incorrectly (thanks to Matt Reiser).

@@ -28,15 +28,15 @@
 	<string id="ShowFilledSegments">Visa Fyllda Segment</string>
 	<string id="Hidden">Dold</string>
 
-	<string id="ThemeBlueMörk">Blå (Mörk)</string>
-	<string id="ThemePinkMörk">Rosa (Mörk)</string>
-	<string id="ThemeRedMörk">Röd (Mörk)</string>
-	<string id="ThemeGreenMörk">Grön (Mörk)</string>
-	<string id="ThemeCornflowerBlueMörk">Blåklintsblå (Mörk)</string>
-	<string id="ThemeLemonCreamMörk">Citronkräm (Mörk)</string>
-	<string id="ThemeVividYellowMörk">Levande Gul (Mörk)</string>
-	<string id="ThemeDaygloOrangeMörk">Lysande Orange (Mörk)</string>
-	<string id="ThemeMonoMörk">Mono (Mörk)</string>
+	<string id="ThemeBlueDark">Blå (Mörk)</string>
+	<string id="ThemePinkDark">Rosa (Mörk)</string>
+	<string id="ThemeRedDark">Röd (Mörk)</string>
+	<string id="ThemeGreenDark">Grön (Mörk)</string>
+	<string id="ThemeCornflowerBlueDark">Blåklintsblå (Mörk)</string>
+	<string id="ThemeLemonCreamDark">Citronkräm (Mörk)</string>
+	<string id="ThemeVividYellowDark">Levande Gul (Mörk)</string>
+	<string id="ThemeDaygloOrangeDark">Lysande Orange (Mörk)</string>
+	<string id="ThemeMonoDark">Mono (Mörk)</string>
 	<string id="ThemeMonoLight">Mono (Ljus)</string>
 	<string id="ThemeBlueLight">Blå (Ljus)</string>
 	<string id="ThemeRedLight">Röd (Ljus)</string>
