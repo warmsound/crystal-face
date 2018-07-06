@@ -33,12 +33,12 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	];
 
-	const BATTERY_LEVEL_LOW = 20;
-	const BATTERY_LEVEL_CRITICAL = 10;
+	private const BATTERY_LEVEL_LOW = 20;
+	private const BATTERY_LEVEL_CRITICAL = 10;
 
-	const CM_PER_KM = 100000;
-	const MI_PER_KM = 0.621371;
-	const FT_PER_M = 3.28084;
+	private const CM_PER_KM = 100000;
+	private const MI_PER_KM = 0.621371;
+	private const FT_PER_M = 3.28084;
 
 	function initialize(params) {
 		Drawable.initialize(params);

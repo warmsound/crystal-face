@@ -63,59 +63,61 @@ class CrystalApp extends App.AppBase {
 		var theme = THEMES[App.getApp().getProperty("Theme")];
 
 		// Theme-specific colours.
+		var themeColour;
 		switch (theme) {
 			case :THEME_BLUE_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_BLUE);
+				themeColour = Graphics.COLOR_BLUE;
 				break;
 			
 			case :THEME_PINK_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_PINK);
+				themeColour = Graphics.COLOR_PINK;
 				break;
 
 			case :THEME_GREEN_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_GREEN);
+				themeColour = Graphics.COLOR_GREEN;
 				break;
 
 			case :THEME_MONO_LIGHT:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GRAY);
+				themeColour = Graphics.COLOR_DK_GRAY;
 				break;
 
 			case :THEME_CORNFLOWER_BLUE_DARK:
-				App.getApp().setProperty("ThemeColour", 0x55AAFF);
+				themeColour = 0x55AAFF;
 				break;
 
 			case :THEME_LEMON_CREAM_DARK:
-				App.getApp().setProperty("ThemeColour", 0xFFFFAA);
+				themeColour = 0xFFFFAA;
 				break;
 
 			case :THEME_VIVID_YELLOW_DARK:
-				App.getApp().setProperty("ThemeColour", 0xFFFF00);
+				themeColour = 0xFFFF00;
 				break;
 
 			case :THEME_DAYGLO_ORANGE_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_ORANGE);
+				themeColour = Graphics.COLOR_ORANGE;
 				break;
 
 			case :THEME_RED_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_RED);
+				themeColour = Graphics.COLOR_RED;
 				break;
 
 			case :THEME_MONO_DARK:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_WHITE);
+				themeColour = Graphics.COLOR_WHITE;
 				break;
 
 			case :THEME_BLUE_LIGHT:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_BLUE);
+				themeColour = Graphics.COLOR_DK_BLUE;
 				break;
 
 			case :THEME_GREEN_LIGHT:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_GREEN);
+				themeColour = Graphics.COLOR_DK_GREEN;
 				break;
 
 			case :THEME_RED_LIGHT:
-				App.getApp().setProperty("ThemeColour", Graphics.COLOR_DK_RED);
+				themeColour = Graphics.COLOR_DK_RED;
 				break;
 		}
+		App.getApp().setProperty("ThemeColour", themeColour); 
 
 		// Light/dark-specific colours.
 		switch (theme) {
@@ -151,34 +153,38 @@ class CrystalApp extends App.AppBase {
 	function updateHoursMinutesColours() {
 
 		// Hours colour.
+		var hoursColour;
 		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
 			case :FROM_THEME:
-				App.getApp().setProperty("HoursColour", App.getApp().getProperty("ThemeColour"));
+				hoursColour = App.getApp().getProperty("ThemeColour");
 				break;
 
 			case :MONO_HIGHLIGHT:
-				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoLightColour"));
+				hoursColour = App.getApp().getProperty("MonoLightColour");
 				break;
 
 			case :MONO:
-				App.getApp().setProperty("HoursColour", App.getApp().getProperty("MonoDarkColour"));
+				hoursColour = App.getApp().getProperty("MonoDarkColour");
 				break;
 		}
+		App.getApp().setProperty("HoursColour", hoursColour);
 
 		// Minutes colour.
+		var minutesColour;
 		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
 			case :FROM_THEME:
-				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("ThemeColour"));
+				minutesColour = App.getApp().getProperty("ThemeColour");
 				break;
 
 			case :MONO_HIGHLIGHT:
-				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoLightColour"));
+				minutesColour = App.getApp().getProperty("MonoLightColour");
 				break;
 
 			case :MONO:
-				App.getApp().setProperty("MinutesColour", App.getApp().getProperty("MonoDarkColour"));
+				minutesColour = App.getApp().getProperty("MonoDarkColour");
 				break;
 		}
+		App.getApp().setProperty("MinutesColour", minutesColour);
 	}
 
 }
