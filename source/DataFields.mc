@@ -115,7 +115,7 @@ class DataFields extends Ui.Drawable {
 			x,
 			mTop,
 			mIconsFont,
-			getIconFontChar(FIELD_TYPES[fieldType]),
+			App.getApp().getInitialView()[0].getIconFontChar(FIELD_TYPES[fieldType]),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
@@ -135,40 +135,6 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				fillBatteryMeter(dc, x);
 				break;
-		}
-	}
-
-	// Replace dictionary with function to save memory.
-	function getIconFontChar(fieldType) {
-		switch (fieldType) {
-			case :GOAL_TYPE_STEPS:
-				return "0";
-			case :GOAL_TYPE_FLOORS_CLIMBED:
-				return "1";
-			case :GOAL_TYPE_ACTIVE_MINUTES:
-				return "2";
-			case :FIELD_TYPE_HEART_RATE:
-				return "3";
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				return "4";
-			case :FIELD_TYPE_NOTIFICATIONS:
-				return "5";
-			case :FIELD_TYPE_CALORIES:
-			case :GOAL_TYPE_CALORIES:
-				return "6"; // Use calories icon for both field and goal.
-			case :FIELD_TYPE_DISTANCE:
-				return "7";
-			case :INDICATOR_BLUETOOTH:
-				return "8";
-			case :GOAL_TYPE_BATTERY:
-				return "9";
-			case :FIELD_TYPE_ALARMS:
-				return ":";
-			case :FIELD_TYPE_ALTITUDE:
-				return ";";
-			case :FIELD_TYPE_TEMPERATURE:
-				return "<";
 		}
 	}
 
