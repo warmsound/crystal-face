@@ -16,7 +16,6 @@ class CrystalView extends Ui.WatchFace {
 	private var mNormalFont;
 
 	private var mTime;
-	private var mFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -46,8 +45,8 @@ class CrystalView extends Ui.WatchFace {
 		mTime = View.findDrawableById("Time");
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
-		mFields = View.findDrawableById("DataFields");
-		mFields.setFonts(mIconsFont, mNormalFont);
+		mDrawables[:Indicators].setFont(mIconsFont);
+		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
@@ -74,13 +73,12 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:Date] = View.findDrawableById("Date");
 
-		mDrawables[:Bluetooth] = View.findDrawableById("Bluetooth");
+		mDrawables[:Indicators] = View.findDrawableById("Indicators");
 
 		// Use mTime instead.
 		//mDrawables[:Time] = View.findDrawableById("Time");
 
-		// Use mFields instead.
-		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
+		mDrawables[:DataFields] = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
@@ -106,7 +104,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
-		mFields.onSettingsChanged();
+		mDrawables[:Indicators].onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
@@ -132,21 +130,9 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		updateGoalMeters();
-		updateBluetoothIndicator();
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
-	}
-
-	// Set colour of bluetooth indicator, depending on phone connection status.
-	function updateBluetoothIndicator() {
-		var indicator = mDrawables[:Bluetooth];
-
-		if (Sys.getDeviceSettings().phoneConnected) {
-			indicator.setColor(App.getApp().getProperty("ThemeColour"));
-		} else {
-			indicator.setColor(App.getApp().getProperty("MeterBackgroundColour"));
-		}
 	}
 
 	function updateGoalMeters() {
@@ -234,17 +220,19 @@ class CrystalView extends Ui.WatchFace {
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				return "4";
 			case :FIELD_TYPE_NOTIFICATIONS:
+			case :INDICATOR_TYPE_NOTIFICATIONS:
 				return "5";
 			case :FIELD_TYPE_CALORIES:
 			case :GOAL_TYPE_CALORIES:
 				return "6"; // Use calories icon for both field and goal.
 			case :FIELD_TYPE_DISTANCE:
 				return "7";
-			case :INDICATOR_BLUETOOTH:
+			case :INDICATOR_TYPE_BLUETOOTH:
 				return "8";
 			case :GOAL_TYPE_BATTERY:
 				return "9";
 			case :FIELD_TYPE_ALARMS:
+			case :INDICATOR_TYPE_ALARMS:
 				return ":";
 			case :FIELD_TYPE_ALTITUDE:
 				return ";";

@@ -20,6 +20,11 @@
 	<string id="DataField2Title">Data Field 2</string>
 	<string id="DataField3Title">Data Field 3</string>
 
+	<string id="IndicatorCountTitle">Number Of Indicators</string>
+	<string id="Indicator1Title">Indicator 1</string>
+	<string id="Indicator2Title">Indicator 2</string>
+	<string id="Indicator3Title">Indicator 3</string>
+
 	<string id="FromTheme">(From Theme)</string>
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
@@ -61,6 +66,7 @@
 	<string id="Alarms">Alarms</string>
 	<string id="Altitude">Altitude</string>
 	<string id="Temperature">Temperature</string>
+	<string id="Bluetooth">Bluetooth</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	
