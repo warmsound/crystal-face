@@ -16,7 +16,8 @@ class Indicators extends Ui.Drawable {
 	private var INDICATOR_TYPES = [
 		:INDICATOR_TYPE_BLUETOOTH,
 		:INDICATOR_TYPE_ALARMS,
-		:INDICATOR_TYPE_NOTIFICATIONS
+		:INDICATOR_TYPE_NOTIFICATIONS,
+		:INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS
 	];
 
 	function initialize(params) {
@@ -72,37 +73,46 @@ class Indicators extends Ui.Drawable {
 		}
 	}
 
-	// "indicatorType" parameter is raw property value (it's converted to symbol below).
-	function drawIndicator(dc, indicatorType, x, y) {
+	function drawIndicator(dc, rawIndicatorType, x, y) {
+		var indicatorType = INDICATOR_TYPES[rawIndicatorType];
 		var value = getValueForIndicatorType(indicatorType);
-		var colour;
 
+		var colour;
 		if (value) {
 			colour = App.getApp().getProperty("ThemeColour");
 		} else {
-			colour = App.getApp().getProperty("MeterBackgroundColour");			
+			colour = App.getApp().getProperty("MeterBackgroundColour");
+		}
+		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+
+		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
+		if (indicatorType == :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
+			var settings = Sys.getDeviceSettings();
+			if (settings.phoneConnected && (settings.notificationCount > 0)) {
+				indicatorType = :INDICATOR_TYPE_NOTIFICATIONS;
+			} else {
+				indicatorType = :INDICATOR_TYPE_BLUETOOTH;
+			}
 		}
 
 		// Icon.
-		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			y,
 			mIconsFont,
-			App.getApp().getInitialView()[0].getIconFontChar(INDICATOR_TYPES[indicatorType]),
+			App.getApp().getInitialView()[0].getIconFontChar(indicatorType),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}
 
-	// "type" parameter is raw property value (it's converted to symbol below).
-	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
 	function getValueForIndicatorType(type) {
 		var value = false;
 
 		var settings = Sys.getDeviceSettings();
 
-		switch (INDICATOR_TYPES[type]) {
+		switch (type) {
 			case :INDICATOR_TYPE_BLUETOOTH:
+			case :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS:
 				value = settings.phoneConnected;
 				break;
 

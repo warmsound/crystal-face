@@ -109,6 +109,7 @@
 			<listEntry value="0">@Strings.Bluetooth</listEntry>
 			<listEntry value="1">@Strings.Alarms</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -117,6 +118,7 @@
 			<listEntry value="0">@Strings.Bluetooth</listEntry>
 			<listEntry value="1">@Strings.Alarms</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -125,6 +127,7 @@
 			<listEntry value="0">@Strings.Bluetooth</listEntry>
 			<listEntry value="1">@Strings.Alarms</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 		</settingConfig>
 	</setting>
 
