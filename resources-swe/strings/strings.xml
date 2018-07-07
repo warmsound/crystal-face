@@ -3,17 +3,17 @@
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">App Version</string>
 
-	<string id="BackgroundColourTitle">Background Colour</string>
-	<string id="ThemeTitle">Theme</string>
-	<string id="HoursColourTitle">Hours Colour</string>
-	<string id="MinutesColourTitle">Minutes Colour</string>
-	<string id="LeftGoalMeterTitle">Left Meter</string>
-	<string id="RightGoalMeterTitle">Right Meter</string>
-	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
-	<string id="GoalMeterStyleTitle">Meter Style</string>
-	<string id="MoveBarStyleTitle">Move Bar Style</string>
-	<string id="HideSecondsTitle">Hide Seconds</string>
-	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
+	<string id="BackgroundColourTitle">Bakgrundsfärg</string>
+	<string id="ThemeTitle">Tema</string>
+	<string id="HoursColourTitle">Färg Timme</string>
+	<string id="MinutesColourTitle">Färg Minut</string>
+	<string id="LeftGoalMeterTitle">Vänster Mätare</string>
+	<string id="RightGoalMeterTitle">Höger Mätare</string>
+	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
+	<string id="GoalMeterStyleTitle">Mätarstil</string>
+	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
+	<string id="HideSecondsTitle">Dölj Sekunder</string>
+	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor (12 Hr Mode)</string>
 
 	<string id="FieldCountTitle">Number Of Data Fields</string>
 	<string id="DataField1Title">Data Field 1</string>
@@ -25,47 +25,47 @@
 	<string id="Indicator2Title">Indicator 2</string>
 	<string id="Indicator3Title">Indicator 3</string>
 
-	<string id="FromTheme">(From Theme)</string>
+	<string id="FromTheme">(Från tema)</string>
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
-	<string id="MultiSegments">Multi Segments</string>
-	<string id="SingleSegment">Single Segment</string>
-	<string id="ShowAllSegments">Show All Segments</string>
-	<string id="ShowFilledSegments">Show Filled Segments</string>
-	<string id="Hidden">Hidden</string>
+	<string id="MultiSegments">Multisegment</string>
+	<string id="SingleSegment">Enkelsegment</string>
+	<string id="ShowAllSegments">Visa Alla Segment</string>
+	<string id="ShowFilledSegments">Visa Fyllda Segment</string>
+	<string id="Hidden">Dold</string>
 
-	<string id="ThemeBlueDark">Blue (Dark)</string>
-	<string id="ThemePinkDark">Pink (Dark)</string>
-	<string id="ThemeRedDark">Red (Dark)</string>
-	<string id="ThemeGreenDark">Green (Dark)</string>
-	<string id="ThemeCornflowerBlueDark">Cornflower Blue (Dark)</string>
-	<string id="ThemeLemonCreamDark">Lemon Cream (Dark)</string>
-	<string id="ThemeVividYellowDark">Vivid Yellow (Dark)</string>
-	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
-	<string id="ThemeMonoDark">Mono (Dark)</string>
-	<string id="ThemeMonoLight">Mono (Light)</string>
-	<string id="ThemeBlueLight">Blue (Light)</string>
-	<string id="ThemeRedLight">Red (Light)</string>
-	<string id="ThemeGreenLight">Green (Light)</string>
+	<string id="ThemeBlueDark">Blå (Mörk)</string>
+	<string id="ThemePinkDark">Rosa (Mörk)</string>
+	<string id="ThemeRedDark">Röd (Mörk)</string>
+	<string id="ThemeGreenDark">Grön (Mörk)</string>
+	<string id="ThemeCornflowerBlueDark">Blåklintsblå (Mörk)</string>
+	<string id="ThemeLemonCreamDark">Citronkräm (Mörk)</string>
+	<string id="ThemeVividYellowDark">Levande Gul (Mörk)</string>
+	<string id="ThemeDaygloOrangeDark">Lysande Orange (Mörk)</string>
+	<string id="ThemeMonoDark">Mono (Mörk)</string>
+	<string id="ThemeMonoLight">Mono (Ljus)</string>
+	<string id="ThemeBlueLight">Blå (Ljus)</string>
+	<string id="ThemeRedLight">Röd (Ljus)</string>
+	<string id="ThemeGreenLight">Grön (Ljus)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
 
-	<string id="Steps">Steps</string>
-	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
-	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="Steps">Steg</string>
+	<string id="FloorsClimbed">Våningar</string>
+	<string id="ActiveMinutes">Aktiva Minuter (Vecka)</string>
+	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 
-	<string id="HeartRate">Heart Rate</string>
-	<string id="Battery">Battery</string>
-	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
-	<string id="Notifications">Notifications</string>
-	<string id="Calories">Calories</string>
-	<string id="Distance">Distance</string>
-	<string id="Alarms">Alarms</string>
-	<string id="Altitude">Altitude</string>
-	<string id="Temperature">Temperature</string>
+	<string id="HeartRate">Puls</string>
+	<string id="Battery">Batteri</string>
+	<string id="BatteryHidePercentage">Batteri (Dölj Procent)</string>
+	<string id="Notifications">Notifieringar</string>
+	<string id="Calories">Kalorier</string>
+	<string id="Distance">Distans</string>
+	<string id="Alarms">Alarm</string>
+	<string id="Altitude">Altitud</string>
+	<string id="Temperature">Temperatur</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
 

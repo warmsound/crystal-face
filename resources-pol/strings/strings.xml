@@ -1,19 +1,19 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Version</string>
+	<string id="AppVersionTitle">Wersja</string>
 
-	<string id="BackgroundColourTitle">Background Colour</string>
-	<string id="ThemeTitle">Theme</string>
-	<string id="HoursColourTitle">Hours Colour</string>
-	<string id="MinutesColourTitle">Minutes Colour</string>
-	<string id="LeftGoalMeterTitle">Left Meter</string>
-	<string id="RightGoalMeterTitle">Right Meter</string>
-	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
-	<string id="GoalMeterStyleTitle">Meter Style</string>
-	<string id="MoveBarStyleTitle">Move Bar Style</string>
-	<string id="HideSecondsTitle">Hide Seconds</string>
-	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
+	<string id="BackgroundColourTitle">Kolor Tła</string>
+	<string id="ThemeTitle">Motyw</string>
+	<string id="HoursColourTitle">Kolor Godzin</string>
+	<string id="MinutesColourTitle">Kolor Minut</string>
+	<string id="LeftGoalMeterTitle">Lewy Wskaźnik</string>
+	<string id="RightGoalMeterTitle">Prawy Wskaźnik</string>
+	<string id="CaloriesGoalTitle">Spalone Kalorie - Cel (1-10,000kCal)</string>
+	<string id="GoalMeterStyleTitle">Wygląd Wskaźnika</string>
+	<string id="MoveBarStyleTitle">Wygląd Move Bar'a</string>
+	<string id="HideSecondsTitle">Ukryj Sekundy</string>
+	<string id="HideHoursLeadingZeroTitle">Ukryj Zero Poprzedzające Godzinę(Tryb 12-godzinny )</string>
 
 	<string id="FieldCountTitle">Number Of Data Fields</string>
 	<string id="DataField1Title">Data Field 1</string>
@@ -25,47 +25,47 @@
 	<string id="Indicator2Title">Indicator 2</string>
 	<string id="Indicator3Title">Indicator 3</string>
 
-	<string id="FromTheme">(From Theme)</string>
-	<string id="MonoHighlight">Mono Highlight</string>
+	<string id="FromTheme">(z Motywu)</string>
+	<string id="MonoHighlight">Pojedyncze Wyróżnienie</string>
 	<string id="Mono">Mono</string>
 
-	<string id="MultiSegments">Multi Segments</string>
-	<string id="SingleSegment">Single Segment</string>
-	<string id="ShowAllSegments">Show All Segments</string>
-	<string id="ShowFilledSegments">Show Filled Segments</string>
-	<string id="Hidden">Hidden</string>
+	<string id="MultiSegments">Wiele Segmentów</string>
+	<string id="SingleSegment">Jeden Segment</string>
+	<string id="ShowAllSegments">Pokaż Wszystkie Segmenty</string>
+	<string id="ShowFilledSegments">Pokaż Wypełnione Segmenty</string>
+	<string id="Hidden">Ukryte</string>
 
-	<string id="ThemeBlueDark">Blue (Dark)</string>
-	<string id="ThemePinkDark">Pink (Dark)</string>
-	<string id="ThemeRedDark">Red (Dark)</string>
-	<string id="ThemeGreenDark">Green (Dark)</string>
-	<string id="ThemeCornflowerBlueDark">Cornflower Blue (Dark)</string>
-	<string id="ThemeLemonCreamDark">Lemon Cream (Dark)</string>
-	<string id="ThemeVividYellowDark">Vivid Yellow (Dark)</string>
-	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
-	<string id="ThemeMonoDark">Mono (Dark)</string>
-	<string id="ThemeMonoLight">Mono (Light)</string>
-	<string id="ThemeBlueLight">Blue (Light)</string>
-	<string id="ThemeRedLight">Red (Light)</string>
-	<string id="ThemeGreenLight">Green (Light)</string>
+	<string id="ThemeBlueDark">Niebieski (Ciemny)</string>
+	<string id="ThemePinkDark">Różowy (Ciemny)</string>
+	<string id="ThemeRedDark">Czerwony (Ciemny)</string>
+	<string id="ThemeGreenDark">Zielony (Ciemny)</string>
+	<string id="ThemeCornflowerBlueDark">Modry (Ciemny)</string>
+	<string id="ThemeLemonCreamDark">Śmietanka Cytrynowa (Ciemny)</string>
+	<string id="ThemeVividYellowDark">Żywy Żółty (Ciemny)</string>
+	<string id="ThemeDaygloOrangeDark">Rażący Pomarańczowy (Ciemny)</string>
+	<string id="ThemeMonoDark">Mono (Ciemny)</string>
+	<string id="ThemeMonoLight">Mono (Jasny)</string>
+	<string id="ThemeBlueLight">Niebieski (Jasny)</string>
+	<string id="ThemeRedLight">Czerwony (Jasny)</string>
+	<string id="ThemeGreenLight">Zielony (Jasny)</string>
 
 	<string id="AnteMeridiem">A</string>
 	<string id="PostMeridiem">P</string>
 
-	<string id="Steps">Steps</string>
-	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
-	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="Steps">Kroki</string>
+	<string id="FloorsClimbed">Pokonane Piętra</string>
+	<string id="ActiveMinutes">Aktywne Minuty (Tygodniowo)</string>
+	<string id="CaloriesManualGoal">Spalone Kalorie (Ręczny Cel)</string>
 
-	<string id="HeartRate">Heart Rate</string>
-	<string id="Battery">Battery</string>
-	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
-	<string id="Notifications">Notifications</string>
-	<string id="Calories">Calories</string>
-	<string id="Distance">Distance</string>
-	<string id="Alarms">Alarms</string>
-	<string id="Altitude">Altitude</string>
-	<string id="Temperature">Temperature</string>
+	<string id="HeartRate">Tętno</string>
+	<string id="Battery">Bateria</string>
+	<string id="BatteryHidePercentage">Bateria (Sama Wartość)</string>
+	<string id="Notifications">Powiadomienia</string>
+	<string id="Calories">Kalorie</string>
+	<string id="Distance">Odległość</string>
+	<string id="Alarms">Budziki</string>
+	<string id="Altitude">Wysokość</string>
+	<string id="Temperature">Temperatura</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
 
