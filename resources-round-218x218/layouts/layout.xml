@@ -38,7 +38,11 @@
 		<param name="y">72</param>
 	</drawable>
 
-	<label id="Bluetooth" text="8" x="30" y="109" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<drawable id="Indicators" class="Indicators">
+		<param name="locX">30</param>
+		<param name="locY">109</param>
+		<param name="spacing">28</param>
+	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
 		<param name="secondsX">147</param>
