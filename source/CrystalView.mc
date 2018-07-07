@@ -117,7 +117,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Update the view
 	function onUpdate(dc) {
-		System.println("onUpdate()");
+		//System.println("onUpdate()");
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
 		if (mSettingsChangedSinceLastDraw) {
@@ -315,7 +315,7 @@ class CrystalView extends Ui.WatchFace {
 	function onExitSleep() {
 		mIsSleeping = false;
 
-		Sys.println("onExitSleep()");
+		//Sys.println("onExitSleep()");
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
@@ -328,8 +328,8 @@ class CrystalView extends Ui.WatchFace {
 	function onEnterSleep() {
 		mIsSleeping = true;
 
-		Sys.println("onEnterSleep()");
-		Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
+		//Sys.println("onEnterSleep()");
+		//Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
 
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.

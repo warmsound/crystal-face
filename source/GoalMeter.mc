@@ -2,6 +2,15 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+private const GOAL_METER_STYLE = [
+	:MULTI_SEGMENTS,
+	:SINGLE_SEGMENT,
+	:HIDDEN
+];
+
+private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
+private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
+
 // Buffered drawing behaviour:
 // - On initialisation: calculate clip width (non-trivial for arc shape); create buffers for empty and filled segments.
 // - On setting current/max values: if max changes, re-calculate segment layout and set dirty buffer flag; if current changes, re-
@@ -29,15 +38,6 @@ class GoalMeter extends Ui.Drawable {
 
 	private var mCurrentValue;
 	private var mMaxValue;
-
-	private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
-	private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
-
-	private var GOAL_METER_STYLE = {
-		0 => :MULTI_SEGMENTS,
-		1 => :SINGLE_SEGMENT,
-		2 => :HIDDEN
-	};
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -145,22 +145,21 @@ class GoalMeter extends Ui.Drawable {
 		var themeColour = App.getApp().getProperty("ThemeColour");
 
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
+		// Now changed to use buffered drawing only on round watches.
 		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)
-			&& (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
+			&& (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND)) {
 
 			drawBuffered(dc, left, top, themeColour, meterBackgroundColour);
+		
 		} else {
-			drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour);
+			// drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour);
+
+			// Filled segments: 0 --> fill height.
+			drawSegments(dc, left, top, themeColour, mSegments, 0, mFillHeight);
+
+			// Unfilled segments: fill height --> height.
+			drawSegments(dc, left, top, meterBackgroundColour, mSegments, mFillHeight, mHeight);
 		}
-	}
-
-	function drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour) {
-
-		// Filled segments: 0 --> fill height.
-		drawSegments(dc, left, top, themeColour, mSegments, 0, mFillHeight);
-
-		// Unfilled segments: fill height --> height.
-		drawSegments(dc, left, top, meterBackgroundColour, mSegments, mFillHeight, mHeight);		
 	}
 
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
@@ -324,7 +323,7 @@ class GoalMeter extends Ui.Drawable {
 
 		var totalSegmentHeight = mHeight - (numSeparators * mSeparator); // Subtract total separator height from full height.		
 		var segmentHeight = totalSegmentHeight * 1.0 / numSegments; // Force floating-point division.
-		Sys.println("segmentHeight " + segmentHeight);
+		//Sys.println("segmentHeight " + segmentHeight);
 
 		var segments = new [Math.ceil(numSegments)];
 		var start, end, height;
@@ -341,7 +340,7 @@ class GoalMeter extends Ui.Drawable {
 			height = end - start;
 
 			segments[i] = height;
-			Sys.println("segment " + i + " height " + height);
+			//Sys.println("segment " + i + " height " + height);
 		}
 
 		return segments;
@@ -369,7 +368,7 @@ class GoalMeter extends Ui.Drawable {
 			}			
 		}
 
-		Sys.println("fillHeight " + fillHeight);
+		//Sys.println("fillHeight " + fillHeight);
 		return fillHeight;
 	}
 
@@ -395,7 +394,7 @@ class GoalMeter extends Ui.Drawable {
 			tryScaleIndex++;	
 		} while (segmentHeight <= MIN_WHOLE_SEGMENT_HEIGHT);
 
-		Sys.println("scale " + segmentScale);
+		//Sys.println("scale " + segmentScale);
 		return segmentScale;
 	}
 }
