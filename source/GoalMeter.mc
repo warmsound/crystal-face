@@ -2,14 +2,14 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
-private const GOAL_METER_STYLE = [
+const GOAL_METER_STYLE = [
 	:MULTI_SEGMENTS,
 	:SINGLE_SEGMENT,
 	:HIDDEN
 ];
 
-private const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
-private const MIN_WHOLE_SEGMENT_HEIGHT = 5;
+const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
+const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
 // Buffered drawing behaviour:
 // - On initialisation: calculate clip width (non-trivial for arc shape); create buffers for empty and filled segments.

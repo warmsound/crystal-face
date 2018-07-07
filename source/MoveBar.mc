@@ -3,7 +3,7 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
-private const MOVE_BAR_STYLE = [
+const MOVE_BAR_STYLE = [
 	:SHOW_ALL_SEGMENTS,
 	:SHOW_FILLED_SEGMENTS,
 	:HIDDEN

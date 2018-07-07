@@ -3,9 +3,9 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
-private const INDICATOR_1_TYPE = "Indicator1Type";
-private const INDICATOR_2_TYPE = "Indicator2Type";
-private const INDICATOR_3_TYPE = "Indicator3Type";
+const INDICATOR_1_TYPE = "Indicator1Type";
+const INDICATOR_2_TYPE = "Indicator2Type";
+const INDICATOR_3_TYPE = "Indicator3Type";
 
 class Indicators extends Ui.Drawable {
 
