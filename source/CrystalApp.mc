@@ -46,6 +46,10 @@ class CrystalApp extends App.AppBase {
 		return [mView];
 	}
 
+	function getView() {
+		return mView;
+	}
+
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.

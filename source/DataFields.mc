@@ -115,7 +115,7 @@ class DataFields extends Ui.Drawable {
 			x,
 			mTop,
 			mIconsFont,
-			App.getApp().getInitialView()[0].getIconFontChar(FIELD_TYPES[fieldType]),
+			App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
