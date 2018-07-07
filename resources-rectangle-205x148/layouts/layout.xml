@@ -40,7 +40,13 @@
 		<param name="yLine2">35</param>
 	</drawable>
 
-	<label id="Bluetooth" text="8" x="103" y="130" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<drawable id="Indicators" class="Indicators">
+		<param name="locX">103</param>
+		<param name="locY">130</param>
+
+		<!-- Horizontal indicator layout -->
+		<param name="spacingX">22</param>
+	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
 		<param name="secondsX">157</param>

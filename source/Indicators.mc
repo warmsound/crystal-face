@@ -3,10 +3,15 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+private const INDICATOR_1_TYPE = "Indicator1Type";
+private const INDICATOR_2_TYPE = "Indicator2Type";
+private const INDICATOR_3_TYPE = "Indicator3Type";
+
 class Indicators extends Ui.Drawable {
 
 	private var mIconsFont;
-	private var mSpacing;
+	private var mSpacingX;
+	private var mSpacingY;
 
 	private var INDICATOR_TYPES = [
 		:INDICATOR_TYPE_BLUETOOTH,
@@ -17,7 +22,8 @@ class Indicators extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mSpacing = params[:spacing];
+		mSpacingX = params[:spacingX];
+		mSpacingY = params[:spacingY];
 	}
 
 	function setFont(iconsFont) {
@@ -25,26 +31,49 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		switch (App.getApp().getProperty("IndicatorCount")) {
-			case 3:
-				drawIndicator(dc, App.getApp().getProperty("Indicator1Type"), locY - mSpacing);
-				drawIndicator(dc, App.getApp().getProperty("Indicator2Type"), locY);
-				drawIndicator(dc, App.getApp().getProperty("Indicator3Type"), locY + mSpacing);
-				break;
-			case 2:
-				drawIndicator(dc, App.getApp().getProperty("Indicator1Type"), locY - (mSpacing / 2));
-				drawIndicator(dc, App.getApp().getProperty("Indicator2Type"), locY + (mSpacing / 2));
-				break;
-			case 1:
-				drawIndicator(dc, App.getApp().getProperty("Indicator1Type"), locY);
-				break;
-			case 0:
-				break;
+
+		// Vertical layout.
+		if (mSpacingX) {
+			switch (App.getApp().getProperty("IndicatorCount")) {
+				case 3:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX - mSpacingX, locY);
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX + mSpacingX, locY);
+					break;
+				case 2:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX - (mSpacingX / 2), locY);
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX + (mSpacingX / 2), locY);
+					break;
+				case 1:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
+					break;
+				case 0:
+					break;
+			}
+
+		// Horizontal layout.
+		} else if (mSpacingY) {
+			switch (App.getApp().getProperty("IndicatorCount")) {
+				case 3:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - mSpacingY);
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX, locY + mSpacingY);
+					break;
+				case 2:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - (mSpacingY / 2));
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY + (mSpacingY / 2));
+					break;
+				case 1:
+					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
+					break;
+				case 0:
+					break;
+			}
 		}
 	}
 
 	// "indicatorType" parameter is raw property value (it's converted to symbol below).
-	function drawIndicator(dc, indicatorType, y) {
+	function drawIndicator(dc, indicatorType, x, y) {
 		var value = getValueForIndicatorType(indicatorType);
 		var colour;
 
@@ -57,7 +86,7 @@ class Indicators extends Ui.Drawable {
 		// Icon.
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
-			locX,
+			x,
 			y,
 			mIconsFont,
 			App.getApp().getInitialView()[0].getIconFontChar(INDICATOR_TYPES[indicatorType]),
