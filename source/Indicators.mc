@@ -49,9 +49,9 @@ class Indicators extends Ui.Drawable {
 		var colour;
 
 		if (value) {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
-		} else {
 			colour = App.getApp().getProperty("ThemeColour");
+		} else {
+			colour = App.getApp().getProperty("MeterBackgroundColour");			
 		}
 
 		// Icon.
