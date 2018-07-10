@@ -100,7 +100,7 @@ class Indicators extends Ui.Drawable {
 			x,
 			y,
 			mIconsFont,
-			App.getApp().getInitialView()[0].getIconFontChar(indicatorType),
+			App.getApp().getView().getIconFontChar(indicatorType),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}
