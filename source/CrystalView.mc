@@ -298,7 +298,7 @@ class CrystalView extends Ui.WatchFace {
 	// Set clipping region to previously-displayed seconds text only.
 	// Clear background, clear clipping region, then draw new seconds.
 	function onPartialUpdate(dc) {
-		System.println("onPartialUpdate()");
+		//Sys.println("onPartialUpdate()");
 	
 		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}

@@ -44,9 +44,9 @@
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
-		<param name="locX">30</param>
+		<param name="locX">31</param>
 		<param name="locY">109</param>
-		<param name="spacingY">28</param>
+		<param name="spacingY">30</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
