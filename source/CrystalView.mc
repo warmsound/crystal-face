@@ -104,6 +104,8 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
+		mDrawables[:DataFields].onSettingsChanged();
+
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
