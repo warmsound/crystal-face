@@ -37,7 +37,7 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">
+	<setting propertyKey="@Properties.Field1Type" title="@Strings.DataField1Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
@@ -51,7 +51,7 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.CenterFieldType" title="@Strings.CenterDataFieldTitle">
+	<setting propertyKey="@Properties.Field2Type" title="@Strings.DataField2Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
@@ -65,7 +65,7 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.RightFieldType" title="@Strings.RightDataFieldTitle">
+	<setting propertyKey="@Properties.Field3Type" title="@Strings.DataField3Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>

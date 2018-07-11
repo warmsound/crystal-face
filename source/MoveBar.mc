@@ -3,11 +3,11 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
-private var MOVE_BAR_STYLE = {
-	0 => :SHOW_ALL_SEGMENTS,
-	1 => :SHOW_FILLED_SEGMENTS,
-	2 => :HIDDEN
-};
+const MOVE_BAR_STYLE = [
+	:SHOW_ALL_SEGMENTS,
+	:SHOW_FILLED_SEGMENTS,
+	:HIDDEN
+];
 
 class MoveBar extends Ui.Drawable {
 
@@ -72,13 +72,11 @@ class MoveBar extends Ui.Drawable {
 		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
 			drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
 		} else {
-			drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
-		}		
-	}
+			//drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
 
-	function drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
-		// Draw bars vertically centred on mY.
-		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel, themeColour, meterBackgroundColour);
+			// Draw bars vertically centred on mY.
+			drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel, themeColour, meterBackgroundColour);
+		}		
 	}
 
 	(:buffered)
@@ -152,7 +150,7 @@ class MoveBar extends Ui.Drawable {
 				break;
 			}
 
-			Sys.println("drawBar " + i + " at x=" + barX);
+			//Sys.println("drawBar " + i + " at x=" + barX);
 			drawBar(dc, thisBarColour, barX, y + (mHeight / 2), thisBarWidth);
 
 			barX += thisBarWidth + mSeparator;
@@ -168,7 +166,7 @@ class MoveBar extends Ui.Drawable {
 
 		var barWidth = availableWidth / (numBars + /* First bar is double width */ 1);
 
-		Sys.println("barWidth " + barWidth);
+		//Sys.println("barWidth " + barWidth);
 		return barWidth;
 	}
 

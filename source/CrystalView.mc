@@ -1,10 +1,8 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
-using Toybox.Lang as Lang;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
-using Toybox.SensorHistory as SensorHistory;
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
@@ -14,65 +12,13 @@ class CrystalView extends Ui.WatchFace {
 	private var mMinutesFont;
 	private var mSecondsFont;
 
+	private var mIconsFont;
+	private var mNormalFont;
+
 	private var mTime;
-	
-	private var GOAL_TYPES = {
-		App.GOAL_TYPE_STEPS => :GOAL_TYPE_STEPS,
-		App.GOAL_TYPE_FLOORS_CLIMBED => :GOAL_TYPE_FLOORS_CLIMBED,
-		App.GOAL_TYPE_ACTIVE_MINUTES => :GOAL_TYPE_ACTIVE_MINUTES,
-		
-		-1 => :GOAL_TYPE_BATTERY,
-		-2 => :GOAL_TYPE_CALORIES
-	};
-
-	private var FIELD_TYPES = {
-		0 => :FIELD_TYPE_HEART_RATE,
-		1 => :FIELD_TYPE_BATTERY,
-		2 => :FIELD_TYPE_NOTIFICATIONS,
-		3 => :FIELD_TYPE_CALORIES,
-		4 => :FIELD_TYPE_DISTANCE,
-		5 => :FIELD_TYPE_ALARMS,
-		6 => :FIELD_TYPE_ALTITUDE,
-		7 => :FIELD_TYPE_TEMPERATURE,
-		8 => :FIELD_TYPE_BATTERY_HIDE_PERCENT,
-	};
-
-	private var ICON_FONT_CHARS = {
-		:GOAL_TYPE_STEPS => "0",
-		:GOAL_TYPE_FLOORS_CLIMBED => "1",
-		:GOAL_TYPE_ACTIVE_MINUTES => "2",
-		:FIELD_TYPE_HEART_RATE => "3",
-		:FIELD_TYPE_BATTERY => "4",
-		:FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
-		:FIELD_TYPE_NOTIFICATIONS => "5",
-		:FIELD_TYPE_CALORIES => "6",
-		:GOAL_TYPE_CALORIES => "6", // Use calories icon for both field and goal.
-		:FIELD_TYPE_DISTANCE => "7",
-		:INDICATOR_BLUETOOTH => "8",
-		:GOAL_TYPE_BATTERY => "9",
-		:FIELD_TYPE_ALARMS => ":",
-		:FIELD_TYPE_ALTITUDE => ";",
-		:FIELD_TYPE_TEMPERATURE => "<"
-	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
-
-	const BATTERY_FILL_WIDTH = 18;
-	const BATTERY_FILL_HEIGHT = 6;
-
-	const BATTERY_WIDTH_SMALL = 24;
-	const BATTERY_FILL_WIDTH_SMALL = 15;
-	const BATTERY_FILL_HEIGHT_SMALL = 4;
-
-	const BATTERY_LEVEL_LOW = 20;
-	const BATTERY_LEVEL_CRITICAL = 10;
-
-	const CM_PER_KM = 100000;
-	const MI_PER_KM = 0.621371;
-	const FT_PER_M = 3.28084;
-
-	const MAX_FIELD_LENGTH = 4; // Maximum number of characters per field;
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -87,6 +33,9 @@ class CrystalView extends Ui.WatchFace {
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
+		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		cacheDrawables();
@@ -95,6 +44,9 @@ class CrystalView extends Ui.WatchFace {
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
+
+		mDrawables[:Indicators].setFont(mIconsFont);
+		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
@@ -121,10 +73,12 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:Date] = View.findDrawableById("Date");
 
-		mDrawables[:Bluetooth] = View.findDrawableById("Bluetooth");
+		mDrawables[:Indicators] = View.findDrawableById("Indicators");
 
 		// Use mTime instead.
 		//mDrawables[:Time] = View.findDrawableById("Time");
+
+		mDrawables[:DataFields] = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
@@ -150,6 +104,8 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
+		mDrawables[:DataFields].onSettingsChanged();
+
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
@@ -161,7 +117,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Update the view
 	function onUpdate(dc) {
-		System.println("onUpdate()");
+		//System.println("onUpdate()");
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
 		if (mSettingsChangedSinceLastDraw) {
@@ -174,256 +130,14 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		updateGoalMeters();
-		updateDataFields();
-		updateBluetoothIndicator();
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
-
-		// Additional drawing on top of drawables.
-		// TODO: Solving z-order issue forces ugly repetition (retrieval of battery value, etc.); can this be avoided?
-		onPostUpdate(dc);
-	}
-
-	function onPostUpdate(dc) {
-
-		// Find any battery meter icons, and draw fill on top. 
-		if ((FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("LeftFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			fillBatteryMeter(dc, mDrawables[:LeftFieldIcon]);
-		}
-
-		if ((FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("CenterFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			fillBatteryMeter(dc, mDrawables[:CenterFieldIcon]);
-		}
-
-		if ((FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY) ||
-			(FIELD_TYPES[App.getApp().getProperty("RightFieldType")] == :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			fillBatteryMeter(dc, mDrawables[:RightFieldIcon]);
-		}
-	}
-
-	function fillBatteryMeter(dc, batteryIcon) {
-		// #8: battery returned as float. Use floor() to match native. Must match getDisplayInfoForFieldType().
-		var batteryLevel = Math.floor(Sys.getSystemStats().battery);
-		var colour;
-		var fillWidth, fillHeight;
-
-		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
-			colour = Graphics.COLOR_RED;
-		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
-			colour = Graphics.COLOR_YELLOW;
-		} else {
-			colour = App.getApp().getProperty("ThemeColour");
-		}
-
-		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-		// Layout uses small battery icon.
-		if (batteryIcon.width == BATTERY_WIDTH_SMALL) {
-			fillWidth = BATTERY_FILL_WIDTH_SMALL;
-			fillHeight = BATTERY_FILL_HEIGHT_SMALL;
-		} else {
-			fillWidth = BATTERY_FILL_WIDTH;
-			fillHeight = BATTERY_FILL_HEIGHT;
-		}
-		dc.fillRectangle(
-			batteryIcon.locX - (fillWidth / 2) - 1,
-			batteryIcon.locY - (fillHeight / 2) + 1,
-			Math.ceil(fillWidth * (batteryLevel / 100)), 
-			fillHeight);	
-	}
-
-	function updateDataFields() {
-		updateDataField(
-			App.getApp().getProperty("LeftFieldType"),
-			mDrawables[:LeftFieldIcon],
-			mDrawables[:LeftFieldValue]
-		);
-
-		updateDataField(
-			App.getApp().getProperty("CenterFieldType"),
-			mDrawables[:CenterFieldIcon],
-			mDrawables[:CenterFieldValue]
-		);
-
-		updateDataField(
-			App.getApp().getProperty("RightFieldType"),
-			mDrawables[:RightFieldIcon],
-			mDrawables[:RightFieldValue]
-		);
-	}
-
-	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	function updateDataField(fieldType, iconLabel, valueLabel) {
-		var value = getValueForFieldType(fieldType);
-		var colour;
-
-		// Grey out icon if no value was retrieved.
-		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
-		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
-		} else {
-			colour = App.getApp().getProperty("ThemeColour");
-		}
-
-		iconLabel.setText(ICON_FONT_CHARS[FIELD_TYPES[fieldType]]);
-		iconLabel.setColor(colour);
-		
-		valueLabel.setText(value);
-		valueLabel.setColor(App.getApp().getProperty("MonoLightColour"));
-	}
-
-	// "type" parameter is raw property value (it's converted to symbol below).
-	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
-	function getValueForFieldType(type) {
-		var value = "";
-
-		var activityInfo;
-		var iterator;
-		var sample;
-		var battery;
-		var settings;
-		var distance;
-		var altitude;
-		var temperature;
-		var format;
-		var unit;
-
-		switch (FIELD_TYPES[type]) {
-			case :FIELD_TYPE_HEART_RATE:
-				if (ActivityMonitor has :getHeartRateHistory) {
-					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
-					sample = iterator.next();
-					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
-						value = sample.heartRate.format("%d");
-					}
-				}
-				break;
-
-			case :FIELD_TYPE_BATTERY:
-				// #8: battery returned as float. Use floor() to match native. Must match fillBatteryMeter().
-				battery = Math.floor(Sys.getSystemStats().battery);
-				value = battery.format("%d") + "%";
-				break;
-
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
-				break;
-
-			case :FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();
-				if (settings.notificationCount > 0) {
-					value = settings.notificationCount.format("%d");
-				}
-				break;
-
-			case :FIELD_TYPE_CALORIES:
-				activityInfo = ActivityMonitor.getInfo();
-				value = activityInfo.calories.format("%d");
-				break;
-
-			case :FIELD_TYPE_DISTANCE:
-				settings = Sys.getDeviceSettings();
-				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance.toFloat() / CM_PER_KM; // #11: Ensure floating point division!
-
-				if (settings.distanceUnits == System.UNIT_METRIC) {
-					unit = "km";					
-				} else {
-					distance *= MI_PER_KM;
-					unit = "mi";
-				}
-
-				value = distance.format("%.1f");
-
-				// Show unit only if distance is less than 10, to save space.
-				if (distance < 10) {
-					value += unit;
-				}
-				
-				break;
-
-			case :FIELD_TYPE_ALARMS:
-				settings = Sys.getDeviceSettings();
-				if (settings.alarmCount > 0) {
-					value = settings.alarmCount.format("%d");
-				}
-				break;
-
-			case :FIELD_TYPE_ALTITUDE:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
-					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
-					if ((sample != null) && (sample.data != null)) {
-						altitude = sample.data;
-
-						settings = Sys.getDeviceSettings();
-
-						// Metres (no conversion necessary).
-						if (settings.elevationUnits == System.UNIT_METRIC) {
-							unit = "m";
-
-						// Feet.
-						} else {
-							altitude *= FT_PER_M;
-							unit = "ft";
-						}
-
-						value = altitude.format("%d");
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
-							value += unit;
-						}
-					}
-				}
-				break;
-
-			case :FIELD_TYPE_TEMPERATURE:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
-					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
-					if ((sample != null) && (sample.data != null)) {
-						temperature = sample.data;
-
-						settings = Sys.getDeviceSettings();
-						if (settings.temperatureUnits == System.UNIT_METRIC) {
-							unit = "°C";
-						} else {
-							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
-							unit = "°F";
-						}
-
-						value = temperature.format("%d");
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= MAX_FIELD_LENGTH) {
-							value += unit;
-						}
-					}
-				}
-				break;
-		}
-
-		return value;
-	}
-
-	// Set colour of bluetooth indicator, depending on phone connection status.
-	function updateBluetoothIndicator() {
-		var indicator = mDrawables[:Bluetooth];
-
-		if (Sys.getDeviceSettings().phoneConnected) {
-			indicator.setColor(App.getApp().getProperty("ThemeColour"));
-		} else {
-			indicator.setColor(App.getApp().getProperty("MeterBackgroundColour"));
-		}
 	}
 
 	function updateGoalMeters() {
 		updateGoalMeter(
-			GOAL_TYPES[App.getApp().getProperty("LeftGoalType")],
+			getGoalType(App.getApp().getProperty("LeftGoalType")),
 			mDrawables[:LeftGoalMeter],
 			mDrawables[:LeftGoalIcon],
 			mDrawables[:LeftGoalCurrent],
@@ -431,7 +145,7 @@ class CrystalView extends Ui.WatchFace {
 		);
 
 		updateGoalMeter(
-			GOAL_TYPES[App.getApp().getProperty("RightGoalType")],
+			getGoalType(App.getApp().getProperty("RightGoalType")),
 			mDrawables[:RightGoalMeter],
 			mDrawables[:RightGoalIcon],
 			mDrawables[:RightGoalCurrent],
@@ -446,7 +160,7 @@ class CrystalView extends Ui.WatchFace {
 		meter.setValues(values[:current], values[:max]);
 
 		// Icon label.
-		iconLabel.setText(ICON_FONT_CHARS[goalType]);
+		iconLabel.setText(getIconFontChar(goalType));
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
@@ -473,6 +187,58 @@ class CrystalView extends Ui.WatchFace {
 			maxLabel.setText("");
 		}
 		maxLabel.setColor(App.getApp().getProperty("MonoDarkColour"));
+	}
+
+	// Replace dictionary with function to save memory.
+	function getGoalType(goalProperty) {
+		switch (goalProperty) {
+			case App.GOAL_TYPE_STEPS:
+				return :GOAL_TYPE_STEPS;
+			case App.GOAL_TYPE_FLOORS_CLIMBED:
+				return :GOAL_TYPE_FLOORS_CLIMBED;
+			case App.GOAL_TYPE_ACTIVE_MINUTES:
+				return :GOAL_TYPE_ACTIVE_MINUTES;
+			case -1:
+				return :GOAL_TYPE_BATTERY;
+			case -2:
+				return :GOAL_TYPE_CALORIES;
+		}
+	}
+
+	// Replace dictionary with function to save memory.
+	function getIconFontChar(fieldType) {
+		switch (fieldType) {
+			case :GOAL_TYPE_STEPS:
+				return "0";
+			case :GOAL_TYPE_FLOORS_CLIMBED:
+				return "1";
+			case :GOAL_TYPE_ACTIVE_MINUTES:
+				return "2";
+			case :FIELD_TYPE_HEART_RATE:
+				return "3";
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				return "4";
+			case :FIELD_TYPE_NOTIFICATIONS:
+			case :INDICATOR_TYPE_NOTIFICATIONS:
+				return "5";
+			case :FIELD_TYPE_CALORIES:
+			case :GOAL_TYPE_CALORIES:
+				return "6"; // Use calories icon for both field and goal.
+			case :FIELD_TYPE_DISTANCE:
+				return "7";
+			case :INDICATOR_TYPE_BLUETOOTH:
+				return "8";
+			case :GOAL_TYPE_BATTERY:
+				return "9";
+			case :FIELD_TYPE_ALARMS:
+			case :INDICATOR_TYPE_ALARMS:
+				return ":";
+			case :FIELD_TYPE_ALTITUDE:
+				return ";";
+			case :FIELD_TYPE_TEMPERATURE:
+				return "<";
+		}
 	}
 
 	function getValuesForGoalType(type) {
@@ -534,7 +300,7 @@ class CrystalView extends Ui.WatchFace {
 	// Set clipping region to previously-displayed seconds text only.
 	// Clear background, clear clipping region, then draw new seconds.
 	function onPartialUpdate(dc) {
-		System.println("onPartialUpdate()");
+		//Sys.println("onPartialUpdate()");
 	
 		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
@@ -549,7 +315,7 @@ class CrystalView extends Ui.WatchFace {
 	function onExitSleep() {
 		mIsSleeping = false;
 
-		Sys.println("onExitSleep()");
+		//Sys.println("onExitSleep()");
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
@@ -562,8 +328,8 @@ class CrystalView extends Ui.WatchFace {
 	function onEnterSleep() {
 		mIsSleeping = true;
 
-		Sys.println("onEnterSleep()");
-		Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
+		//Sys.println("onEnterSleep()");
+		//Sys.println("Partial updates supported = " + PER_SECOND_UPDATES_SUPPORTED);
 
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
