@@ -35,7 +35,7 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">72</param>
+		<param name="y">70</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">

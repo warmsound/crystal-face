@@ -35,7 +35,7 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">76</param>
+		<param name="y">74</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
@@ -46,15 +46,15 @@
 
 	<drawable id="Time" class="ThickThinTime">
 		<param name="secondsX">163</param>
-		<param name="secondsY">143</param>
-		<param name="secondsClipY">155</param>
+		<param name="secondsY">142</param>
+		<param name="secondsClipY">154</param>
 		<param name="secondsClipWidth">26</param>
 		<param name="secondsClipHeight">17</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">52</param>
-		<param name="y">162</param>
+		<param name="y">161</param>
 		<param name="width">105</param>
 		<param name="height">9</param>
 		<param name="separator">3</param>
