@@ -25,32 +25,36 @@
 	<label id="RightGoalCurrent" text="6" x="164" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 	<label id="RightGoalMax" text="10" x="164" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
 
-	<label id="LeftFieldIcon" text="3" x="80" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftFieldValue" text="0" x="80" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
-	<label id="CenterFieldIcon" text="4" x="120" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="CenterFieldValue" text="75%" x="120" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
-	<label id="RightFieldIcon" text="5" x="160" y="24" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightFieldValue" text="0" x="160" y="45" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
-
-	<drawable id="Date" class="DateLine">
-		<param name="y">76</param>
+	<drawable id="DataFields" class="DataFields">
+		<param name="left">80</param>
+		<param name="right">160</param>
+		<param name="top">24</param>
+		<param name="bottom">45</param>
+		<param name="batteryFillWidth">18</param>
+		<param name="batteryFillHeight">6</param>
 	</drawable>
 
-	<label id="Bluetooth" text="8" x="30" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<drawable id="Date" class="DateLine">
+		<param name="y">74</param>
+	</drawable>
+
+	<drawable id="Indicators" class="Indicators">
+		<param name="locX">31</param>
+		<param name="locY">120</param>
+		<param name="spacingY">30</param>
+	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
 		<param name="secondsX">163</param>
-		<param name="secondsY">143</param>
-		<param name="secondsClipY">155</param>
+		<param name="secondsY">142</param>
+		<param name="secondsClipY">154</param>
 		<param name="secondsClipWidth">26</param>
 		<param name="secondsClipHeight">17</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">52</param>
-		<param name="y">162</param>
+		<param name="y">161</param>
 		<param name="width">105</param>
 		<param name="height">9</param>
 		<param name="separator">3</param>

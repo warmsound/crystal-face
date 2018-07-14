@@ -54,7 +54,11 @@
 		<settingConfig type="numeric" min="1" max="10000" required="true"/>
 	</setting>
 
-	<setting propertyKey="@Properties.LeftFieldType" title="@Strings.LeftDataFieldTitle">
+	<setting propertyKey="@Properties.FieldCount" title="@Strings.FieldCountTitle">
+		<settingConfig type="numeric" min="0" max="3" required="true"/>
+	</setting>
+
+	<setting propertyKey="@Properties.Field1Type" title="@Strings.DataField1Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
@@ -68,7 +72,7 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.CenterFieldType" title="@Strings.CenterDataFieldTitle">
+	<setting propertyKey="@Properties.Field2Type" title="@Strings.DataField2Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
@@ -82,7 +86,7 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.RightFieldType" title="@Strings.RightDataFieldTitle">
+	<setting propertyKey="@Properties.Field3Type" title="@Strings.DataField3Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
 			<listEntry value="1">@Strings.Battery</listEntry>
@@ -93,6 +97,37 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.IndicatorCount" title="@Strings.IndicatorCountTitle">
+		<settingConfig type="numeric" min="0" max="3" required="true"/>
+	</setting>
+
+	<setting propertyKey="@Properties.Indicator1Type" title="@Strings.Indicator1Title">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Bluetooth</listEntry>
+			<listEntry value="1">@Strings.Alarms</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.Indicator2Type" title="@Strings.Indicator2Title">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Bluetooth</listEntry>
+			<listEntry value="1">@Strings.Alarms</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.Indicator3Type" title="@Strings.Indicator3Title">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.Bluetooth</listEntry>
+			<listEntry value="1">@Strings.Alarms</listEntry>
+			<listEntry value="2">@Strings.Notifications</listEntry>
+			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 		</settingConfig>
 	</setting>
 

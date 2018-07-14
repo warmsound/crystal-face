@@ -16,12 +16,10 @@ class ThickThinTime extends Ui.Drawable {
 	// Tight clipping rectangle for drawing seconds during partial update.
 	// "y" corresponds to top of glyph, which will be lower than "y" parameter of drawText().
 	// drawText() starts from the top of the font ascent, which is above the top of most glyphs.
-	private var mSecondsClipRect = {
-			:x => 0,
-			:y => 0,
-			:width => 0,
-			:height => 0
-	};
+	private var mSecondsClipRectX;
+	private var mSecondsClipRectY;
+	private var mSecondsClipRectWidth;
+	private var mSecondsClipRectHeight;
 
 	// Has clipping rectangle previously been set for partial updates?
 	private var mClipIsSet = false;
@@ -42,10 +40,10 @@ class ThickThinTime extends Ui.Drawable {
 
 		mSecondsY = params[:secondsY];
 
-		mSecondsClipRect[:x] = params[:secondsX];
-		mSecondsClipRect[:y] = params[:secondsClipY];
-		mSecondsClipRect[:width] = params[:secondsClipWidth];
-		mSecondsClipRect[:height] = params[:secondsClipHeight];
+		mSecondsClipRectX = params[:secondsX];
+		mSecondsClipRectY = params[:secondsClipY];
+		mSecondsClipRectWidth = params[:secondsClipWidth];
+		mSecondsClipRectHeight = params[:secondsClipHeight];
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
@@ -246,10 +244,10 @@ class ThickThinTime extends Ui.Drawable {
 			// Set clip once, at start of low power mode.
 			if (!mClipIsSet) {
 				dc.setClip(
-					mSecondsClipRect[:x] + mSecondsClipXAdjust,
-					mSecondsClipRect[:y],
-					mSecondsClipRect[:width],
-					mSecondsClipRect[:height]
+					mSecondsClipRectX + mSecondsClipXAdjust,
+					mSecondsClipRectY,
+					mSecondsClipRectWidth,
+					mSecondsClipRectHeight
 				);
 				mClipIsSet = true;
 			}
@@ -270,7 +268,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		dc.drawText(
-			mSecondsClipRect[:x] + mSecondsClipXAdjust,
+			mSecondsClipRectX + mSecondsClipXAdjust,
 			mSecondsY,
 			mSecondsFont,
 			seconds,

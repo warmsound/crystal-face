@@ -76,80 +76,79 @@ class DateLine extends Ui.Drawable {
 		var day = now.day.format("%d");
 		var month = mMonthStrings[now.month - 1].toUpper(); // Months are zero-based, starting January.
 
+		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");
+		var monoLightColour = App.getApp().getProperty("MonoLightColour");
+
+		// drawDoubleLine(dc, dayOfWeek, day, month);
 		if (mYLine2 != null) {
-			drawDoubleLine(dc, dayOfWeek, day, month);
+
+			// Draw day of week, left-aligned at (mX, mY).
+			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				mX,
+				mY,
+				mFont,
+				dayOfWeek,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Draw month, left-aligned at (mX, mYLine2).
+			dc.drawText(
+				mX,
+				mYLine2,
+				mFont,
+				month,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Draw day, after day of week.
+			dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				mX + dc.getTextWidthInPixels(dayOfWeek + " ", mFont),
+				mY,
+				mFont,
+				day,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+		// drawSingleLine(dc, dayOfWeek, day, month);
 		} else {
-			drawSingleLine(dc, dayOfWeek, day, month);
+
+			var dateString = Lang.format("$1$ $2$ $3$", [dayOfWeek, day, month]);
+			var length = dc.getTextWidthInPixels(dateString, mFont);
+			var x = (dc.getWidth() / 2) - (length / 2);
+			
+			// Draw day of week.
+			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mY,
+				mFont,
+				dayOfWeek,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			x += dc.getTextWidthInPixels(dayOfWeek + " ", mFont);
+
+			// Draw day.
+			dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mY,
+				mFont,
+				day,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			x += dc.getTextWidthInPixels(day + " ", mFont);
+
+			// Draw month.
+			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mY,
+				mFont,
+				month,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 		}
-	}
-
-	function drawSingleLine(dc, dayOfWeek, day, month) {
-		var dateString = Lang.format("$1$ $2$ $3$", [dayOfWeek, day, month]);
-		var length = dc.getTextWidthInPixels(dateString, mFont);
-		var x = (dc.getWidth() / 2) - (length / 2);
-		
-		// Draw day of week.
-		dc.setColor(App.getApp().getProperty("MonoDarkColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			mY,
-			mFont,
-			dayOfWeek,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-		x += dc.getTextWidthInPixels(dayOfWeek + " ", mFont);
-
-		// Draw day.
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			mY,
-			mFont,
-			day,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-		x += dc.getTextWidthInPixels(day + " ", mFont);
-
-		// Draw month.
-		dc.setColor(App.getApp().getProperty("MonoDarkColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			mY,
-			mFont,
-			month,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-	}
-
-	function drawDoubleLine(dc, dayOfWeek, day, month) {
-
-		// Draw day of week, left-aligned at (mX, mY).
-		dc.setColor(App.getApp().getProperty("MonoDarkColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			mX,
-			mY,
-			mFont,
-			dayOfWeek,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-
-		// Draw month, left-aligned at (mX, mYLine2).
-		dc.drawText(
-			mX,
-			mYLine2,
-			mFont,
-			month,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
-
-		// Draw day, after day of week.
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			mX + dc.getTextWidthInPixels(dayOfWeek + " ", mFont),
-			mY,
-			mFont,
-			day,
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
 	}
 }
