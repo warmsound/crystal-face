@@ -12,8 +12,8 @@ class DataFields extends Ui.Drawable {
 	private var mTop;
 	private var mBottom;
 
-	private var mBatteryFillWidth;
-	private var mBatteryFillHeight;
+	private var mBatteryWidth;
+	private var mBatteryHeight;
 
 	private var mIconsFont;
 	private var mLabelFont;
@@ -48,8 +48,8 @@ class DataFields extends Ui.Drawable {
 		mTop = params[:top];
 		mBottom = params[:bottom];
 
-		mBatteryFillWidth = params[:batteryFillWidth];
-		mBatteryFillHeight = params[:batteryFillHeight];
+		mBatteryWidth = params[:batteryWidth];
+		mBatteryHeight = params[:batteryHeight];
 
 		// Initialise mFieldCount and mMaxFieldLength.
 		onSettingsChanged();
@@ -113,7 +113,7 @@ class DataFields extends Ui.Drawable {
 		switch (FIELD_TYPES[fieldType]) {
 			case :FIELD_TYPE_BATTERY:
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryFillWidth, mBatteryFillHeight);
+				App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
 				break;
 
 			default:

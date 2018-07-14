@@ -30,8 +30,8 @@
 		<param name="right">147</param>
 		<param name="top">13</param>
 		<param name="bottom">32</param>
-		<param name="batteryFillWidth">15</param>
-		<param name="batteryFillHeight">4</param>
+		<param name="batteryWidth">24</param>
+		<param name="batteryHeight">12</param>
 	</drawable>
 
 	<drawable id="Date" class="DateLine">

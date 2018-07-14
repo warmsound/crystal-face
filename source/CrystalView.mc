@@ -387,7 +387,7 @@ class CrystalView extends Ui.WatchFace {
 		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
 			fillColour = Graphics.COLOR_YELLOW;
 		} else {
-			fillColour = App.getApp().getProperty("ThemeColour");
+			fillColour = themeColour;
 		}
 
 		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
@@ -399,5 +399,4 @@ class CrystalView extends Ui.WatchFace {
 			Math.ceil(fillWidth * (batteryLevel / 100)), 
 			height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
 	}
-
 }
