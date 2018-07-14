@@ -67,7 +67,7 @@
 	<string id="Altitude">Altitud</string>
 	<string id="Temperature">Temperatur</string>
 	<string id="Bluetooth">Bluetooth</string>
-	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
+	<string id="BluetoothOrNotifications">Bluetooth/Notifieringar</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

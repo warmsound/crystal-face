@@ -20,6 +20,13 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.8.0
+- Added setting to control number of data fields (0-3).
+- Added setting to control number of indicators (0-3): Bluetooth, alarms, notifications, bluetooth/notifications.
+- Improved memory efficiency.
+- Layout adjustments.
+- Technical update to CIQ 2.4.8 SDK.
+
 ### 1.7.4
 - Polish translation for settings screen (thanks to Flugcojt).
 - Swedish translation for settings screen (thanks to hasselrot).
