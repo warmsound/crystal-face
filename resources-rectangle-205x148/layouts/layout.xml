@@ -43,6 +43,8 @@
 	<drawable id="Indicators" class="Indicators">
 		<param name="locX">103</param>
 		<param name="locY">130</param>
+		<param name="batteryWidth">20</param>
+		<param name="batteryHeight">10</param>
 
 		<!-- Horizontal indicator layout -->
 		<param name="spacingX">22</param>

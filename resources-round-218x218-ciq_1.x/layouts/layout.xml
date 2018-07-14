@@ -47,6 +47,8 @@
 		<param name="locX">31</param>
 		<param name="locY">109</param>
 		<param name="spacingY">30</param>
+		<param name="batteryWidth">24</param>
+		<param name="batteryHeight">12</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">

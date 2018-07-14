@@ -12,6 +12,8 @@ class Indicators extends Ui.Drawable {
 	private var mIconsFont;
 	private var mSpacingX;
 	private var mSpacingY;
+	private var mBatteryWidth;
+	private var mBatteryHeight;
 
 	private var INDICATOR_TYPES = [
 		:INDICATOR_TYPE_BLUETOOTH,
@@ -26,6 +28,8 @@ class Indicators extends Ui.Drawable {
 
 		mSpacingX = params[:spacingX];
 		mSpacingY = params[:spacingY];
+		mBatteryWidth = params[:batteryWidth];
+		mBatteryHeight = params[:batteryHeight];
 	}
 
 	function setFont(iconsFont) {
@@ -77,9 +81,9 @@ class Indicators extends Ui.Drawable {
 	function drawIndicator(dc, rawIndicatorType, x, y) {
 		var indicatorType = INDICATOR_TYPES[rawIndicatorType];
 
-		// Battery indicator: all watches use same small battery size for indicator.
+		// Battery indicator.
 		if (indicatorType == :INDICATOR_TYPE_BATTERY) {
-			App.getApp().getView().drawBatteryMeter(dc, x, y, /* BATTERY_WIDTH */ 24, /* BATTERY_HEIGHT */ 12);
+			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
 			return;
 		}
 
