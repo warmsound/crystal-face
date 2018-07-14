@@ -110,14 +110,24 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// Icon.
-		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			mTop,
-			mIconsFont,
-			App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
-			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+		switch (FIELD_TYPES[fieldType]) {
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryFillWidth, mBatteryFillHeight);
+				break;
+
+			default:
+				dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+					mTop,
+					mIconsFont,
+					App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+				break;
+		}
+		
 
 		// Value.
 		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
@@ -129,13 +139,7 @@ class DataFields extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 
-		// Battery meter.
-		switch (FIELD_TYPES[fieldType]) {
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				fillBatteryMeter(dc, x);
-				break;
-		}
+		
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
@@ -166,7 +170,7 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case :FIELD_TYPE_BATTERY:
-				// #8: battery returned as float. Use floor() to match native. Must match fillBatteryMeter().
+				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
 				battery = Math.floor(Sys.getSystemStats().battery);
 				value = battery.format("%d") + "%";
 				break;
@@ -271,29 +275,5 @@ class DataFields extends Ui.Drawable {
 		}
 
 		return value;
-	}
-
-	function fillBatteryMeter(dc, x) {
-		// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
-		var batteryLevel = Math.floor(Sys.getSystemStats().battery);
-		var colour;
-		var fillWidth, fillHeight;
-
-		// Fill colour based on battery level.
-		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
-			colour = Graphics.COLOR_RED;
-		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
-			colour = Graphics.COLOR_YELLOW;
-		} else {
-			colour = App.getApp().getProperty("ThemeColour");
-		}
-
-		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-		dc.fillRectangle(
-			x - (mBatteryFillWidth / 2) - 1,
-			mTop - (mBatteryFillHeight / 2) + 1,
-			Math.ceil(mBatteryFillWidth * (batteryLevel / 100)), 
-			mBatteryFillHeight);	
 	}
 }

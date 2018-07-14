@@ -21,7 +21,7 @@ class CrystalView extends Ui.WatchFace {
 	private var mDrawables = {};
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
-	const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
+	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
 	function initialize() {
 		WatchFace.initialize();
@@ -342,6 +342,62 @@ class CrystalView extends Ui.WatchFace {
 	function setHideSeconds(hideSeconds) {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
+	}
+
+	private const BATTERY_LINE_WIDTH = 2;
+	private const BATTERY_HEAD_HEIGHT = 4;
+	private const BATTERY_MARGIN = 1;
+
+	private const BATTERY_LEVEL_LOW = 20;
+	private const BATTERY_LEVEL_CRITICAL = 10;
+
+	// x, y are co-ordinates of centre point.
+	// width and height are outer dimensions of battery "body".
+	function drawBatteryMeter(dc, x, y, width, height) {
+		var themeColour = App.getApp().getProperty("ThemeColour");
+		dc.setColor(themeColour, Graphics.COLOR_TRANSPARENT);
+		dc.setPenWidth(BATTERY_LINE_WIDTH);
+
+		// Body.
+		// drawRoundedRectangle's x and y are top-left corner of middle of stroke.
+		// Bottom-right corner of middle of stroke will be (x + width - 1, y + height - 1).
+		dc.drawRoundedRectangle(
+			x - (width / 2) + (BATTERY_LINE_WIDTH / 2),
+			y - (height / 2) + (BATTERY_LINE_WIDTH / 2),
+			width - BATTERY_LINE_WIDTH + 1,
+			height - BATTERY_LINE_WIDTH + 1,
+			/* BATTERY_CORNER_RADIUS */ 2);
+
+		// Head.
+		// fillRectangle() works as expected.
+		dc.fillRectangle(
+			x + (width / 2) + BATTERY_MARGIN,
+			y - (BATTERY_HEAD_HEIGHT / 2),
+			/* BATTERY_HEAD_WIDTH */ 2,
+			BATTERY_HEAD_HEIGHT);
+
+		// Fill.
+		// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
+		var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
+
+		// Fill colour based on battery level.
+		var fillColour;
+		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
+			fillColour = Graphics.COLOR_RED;
+		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
+			fillColour = Graphics.COLOR_YELLOW;
+		} else {
+			fillColour = App.getApp().getProperty("ThemeColour");
+		}
+
+		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
+
+		var fillWidth = width - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN));
+		dc.fillRectangle(
+			x - (width / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
+			y - (height / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
+			Math.ceil(fillWidth * (batteryLevel / 100)), 
+			height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
 	}
 
 }
