@@ -8,6 +8,9 @@ class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
 
+	private var mTimezones;
+	private var mTimezonesOrig=9;
+	
 	private var mHoursFont;
 	private var mMinutesFont;
 	private var mSecondsFont;
@@ -29,26 +32,10 @@ class CrystalView extends Ui.WatchFace {
 
 	// Load your resources here
 	function onLayout(dc) {
-		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
-		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
-		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
-		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
-		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+		mTimezones = App.getApp().getProperty("timezones").toNumber();	
+		chooseLayout(dc);
 
-		setLayout(Rez.Layouts.WatchFace(dc));
-
-		cacheDrawables();
-
-		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
-		// Slighly faster than mDrawables lookup.
-		mTime = View.findDrawableById("Time");
-		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
-
-		mDrawables[:Indicators].setFont(mIconsFont);
-		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
-
-		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
 
 	function cacheDrawables() {
@@ -80,6 +67,10 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:DataFields] = View.findDrawableById("DataFields");
 
+		if (mTimezones > 0) {
+			mDrawables[:Timezones] = View.findDrawableById("Timezones");
+		} 
+
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
 
@@ -96,23 +87,62 @@ class CrystalView extends Ui.WatchFace {
 		mSettingsChangedSinceLastDraw = true;
 	}
 
-	function onSettingsChangedSinceLastDraw() {
+	function onSettingsChangedSinceLastDraw(dc) {
 
-		// Recreate background buffers for each meter, in case theme colour has changed.
-		mDrawables[:LeftGoalMeter].onSettingsChanged();
-		mDrawables[:RightGoalMeter].onSettingsChanged();
+		mTimezones = App.getApp().getProperty("timezones").toNumber();
+		if (mTimezones != mTimezonesOrig){
+			chooseLayout(dc);
+		} else {
+			// Recreate background buffers for each meter, in case theme colour has changed.
+			mTime.onSettingsChanged();
+			mDrawables[:LeftGoalMeter].onSettingsChanged();
+			mDrawables[:RightGoalMeter].onSettingsChanged();
 
-		mDrawables[:MoveBar].onSettingsChanged();
-
-		mDrawables[:DataFields].onSettingsChanged();
-
-		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
-		// update. Instead, wait for next onExitSleep(). 
-		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
-			setHideSeconds(App.getApp().getProperty("HideSeconds")); 
-		} 
+			mDrawables[:MoveBar].onSettingsChanged();
+			
+			if (mTimezones > 0) {
+				mDrawables[:Timezones].onSettingsChanged();
+			} 
+			// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
+			// update. Instead, wait for next onExitSleep(). 
+			if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
+				setHideSeconds(App.getApp().getProperty("HideSeconds")); 
+			}
+		}
 
 		mSettingsChangedSinceLastDraw = false;
+
+	}
+
+	function chooseLayout(dc){
+
+		if (mTimezones > 0){
+			mLayout=[];
+			mDrawables = {};
+			mTime = "";
+			setLayout(Rez.Layouts.WatchFaceTZ(dc));
+		} else {
+			mLayout=[];
+			mDrawables = {};			
+			mTime = "";
+			setLayout(Rez.Layouts.WatchFace(dc));
+		}
+
+		mTimezonesOrig = mTimezones;
+		
+		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+		
+		cacheDrawables();
+		
+		mTime = View.findDrawableById("Time");
+		mTime.setFonts();
+
+		mDrawables[:Indicators].setFont(mIconsFont);
+		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
+
+		setHideSeconds(App.getApp().getProperty("HideSeconds"));
+
 	}
 
 	// Update the view
@@ -121,7 +151,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
 		if (mSettingsChangedSinceLastDraw) {
-			onSettingsChangedSinceLastDraw();
+			onSettingsChangedSinceLastDraw(dc);
 		}
 
 		// Clear any partial update clipping.

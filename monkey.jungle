@@ -1,7 +1,9 @@
 project.manifest = manifest.xml
 
+round-240x240.resourcePath = $(round-240x240.resourcePath);resources-worldtime
+
 # Smaller round watches use small time font.
-round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
+round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time;resources-worldtime
 
 # Flat tyre watches use small time font and small icons.
 semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
@@ -27,13 +29,13 @@ fenix3.excludeAnnotations = buffered
 fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
 fenix3_hr.excludeAnnotations = buffered
 
-fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
+fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr;resources-worldtime
 fr230.excludeAnnotations = buffered
 
-fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
+fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x;resources-worldtime
 fr235.excludeAnnotations = buffered
 
-fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
+fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr;resources-worldtime
 fr630.excludeAnnotations = buffered
 
 fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
@@ -47,4 +49,7 @@ vivoactive.excludeAnnotations = buffered
 # #21: Treat fr735xt as CIQ 1.x i.e. unbuffered drawing, due to insufficient memory.
 # Continue to use fr735xt-specific properties and settings, however, as does support active minutes.
 fr735xt.resourcePath = $(fr735xt.resourcePath);resources-semiround-215x180-ciq_1.x
-fr735xt.excludeAnnotations = buffered
+#fr735xt.resourcePath = $(fr735xt.resourcePath)
+fr735xt.excludeAnnotations = buffered;timezones
+
+vivoactive_hr.excludeAnnotations = timezones

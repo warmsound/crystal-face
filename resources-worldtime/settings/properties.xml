@@ -1,0 +1,17 @@
+<properties>
+
+	<property id="timezones" type="number">4</property>
+	<property id="tz1_offset" type="number">0</property>
+	<property id="tz1_name" type="string">LON</property>
+	<property id="tz1_dst" type="boolean">true</property>
+	<property id="tz2_offset" type="number">8</property>
+	<property id="tz2_name" type="string">HKG</property>
+	<property id="tz2_dst" type="boolean">false</property>
+	<property id="tz3_offset" type="number">-8</property>
+	<property id="tz3_name" type="string">SFO</property>
+	<property id="tz3_dst" type="boolean">true</property>
+	<property id="tz4_offset" type="number">-5</property>
+	<property id="tz4_name" type="string">NYC</property>
+	<property id="tz4_dst" type="boolean">true</property>
+
+</properties>

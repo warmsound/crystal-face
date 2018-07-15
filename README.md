@@ -20,6 +20,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.9.0
+- Added ability to display 2 or 4 configurable world timezones on a variety of watches
+
 ### 1.8.0
 - Added setting to control number of data fields (0-3).
 - Added setting to control number of indicators (0-3): Bluetooth, alarms, notifications, bluetooth/notifications.

@@ -93,4 +93,54 @@
 	<string id="Nov">Nov</string>
 	<string id="Dec">Dec</string>
 
+	<string id="timezones">Timezones</string>
+	<string id="tz1_offset">Timezone 1 Offset</string>
+	<string id="tz1_name">Timezone 1 Name</string>
+	<string id="tz1_dst">Timezone 1 Summer Time (DST)</string>
+	<string id="tz2_offset">Timezone 2 Offset</string>
+	<string id="tz2_name">Timezone 2 Name</string>
+	<string id="tz2_dst">Timezone 2 Summer Time (DST)</string>
+	<string id="tz3_offset">Timezone 3 Offset</string>
+	<string id="tz3_name">Timezone 3 Name</string>
+	<string id="tz3_dst">Timezone 3 Summer Time (DST)</string>
+	<string id="tz4_offset">Timezone 4 Offset</string>
+	<string id="tz4_name">Timezone 4 Name</string>
+	<string id="tz4_dst">Timezone 4 Summer Time (DST)</string>
+	<string id="tz5_offset">Timezone 5 Offset</string>
+	<string id="tz5_name">Timezone 5 Name</string>
+	<string id="tz5_dst">Timezone 5 Summer Time (DST)</string>
+	<string id="tz6_offset">Timezone 6 Offset</string>
+	<string id="tz6_name">Timezone 6 Name</string>
+	<string id="tz6_dst">Timezone 6 Summer Time (DST)</string>
+
+	<string id="plus_twelve">+12</string>
+	<string id="plus_eleven">+11</string>
+	<string id="plus_ten">+10</string>
+	<string id="plus_nine">+9</string>
+	<string id="plus_eight">+8</string>
+	<string id="plus_seven">+7</string>
+	<string id="plus_six">+6</string>
+	<string id="plus_five">+5</string>
+	<string id="plus_four">+4</string>
+	<string id="plus_three">+3</string>
+	<string id="plus_two">+2</string>
+	<string id="plus_one">+1</string>
+	<string id="minus_twelve">-12</string>
+	<string id="minus_eleven">-11</string>
+	<string id="minus_ten">-10</string>
+	<string id="minus_nine">-9</string>
+	<string id="minus_eight">-8</string>
+	<string id="minus_seven">-7</string>
+	<string id="minus_six">-6</string>
+	<string id="minus_five">-5</string>
+	<string id="minus_four">-4</string>
+	<string id="minus_three">-3</string>
+	<string id="minus_two">-2</string>
+	<string id="minus_one">-1</string>
+	<string id="zero">0</string>
+
+	<string id="two">2</string>
+	<string id="four">4</string>
+	<string id="six">6</string>
+
 </strings>

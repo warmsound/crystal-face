@@ -1,0 +1,114 @@
+using Toybox.WatchUi as Ui;
+using Toybox.System as Sys;
+using Toybox.Application as App;
+using Toybox.Graphics as Gfx;
+using Toybox.Time.Gregorian as Calendar;
+
+(:timezones)
+class Timezones extends Ui.Drawable {
+
+	var utcOffset = new Time.Duration(-Sys.getClockTime().timeZoneOffset);
+	
+	var tzLocations = [];
+	var UTC_Offsets = {};
+	var mTimeZones;
+	
+	var mhalfDCWidth; 
+	
+	var mTopY;
+	var mBottomY;
+
+    var faceWidth;
+    var faceHeight;
+
+	function initialize(params) {
+		Drawable.initialize(params);
+
+		mTopY = params[:topY];
+		mBottomY = params[:bottomY];
+		
+		setupTimezones();
+	}
+
+	function onSettingsChanged() {
+		setupTimezones();
+	}
+
+    function setupTimezones() {
+		tzLocations = [];
+		UTC_Offsets = {};
+        mTimeZones = App.getApp().getProperty("timezones").toNumber();
+        for (var i = 1; i <= mTimeZones; i++) {
+		    var name = App.getApp().getProperty("tz"+i+"_name");
+		    var offset = App.getApp().getProperty("tz"+i+"_offset").toNumber();
+		    var dst = App.getApp().getProperty("tz"+i+"_dst");
+		    if (name.equals("")) {
+			    continue;
+		    } else {
+			    tzLocations.add(name);
+		        System.println("Name:<"+name+">");	
+			    if (dst == true ) {
+				    offset = offset+1;
+			    }
+			    UTC_Offsets.put(name,offset);
+		    }
+	    }   
+    }
+	
+	function draw(dc) {
+		mhalfDCWidth = dc.getWidth() / 2;
+		drawTimezones(dc);
+	}
+
+	function drawTimezones(dc){
+
+        var clockTime = Sys.getClockTime();
+        var now = Time.now();
+
+		var tzString="";
+        var row = 0;
+        var zones = tzLocations.size();
+        
+	    var tzFont = Gfx.FONT_MEDIUM;
+
+
+        var textSize = dc.getTextDimensions("MLB:20", tzFont);
+        var textHeight = Gfx.getFontAscent(tzFont);
+        var textWidth = textSize[0];
+
+        var xGap = (((mhalfDCWidth*2) - (zones/2)*textWidth)/((zones/2)+1))+0.5*textWidth ;
+        var xPosn = 0; 
+
+        var y = mTopY;
+        //System.println("Timezone position"+y);
+
+		var utcNow = now.add(utcOffset);
+        var utcInfo = Calendar.info(utcNow, Time.FORMAT_SHORT);
+
+        for (var i = 0; i < zones; ++i) {
+        	
+            var location = tzLocations[i];
+		    var tzOffset = UTC_Offsets[location];
+		    var tzHour = utcInfo.hour + tzOffset;
+		    if (tzHour > 23){
+			    tzHour = tzHour - 24; 
+		    }
+		    if (tzHour < 0){
+			    tzHour = tzHour + 24;
+		    }
+			
+		    tzString = location + ":" + tzHour.format("%02d");
+			
+		    xPosn = xPosn + xGap; 
+		
+            dc.drawText(xPosn, y, tzFont, tzString, (Gfx.TEXT_JUSTIFY_CENTER | Gfx.TEXT_JUSTIFY_VCENTER));
+		    xPosn = xPosn + 0.5*textWidth; 
+			
+		    if( i==((zones/2)-1)){ 
+			    xPosn = 0;
+			    y = mBottomY;
+		    }
+	    }
+
+	}
+}

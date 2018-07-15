@@ -1,0 +1,163 @@
+<settings>
+
+	<setting propertyKey="@Properties.timezones" title="@Strings.timezones">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.zero</listEntry>
+			<listEntry value="2">@Strings.two</listEntry>
+			<listEntry value="4">@Strings.four</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.tz1_offset" title="@Strings.tz1_offset">
+		<settingConfig type="list">
+			<listEntry value="-12">@Strings.minus_twelve</listEntry>
+			<listEntry value="-11">@Strings.minus_eleven</listEntry>
+			<listEntry value="-10">@Strings.minus_ten</listEntry>
+			<listEntry value="-9">@Strings.minus_nine</listEntry>
+			<listEntry value="-8">@Strings.minus_eight</listEntry>
+			<listEntry value="-7">@Strings.minus_seven</listEntry>
+			<listEntry value="-6">@Strings.minus_six</listEntry>
+			<listEntry value="-5">@Strings.minus_five</listEntry>
+			<listEntry value="-4">@Strings.minus_four</listEntry>
+			<listEntry value="-3">@Strings.minus_three</listEntry>
+			<listEntry value="-2">@Strings.minus_two</listEntry>
+			<listEntry value="-1">@Strings.minus_one</listEntry>
+			<listEntry value="0">@Strings.zero</listEntry>
+			<listEntry value="1">@Strings.plus_one</listEntry>
+			<listEntry value="2">@Strings.plus_two</listEntry>
+			<listEntry value="3">@Strings.plus_three</listEntry>
+			<listEntry value="4">@Strings.plus_four</listEntry>
+			<listEntry value="5">@Strings.plus_five</listEntry>
+			<listEntry value="6">@Strings.plus_six</listEntry>
+			<listEntry value="7">@Strings.plus_seven</listEntry>
+			<listEntry value="8">@Strings.plus_eight</listEntry>
+			<listEntry value="9">@Strings.plus_nine</listEntry>
+			<listEntry value="10">@Strings.plus_ten</listEntry>
+			<listEntry value="11">@Strings.plus_eleven</listEntry>
+			<listEntry value="12">@Strings.plus_twelve</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.tz1_name" title="@Strings.tz1_name">
+		<settingConfig type="alphanumeric" maxLength="3" />
+	</setting>
+
+	<setting propertyKey="@Properties.tz1_dst" title="@Strings.tz1_dst">
+		<settingConfig type="boolean" />
+	</setting>
+
+	<setting propertyKey="@Properties.tz2_offset" title="@Strings.tz2_offset">
+		<settingConfig type="list">
+			<listEntry value="-12">@Strings.minus_twelve</listEntry>
+			<listEntry value="-11">@Strings.minus_eleven</listEntry>
+			<listEntry value="-10">@Strings.minus_ten</listEntry>
+			<listEntry value="-9">@Strings.minus_nine</listEntry>
+			<listEntry value="-8">@Strings.minus_eight</listEntry>
+			<listEntry value="-7">@Strings.minus_seven</listEntry>
+			<listEntry value="-6">@Strings.minus_six</listEntry>
+			<listEntry value="-5">@Strings.minus_five</listEntry>
+			<listEntry value="-4">@Strings.minus_four</listEntry>
+			<listEntry value="-3">@Strings.minus_three</listEntry>
+			<listEntry value="-2">@Strings.minus_two</listEntry>
+			<listEntry value="-1">@Strings.minus_one</listEntry>
+			<listEntry value="0">@Strings.zero</listEntry>
+			<listEntry value="1">@Strings.plus_one</listEntry>
+			<listEntry value="2">@Strings.plus_two</listEntry>
+			<listEntry value="3">@Strings.plus_three</listEntry>
+			<listEntry value="4">@Strings.plus_four</listEntry>
+			<listEntry value="5">@Strings.plus_five</listEntry>
+			<listEntry value="6">@Strings.plus_six</listEntry>
+			<listEntry value="7">@Strings.plus_seven</listEntry>
+			<listEntry value="8">@Strings.plus_eight</listEntry>
+			<listEntry value="9">@Strings.plus_nine</listEntry>
+			<listEntry value="10">@Strings.plus_ten</listEntry>
+			<listEntry value="11">@Strings.plus_eleven</listEntry>
+			<listEntry value="12">@Strings.plus_twelve</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.tz2_name" title="@Strings.tz2_name">
+		<settingConfig type="alphanumeric" maxLength="3" />
+	</setting>
+
+	<setting propertyKey="@Properties.tz2_dst" title="@Strings.tz2_dst">
+		<settingConfig type="boolean" />
+	</setting>
+
+	<setting propertyKey="@Properties.tz3_offset" title="@Strings.tz3_offset">
+		<settingConfig type="list">
+			<listEntry value="-12">@Strings.minus_twelve</listEntry>
+			<listEntry value="-11">@Strings.minus_eleven</listEntry>
+			<listEntry value="-10">@Strings.minus_ten</listEntry>
+			<listEntry value="-9">@Strings.minus_nine</listEntry>
+			<listEntry value="-8">@Strings.minus_eight</listEntry>
+			<listEntry value="-7">@Strings.minus_seven</listEntry>
+			<listEntry value="-6">@Strings.minus_six</listEntry>
+			<listEntry value="-5">@Strings.minus_five</listEntry>
+			<listEntry value="-4">@Strings.minus_four</listEntry>
+			<listEntry value="-3">@Strings.minus_three</listEntry>
+			<listEntry value="-2">@Strings.minus_two</listEntry>
+			<listEntry value="-1">@Strings.minus_one</listEntry>
+			<listEntry value="0">@Strings.zero</listEntry>
+			<listEntry value="1">@Strings.plus_one</listEntry>
+			<listEntry value="2">@Strings.plus_two</listEntry>
+			<listEntry value="3">@Strings.plus_three</listEntry>
+			<listEntry value="4">@Strings.plus_four</listEntry>
+			<listEntry value="5">@Strings.plus_five</listEntry>
+			<listEntry value="6">@Strings.plus_six</listEntry>
+			<listEntry value="7">@Strings.plus_seven</listEntry>
+			<listEntry value="8">@Strings.plus_eight</listEntry>
+			<listEntry value="9">@Strings.plus_nine</listEntry>
+			<listEntry value="10">@Strings.plus_ten</listEntry>
+			<listEntry value="11">@Strings.plus_eleven</listEntry>
+			<listEntry value="12">@Strings.plus_twelve</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.tz3_name" title="@Strings.tz3_name">
+		<settingConfig type="alphanumeric" maxLength="3" />
+	</setting>
+
+	<setting propertyKey="@Properties.tz3_dst" title="@Strings.tz3_dst">
+		<settingConfig type="boolean" />
+	</setting>
+	
+	<setting propertyKey="@Properties.tz4_offset" title="@Strings.tz4_offset">
+		<settingConfig type="list">
+			<listEntry value="-12">@Strings.minus_twelve</listEntry>
+			<listEntry value="-11">@Strings.minus_eleven</listEntry>
+			<listEntry value="-10">@Strings.minus_ten</listEntry>
+			<listEntry value="-9">@Strings.minus_nine</listEntry>
+			<listEntry value="-8">@Strings.minus_eight</listEntry>
+			<listEntry value="-7">@Strings.minus_seven</listEntry>
+			<listEntry value="-6">@Strings.minus_six</listEntry>
+			<listEntry value="-5">@Strings.minus_five</listEntry>
+			<listEntry value="-4">@Strings.minus_four</listEntry>
+			<listEntry value="-3">@Strings.minus_three</listEntry>
+			<listEntry value="-2">@Strings.minus_two</listEntry>
+			<listEntry value="-1">@Strings.minus_one</listEntry>
+			<listEntry value="0">@Strings.zero</listEntry>
+			<listEntry value="1">@Strings.plus_one</listEntry>
+			<listEntry value="2">@Strings.plus_two</listEntry>
+			<listEntry value="3">@Strings.plus_three</listEntry>
+			<listEntry value="4">@Strings.plus_four</listEntry>
+			<listEntry value="5">@Strings.plus_five</listEntry>
+			<listEntry value="6">@Strings.plus_six</listEntry>
+			<listEntry value="7">@Strings.plus_seven</listEntry>
+			<listEntry value="8">@Strings.plus_eight</listEntry>
+			<listEntry value="9">@Strings.plus_nine</listEntry>
+			<listEntry value="10">@Strings.plus_ten</listEntry>
+			<listEntry value="11">@Strings.plus_eleven</listEntry>
+			<listEntry value="12">@Strings.plus_twelve</listEntry>
+		</settingConfig>
+	</setting>
+	
+	<setting propertyKey="@Properties.tz4_name" title="@Strings.tz4_name">
+		<settingConfig type="alphanumeric" maxLength="3" />
+	</setting>
+		
+	<setting propertyKey="@Properties.tz4_dst" title="@Strings.tz4_dst">
+		<settingConfig type="boolean" />
+	</setting>
+
+</settings>
