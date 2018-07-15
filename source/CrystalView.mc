@@ -322,6 +322,9 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(false);
 		}
+
+		// Ensure live HR spot is shown when entering high power mode.
+		mDrawables[:DataFields].setLiveHRSpot(true);
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -337,6 +340,9 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(true);
 		}
+
+		// Ensure live HR spot is hidden when entering low power mode.
+		mDrawables[:DataFields].setLiveHRSpot(false);
 	}
 
 	function setHideSeconds(hideSeconds) {

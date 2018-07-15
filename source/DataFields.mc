@@ -21,6 +21,8 @@ class DataFields extends Ui.Drawable {
 
 	private var mFieldCount;
 	private var mMaxFieldLength; // Maximum number of characters per field.
+	
+	private var mLiveHRSpot = false;
 
 	private var FIELD_TYPES = [
 		:FIELD_TYPE_HEART_RATE,
@@ -78,6 +80,10 @@ class DataFields extends Ui.Drawable {
 		}
 	}
 
+	function setLiveHRSpot(bool) {
+		mLiveHRSpot = bool;
+	}
+
 	function draw(dc) {
 		switch (mFieldCount) {
 			case 3:
@@ -126,6 +132,19 @@ class DataFields extends Ui.Drawable {
 					App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
+
+				// Live HR spot.
+				if (FIELD_TYPES[fieldType] == :FIELD_TYPE_HEART_RATE) {
+
+					// Draw only if pulse is high, and current HR is available.
+					if (mLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
+						dc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
+						dc.fillCircle(x, mTop, /* LIVE_HR_SPOT_RADIUS */ 3);
+					}
+
+					// Toggle pulse for next draw.
+					mLiveHRSpot = !mLiveHRSpot;
+				}
 				break;
 		}
 		
