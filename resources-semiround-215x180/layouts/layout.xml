@@ -30,8 +30,8 @@
 		<param name="right">147</param>
 		<param name="top">13</param>
 		<param name="bottom">32</param>
-		<param name="batteryFillWidth">15</param>
-		<param name="batteryFillHeight">4</param>
+		<param name="batteryWidth">24</param>
+		<param name="batteryHeight">12</param>
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
@@ -42,6 +42,8 @@
 		<param name="locX">28</param>
 		<param name="locY">90</param>
 		<param name="spacingY">28</param>
+		<param name="batteryWidth">20</param>
+		<param name="batteryHeight">10</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">

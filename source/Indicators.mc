@@ -12,12 +12,15 @@ class Indicators extends Ui.Drawable {
 	private var mIconsFont;
 	private var mSpacingX;
 	private var mSpacingY;
+	private var mBatteryWidth;
+	private var mBatteryHeight;
 
 	private var INDICATOR_TYPES = [
 		:INDICATOR_TYPE_BLUETOOTH,
 		:INDICATOR_TYPE_ALARMS,
 		:INDICATOR_TYPE_NOTIFICATIONS,
-		:INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS
+		:INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
+		:INDICATOR_TYPE_BATTERY
 	];
 
 	function initialize(params) {
@@ -25,6 +28,8 @@ class Indicators extends Ui.Drawable {
 
 		mSpacingX = params[:spacingX];
 		mSpacingY = params[:spacingY];
+		mBatteryWidth = params[:batteryWidth];
+		mBatteryHeight = params[:batteryHeight];
 	}
 
 	function setFont(iconsFont) {
@@ -75,6 +80,13 @@ class Indicators extends Ui.Drawable {
 
 	function drawIndicator(dc, rawIndicatorType, x, y) {
 		var indicatorType = INDICATOR_TYPES[rawIndicatorType];
+
+		// Battery indicator.
+		if (indicatorType == :INDICATOR_TYPE_BATTERY) {
+			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
+			return;
+		}
+
 		var value = getValueForIndicatorType(indicatorType);
 
 		var colour;
