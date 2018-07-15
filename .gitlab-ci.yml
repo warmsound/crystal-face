@@ -1,0 +1,24 @@
+image: registry.gitlab.com/keithwberry/connectiq:latest
+
+stages:
+- build
+- release
+
+build:
+  stage: build
+  script:
+    - rm test_results/*.png
+    - make buildall
+    - ./testall.py
+  artifacts:
+    paths:
+      - test_results/*.png
+      - bin/*.prg
+
+release:
+  stage: release
+  script:
+    - make packaged
+  artifacts:
+    paths:
+      - bin/*
