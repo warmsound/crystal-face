@@ -2,6 +2,7 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Activity as Activity;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.SensorHistory as SensorHistory;
 
@@ -146,6 +147,7 @@ class DataFields extends Ui.Drawable {
 	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
 	function getValueForFieldType(type) {
 		var value = "";
+		var INTEGER_FORMAT = "%d";
 
 		var activityInfo;
 		var iterator;
@@ -160,11 +162,16 @@ class DataFields extends Ui.Drawable {
 
 		switch (FIELD_TYPES[type]) {
 			case :FIELD_TYPE_HEART_RATE:
-				if (ActivityMonitor has :getHeartRateHistory) {
+				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
+				activityInfo = Activity.getActivityInfo();
+				sample = activityInfo.currentHeartRate;
+				if (sample != null) {
+					value = sample.format(INTEGER_FORMAT);
+				} else if (ActivityMonitor has :getHeartRateHistory) {
 					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
 					sample = iterator.next();
 					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
-						value = sample.heartRate.format("%d");
+						value = sample.heartRate.format(INTEGER_FORMAT);
 					}
 				}
 				break;
@@ -172,7 +179,7 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
 				battery = Math.floor(Sys.getSystemStats().battery);
-				value = battery.format("%d") + "%";
+				value = battery.format(INTEGER_FORMAT) + "%";
 				break;
 
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
@@ -182,13 +189,13 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_NOTIFICATIONS:
 				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
-					value = settings.notificationCount.format("%d");
+					value = settings.notificationCount.format(INTEGER_FORMAT);
 				}
 				break;
 
 			case :FIELD_TYPE_CALORIES:
 				activityInfo = ActivityMonitor.getInfo();
-				value = activityInfo.calories.format("%d");
+				value = activityInfo.calories.format(INTEGER_FORMAT);
 				break;
 
 			case :FIELD_TYPE_DISTANCE:
@@ -215,7 +222,7 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_ALARMS:
 				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
-					value = settings.alarmCount.format("%d");
+					value = settings.alarmCount.format(INTEGER_FORMAT);
 				}
 				break;
 
@@ -238,7 +245,7 @@ class DataFields extends Ui.Drawable {
 							unit = "ft";
 						}
 
-						value = altitude.format("%d");
+						value = altitude.format(INTEGER_FORMAT);
 
 						// Show unit only if value plus unit fits within maximum field length.
 						if ((value.length() + unit.length()) <= mMaxFieldLength) {
@@ -263,7 +270,7 @@ class DataFields extends Ui.Drawable {
 							unit = "°F";
 						}
 
-						value = temperature.format("%d");
+						value = temperature.format(INTEGER_FORMAT);
 
 						// Show unit only if value plus unit fits within maximum field length.
 						if ((value.length() + unit.length()) <= mMaxFieldLength) {
