@@ -22,7 +22,7 @@ class DataFields extends Ui.Drawable {
 	private var mFieldCount;
 	private var mMaxFieldLength; // Maximum number of characters per field.
 	
-	private var mLiveHRSpot = false;
+	/* public */ var mLiveHRSpot = false; // Whether to show live HR spot: view toggles value in high power mode.
 
 	private var FIELD_TYPES = [
 		:FIELD_TYPE_HEART_RATE,
@@ -80,10 +80,6 @@ class DataFields extends Ui.Drawable {
 		}
 	}
 
-	function setLiveHRSpot(bool) {
-		mLiveHRSpot = bool;
-	}
-
 	function draw(dc) {
 		switch (mFieldCount) {
 			case 3:
@@ -104,7 +100,7 @@ class DataFields extends Ui.Drawable {
 	}
 
 	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	function drawDataField(dc, fieldType, x) {
+	private function drawDataField(dc, fieldType, x) {
 		var value = getValueForFieldType(fieldType);
 		var colour;
 
@@ -133,7 +129,7 @@ class DataFields extends Ui.Drawable {
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 
-				// Live HR spot.
+				// #34 Live HR spot.
 				if (FIELD_TYPES[fieldType] == :FIELD_TYPE_HEART_RATE) {
 
 					// Draw only if pulse is high, and current HR is available.
@@ -141,9 +137,6 @@ class DataFields extends Ui.Drawable {
 						dc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
 						dc.fillCircle(x, mTop, /* LIVE_HR_SPOT_RADIUS */ 3);
 					}
-
-					// Toggle pulse for next draw.
-					mLiveHRSpot = !mLiveHRSpot;
 				}
 				break;
 		}
@@ -158,13 +151,11 @@ class DataFields extends Ui.Drawable {
 			value,
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
-
-		
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
 	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
-	function getValueForFieldType(type) {
+	private function getValueForFieldType(type) {
 		var value = "";
 		var INTEGER_FORMAT = "%d";
 
