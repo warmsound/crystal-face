@@ -20,6 +20,8 @@ class DataFields extends Ui.Drawable {
 	private var mLabelFont;
 
 	private var mFieldCount;
+	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
+	private var mHasLiveHR = false;
 	private var mMaxFieldLength; // Maximum number of characters per field.
 	
 	/* public */ var mLiveHRSpot = false; // Whether to show live HR spot: view toggles value in high power mode.
@@ -80,6 +82,19 @@ class DataFields extends Ui.Drawable {
 				mMaxFieldLength = 8;
 				break;
 		}
+
+		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
+		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
+		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
+
+		if ((FIELD_TYPES[mFieldTypes[0]] == :FIELD_TYPE_HR_LIVE_5S) ||
+			(FIELD_TYPES[mFieldTypes[1]] == :FIELD_TYPE_HR_LIVE_5S) ||
+			(FIELD_TYPES[mFieldTypes[2]] == :FIELD_TYPE_HR_LIVE_5S)) {
+				
+			mHasLiveHR = true;
+		} else {
+			mHasLiveHR = false;
+		}
 	}
 
 	function draw(dc) {
@@ -88,21 +103,24 @@ class DataFields extends Ui.Drawable {
 
 	function update(dc, isPartialUpdate) {
 		if (isPartialUpdate) {
+			if (!mHasLiveHR) {
+				return;
+			}
 			++mPartialUpdateCount;
 		}
 
 		switch (mFieldCount) {
 			case 3:
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), mLeft);
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field2Type"), (mRight + mLeft) / 2);
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field3Type"), mRight);
+				drawDataField(dc, isPartialUpdate, mFieldTypes[0], mLeft);
+				drawDataField(dc, isPartialUpdate, mFieldTypes[1], (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, mFieldTypes[2], mRight);
 				break;
 			case 2:
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), mLeft + ((mRight - mLeft) * 0.15));
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field2Type"), mLeft + ((mRight - mLeft) * 0.85));
+				drawDataField(dc, isPartialUpdate, mFieldTypes[0], mLeft + ((mRight - mLeft) * 0.15));
+				drawDataField(dc, isPartialUpdate, mFieldTypes[1], mLeft + ((mRight - mLeft) * 0.85));
 				break;
 			case 1:
-				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, mFieldTypes[0], (mRight + mLeft) / 2);
 				break;
 			case 0:
 				break;
