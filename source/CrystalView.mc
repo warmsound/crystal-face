@@ -16,6 +16,7 @@ class CrystalView extends Ui.WatchFace {
 	private var mNormalFont;
 
 	private var mTime;
+	private var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -46,7 +47,9 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
 		mDrawables[:Indicators].setFont(mIconsFont);
-		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
+
+		mDataFields = View.findDrawableById("DataFields");
+		mDataFields.setFonts(mIconsFont, mNormalFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
@@ -78,7 +81,8 @@ class CrystalView extends Ui.WatchFace {
 		// Use mTime instead.
 		//mDrawables[:Time] = View.findDrawableById("Time");
 
-		mDrawables[:DataFields] = View.findDrawableById("DataFields");
+		// Use mDataFields instead.
+		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
@@ -104,7 +108,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
-		mDrawables[:DataFields].onSettingsChanged();
+		mDataFields.onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
@@ -136,7 +140,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// #34 Toggle live HR spot if in high power mode.
 		if (!mIsSleeping) {
-			mDrawables[:DataFields].mLiveHRSpot = !mDrawables[:DataFields].mLiveHRSpot;
+			mDataFields.mLiveHRSpot = !mDataFields.mLiveHRSpot;
 		}
 	}
 
@@ -220,6 +224,7 @@ class CrystalView extends Ui.WatchFace {
 			case :GOAL_TYPE_ACTIVE_MINUTES:
 				return "2";
 			case :FIELD_TYPE_HEART_RATE:
+			case :FIELD_TYPE_HR_LIVE_5S:
 				return "3";
 			case :FIELD_TYPE_BATTERY:
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
@@ -307,6 +312,7 @@ class CrystalView extends Ui.WatchFace {
 	function onPartialUpdate(dc) {
 		//Sys.println("onPartialUpdate()");
 	
+		mDataFields.update(dc, /* isPartialUpdate */ true);
 		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
 
@@ -329,7 +335,7 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// #34 Ensure live HR spot is shown when entering high power mode.
-		mDrawables[:DataFields].mLiveHRSpot = true;
+		mDataFields.mLiveHRSpot = true;
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -347,7 +353,7 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// #34 Ensure live HR spot is hidden when entering low power mode.
-		mDrawables[:DataFields].mLiveHRSpot = false;
+		mDataFields.mLiveHRSpot = false;
 	}
 
 	function setHideSeconds(hideSeconds) {

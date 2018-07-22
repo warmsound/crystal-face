@@ -23,6 +23,7 @@ class DataFields extends Ui.Drawable {
 	private var mMaxFieldLength; // Maximum number of characters per field.
 	
 	/* public */ var mLiveHRSpot = false; // Whether to show live HR spot: view toggles value in high power mode.
+	private var mPartialUpdateCount = 0;
 
 	private var FIELD_TYPES = [
 		:FIELD_TYPE_HEART_RATE,
@@ -34,6 +35,7 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_ALTITUDE,
 		:FIELD_TYPE_TEMPERATURE,
 		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
+		:FIELD_TYPE_HR_LIVE_5S
 	];
 
 	private const BATTERY_LEVEL_LOW = 20;
@@ -81,27 +83,61 @@ class DataFields extends Ui.Drawable {
 	}
 
 	function draw(dc) {
+		update(dc, /* isPartialUpdate */ false);
+	}
+
+	function update(dc, isPartialUpdate) {
+		if (isPartialUpdate) {
+			++mPartialUpdateCount;
+		}
+
 		switch (mFieldCount) {
 			case 3:
-				drawDataField(dc, App.getApp().getProperty("Field1Type"), mLeft);
-				drawDataField(dc, App.getApp().getProperty("Field2Type"), (mRight + mLeft) / 2);
-				drawDataField(dc, App.getApp().getProperty("Field3Type"), mRight);
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), mLeft);
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field2Type"), (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field3Type"), mRight);
 				break;
 			case 2:
-				drawDataField(dc, App.getApp().getProperty("Field1Type"), mLeft + ((mRight - mLeft) * 0.15));
-				drawDataField(dc, App.getApp().getProperty("Field2Type"), mLeft + ((mRight - mLeft) * 0.85));
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), mLeft + ((mRight - mLeft) * 0.15));
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field2Type"), mLeft + ((mRight - mLeft) * 0.85));
 				break;
 			case 1:
-				drawDataField(dc, App.getApp().getProperty("Field1Type"), (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, App.getApp().getProperty("Field1Type"), (mRight + mLeft) / 2);
 				break;
 			case 0:
 				break;
 		}
 	}
 
+	private const LIVE_HR_SPOT_RADIUS = 2;
+
 	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	private function drawDataField(dc, fieldType, x) {
+	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
+		var isBattery = false;
+		var isHeartRate = false;
+		var isLiveHeartRate = false;
+
+		switch (FIELD_TYPES[fieldType]) {
+			case :FIELD_TYPE_BATTERY:
+			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				isBattery = true;
+				break;
+
+			case :FIELD_TYPE_HR_LIVE_5S:
+				isLiveHeartRate = true;
+				// Fall through.
+
+			case :FIELD_TYPE_HEART_RATE:			
+				isHeartRate = true;
+				break;
+		}
+
+		if (isPartialUpdate && (!isLiveHeartRate || (mPartialUpdateCount % 5))) {
+			return;
+		}
+
 		var value = getValueForFieldType(fieldType);
+		var backgroundColour = App.getApp().getProperty("BackgroundColour");
 		var colour;
 
 		// Grey out icon if no value was retrieved.
@@ -113,36 +149,53 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// Icon.
-		switch (FIELD_TYPES[fieldType]) {
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
-				break;
+		if (isBattery) {
 
-			default:
-				dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+			App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
 
-				// #34 Live HR spot.
-				if (FIELD_TYPES[fieldType] == :FIELD_TYPE_HEART_RATE) {
+		} else {
 
-					// Draw only if pulse is high, and current HR is available.
-					if (mLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-						dc.setColor(App.getApp().getProperty("BackgroundColour"), Graphics.COLOR_TRANSPARENT);
-						dc.fillCircle(x, mTop, /* LIVE_HR_SPOT_RADIUS */ 3);
-					}
-				}
-				break;
-		}
-		
+			// #34 Clip live HR spot.
+			if (isPartialUpdate) {
+				dc.setClip(
+					x - LIVE_HR_SPOT_RADIUS,
+					mTop - LIVE_HR_SPOT_RADIUS,
+					(2 * LIVE_HR_SPOT_RADIUS) + 1,
+					(2 * LIVE_HR_SPOT_RADIUS) + 1);
+			}
+
+			dc.setColor(colour, backgroundColour);
+			dc.drawText(
+				x,
+				mTop,
+				mIconsFont,
+				App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// #34 Live HR spot.
+			// Draw only if pulse is high, and current HR is available.
+			if (isHeartRate && mLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
+				dc.setColor(backgroundColour, backgroundColour);
+				dc.fillCircle(x, mTop, LIVE_HR_SPOT_RADIUS);
+			}
+		}		
 
 		// Value.
+		// #34 Clip live HR value.
+		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
+		if (isPartialUpdate) {
+			dc.setClip(
+				x - 11,
+				mBottom - 4,
+				25,
+				12);
+			dc.clear();
+
+			// Toggle spot for next partial update.
+			mLiveHRSpot = !mLiveHRSpot;
+		}
+
 		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
@@ -172,6 +225,7 @@ class DataFields extends Ui.Drawable {
 
 		switch (FIELD_TYPES[type]) {
 			case :FIELD_TYPE_HEART_RATE:
+			case :FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
 				activityInfo = Activity.getActivityInfo();
 				sample = activityInfo.currentHeartRate;

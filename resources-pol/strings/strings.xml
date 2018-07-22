@@ -58,6 +58,7 @@
 	<string id="CaloriesManualGoal">Spalone Kalorie (Ręczny Cel)</string>
 
 	<string id="HeartRate">Tętno</string>
+	<string id="HeartRate">Tętno (Live 5s)</string>
 	<string id="Battery">Bateria</string>
 	<string id="BatteryHidePercentage">Bateria (Sama Wartość)</string>
 	<string id="Notifications">Powiadomienia</string>
