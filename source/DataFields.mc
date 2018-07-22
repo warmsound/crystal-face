@@ -109,7 +109,8 @@ class DataFields extends Ui.Drawable {
 		}
 	}
 
-	private const LIVE_HR_SPOT_RADIUS = 2;
+	// Both regular and small icon fonts use same spot size for easier optimisation.
+	private const LIVE_HR_SPOT_RADIUS = 3;
 
 	// "fieldType" parameter is raw property value (it's converted to symbol below).
 	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
@@ -125,13 +126,15 @@ class DataFields extends Ui.Drawable {
 
 			case :FIELD_TYPE_HR_LIVE_5S:
 				isLiveHeartRate = true;
-				// Fall through.
+				isHeartRate = true;
+				break;
 
 			case :FIELD_TYPE_HEART_RATE:			
 				isHeartRate = true;
 				break;
 		}
 
+		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
 		if (isPartialUpdate && (!isLiveHeartRate || (mPartialUpdateCount % 5))) {
 			return;
 		}
@@ -139,6 +142,32 @@ class DataFields extends Ui.Drawable {
 		var value = getValueForFieldType(fieldType);
 		var backgroundColour = App.getApp().getProperty("BackgroundColour");
 		var colour;
+
+		// 1. Value: draw first, as top of text overlaps icon.
+
+		// #34 Clip live HR value.
+		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
+		dc.setColor(App.getApp().getProperty("MonoLightColour"), backgroundColour);
+
+		if (isPartialUpdate) {
+			dc.setClip(
+				x - 11,
+				mBottom - 4,
+				25,
+				12);
+			
+			dc.clear();
+		}
+		
+		dc.drawText(
+			x,
+			mBottom,
+			mLabelFont,
+			value,
+			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// 2. Icon.
 
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
@@ -148,21 +177,48 @@ class DataFields extends Ui.Drawable {
 			colour = App.getApp().getProperty("ThemeColour");
 		}
 
-		// Icon.
+		// Battery.
 		if (isBattery) {
 
 			App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
 
-		} else {
+		// #34 Live HR in low power mode.
+		} else if (isLiveHeartRate && isPartialUpdate) {
 
-			// #34 Clip live HR spot.
-			if (isPartialUpdate) {
-				dc.setClip(
-					x - LIVE_HR_SPOT_RADIUS,
-					mTop - LIVE_HR_SPOT_RADIUS,
-					(2 * LIVE_HR_SPOT_RADIUS) + 1,
-					(2 * LIVE_HR_SPOT_RADIUS) + 1);
+			dc.setClip(
+				x - LIVE_HR_SPOT_RADIUS,
+				mTop - LIVE_HR_SPOT_RADIUS,
+				(2 * LIVE_HR_SPOT_RADIUS) + 1,
+				(2 * LIVE_HR_SPOT_RADIUS) + 1);
+
+			// If pulse is high, draw spot.
+			// fillCircle() does not anti-aliase, so use font instead.
+			if (mLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
+				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+					mTop,
+					mIconsFont,
+					"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+
+			// Otherwise, fill in spot by drawing heart.
+			} else {
+				dc.setColor(colour, backgroundColour);
+				dc.drawText(
+					x,
+					mTop,
+					mIconsFont,
+					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
 			}
+
+			// Toggle spot for next partial update.
+			mLiveHRSpot = !mLiveHRSpot;
+
+		} else {
 
 			dc.setColor(colour, backgroundColour);
 			dc.drawText(
@@ -173,37 +229,18 @@ class DataFields extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
-			// #34 Live HR spot.
-			// Draw only if pulse is high, and current HR is available.
+			// #34 Live HR in high power mode.
 			if (isHeartRate && mLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-				dc.setColor(backgroundColour, backgroundColour);
-				dc.fillCircle(x, mTop, LIVE_HR_SPOT_RADIUS);
+				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+					mTop,
+					mIconsFont,
+					"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
 			}
-		}		
-
-		// Value.
-		// #34 Clip live HR value.
-		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
-		if (isPartialUpdate) {
-			dc.setClip(
-				x - 11,
-				mBottom - 4,
-				25,
-				12);
-			dc.clear();
-
-			// Toggle spot for next partial update.
-			mLiveHRSpot = !mLiveHRSpot;
 		}
-
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			mBottom,
-			mLabelFont,
-			value,
-			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-		);
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
