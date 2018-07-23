@@ -37,12 +37,9 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_HR_LIVE_5S
 	];
 
-	private const BATTERY_LEVEL_LOW = 20;
-	private const BATTERY_LEVEL_CRITICAL = 10;
-
-	private const CM_PER_KM = 100000;
-	private const MI_PER_KM = 0.621371;
-	private const FT_PER_M = 3.28084;
+	// private const CM_PER_KM = 100000;
+	// private const MI_PER_KM = 0.621371;
+	// private const FT_PER_M = 3.28084;
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -322,12 +319,12 @@ class DataFields extends Ui.Drawable {
 			case :FIELD_TYPE_DISTANCE:
 				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance.toFloat() / CM_PER_KM; // #11: Ensure floating point division!
+				distance = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
 
 				if (settings.distanceUnits == System.UNIT_METRIC) {
 					unit = "km";					
 				} else {
-					distance *= MI_PER_KM;
+					distance *= /* MI_PER_KM */ 0.621371;
 					unit = "mi";
 				}
 
@@ -362,7 +359,7 @@ class DataFields extends Ui.Drawable {
 
 						// Feet.
 						} else {
-							altitude *= FT_PER_M;
+							altitude *= /* FT_PER_M */ 3.28084;
 							unit = "ft";
 						}
 
