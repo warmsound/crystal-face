@@ -137,11 +137,6 @@ class CrystalView extends Ui.WatchFace {
 
 		// Call the parent onUpdate function to redraw the layout
 		View.onUpdate(dc);
-
-		// #34 Toggle live HR spot if in high power mode.
-		if (!mIsSleeping) {
-			mDataFields.mLiveHRSpot = !mDataFields.mLiveHRSpot;
-		}
 	}
 
 	function updateGoalMeters() {
@@ -335,9 +330,6 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(false);
 		}
-
-		// #34 Ensure live HR spot is shown when entering high power mode.
-		mDataFields.mLiveHRSpot = true;
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -353,9 +345,6 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(true);
 		}
-
-		// #34 Ensure live HR spot is hidden when entering low power mode.
-		mDataFields.mLiveHRSpot = false;
 	}
 
 	function setHideSeconds(hideSeconds) {
