@@ -58,6 +58,7 @@
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 
 	<string id="HeartRate">Puls</string>
+	<string id="HeartRateLive5s">Puls (Live 5s)</string>
 	<string id="Battery">Batteri</string>
 	<string id="BatteryHidePercentage">Batteri (Dölj Procent)</string>
 	<string id="Notifications">Notifieringar</string>

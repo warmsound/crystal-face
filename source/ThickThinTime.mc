@@ -21,9 +21,6 @@ class ThickThinTime extends Ui.Drawable {
 	private var mSecondsClipRectWidth;
 	private var mSecondsClipRectHeight;
 
-	// Has clipping rectangle previously been set for partial updates?
-	private var mClipIsSet = false;
-
 	private var mHideSeconds = false;
 
 	private var mAnteMeridiem, mPostMeridiem;
@@ -241,26 +238,21 @@ class ThickThinTime extends Ui.Drawable {
 
 		if (isPartialUpdate) {
 
-			// Set clip once, at start of low power mode.
-			if (!mClipIsSet) {
-				dc.setClip(
-					mSecondsClipRectX + mSecondsClipXAdjust,
-					mSecondsClipRectY,
-					mSecondsClipRectWidth,
-					mSecondsClipRectHeight
-				);
-				mClipIsSet = true;
-			}
+			dc.setClip(
+				mSecondsClipRectX + mSecondsClipXAdjust,
+				mSecondsClipRectY,
+				mSecondsClipRectWidth,
+				mSecondsClipRectHeight
+			);
 
 			// Can't optimise setting colour once, at start of low power mode, at this goes wrong on real hardware: alternates
 			// every second with inverse (e.g. blue text on black, then black text on blue).
 			dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour);	
 
-			// Clear old rect (assume nothing overlaps seconds text).					
+			// Clear old rect (assume nothing overlaps seconds text).
 			dc.clear();
 
 		} else {
-			mClipIsSet = false;
 
 			// Drawing will not be clipped, so ensure background is transparent in case font height overlaps with another
 			// drawable.

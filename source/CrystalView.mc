@@ -16,6 +16,7 @@ class CrystalView extends Ui.WatchFace {
 	private var mNormalFont;
 
 	private var mTime;
+	private var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -46,7 +47,9 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
 		mDrawables[:Indicators].setFont(mIconsFont);
-		mDrawables[:DataFields].setFonts(mIconsFont, mNormalFont);
+
+		mDataFields = View.findDrawableById("DataFields");
+		mDataFields.setFonts(mIconsFont, mNormalFont);
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 	}
@@ -78,7 +81,8 @@ class CrystalView extends Ui.WatchFace {
 		// Use mTime instead.
 		//mDrawables[:Time] = View.findDrawableById("Time");
 
-		mDrawables[:DataFields] = View.findDrawableById("DataFields");
+		// Use mDataFields instead.
+		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
@@ -104,7 +108,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar].onSettingsChanged();
 
-		mDrawables[:DataFields].onSettingsChanged();
+		mDataFields.onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
@@ -215,6 +219,7 @@ class CrystalView extends Ui.WatchFace {
 			case :GOAL_TYPE_ACTIVE_MINUTES:
 				return "2";
 			case :FIELD_TYPE_HEART_RATE:
+			case :FIELD_TYPE_HR_LIVE_5S:
 				return "3";
 			case :FIELD_TYPE_BATTERY:
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
@@ -238,6 +243,8 @@ class CrystalView extends Ui.WatchFace {
 				return ";";
 			case :FIELD_TYPE_TEMPERATURE:
 				return "<";
+			// case :LIVE_HR_SPOT:
+			// 	return "=";
 		}
 	}
 
@@ -302,6 +309,7 @@ class CrystalView extends Ui.WatchFace {
 	function onPartialUpdate(dc) {
 		//Sys.println("onPartialUpdate()");
 	
+		mDataFields.update(dc, /* isPartialUpdate */ true);
 		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
 
@@ -337,6 +345,10 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(true);
 		}
+	}
+
+	function isSleeping() {
+		return mIsSleeping;
 	}
 
 	function setHideSeconds(hideSeconds) {
