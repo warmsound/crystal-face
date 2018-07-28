@@ -13,7 +13,7 @@
 	<string id="GoalMeterStyleTitle">Wygląd Wskaźnika</string>
 	<string id="MoveBarStyleTitle">Wygląd Move Bar'a</string>
 	<string id="HideSecondsTitle">Ukryj Sekundy</string>
-	<string id="HideHoursLeadingZeroTitle">Ukryj Zero Poprzedzające Godzinę (Tryb 12-godzinny)</string>
+	<string id="HideHoursLeadingZeroTitle">Ukryj Zero Poprzedzające Godzinę</string>
 
 	<string id="FieldCountTitle">Liczba Pól z Danymi</string>
 	<string id="DataField1Title">Pole Danych 1</string>

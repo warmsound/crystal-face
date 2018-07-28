@@ -13,7 +13,7 @@
 	<string id="GoalMeterStyleTitle">Meter Style</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
-	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero (12 Hr Mode)</string>
+	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero</string>
 
 	<string id="FieldCountTitle">Number Of Data Fields</string>
 	<string id="DataField1Title">Data Field 1</string>

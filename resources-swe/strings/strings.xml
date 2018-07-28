@@ -13,7 +13,7 @@
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj Sekunder</string>
-	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor (12 Hr Mode)</string>
+	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>
 
 	<string id="FieldCountTitle">Number Of Data Fields</string>
 	<string id="DataField1Title">Data Field 1</string>
