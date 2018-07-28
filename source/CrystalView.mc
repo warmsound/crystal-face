@@ -347,6 +347,10 @@ class CrystalView extends Ui.WatchFace {
 		}
 	}
 
+	function isSleeping() {
+		return mIsSleeping;
+	}
+
 	function setHideSeconds(hideSeconds) {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);

@@ -153,12 +153,22 @@ class DataFields extends Ui.Drawable {
 		// Decide whether spot should be shown or not, based on current seconds.
 		var showLiveHRSpot = false;
 		if (isHeartRate) {
-			if (seconds == 0) { // Will always be full update, even in low power mode.
-				showLiveHRSpot = true;
-			} else if (isPartialUpdate) {
-				showLiveHRSpot = (((seconds / 5) % 2) == 0); // 0-4 on, 5-9 off, 10-14 on, etc.
+
+			// High power mode: 0 on, 1 off, 2 on, etc.
+			if (!App.getApp().getView().isSleeping()) {
+				showLiveHRSpot = ((seconds % 2) == 0);
+
+			// Low power mode:
 			} else {
-				showLiveHRSpot = ((seconds % 2) == 0); // 0 on, 1 off, 2 on, etc.
+
+				// Live HR: 0-4 on, 5-9 off, 10-14 on, etc.
+				if (isLiveHeartRate) {
+					showLiveHRSpot = (((seconds / 5) % 2) == 0);
+
+				// Normal HR: turn off spot when entering sleep.
+				} else {
+					showLiveHRSpot = false;
+				}
 			}
 		}
 
