@@ -21,7 +21,8 @@ class DataFields extends Ui.Drawable {
 
 	private var mFieldCount;
 	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
-	private var mHasLiveHR = false;
+	private var mHasLiveHR = false; // Is a live HR field currently being shown?
+	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
 
 	private var FIELD_TYPES = [
@@ -164,6 +165,12 @@ class DataFields extends Ui.Drawable {
 		// 1. Value: draw first, as top of text overlaps icon.
 		var value = getValueForFieldType(fieldType);
 
+		// Optimisation: if live HR remains unavailable, skip the rest of this partial update.
+		var isHRAvailable = isHeartRate && (value.length() != 0);
+		if (isPartialUpdate && !isHRAvailable && !mWasHRAvailable) {
+			return;
+		}
+
 		// #34 Clip live HR value.
 		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
 		var backgroundColour = App.getApp().getProperty("BackgroundColour");
@@ -206,12 +213,36 @@ class DataFields extends Ui.Drawable {
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {
 
+			// If HR availability changes while in low power mode, then we unfortunately have to draw the full heart.
+			// HR availability was recorded during the last high power draw cycle.
+			if (isHRAvailable != mWasHRAvailable) {
+				mWasHRAvailable = isHRAvailable;
+
+				// Clip full heart, then draw.
+				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+				dc.setClip(
+					x - (heartDims[0] / 2),
+					mTop - (heartDims[1] / 2),
+					heartDims[0] + 1,
+					heartDims[1] + 1);
+				dc.setColor(colour, backgroundColour);
+				dc.drawText(
+					x,
+					mTop,
+					mIconsFont,
+					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
+
+			// Clip spot.
 			dc.setClip(
 				x - LIVE_HR_SPOT_RADIUS,
 				mTop - LIVE_HR_SPOT_RADIUS,
 				(2 * LIVE_HR_SPOT_RADIUS) + 1,
 				(2 * LIVE_HR_SPOT_RADIUS) + 1);
 
+			// Draw spot, if it should be shown.
 			// fillCircle() does not anti-aliase, so use font instead.
 			if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
 				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
@@ -235,6 +266,7 @@ class DataFields extends Ui.Drawable {
 				);
 			}
 
+		// Other icons.
 		} else {
 
 			dc.setColor(colour, backgroundColour);
@@ -246,16 +278,22 @@ class DataFields extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
-			// #34 Live HR in high power mode.
-			if (isHeartRate && showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+			if (isHeartRate) {
+
+				// #34 Save whether HR was available during this high power draw cycle.
+				mWasHRAvailable = isHRAvailable;
+
+				// #34 Live HR in high power mode.
+				if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
+					dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+					dc.drawText(
+						x,
+						mTop,
+						mIconsFont,
+						"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+					);
+				}
 			}
 		}
 	}
