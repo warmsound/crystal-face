@@ -8,7 +8,7 @@ class ThickThinTime extends Ui.Drawable {
 
 	private var mThemeColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
-	private var mhalfDCHeight, mhalfDCWidth, mAMPMposition;
+	private var mAMPMposition;
 
 	// "y" parameter passed to drawText(), read from layout.xml.
 	private var mSecondsY;
@@ -126,8 +126,8 @@ class ThickThinTime extends Ui.Drawable {
 		isLeadingZeroHidden = (hours.length() == 1);
 
 		var x;
-		mhalfDCWidth = dc.getWidth() / 2;
-	    	mhalfDCHeight = dc.getHeight() / 2;
+		var halfDCWidth = dc.getWidth() / 2;
+	    var	halfDCHeight = dc.getHeight() / 2;
 
 		// Vertical (two-line) layout.
 		if (mVerticalOffset) {
@@ -138,13 +138,13 @@ class ThickThinTime extends Ui.Drawable {
 			// #10 hours may be single digit, but calculate layout as if always double-digit.
 			// N.B. Assumes font has tabular (monospaced) numerals.
 			var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
-			x = mhalfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
+			x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
 
 			// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
 			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				mhalfDCHeight - hoursAscent - (mVerticalOffset / 2),
+				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
 				mHoursFont,
 				hours,
 				Graphics.TEXT_JUSTIFY_RIGHT
@@ -154,7 +154,7 @@ class ThickThinTime extends Ui.Drawable {
 			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				mhalfDCHeight + (mVerticalOffset / 2),
+				halfDCHeight + (mVerticalOffset / 2),
 				mMinutesFont,
 				minutes,
 				Graphics.TEXT_JUSTIFY_RIGHT
@@ -167,7 +167,7 @@ class ThickThinTime extends Ui.Drawable {
 				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 				dc.drawText(
 					x,
-					mhalfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
+					halfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
 					mSecondsFont,
 					amPmText,
 					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -181,13 +181,13 @@ class ThickThinTime extends Ui.Drawable {
 			// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
 			// minutes font is used to calculate total width. 
 			var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
-			x = mhalfDCWidth - (totalWidth / 2);
+			x = halfDCWidth - (totalWidth / 2);
 
 			// Draw hours.
 			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				mhalfDCHeight,
+				halfDCHeight,
 				mHoursFont,
 				hours,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -198,7 +198,7 @@ class ThickThinTime extends Ui.Drawable {
 			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				mhalfDCHeight,
+				halfDCHeight,
 				mMinutesFont,
 				minutes,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -213,8 +213,8 @@ class ThickThinTime extends Ui.Drawable {
 
 				if (mMeridiemSide == :left) {
 					dc.drawText(
-						mhalfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
-						mhalfDCHeight,
+						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
+						halfDCHeight,
 						mSecondsFont,
 						amPmText,
 						Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER

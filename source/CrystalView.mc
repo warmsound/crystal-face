@@ -27,6 +27,8 @@ class CrystalView extends Ui.WatchFace {
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
 	function initialize() {
+		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 		WatchFace.initialize();
 	}
 
@@ -116,22 +118,18 @@ class CrystalView extends Ui.WatchFace {
 
 	function chooseLayout(dc){
 
+		mLayout=[];
+		mDrawables = {};
+		mTime = "";
+		
 		if (mTimezones > 0){
-			mLayout=[];
-			mDrawables = {};
-			mTime = "";
 			setLayout(Rez.Layouts.WatchFaceTZ(dc));
 		} else {
-			mLayout=[];
-			mDrawables = {};			
-			mTime = "";
 			setLayout(Rez.Layouts.WatchFace(dc));
 		}
 
 		mTimezonesOrig = mTimezones;
 		
-		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
-		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 		
 		cacheDrawables();
 		
