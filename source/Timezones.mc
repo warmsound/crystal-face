@@ -10,7 +10,6 @@ class Timezones extends Ui.Drawable {
 	var mUtcOffset = new Time.Duration(-Sys.getClockTime().timeZoneOffset);
 	
 	var mTzLocations = [];
-//	var mUtcOffsets = {};
 	var mTimeZones;
 	
 	var mTopY;
@@ -31,9 +30,6 @@ class Timezones extends Ui.Drawable {
 
 	function setupTimezones() {
 		mTzLocations = [];
-//		mUtcOffsets = {};
-		
-		// Right now we use a dictionary, but we could use an array of arrays
 		
 		mTimeZones = App.getApp().getProperty("timezones").toNumber();
 		for (var i = 1; i <= mTimeZones; i++) {
