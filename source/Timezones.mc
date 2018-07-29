@@ -10,7 +10,7 @@ class Timezones extends Ui.Drawable {
 	var mUtcOffset = new Time.Duration(-Sys.getClockTime().timeZoneOffset);
 	
 	var mTzLocations = [];
-	var mUtcOffsets = {};
+//	var mUtcOffsets = {};
 	var mTimeZones;
 	
 	var mTopY;
@@ -31,7 +31,7 @@ class Timezones extends Ui.Drawable {
 
 	function setupTimezones() {
 		mTzLocations = [];
-		mUtcOffsets = {};
+//		mUtcOffsets = {};
 		
 		// Right now we use a dictionary, but we could use an array of arrays
 		
@@ -43,12 +43,15 @@ class Timezones extends Ui.Drawable {
 			if (name.equals("")) {
 				continue;
 			} else {
-				mTzLocations.add(name);
-				//System.println("Name:<"+name+">");	
+
+				//System.println("Name:<"+name+">");
+				var TzOffset = [];	
 				if (dst == true ) {
 					offset = offset+1;
 				}
-				mUtcOffsets.put(name,offset);
+				TzOffset.add(name);
+				TzOffset.add(offset); 
+				mTzLocations.add(TzOffset);
 			}
 		}
 	}
@@ -88,8 +91,8 @@ class Timezones extends Ui.Drawable {
 		
 		for (var i = 0; i < zones; ++i) {
 			
-			var location = mTzLocations[i];
-			var tzOffset = mUtcOffsets[location];
+			var location = mTzLocations[i][0];
+			var tzOffset = mTzLocations[i][1];
 			var tzHour = utcInfo.hour + tzOffset;
 			if (tzHour > 23){
 				tzHour = tzHour - 24; 
