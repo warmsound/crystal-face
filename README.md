@@ -20,6 +20,13 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 1.8.1
+- Added "Heart Rate (Live 5s)" data field.
+- Read HR from more up-to-date source.
+- Improved clarity of battery indicator.
+- "Hide Hours Leading Zero" now setting applies to both 12- and 24-hour modes.
+- Technical update to CIQ 2.4.9 SDK.
+
 ### 1.8.0
 - Added setting to control number of data fields (0-3).
 - Added setting to control number of indicators (0-3): Bluetooth, alarms, notifications, bluetooth/notifications.
