@@ -25,7 +25,7 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 - Read HR from more up-to-date source.
 - Improved clarity of battery indicator.
 - "Hide Hours Leading Zero" now setting applies to both 12- and 24-hour modes.
-- Technical update to CIQ 2.4.9 SDK.
+- Technical update to CIQ 2.4.9 SDK, to add support for D2™ Delta, D2™ Delta PX, D2™ Delta S.
 
 ### 1.8.0
 - Added setting to control number of data fields (0-3).
