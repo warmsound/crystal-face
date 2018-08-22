@@ -161,6 +161,11 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<!-- TODO: Can we hide this setting completely from watches that do not support background services? -->
+	<setting propertyKey="@Properties.TimeZone1City" title="@Strings.TimeZone1City">
+		<settingConfig type="alphaNumeric" readonly="true"/>
+	</setting>
+
 	<setting propertyKey="@Properties.MoveBarStyle" title="@Strings.MoveBarStyleTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ShowAllSegments</listEntry>

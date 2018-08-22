@@ -4,4 +4,7 @@
 	<property id="RightGoalType" type="number">-1</property>
 	<property id="Field2Type" type="number">3</property>
 
+	<!-- CIQ 1.x devices do not support background services -->
+	<property id="TimeZone1City" type="string"></property>
+
 </properties>

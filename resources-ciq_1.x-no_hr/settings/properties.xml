@@ -7,4 +7,7 @@
 	<!-- Distance, because HR not supported -->
 	<property id="Field1Type" type="number">4</property>
 
+	<!-- CIQ 1.x devices do not support background services -->
+	<property id="TimeZone1City" type="string"></property>
+
 </properties>
