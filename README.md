@@ -2,6 +2,9 @@
 A Garmin Connect IQ watch face.
 
 ## Description
+**If you enjoy using Crystal, you can support my work with a small donation:**
+https://goo.gl/vFCE4T
+
 **FAQs, including how to change watch face settings:**
 https://github.com/warmsound/crystal-face/wiki/FAQ
 
