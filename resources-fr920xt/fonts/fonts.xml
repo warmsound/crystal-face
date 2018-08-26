@@ -12,7 +12,7 @@
 	<font id="DateFont" filename="titillium-web-semibold-16-date.fnt" antialias="false" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
 
 	<!-- Symlinked from resources/fonts. -->
-	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" />
+	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789CFfikmt°"/>
 
 	<!-- Symlinked from resources-small-icons/fonts. -->
 	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="false" />
