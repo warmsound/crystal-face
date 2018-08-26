@@ -18,12 +18,21 @@
 	</drawable>
 
 	<label id="LeftGoalIcon" text="0" x="49" y="188" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-	<label id="LeftGoalCurrent" text="3500" x="76" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftGoalMax" text="5000" x="76" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<!-- label id="LeftGoalCurrent" text="3500" x="76" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/ -->
+	<!-- label id="LeftGoalMax" text="5000" x="76" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/ -->
 
 	<label id="RightGoalIcon" text="1" x="191" y="188" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-	<label id="RightGoalCurrent" text="6" x="164" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightGoalMax" text="10" x="164" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<!-- label id="RightGoalCurrent" text="6" x="164" y="192" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/ -->
+	<!-- label id="RightGoalMax" text="10" x="164" y="208" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/ -->
+
+	<drawable id="DataArea" class="DataArea">
+		<param name="locX">76</param>
+		<!-- param name="locY">76</param -->
+		<param name="width">88</param>
+		<!-- param name="height">88</param -->
+		<param name="row1Y">192</param>
+		<param name="row2Y">208</param>
+	</drawable>
 
 	<drawable id="DataFields" class="DataFields">
 		<param name="left">80</param>

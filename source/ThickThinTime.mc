@@ -106,7 +106,7 @@ class ThickThinTime extends Ui.Drawable {
 		// #69 Setting now applies to both 12- and 24-hour modes.
 		var isLeadingZeroHidden;
 		if (/* !is24Hour && */ App.getApp().getProperty("HideHoursLeadingZero")) {
-			hours = hours.format("%d");
+			hours = hours.format(INTEGER_FORMAT);
 
 		// Otherwise, show leading zero.
 		} else {

@@ -4,6 +4,8 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
+const INTEGER_FORMAT = "%d";
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
@@ -66,6 +68,8 @@ class CrystalView extends Ui.WatchFace {
 
 		cacheDrawables();
 
+		mDrawables[:DataArea].setFont(mNormalFont);
+
 		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
@@ -82,13 +86,11 @@ class CrystalView extends Ui.WatchFace {
 	function cacheDrawables() {
 		mDrawables[:LeftGoalMeter] = View.findDrawableById("LeftGoalMeter");
 		mDrawables[:LeftGoalIcon] = View.findDrawableById("LeftGoalIcon");
-		mDrawables[:LeftGoalCurrent] = View.findDrawableById("LeftGoalCurrent");
-		mDrawables[:LeftGoalMax] = View.findDrawableById("LeftGoalMax");
 
 		mDrawables[:RightGoalMeter] = View.findDrawableById("RightGoalMeter");
 		mDrawables[:RightGoalIcon] = View.findDrawableById("RightGoalIcon");
-		mDrawables[:RightGoalCurrent] = View.findDrawableById("RightGoalCurrent");
-		mDrawables[:RightGoalMax] = View.findDrawableById("RightGoalMax");
+
+		mDrawables[:DataArea] = View.findDrawableById("DataArea");
 
 		mDrawables[:LeftFieldIcon] = View.findDrawableById("LeftFieldIcon");
 		mDrawables[:LeftFieldValue] = View.findDrawableById("LeftFieldValue");
@@ -299,24 +301,22 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateGoalMeters() {
-		updateGoalMeter(
+		var leftValues = updateGoalMeter(
 			getGoalType(App.getApp().getProperty("LeftGoalType")),
 			mDrawables[:LeftGoalMeter],
-			mDrawables[:LeftGoalIcon],
-			mDrawables[:LeftGoalCurrent],
-			mDrawables[:LeftGoalMax]
+			mDrawables[:LeftGoalIcon]
 		);
 
-		updateGoalMeter(
+		var rightValues = updateGoalMeter(
 			getGoalType(App.getApp().getProperty("RightGoalType")),
 			mDrawables[:RightGoalMeter],
-			mDrawables[:RightGoalIcon],
-			mDrawables[:RightGoalCurrent],
-			mDrawables[:RightGoalMax]
+			mDrawables[:RightGoalIcon]
 		);
+
+		mDrawables[:DataArea].setGoalValues(leftValues, rightValues);
 	}
 
-	function updateGoalMeter(goalType, meter, iconLabel, currentLabel, maxLabel) {
+	function updateGoalMeter(goalType, meter, iconLabel) {
 		var values = getValuesForGoalType(goalType);
 
 		// Meter.
@@ -328,28 +328,9 @@ class CrystalView extends Ui.WatchFace {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
 			iconLabel.setColor(App.getApp().getProperty("MeterBackgroundColour"));
-		}		
-
-		// Current label.
-		if (values[:isValid]) {
-			currentLabel.setText(values[:current].format("%d"));
-		} else {
-			currentLabel.setText("");
 		}
-		currentLabel.setColor(App.getApp().getProperty("MonoLightColour"));
 
-		// Max/target label.
-		if (values[:isValid]) {
-			if (goalType == :GOAL_TYPE_BATTERY) {
-				maxLabel.setText("%");
-			} else {
-				maxLabel.setText(values[:max].format("%d"));
-			}
-			
-		} else {
-			maxLabel.setText("");
-		}
-		maxLabel.setColor(App.getApp().getProperty("MonoDarkColour"));
+		return values;
 	}
 
 	// Replace dictionary with function to save memory.

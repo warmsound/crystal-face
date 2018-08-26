@@ -312,7 +312,6 @@ class DataFields extends Ui.Drawable {
 	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
 	private function getValueForFieldType(type) {
 		var value = "";
-		var INTEGER_FORMAT = "%d";
 
 		var activityInfo;
 		var iterator;
