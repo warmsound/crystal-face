@@ -47,7 +47,7 @@
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="verticalOffset">6</param> 
+		<param name="twoLineOffset">6</param> 
 
 		<param name="secondsX">102</param>
 		<param name="secondsY">115</param>

@@ -11,7 +11,10 @@ class ThickThinTime extends Ui.Drawable {
 	private var mSecondsY;
 	
 	// Vertical layouts only: offset between bottom of hours and top of minutes.
-	private var mVerticalOffset;
+	private var mTwoLineOffset;
+
+	// Wide rectangle: time shoudl be moved up slightly to centre within available space.
+	private var mAdjustY = 0;
 
 	// Tight clipping rectangle for drawing seconds during partial update.
 	// "y" corresponds to top of glyph, which will be lower than "y" parameter of drawText().
@@ -25,7 +28,6 @@ class ThickThinTime extends Ui.Drawable {
 
 	private var mAnteMeridiem, mPostMeridiem;
 	private var AM_PM_X_OFFSET = 2;
-	private var mMeridiemSide;
 
 	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
 	private var mSecondsClipXAdjust = 0;
@@ -33,7 +35,11 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mVerticalOffset = params[:verticalOffset];
+		mTwoLineOffset = params[:twoLineOffset];
+
+		if (params[:adjustY] != null) {
+			mAdjustY = params[:adjustY];
+		}
 
 		mSecondsY = params[:secondsY];
 
@@ -44,8 +50,6 @@ class ThickThinTime extends Ui.Drawable {
 
 		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
 		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
-
-		mMeridiemSide = params[:meridiemSide];
 	}
 
 	function setFonts(hoursFont, minutesFont, secondsFont) {
@@ -112,10 +116,10 @@ class ThickThinTime extends Ui.Drawable {
 
 		var x;
 		var halfDCWidth = dc.getWidth() / 2;
-		var halfDCHeight = dc.getHeight() / 2;
+		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
 
 		// Vertical (two-line) layout.
-		if (mVerticalOffset) {
+		if (mTwoLineOffset) {
 
 			// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
 			var hoursAscent = Graphics.getFontAscent(mHoursFont);
@@ -129,7 +133,7 @@ class ThickThinTime extends Ui.Drawable {
 			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				halfDCHeight - hoursAscent - (mVerticalOffset / 2),
+				halfDCHeight - hoursAscent - (mTwoLineOffset / 2),
 				mHoursFont,
 				hours,
 				Graphics.TEXT_JUSTIFY_RIGHT
@@ -139,7 +143,7 @@ class ThickThinTime extends Ui.Drawable {
 			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				halfDCHeight + (mVerticalOffset / 2),
+				halfDCHeight + (mTwoLineOffset / 2),
 				mMinutesFont,
 				minutes,
 				Graphics.TEXT_JUSTIFY_RIGHT
@@ -152,7 +156,7 @@ class ThickThinTime extends Ui.Drawable {
 				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 				dc.drawText(
 					x,
-					halfDCHeight - (hoursAscent / 2) - (mVerticalOffset / 2),
+					halfDCHeight - (hoursAscent / 2) - (mTwoLineOffset / 2),
 					mSecondsFont,
 					amPmText,
 					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -189,39 +193,17 @@ class ThickThinTime extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
-			// If required, draw AM/PM after minutes, or before hours, vertically centred.
+			// If required, draw AM/PM after minutes, vertically centred.
 			if (!is24Hour) {
 				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
-
-				if (mMeridiemSide == :left) {
-					dc.drawText(
-						halfDCWidth - (totalWidth / 2) - AM_PM_X_OFFSET - 2, // Breathing space between minutes and AM/PM.
-						halfDCHeight,
-						mSecondsFont,
-						amPmText,
-						Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-					);
-
-					// #10 If mMeridiemSide is left, then assume this is a rectangle-205x148 layout, i.e. single-line layout with
-					// seconds immediately to right of minutes (rather than beneath minutes).
-					// If no leading hours zero is shown, move seconds left by half the width of an hours character.
-					// N.B. Assumes font has tabular (monospaced) numerals.
-					if (isLeadingZeroHidden) {
-						mSecondsClipXAdjust = -dc.getTextWidthInPixels("0", mHoursFont) / 2;
-					} else {
-						mSecondsClipXAdjust = 0;
-					}
-					
-				} else {
-					x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
-					dc.drawText(
-						x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
-						halfDCHeight,
-						mSecondsFont,
-						amPmText,
-						Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-					);
-				}
+				x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
+				dc.drawText(
+					x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+					halfDCHeight,
+					mSecondsFont,
+					amPmText,
+					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+				);
 			}
 		}
 	}
