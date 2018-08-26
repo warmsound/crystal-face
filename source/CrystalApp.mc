@@ -55,6 +55,7 @@ class CrystalApp extends App.AppBase {
 	}
 
 	function onBackgroundData(data) {
-		Sys.println(data);
+		App.Storage.setValue("TimeZone1", data);		
+		Ui.requestUpdate();
 	}
 }

@@ -1,6 +1,9 @@
 using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.Application as App;
+using Toybox.System as Sys;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 class DataArea extends Ui.Drawable {
 
@@ -53,9 +56,71 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		/* if (App.getApp().getProperty("TimeZone1City") != "") {
+		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		if (timeZone1City != "") {
 			//drawTimeZone();
-		} else */ {
+
+			// Time zone 1 city.
+			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				locX + (width / 2),
+				mRow1Y,
+				mNormalFont,
+				// Limit string length.
+				timeZone1City.substring(0, 10),
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Time zone 1 time.
+			var timeZone1Time = "...";
+			var timeZone1 = App.Storage.getValue("TimeZone1");
+			if (timeZone1) {
+				var timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+				timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
+				
+				var localGmtOffset = Sys.getClockTime().timeZoneOffset;
+				localGmtOffset = new Time.Duration(localGmtOffset);
+
+				// (Local time) - (Local GMT offset) + (Time zone GMT offset)
+				timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+				timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
+
+				var amPm = "";
+				var hour = timeZone1Time.hour;
+
+				if (!Sys.getDeviceSettings().is24Hour) {
+					var isPm = (hour >= 12);
+					if (isPm) {
+						// Show noon as 12, not 00.
+						if (hour > 12) {
+							hour = hour - 12;
+						}
+						amPm = "p";
+					} else {
+						// Show midnght as 12, not 00.
+						if (hour == 0) {
+							hour = 12;
+						}
+						amPm = "a";
+					}
+				}
+
+				if (!App.getApp().getProperty("HideHoursLeadingZero")) {
+					hour = hour.format("%02d");
+				}				
+				timeZone1Time = hour + ":" + timeZone1Time.min.format("%02d") + amPm;
+			}
+
+			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				locX + (width / 2),
+				mRow2Y,
+				mNormalFont,
+				timeZone1Time,
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+		} else {
 			//drawGoalVales(dc);
 			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
 

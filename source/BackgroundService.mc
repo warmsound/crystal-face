@@ -1,6 +1,7 @@
 using Toybox.Background as Bg;
 using Toybox.System as Sys;
 using Toybox.Communications as Comms;
+using Toybox.Application as App;
 
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
@@ -27,8 +28,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function makeRequest() {
 		var url = "https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec";
 
+		var timeZone1City = App.getApp().getProperty("TimeZone1City");
 		var params = {
-			"city" => "Cape Town"
+			"city" => timeZone1City
 		};
 
 		var options = {
