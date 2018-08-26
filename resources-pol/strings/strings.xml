@@ -50,9 +50,6 @@
 	<string id="ThemeRedLight">Czerwony (Jasny)</string>
 	<string id="ThemeGreenLight">Zielony (Jasny)</string>
 
-	<string id="AnteMeridiem">A</string>
-	<string id="PostMeridiem">P</string>
-
 	<string id="Steps">Kroki</string>
 	<string id="FloorsClimbed">Pokonane Piętra</string>
 	<string id="ActiveMinutes">Aktywne Minuty (Tygodniowo)</string>

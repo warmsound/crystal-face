@@ -50,9 +50,6 @@
 	<string id="ThemeRedLight">Röd (Ljus)</string>
 	<string id="ThemeGreenLight">Grön (Ljus)</string>
 
-	<string id="AnteMeridiem">A</string>
-	<string id="PostMeridiem">P</string>
-
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>
 	<string id="ActiveMinutes">Aktiva Minuter (Vecka)</string>

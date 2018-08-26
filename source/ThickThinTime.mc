@@ -25,8 +25,6 @@ class ThickThinTime extends Ui.Drawable {
 	private var mSecondsClipRectHeight;
 
 	private var mHideSeconds = false;
-
-	private var mAnteMeridiem, mPostMeridiem;
 	private var AM_PM_X_OFFSET = 2;
 
 	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
@@ -47,9 +45,6 @@ class ThickThinTime extends Ui.Drawable {
 		mSecondsClipRectY = params[:secondsClipY];
 		mSecondsClipRectWidth = params[:secondsClipWidth];
 		mSecondsClipRectHeight = params[:secondsClipHeight];
-
-		mAnteMeridiem = Ui.loadResource(Rez.Strings.AnteMeridiem);
-		mPostMeridiem = Ui.loadResource(Rez.Strings.PostMeridiem);
 	}
 
 	function setFonts(hoursFont, minutesFont, secondsFont) {
@@ -94,11 +89,11 @@ class ThickThinTime extends Ui.Drawable {
 			} else if (hours == 0) {
 				hours = 12;
 			}
-							
+			
 			if (isPm) {
-				amPmText = mPostMeridiem;
+				amPmText = "P";
 			} else {
-				amPmText = mAnteMeridiem;
+				amPmText = "A";
 			}
 		}
 
