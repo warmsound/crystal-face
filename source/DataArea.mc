@@ -57,8 +57,14 @@ class DataArea extends Ui.Drawable {
 
 	function draw(dc) {
 		var timeZone1City = App.getApp().getProperty("TimeZone1City");
-		if (timeZone1City != "") {
+		if (timeZone1City.length() != 0) {
 			//drawTimeZone();
+			var timeZone1 = App.Storage.getValue("TimeZone1");
+
+			// If available, use city returned from web request; otherwise, use raw city from settings.
+			if (timeZone1) {
+				timeZone1City = timeZone1["city"];
+			}
 
 			// Time zone 1 city.
 			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
@@ -73,7 +79,6 @@ class DataArea extends Ui.Drawable {
 
 			// Time zone 1 time.
 			var timeZone1Time = "...";
-			var timeZone1 = App.Storage.getValue("TimeZone1");
 			if (timeZone1) {
 				var timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
 				timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);

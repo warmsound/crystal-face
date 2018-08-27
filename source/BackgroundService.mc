@@ -12,11 +12,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	function onTemporalEvent() {
 		Sys.println("onTemporalEvent");
-		makeRequest();
+		requestTimeZone();
 	}
 
-	// set up the response callback function
-	function onReceive(responseCode, data) {
+	function onReceiveTimeZone(responseCode, data) {
 		if (responseCode == 200) {
 			Sys.println("Request Successful");
 			Bg.exit(data);
@@ -25,7 +24,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 	}
 
-	function makeRequest() {
+	function requestTimeZone() {
 		var url = "https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec";
 
 		var timeZone1City = App.getApp().getProperty("TimeZone1City");
@@ -41,6 +40,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 		};
 
 		Sys.println("Making web request");
-		Comms.makeWebRequest(url, params, options, method(:onReceive));
+		Comms.makeWebRequest(url, params, options, method(:onReceiveTimeZone));
 	}
 }
