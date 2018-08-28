@@ -62,7 +62,8 @@ class DataArea extends Ui.Drawable {
 			var timeZone1 = App.Storage.getValue("TimeZone1");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
-			if (timeZone1) {
+			// N.B. error response will NOT contain city.
+			if ((timeZone1 != null) && (timeZone1["city"] != null)) {
 				timeZone1City = timeZone1["city"];
 			}
 
@@ -78,42 +79,54 @@ class DataArea extends Ui.Drawable {
 			);
 
 			// Time zone 1 time.
-			var timeZone1Time = "...";
+			var timeZone1Time;
 			if (timeZone1) {
-				var timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
-				timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
-				
-				var localGmtOffset = Sys.getClockTime().timeZoneOffset;
-				localGmtOffset = new Time.Duration(localGmtOffset);
 
-				// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-				timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-				timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
+				// Web request responded with error e.g. city not found.
+				if (timeZone1["error"] != null) {
+					timeZone1Time = "???";
 
-				var amPm = "";
-				var hour = timeZone1Time.hour;
+				// Web request responded with time zone data for city.
+				} else {
+					var timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
+					
+					var localGmtOffset = Sys.getClockTime().timeZoneOffset;
+					localGmtOffset = new Time.Duration(localGmtOffset);
 
-				if (!Sys.getDeviceSettings().is24Hour) {
-					var isPm = (hour >= 12);
-					if (isPm) {
-						// Show noon as 12, not 00.
-						if (hour > 12) {
-							hour = hour - 12;
+					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
+					timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+					timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
+
+					var amPm = "";
+					var hour = timeZone1Time.hour;
+
+					if (!Sys.getDeviceSettings().is24Hour) {
+						var isPm = (hour >= 12);
+						if (isPm) {
+							// Show noon as 12, not 00.
+							if (hour > 12) {
+								hour = hour - 12;
+							}
+							amPm = "p";
+						} else {
+							// Show midnght as 12, not 00.
+							if (hour == 0) {
+								hour = 12;
+							}
+							amPm = "a";
 						}
-						amPm = "p";
-					} else {
-						// Show midnght as 12, not 00.
-						if (hour == 0) {
-							hour = 12;
-						}
-						amPm = "a";
 					}
+
+					if (!App.getApp().getProperty("HideHoursLeadingZero")) {
+						hour = hour.format("%02d");
+					}				
+					timeZone1Time = hour + ":" + timeZone1Time.min.format("%02d") + amPm;
 				}
 
-				if (!App.getApp().getProperty("HideHoursLeadingZero")) {
-					hour = hour.format("%02d");
-				}				
-				timeZone1Time = hour + ":" + timeZone1Time.min.format("%02d") + amPm;
+			// Awaiting response to web request sent by BackgroundService.
+			} else {
+				timeZone1Time = "...";
 			}
 
 			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);

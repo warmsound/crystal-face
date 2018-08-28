@@ -58,6 +58,7 @@ class CrystalApp extends App.AppBase {
 					needed = true;
 				
 				// Existing data not for this city: delete it.
+				// N.B. error response will contain requestCity, so this will prevent repeated error request/response cycles.
 				} else if (!timeZone1["requestCity"].equals(timeZone1City)) {
 					App.Storage.deleteValue("TimeZone1");
 					needed = true;
