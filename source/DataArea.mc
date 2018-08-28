@@ -88,7 +88,14 @@ class DataArea extends Ui.Drawable {
 
 				// Web request responded with time zone data for city.
 				} else {
-					var timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+					var timeZoneGmtOffset;
+
+					// Use next GMT offset if it's now applicable (new data will be requested shortly).
+					if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
+						timeZoneGmtOffset = timeZone1["next"]["gmtOffset"];
+					} else {
+						timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+					}
 					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
 					
 					var localGmtOffset = Sys.getClockTime().timeZoneOffset;

@@ -51,7 +51,6 @@ class CrystalApp extends App.AppBase {
 			if (timeZone1City.length() > 0) {
 
 				var timeZone1 = App.Storage.getValue("TimeZone1");
-				var now = Time.now().value();
 
 				// No existing data.
 				if (timeZone1 == null) {
@@ -64,7 +63,7 @@ class CrystalApp extends App.AppBase {
 					needed = true;
 
 				// Existing data is old.
-				} else if ((timeZone1["next"] != null) && (now > timeZone1["next"]["when"])) {
+				} else if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
 					needed = true;
 				}
 			}
