@@ -62,13 +62,10 @@ class CrystalView extends Ui.WatchFace {
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
 		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
-		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
 		cacheDrawables();
-
-		mDrawables[:DataArea].setFont(mNormalFont);
 
 		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
 		// Slighly faster than mDrawables lookup.
@@ -77,10 +74,11 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:Indicators].setFont(mIconsFont);
 
-		mDataFields = View.findDrawableById("DataFields");
-		mDataFields.setFonts(mIconsFont, mNormalFont);
+		mDataFields = View.findDrawableById("DataFields");		
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
+
+		updateNormalFont(); // Requires mIconsFont, mDrawables, mDataFields.
 	}
 
 	function cacheDrawables() {
@@ -126,11 +124,29 @@ class CrystalView extends Ui.WatchFace {
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
 
+		updateNormalFont();
+
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
 
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
+	}
+
+	// Select normal font, based on whether time zone feature is being used.
+	// Saves memory when cities are not in use.
+	// Update drawables that use normal font.
+	function updateNormalFont() {
+
+		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		if (timeZone1City.length() > 0) {
+			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+		} else {
+			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+		}
+
+		mDataFields.setFonts(mIconsFont, mNormalFont);
+		mDrawables[:DataArea].setFont(mNormalFont);
 	}
 
 	function updateThemeColours() {

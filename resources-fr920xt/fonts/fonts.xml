@@ -8,11 +8,10 @@
 	<!-- Symlinked from resources-small-time/fonts. -->
 	<font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
 
-	<!-- Symlinked from resources-smaller-time/fonts. -->
-	<font id="DateFont" filename="titillium-web-semibold-16-date.fnt" antialias="false" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
-
 	<!-- Symlinked from resources/fonts. -->
+	<font id="DateFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹ"/>
 	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789CFfikmt°"/>
+	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 
 	<!-- Symlinked from resources-small-icons/fonts. -->
 	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="false" />
