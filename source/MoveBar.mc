@@ -180,13 +180,14 @@ class MoveBar extends Ui.Drawable {
 	function drawBar(dc, colour, x, y, width) {
 		var points = new [6];
 		var halfHeight = (mHeight / 2);
+		width = width - 1; // E.g. width 5 covers pixels 0 to 4.
 
-		points[0] = [x, y];
-		points[1] = [x - mTailWidth, y - halfHeight];
+		points[0] = [x                     , y];
+		points[1] = [x - mTailWidth        , y - halfHeight];
 		points[2] = [x - mTailWidth + width, y - halfHeight];
-		points[3] = [x + width, y];
-		points[4] = [x - mTailWidth + width - /* Inclusive? */ 1, y + halfHeight + /* Exclusive? */ 1];
-		points[5] = [x - mTailWidth - /* Inclusive? */ 1, y + halfHeight + /* Exclusive? */ 1];
+		points[3] = [x              + width, y];
+		points[4] = [x - mTailWidth + width, y + halfHeight];
+		points[5] = [x - mTailWidth        , y + halfHeight];
 
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 		dc.fillPolygon(points);
