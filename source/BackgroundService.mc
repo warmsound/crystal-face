@@ -11,16 +11,25 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 
 	function onTemporalEvent() {
-		Sys.println("onTemporalEvent");
+		//Sys.println("onTemporalEvent");
 		requestTimeZone();
 	}
 
 	function onReceiveTimeZone(responseCode, data) {
+
+		// HTTP success: return data response.
 		if (responseCode == 200) {
-			Sys.println("Request Successful");
+			//Sys.println("Request Successful");
 			Bg.exit(data);
+
+		// HTTP failure: return responseCode.
 		} else {
-			Sys.println("Response: " + responseCode);
+			//Sys.println("Response: " + responseCode);
+			Bg.exit({
+				"error" => {
+					"responseCode" => responseCode
+				}
+			});
 		}
 	}
 
@@ -39,7 +48,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
 		};
 
-		Sys.println("Making web request");
+		//Sys.println("Making web request");
 		Comms.makeWebRequest(url, params, options, method(:onReceiveTimeZone));
 	}
 }

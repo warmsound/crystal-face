@@ -82,9 +82,17 @@ class DataArea extends Ui.Drawable {
 			var timeZone1Time;
 			if (timeZone1) {
 
-				// Web request responded with error e.g. city not found.
+				// Web request responded with HTTP or server error.
 				if (timeZone1["error"] != null) {
-					timeZone1Time = "???";
+
+					// HTTP error: show response code (no i18n).
+					if (timeZone1["error"]["responseCode"] != null) {
+						timeZone1Time = timeZone1["error"]["responseCode"] + " error";
+
+					// Server error: e.g. unknown city.
+					} else {
+						timeZone1Time = "???";
+					}
 
 				// Web request responded with time zone data for city.
 				} else {

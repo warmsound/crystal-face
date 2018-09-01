@@ -55,9 +55,14 @@ class CrystalApp extends App.AppBase {
 				// No existing data.
 				if (timeZone1 == null) {
 					needed = true;
-				
+
+				// HTTP error: has error and responseCode (but no requestCity): keep retrying. Likely due to no connectivity.
+				} else if ((timeZone1["error"] != null) && (timeZone1["error"]["responseCode"] != null)) {
+					needed = true;
+			
 				// Existing data not for this city: delete it.
-				// N.B. error response will contain requestCity, so this will prevent repeated error request/response cycles.
+				// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
+				// city again.
 				} else if (!timeZone1["requestCity"].equals(timeZone1City)) {
 					App.Storage.deleteValue("TimeZone1");
 					needed = true;
