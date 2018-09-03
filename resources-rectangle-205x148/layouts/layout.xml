@@ -17,9 +17,9 @@
 		<param name="separator">2</param>
 	</drawable>
 
-	<label id="LeftGoalIcon" text="0" x="14" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
+	<label id="LeftGoalIcon" text="0" x="14" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
 
-	<label id="RightGoalIcon" text="1" x="191" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+	<label id="RightGoalIcon" text="1" x="191" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
 
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">38</param>

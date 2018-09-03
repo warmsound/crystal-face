@@ -90,15 +90,6 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:DataArea] = View.findDrawableById("DataArea");
 
-		mDrawables[:LeftFieldIcon] = View.findDrawableById("LeftFieldIcon");
-		mDrawables[:LeftFieldValue] = View.findDrawableById("LeftFieldValue");
-
-		mDrawables[:CenterFieldIcon] = View.findDrawableById("CenterFieldIcon");
-		mDrawables[:CenterFieldValue] = View.findDrawableById("CenterFieldValue");
-
-		mDrawables[:RightFieldIcon] = View.findDrawableById("RightFieldIcon");
-		mDrawables[:RightFieldValue] = View.findDrawableById("RightFieldValue");
-
 		mDrawables[:Date] = View.findDrawableById("Date");
 
 		mDrawables[:Indicators] = View.findDrawableById("Indicators");
@@ -339,6 +330,7 @@ class CrystalView extends Ui.WatchFace {
 		meter.setValues(values[:current], values[:max]);
 
 		// Icon label.
+		iconLabel.setFont(mIconsFont);
 		iconLabel.setText(getIconFontChar(goalType));
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
