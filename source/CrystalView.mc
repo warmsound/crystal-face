@@ -478,6 +478,10 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(false);
 		}
+
+		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
+		// sleep.
+		App.getApp().checkBackgroundRequests();
 	}
 
 	// Terminate any active timers and prepare for slow updates.
