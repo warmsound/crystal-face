@@ -108,8 +108,41 @@ class CrystalApp extends App.AppBase {
 		}
 	}
 	*/
+
+	// Sample error when city is not found:
+	/*
+	{
+	"requestCity":"atlantis",
+	"error":{
+		"code":2, // CITY_NOT_FOUND
+		"message":"City \"atlantis\" not found."
+		}
+	}
+	*/
+
+	// Sample HTTP error:
+	/*
+	{
+	"error":{
+		"responseCode":404
+		}
+	}
+	*/
 	function onBackgroundData(data) {
-		App.Storage.setValue("TimeZone1", data);
+		var timeZone1 = App.Storage.getValue("TimeZone1");
+
+		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
+		// error conditions exist e.g. roll onto next GMT offset while offline. checkBackgroundRequests() should retry on next
+		// wake (or settings change), as long as timeZone1.error.responseCode is set.
+		if ((timeZone1 != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
+			timeZone1["error"] = data["error"];
+			App.Storage.setValue("TimeZone1", timeZone1);
+
+		// New data received: overwrite existing.
+		} else {
+			App.Storage.setValue("TimeZone1", data);
+		}
+		
 		Ui.requestUpdate();
 	}
 }
