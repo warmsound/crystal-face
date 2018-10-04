@@ -55,6 +55,10 @@ class DateLine extends Ui.Drawable {
 				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
 				break;
 
+			case "RUS":
+				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideRUS);
+				break;
+
 			default:
 				mFont  = Ui.loadResource(Rez.Fonts.DateFont);
 				break;
