@@ -57,7 +57,9 @@ class DataArea extends Ui.Drawable {
 
 	function draw(dc) {
 		var timeZone1City = App.getApp().getProperty("TimeZone1City");
-		if (timeZone1City.length() != 0) {
+
+		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
+		if ((timeZone1City.length() != 0) && (App has :Storage)) {
 			//drawTimeZone();
 			var timeZone1 = App.Storage.getValue("TimeZone1");
 
