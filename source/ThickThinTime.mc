@@ -13,7 +13,7 @@ class ThickThinTime extends Ui.Drawable {
 	// Vertical layouts only: offset between bottom of hours and top of minutes.
 	private var mTwoLineOffset;
 
-	// Wide rectangle: time shoudl be moved up slightly to centre within available space.
+	// Wide rectangle: time should be moved up slightly to centre within available space.
 	private var mAdjustY = 0;
 
 	// Tight clipping rectangle for drawing seconds during partial update.
