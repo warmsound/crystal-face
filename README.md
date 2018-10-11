@@ -23,6 +23,11 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.0.0
+- Russian translation for watch face and settings screen (thanks to xgsa).
+- Display of additional time zone: specify city in settings (CIQ 2.x devices only, in beta). See FAQ.
+- Technical update to CIQ 3.0.3 SDK.
+
 ### 1.8.1
 - Added "Heart Rate (Live 5s)" data field.
 - Read HR from more up-to-date source.
