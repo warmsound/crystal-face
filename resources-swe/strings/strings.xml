@@ -11,6 +11,7 @@
 	<string id="RightGoalMeterTitle">Höger Mätare</string>
 	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
+	<string id="TimeZone1City">Time Zone City (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj Sekunder</string>
 	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>
@@ -48,9 +49,6 @@
 	<string id="ThemeBlueLight">Blå (Ljus)</string>
 	<string id="ThemeRedLight">Röd (Ljus)</string>
 	<string id="ThemeGreenLight">Grön (Ljus)</string>
-
-	<string id="AnteMeridiem">A</string>
-	<string id="PostMeridiem">P</string>
 
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>

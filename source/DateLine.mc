@@ -77,7 +77,7 @@ class DateLine extends Ui.Drawable {
 		var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
 		var dayOfWeek = mDayOfWeekStrings[now.day_of_week - 1].toUpper(); // DOWs are zero-based, starting Sunday.
-		var day = now.day.format("%d");
+		var day = now.day.format(INTEGER_FORMAT);
 		var month = mMonthStrings[now.month - 1].toUpper(); // Months are zero-based, starting January.
 
 		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");

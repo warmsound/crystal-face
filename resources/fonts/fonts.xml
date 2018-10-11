@@ -2,8 +2,9 @@
 	<font id="HoursFont" filename="titillium-web-bold-64.fnt" antialias="true" />
 	<font id="MinutesFont" filename="titillium-web-light-64.fnt" antialias="true" />
 	<font id="SecondsFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter="0123456789AP"/>
-	<font id="DateFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter="0123456789 ABCDEFGHIJKLMNOPQRSTUVWXYZÄÁÅČÉĚÍØÖŘŚŠÚŹ"/>
-	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" />
+	<font id="DateFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹ"/>
+	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" filter="%-.0123456789CFfikmt°"/>
+	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="true" filter=" %',-.0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true" />
 
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->

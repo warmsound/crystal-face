@@ -10,7 +10,6 @@ const INDICATOR_3_TYPE = "Indicator3Type";
 class Indicators extends Ui.Drawable {
 
 	private var mIconsFont;
-	private var mSpacingX;
 	private var mSpacingY;
 	private var mBatteryWidth;
 	private var mBatteryHeight;
@@ -26,7 +25,6 @@ class Indicators extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mSpacingX = params[:spacingX];
 		mSpacingY = params[:spacingY];
 		mBatteryWidth = params[:batteryWidth];
 		mBatteryHeight = params[:batteryHeight];
@@ -37,44 +35,21 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-
-		// Vertical layout.
-		if (mSpacingX) {
-			switch (App.getApp().getProperty("IndicatorCount")) {
-				case 3:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX - mSpacingX, locY);
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX + mSpacingX, locY);
-					break;
-				case 2:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX - (mSpacingX / 2), locY);
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX + (mSpacingX / 2), locY);
-					break;
-				case 1:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
-					break;
-				case 0:
-					break;
-			}
-
-		// Horizontal layout.
-		} else if (mSpacingY) {
-			switch (App.getApp().getProperty("IndicatorCount")) {
-				case 3:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - mSpacingY);
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX, locY + mSpacingY);
-					break;
-				case 2:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - (mSpacingY / 2));
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY + (mSpacingY / 2));
-					break;
-				case 1:
-					drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
-					break;
-				case 0:
-					break;
-			}
+		switch (App.getApp().getProperty("IndicatorCount")) {
+			case 3:
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - mSpacingY);
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX, locY + mSpacingY);
+				break;
+			case 2:
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - (mSpacingY / 2));
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY + (mSpacingY / 2));
+				break;
+			case 1:
+				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
+				break;
+			case 0:
+				break;
 		}
 	}
 

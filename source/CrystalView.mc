@@ -4,6 +4,8 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
+const INTEGER_FORMAT = "%d";
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
@@ -24,8 +26,33 @@ class CrystalView extends Ui.WatchFace {
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
+	private var THEMES = [
+		:THEME_BLUE_DARK,
+		:THEME_PINK_DARK,
+		:THEME_GREEN_DARK,
+		:THEME_MONO_LIGHT,
+		:THEME_CORNFLOWER_BLUE_DARK,
+		:THEME_LEMON_CREAM_DARK,
+		:THEME_DAYGLO_ORANGE_DARK,
+		:THEME_RED_DARK,
+		:THEME_MONO_DARK,
+		:THEME_BLUE_LIGHT,
+		:THEME_GREEN_LIGHT,
+		:THEME_RED_LIGHT,
+		:THEME_VIVID_YELLOW_DARK,
+	];
+
+	private var COLOUR_OVERRIDES = {
+		-1 => :FROM_THEME,
+		-2 => :MONO_HIGHLIGHT,
+		-3 => :MONO
+	};
+
 	function initialize() {
 		WatchFace.initialize();
+
+		updateThemeColours();
+		updateHoursMinutesColours();		
 	}
 
 	// Load your resources here
@@ -35,7 +62,6 @@ class CrystalView extends Ui.WatchFace {
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 
 		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
-		mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
@@ -48,31 +74,21 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:Indicators].setFont(mIconsFont);
 
-		mDataFields = View.findDrawableById("DataFields");
-		mDataFields.setFonts(mIconsFont, mNormalFont);
+		mDataFields = View.findDrawableById("DataFields");		
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
+
+		updateNormalFont(); // Requires mIconsFont, mDrawables, mDataFields.
 	}
 
 	function cacheDrawables() {
 		mDrawables[:LeftGoalMeter] = View.findDrawableById("LeftGoalMeter");
 		mDrawables[:LeftGoalIcon] = View.findDrawableById("LeftGoalIcon");
-		mDrawables[:LeftGoalCurrent] = View.findDrawableById("LeftGoalCurrent");
-		mDrawables[:LeftGoalMax] = View.findDrawableById("LeftGoalMax");
 
 		mDrawables[:RightGoalMeter] = View.findDrawableById("RightGoalMeter");
 		mDrawables[:RightGoalIcon] = View.findDrawableById("RightGoalIcon");
-		mDrawables[:RightGoalCurrent] = View.findDrawableById("RightGoalCurrent");
-		mDrawables[:RightGoalMax] = View.findDrawableById("RightGoalMax");
 
-		mDrawables[:LeftFieldIcon] = View.findDrawableById("LeftFieldIcon");
-		mDrawables[:LeftFieldValue] = View.findDrawableById("LeftFieldValue");
-
-		mDrawables[:CenterFieldIcon] = View.findDrawableById("CenterFieldIcon");
-		mDrawables[:CenterFieldValue] = View.findDrawableById("CenterFieldValue");
-
-		mDrawables[:RightFieldIcon] = View.findDrawableById("RightFieldIcon");
-		mDrawables[:RightFieldValue] = View.findDrawableById("RightFieldValue");
+		mDrawables[:DataArea] = View.findDrawableById("DataArea");
 
 		mDrawables[:Date] = View.findDrawableById("Date");
 
@@ -98,6 +114,158 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
+
+		updateNormalFont();
+
+		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
+		updateThemeColours();
+
+		// Update hours/minutes colours after theme colours have been set.
+		updateHoursMinutesColours();
+	}
+
+	// Select normal font, based on whether time zone feature is being used.
+	// Saves memory when cities are not in use.
+	// Update drawables that use normal font.
+	function updateNormalFont() {
+
+		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		if (timeZone1City.length() > 0) {
+			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+		} else {
+			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+		}
+
+		mDataFields.setFonts(mIconsFont, mNormalFont);
+		mDrawables[:DataArea].setFont(mNormalFont);
+	}
+
+	function updateThemeColours() {
+		var theme = THEMES[App.getApp().getProperty("Theme")];
+
+		// Theme-specific colours.
+		var themeColour;
+		switch (theme) {
+			case :THEME_BLUE_DARK:
+				themeColour = Graphics.COLOR_BLUE;
+				break;
+			
+			case :THEME_PINK_DARK:
+				themeColour = Graphics.COLOR_PINK;
+				break;
+
+			case :THEME_GREEN_DARK:
+				themeColour = Graphics.COLOR_GREEN;
+				break;
+
+			case :THEME_MONO_LIGHT:
+				themeColour = Graphics.COLOR_DK_GRAY;
+				break;
+
+			case :THEME_CORNFLOWER_BLUE_DARK:
+				themeColour = 0x55AAFF;
+				break;
+
+			case :THEME_LEMON_CREAM_DARK:
+				themeColour = 0xFFFFAA;
+				break;
+
+			case :THEME_VIVID_YELLOW_DARK:
+				themeColour = 0xFFFF00;
+				break;
+
+			case :THEME_DAYGLO_ORANGE_DARK:
+				themeColour = Graphics.COLOR_ORANGE;
+				break;
+
+			case :THEME_RED_DARK:
+				themeColour = Graphics.COLOR_RED;
+				break;
+
+			case :THEME_MONO_DARK:
+				themeColour = Graphics.COLOR_WHITE;
+				break;
+
+			case :THEME_BLUE_LIGHT:
+				themeColour = Graphics.COLOR_DK_BLUE;
+				break;
+
+			case :THEME_GREEN_LIGHT:
+				themeColour = Graphics.COLOR_DK_GREEN;
+				break;
+
+			case :THEME_RED_LIGHT:
+				themeColour = Graphics.COLOR_DK_RED;
+				break;
+		}
+		App.getApp().setProperty("ThemeColour", themeColour); 
+
+		// Light/dark-specific colours.
+		switch (theme) {
+			case :THEME_BLUE_DARK:
+			case :THEME_PINK_DARK:
+			case :THEME_GREEN_DARK:
+			case :THEME_CORNFLOWER_BLUE_DARK:
+			case :THEME_LEMON_CREAM_DARK:
+			case :THEME_VIVID_YELLOW_DARK:
+			case :THEME_DAYGLO_ORANGE_DARK:
+			case :THEME_RED_DARK:
+			case :THEME_MONO_DARK:
+				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
+				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+
+				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
+				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
+				break;
+
+			case :THEME_MONO_LIGHT:
+			case :THEME_BLUE_LIGHT:
+			case :THEME_GREEN_LIGHT:
+			case :THEME_RED_LIGHT:
+				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
+				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
+				
+				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
+				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+				break;
+		}
+	}
+
+	function updateHoursMinutesColours() {
+
+		// Hours colour.
+		var hoursColour;
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
+			case :FROM_THEME:
+				hoursColour = App.getApp().getProperty("ThemeColour");
+				break;
+
+			case :MONO_HIGHLIGHT:
+				hoursColour = App.getApp().getProperty("MonoLightColour");
+				break;
+
+			case :MONO:
+				hoursColour = App.getApp().getProperty("MonoDarkColour");
+				break;
+		}
+		App.getApp().setProperty("HoursColour", hoursColour);
+
+		// Minutes colour.
+		var minutesColour;
+		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
+			case :FROM_THEME:
+				minutesColour = App.getApp().getProperty("ThemeColour");
+				break;
+
+			case :MONO_HIGHLIGHT:
+				minutesColour = App.getApp().getProperty("MonoLightColour");
+				break;
+
+			case :MONO:
+				minutesColour = App.getApp().getProperty("MonoDarkColour");
+				break;
+		}
+		App.getApp().setProperty("MinutesColour", minutesColour);
 	}
 
 	function onSettingsChangedSinceLastDraw() {
@@ -140,57 +308,37 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateGoalMeters() {
-		updateGoalMeter(
+		var leftValues = updateGoalMeter(
 			getGoalType(App.getApp().getProperty("LeftGoalType")),
 			mDrawables[:LeftGoalMeter],
-			mDrawables[:LeftGoalIcon],
-			mDrawables[:LeftGoalCurrent],
-			mDrawables[:LeftGoalMax]
+			mDrawables[:LeftGoalIcon]
 		);
 
-		updateGoalMeter(
+		var rightValues = updateGoalMeter(
 			getGoalType(App.getApp().getProperty("RightGoalType")),
 			mDrawables[:RightGoalMeter],
-			mDrawables[:RightGoalIcon],
-			mDrawables[:RightGoalCurrent],
-			mDrawables[:RightGoalMax]
+			mDrawables[:RightGoalIcon]
 		);
+
+		mDrawables[:DataArea].setGoalValues(leftValues, rightValues);
 	}
 
-	function updateGoalMeter(goalType, meter, iconLabel, currentLabel, maxLabel) {
+	function updateGoalMeter(goalType, meter, iconLabel) {
 		var values = getValuesForGoalType(goalType);
 
 		// Meter.
 		meter.setValues(values[:current], values[:max]);
 
 		// Icon label.
+		iconLabel.setFont(mIconsFont);
 		iconLabel.setText(getIconFontChar(goalType));
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
 			iconLabel.setColor(App.getApp().getProperty("MeterBackgroundColour"));
-		}		
-
-		// Current label.
-		if (values[:isValid]) {
-			currentLabel.setText(values[:current].format("%d"));
-		} else {
-			currentLabel.setText("");
 		}
-		currentLabel.setColor(App.getApp().getProperty("MonoLightColour"));
 
-		// Max/target label.
-		if (values[:isValid]) {
-			if (goalType == :GOAL_TYPE_BATTERY) {
-				maxLabel.setText("%");
-			} else {
-				maxLabel.setText(values[:max].format("%d"));
-			}
-			
-		} else {
-			maxLabel.setText("");
-		}
-		maxLabel.setColor(App.getApp().getProperty("MonoDarkColour"));
+		return values;
 	}
 
 	// Replace dictionary with function to save memory.
@@ -330,6 +478,10 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(false);
 		}
+
+		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
+		// sleep.
+		App.getApp().checkBackgroundRequests();
 	}
 
 	// Terminate any active timers and prepare for slow updates.

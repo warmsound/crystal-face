@@ -17,13 +17,16 @@
 		<param name="separator">2</param>
 	</drawable>
 
-	<label id="LeftGoalIcon" text="0" x="14" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-	<label id="LeftGoalCurrent" text="3500" x="38" y="122" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftGoalMax" text="5000" x="38" y="138" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftGoalIcon" text="0" x="14" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
 
-	<label id="RightGoalIcon" text="1" x="191" y="120" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-	<label id="RightGoalCurrent" text="6" x="167" y="122" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightGoalMax" text="10" x="167" y="138" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="RightGoalIcon" text="1" x="191" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+
+	<drawable id="DataArea" class="DataArea">
+		<param name="locX">42</param>
+		<param name="width">121</param>
+		<param name="row1Y">122</param>
+		<param name="row2Y">138</param>
+	</drawable>
 
 	<drawable id="DataFields" class="DataFields">
 		<param name="left">92</param>
@@ -41,30 +44,30 @@
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
-		<param name="locX">103</param>
-		<param name="locY">130</param>
+		<param name="locX">30</param>
+		<param name="locY">80</param>
+		<param name="spacingY">26</param>
 		<param name="batteryWidth">20</param>
 		<param name="batteryHeight">10</param>
-
-		<!-- Horizontal indicator layout -->
-		<param name="spacingX">22</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">157</param>
-		<param name="secondsY">67</param>
-		<param name="meridiemSide">:left</param>
+		<param name="secondsX">133</param>
+		<param name="secondsY">84</param>
 
 		<!-- Partial updates not supported -->	
 		<!-- param name="secondsClipY">124</param-->
 		<!-- param name="secondsClipWidth">22</param-->
 		<!-- param name="secondsClipHeight">15</param-->
+
+		<!-- Move time up slightly to centre vertically within available space -->
+		<param name="adjustY">-4</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">52</param>
-		<param name="y">104</param>
-		<param name="width">102</param>
+		<param name="y">101</param>
+		<param name="width">75</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>

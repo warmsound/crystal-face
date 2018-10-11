@@ -1,3 +1,4 @@
+/*
 var DEFAULT_PARAMS = {
 	:side => :left,
 	:shape => :arc,
@@ -98,3 +99,4 @@ function getSegmentsShouldHandle2SegmentsWithMinPartial(logger) {
 function getSegmentsShouldHandle6OutOf10(logger) {
 	return testGetSegments(6, 10, [14, 14, 15, 14, 14, 14, 0, 0, 0, 0], [14, 14, 15, 14, 14, 14, 14, 15, 14, 14], logger);
 }
+*/

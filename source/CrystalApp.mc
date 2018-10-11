@@ -1,35 +1,15 @@
 using Toybox.Application as App;
+using Toybox.Background as Bg;
+using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 
+(:background)
 class CrystalApp extends App.AppBase {
 
-	private var mView;
-	private var THEMES = [
-		:THEME_BLUE_DARK,
-		:THEME_PINK_DARK,
-		:THEME_GREEN_DARK,
-		:THEME_MONO_LIGHT,
-		:THEME_CORNFLOWER_BLUE_DARK,
-		:THEME_LEMON_CREAM_DARK,
-		:THEME_DAYGLO_ORANGE_DARK,
-		:THEME_RED_DARK,
-		:THEME_MONO_DARK,
-		:THEME_BLUE_LIGHT,
-		:THEME_GREEN_LIGHT,
-		:THEME_RED_LIGHT,
-		:THEME_VIVID_YELLOW_DARK,
-	];
-
-	private var COLOUR_OVERRIDES = {
-		-1 => :FROM_THEME,
-		-2 => :MONO_HIGHLIGHT,
-		-3 => :MONO
-	};
+	var mView;
 
 	function initialize() {
-		AppBase.initialize();
-		updateThemeColours();
-		updateHoursMinutesColours();
+		AppBase.initialize();		
 	}
 
 	// onStart() is called on application start up
@@ -43,6 +23,7 @@ class CrystalApp extends App.AppBase {
 	// Return the initial view of your application here
 	function getInitialView() {
 		mView = new CrystalView();
+		checkBackgroundRequests();
 		return [mView];
 	}
 
@@ -52,143 +33,116 @@ class CrystalApp extends App.AppBase {
 
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
-		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
-		updateThemeColours();
-
-		// Update hours/minutes colours after theme colours have been set.
-		updateHoursMinutesColours();
-
 		mView.onSettingsChanged();
-
+		checkBackgroundRequests();
 		Ui.requestUpdate();
 	}
 
-	function updateThemeColours() {
-		var theme = THEMES[App.getApp().getProperty("Theme")];
+	// Determine if any background request is needed, and register for temporal event if so.
+	// TODO: Error handling.
+	function checkBackgroundRequests() {
+		var needed = false;
+		
+		if (Sys has :ServiceDelegate) {
 
-		// Theme-specific colours.
-		var themeColour;
-		switch (theme) {
-			case :THEME_BLUE_DARK:
-				themeColour = Graphics.COLOR_BLUE;
-				break;
+			// Time zone request:
+			// City has been specified.
+			var timeZone1City = App.getApp().getProperty("TimeZone1City");
+			if (timeZone1City.length() > 0) {
+
+				var timeZone1 = App.Storage.getValue("TimeZone1");
+
+				// No existing data.
+				if (timeZone1 == null) {
+					needed = true;
+
+				// HTTP error: has error and responseCode (but no requestCity): keep retrying. Likely due to no connectivity.
+				} else if ((timeZone1["error"] != null) && (timeZone1["error"]["responseCode"] != null)) {
+					needed = true;
 			
-			case :THEME_PINK_DARK:
-				themeColour = Graphics.COLOR_PINK;
-				break;
+				// Existing data not for this city: delete it.
+				// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
+				// city again.
+				} else if (!timeZone1["requestCity"].equals(timeZone1City)) {
+					App.Storage.deleteValue("TimeZone1");
+					needed = true;
 
-			case :THEME_GREEN_DARK:
-				themeColour = Graphics.COLOR_GREEN;
-				break;
-
-			case :THEME_MONO_LIGHT:
-				themeColour = Graphics.COLOR_DK_GRAY;
-				break;
-
-			case :THEME_CORNFLOWER_BLUE_DARK:
-				themeColour = 0x55AAFF;
-				break;
-
-			case :THEME_LEMON_CREAM_DARK:
-				themeColour = 0xFFFFAA;
-				break;
-
-			case :THEME_VIVID_YELLOW_DARK:
-				themeColour = 0xFFFF00;
-				break;
-
-			case :THEME_DAYGLO_ORANGE_DARK:
-				themeColour = Graphics.COLOR_ORANGE;
-				break;
-
-			case :THEME_RED_DARK:
-				themeColour = Graphics.COLOR_RED;
-				break;
-
-			case :THEME_MONO_DARK:
-				themeColour = Graphics.COLOR_WHITE;
-				break;
-
-			case :THEME_BLUE_LIGHT:
-				themeColour = Graphics.COLOR_DK_BLUE;
-				break;
-
-			case :THEME_GREEN_LIGHT:
-				themeColour = Graphics.COLOR_DK_GREEN;
-				break;
-
-			case :THEME_RED_LIGHT:
-				themeColour = Graphics.COLOR_DK_RED;
-				break;
+				// Existing data is old.
+				} else if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
+					needed = true;
+				}
+			}
 		}
-		App.getApp().setProperty("ThemeColour", themeColour); 
 
-		// Light/dark-specific colours.
-		switch (theme) {
-			case :THEME_BLUE_DARK:
-			case :THEME_PINK_DARK:
-			case :THEME_GREEN_DARK:
-			case :THEME_CORNFLOWER_BLUE_DARK:
-			case :THEME_LEMON_CREAM_DARK:
-			case :THEME_VIVID_YELLOW_DARK:
-			case :THEME_DAYGLO_ORANGE_DARK:
-			case :THEME_RED_DARK:
-			case :THEME_MONO_DARK:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+		if (needed) {
 
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
-				break;
-
-			case :THEME_MONO_LIGHT:
-			case :THEME_BLUE_LIGHT:
-			case :THEME_GREEN_LIGHT:
-			case :THEME_RED_LIGHT:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
-				
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
-				break;
+			// Register for background temporal event as soon as possible.
+			var lastTime = Bg.getLastTemporalEventTime();
+			if (lastTime != null) {
+				// Events scheduled for a time in the past trigger immediately.
+				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+				Bg.registerForTemporalEvent(nextTime);
+			} else {
+				Bg.registerForTemporalEvent(Time.now());
+			}
 		}
 	}
 
-	function updateHoursMinutesColours() {
-
-		// Hours colour.
-		var hoursColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
-			case :FROM_THEME:
-				hoursColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case :MONO_HIGHLIGHT:
-				hoursColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case :MONO:
-				hoursColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
-		App.getApp().setProperty("HoursColour", hoursColour);
-
-		// Minutes colour.
-		var minutesColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
-			case :FROM_THEME:
-				minutesColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case :MONO_HIGHLIGHT:
-				minutesColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case :MONO:
-				minutesColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
-		App.getApp().setProperty("MinutesColour", minutesColour);
+	function getServiceDelegate() {
+		return [new BackgroundService()];
 	}
 
+	// Sample time zone data:
+	/*
+	{
+	"requestCity":"london",
+	"city":"London",
+	"current":{
+		"gmtOffset":3600,
+		"dst":true
+		},
+	"next":{
+		"when":1540688400,
+		"gmtOffset":0,
+		"dst":false
+		}
+	}
+	*/
+
+	// Sample error when city is not found:
+	/*
+	{
+	"requestCity":"atlantis",
+	"error":{
+		"code":2, // CITY_NOT_FOUND
+		"message":"City \"atlantis\" not found."
+		}
+	}
+	*/
+
+	// Sample HTTP error:
+	/*
+	{
+	"error":{
+		"responseCode":404
+		}
+	}
+	*/
+	function onBackgroundData(data) {
+		var timeZone1 = App.Storage.getValue("TimeZone1");
+
+		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
+		// error conditions exist e.g. roll onto next GMT offset while offline. checkBackgroundRequests() should retry on next
+		// wake (or settings change), as long as timeZone1.error.responseCode is set.
+		if ((timeZone1 != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
+			timeZone1["error"] = data["error"];
+			App.Storage.setValue("TimeZone1", timeZone1);
+
+		// New data received: overwrite existing.
+		} else {
+			App.Storage.setValue("TimeZone1", data);
+		}
+		
+		Ui.requestUpdate();
+	}
 }

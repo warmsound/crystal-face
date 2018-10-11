@@ -22,13 +22,16 @@
 		<param name="stroke">8</param>
 	</drawable>
 
-	<label id="LeftGoalIcon" text="0" x="40" y="166" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-	<label id="LeftGoalCurrent" text="3500" x="67" y="170" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="LeftGoalMax" text="5000" x="67" y="186" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_LEFT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="LeftGoalIcon" text="0" x="40" y="166" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
 
-	<label id="RightGoalIcon" text="1" x="178" y="166" font="@Fonts.IconsFont" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-	<label id="RightGoalCurrent" text="6" x="151" y="170" font="@Fonts.NormalFont" color="Gfx.COLOR_WHITE" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
-	<label id="RightGoalMax" text="10" x="151" y="186" font="@Fonts.NormalFont" color="Gfx.COLOR_LT_GRAY" justification="Gfx.TEXT_JUSTIFY_RIGHT | Gfx.TEXT_JUSTIFY_VCENTER"/>
+	<label id="RightGoalIcon" text="1" x="178" y="166" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
+
+	<drawable id="DataArea" class="DataArea">
+		<param name="locX">67</param>
+		<param name="width">84</param>
+		<param name="row1Y">170</param>
+		<param name="row2Y">186</param>
+	</drawable>
 
 	<drawable id="DataFields" class="DataFields">
 		<param name="left">69</param>
