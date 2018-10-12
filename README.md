@@ -26,6 +26,7 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 ### 2.0.0
 - Russian translation for watch face and settings screen (thanks to xgsa).
 - Display of additional time zone: specify city in settings (CIQ 2.x devices only, in beta). See FAQ.
+- Re-enable support for Approach® S60.
 - Technical update to CIQ 3.0.3 SDK.
 
 ### 1.8.1
