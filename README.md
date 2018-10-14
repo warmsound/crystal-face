@@ -23,6 +23,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.0.1
+- Fix crash when changing settings.
+
 ### 2.0.0
 - Russian translation for watch face and settings screen (thanks to xgsa).
 - Display of additional time zone: specify city in settings (CIQ 2.x devices only, in beta). See FAQ.
