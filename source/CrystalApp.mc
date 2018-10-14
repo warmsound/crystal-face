@@ -48,7 +48,9 @@ class CrystalApp extends App.AppBase {
 			// Time zone request:
 			// City has been specified.
 			var timeZone1City = App.getApp().getProperty("TimeZone1City");
-			if (timeZone1City.length() > 0) {
+			
+			// #78 Setting with value of empty string may cause corresponding property to be null.
+			if ((timeZone1City != null) && (timeZone1City.length() > 0)) {
 
 				var timeZone1 = App.Storage.getValue("TimeZone1");
 

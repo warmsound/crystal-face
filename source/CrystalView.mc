@@ -130,7 +130,9 @@ class CrystalView extends Ui.WatchFace {
 	function updateNormalFont() {
 
 		var timeZone1City = App.getApp().getProperty("TimeZone1City");
-		if (timeZone1City.length() > 0) {
+
+		// #78 Setting with value of empty string may cause corresponding property to be null.
+		if ((timeZone1City != null) && (timeZone1City.length() > 0)) {
 			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
 		} else {
 			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
