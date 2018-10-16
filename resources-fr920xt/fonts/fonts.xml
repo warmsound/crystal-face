@@ -9,7 +9,7 @@
 	<font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
 
 	<!-- Symlinked from resources/fonts. -->
-	<font id="DateFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹ"/>
+	<font id="DateFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
 	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789CFfikmt°"/>
 	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 

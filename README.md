@@ -23,6 +23,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.0.2
+- Add Croatian date translation (thanks to Kristijan).
+
 ### 2.0.1
 - Fix crash when changing settings.
 
