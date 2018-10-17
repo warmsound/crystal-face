@@ -3,7 +3,6 @@
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">Версия</string>
 
-	<string id="BackgroundColourTitle">Цвет фона</string>
 	<string id="ThemeTitle">Тема</string>
 	<string id="HoursColourTitle">Цвет часов</string>
 	<string id="MinutesColourTitle">Цвет минут</string>
