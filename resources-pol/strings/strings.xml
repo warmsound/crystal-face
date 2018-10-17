@@ -11,7 +11,7 @@
 	<string id="RightGoalMeterTitle">Prawy Wskaźnik</string>
 	<string id="CaloriesGoalTitle">Spalone Kalorie - Cel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Wygląd Wskaźnika</string>
-	<string id="TimeZone1City">Time Zone City (Beta)</string>
+	<string id="TimeZone1City">Add Local Time in City (Beta)</string>
 	<string id="MoveBarStyleTitle">Wygląd Move Bar'a</string>
 	<string id="HideSecondsTitle">Ukryj Sekundy</string>
 	<string id="HideHoursLeadingZeroTitle">Ukryj Zero Poprzedzające Godzinę</string>
