@@ -392,30 +392,36 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case :FIELD_TYPE_ALTITUDE:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
+				// #67 Try to retrieve altitude from current activity, before falling back to elevation history.
+				// Note that Activity::Info.altitude is supported by CIQ 1.x, but elevation history only on select CIQ 2.x
+				// devices.
+				activityInfo = Activity.getActivityInfo();
+				altitude = activityInfo.altitude;
+				if ((altitude == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
 					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
 					sample = iterator.next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
+					}
+				}
+				if (altitude != null) {
+					settings = Sys.getDeviceSettings();
 
-						settings = Sys.getDeviceSettings();
+					// Metres (no conversion necessary).
+					if (settings.elevationUnits == System.UNIT_METRIC) {
+						unit = "m";
 
-						// Metres (no conversion necessary).
-						if (settings.elevationUnits == System.UNIT_METRIC) {
-							unit = "m";
+					// Feet.
+					} else {
+						altitude *= /* FT_PER_M */ 3.28084;
+						unit = "ft";
+					}
 
-						// Feet.
-						} else {
-							altitude *= /* FT_PER_M */ 3.28084;
-							unit = "ft";
-						}
+					value = altitude.format(INTEGER_FORMAT);
 
-						value = altitude.format(INTEGER_FORMAT);
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= mMaxFieldLength) {
-							value += unit;
-						}
+					// Show unit only if value plus unit fits within maximum field length.
+					if ((value.length() + unit.length()) <= mMaxFieldLength) {
+						value += unit;
 					}
 				}
 				break;
