@@ -114,6 +114,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.PhoneNotConnected</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -124,6 +125,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.PhoneNotConnected</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -134,6 +136,7 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.PhoneNotConnected</listEntry>
 		</settingConfig>
 	</setting>
 

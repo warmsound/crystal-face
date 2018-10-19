@@ -13,13 +13,14 @@ class Indicators extends Ui.Drawable {
 	private var mSpacingY;
 	private var mBatteryWidth;
 	private var mBatteryHeight;
-
+    
 	private var INDICATOR_TYPES = [
 		:INDICATOR_TYPE_BLUETOOTH,
 		:INDICATOR_TYPE_ALARMS,
 		:INDICATOR_TYPE_NOTIFICATIONS,
 		:INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
-		:INDICATOR_TYPE_BATTERY
+		:INDICATOR_TYPE_BATTERY,
+		:INDICATOR_TYPE_PHONE_DISCONNECTED
 	];
 
 	function initialize(params) {
@@ -55,41 +56,49 @@ class Indicators extends Ui.Drawable {
 
 	function drawIndicator(dc, rawIndicatorType, x, y) {
 		var indicatorType = INDICATOR_TYPES[rawIndicatorType];
-
+        indicatorType = :INDICATOR_TYPE_PHONE_DISCONNECTED;
+        
 		// Battery indicator.
 		if (indicatorType == :INDICATOR_TYPE_BATTERY) {
 			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
 			return;
 		}
-
+		
 		var value = getValueForIndicatorType(indicatorType);
-
-		var colour;
+		
+		if (indicatorType == :INDICATOR_TYPE_PHONE_DISCONNECTED && !value) {
+			return;
+		}
+              
 		if (value) {
-			colour = App.getApp().getProperty("ThemeColour");
-		} else {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
-		}
-		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
-		if (indicatorType == :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
-			var settings = Sys.getDeviceSettings();
-			if (settings.phoneConnected && (settings.notificationCount > 0)) {
-				indicatorType = :INDICATOR_TYPE_NOTIFICATIONS;
+			var colour;
+			if (value) {
+				colour = App.getApp().getProperty("ThemeColour");
 			} else {
-				indicatorType = :INDICATOR_TYPE_BLUETOOTH;
+				colour = App.getApp().getProperty("MeterBackgroundColour");
 			}
+			dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
+	
+			// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
+			if (indicatorType == :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
+				var settings = Sys.getDeviceSettings();
+				if (settings.phoneConnected && (settings.notificationCount > 0)) {
+					indicatorType = :INDICATOR_TYPE_NOTIFICATIONS;
+				} else {
+					indicatorType = :INDICATOR_TYPE_BLUETOOTH;
+				}
+			}
+	
+			// Icon.
+			dc.drawText(
+				x,
+				y,
+				mIconsFont,
+				App.getApp().getView().getIconFontChar(indicatorType),
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 		}
 
-		// Icon.
-		dc.drawText(
-			x,
-			y,
-			mIconsFont,
-			App.getApp().getView().getIconFontChar(indicatorType),
-			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-		);
 	}
 
 	function getValueForIndicatorType(type) {
