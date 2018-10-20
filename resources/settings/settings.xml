@@ -70,6 +70,7 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -85,6 +86,7 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -100,6 +102,7 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 
