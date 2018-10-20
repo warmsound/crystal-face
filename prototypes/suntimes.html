@@ -43,32 +43,40 @@
 
 			// Number of days since Jan 1st, 2000 12:00.
 			var n = jDate - 2451545.0 + 0.0008;
+			console.log('n', n);
 
 			// Mean solar noon.
 			var jStar = n - (lng / 360.0);
+			console.log('jStar', jStar);
 
 			// Solar mean anomaly.
-			var M = (357.5291 + 0.98560028 * jStar) % 360;
+			var M = (357.5291 + (0.98560028 * jStar)) % 360;
+			console.log('M', M);
 
 			// Equation of the centre.
 			var C = 1.9148 * Math.sin(M * rad)
 				+ 0.02 * Math.sin(2 * M * rad)
 				+ 0.0003 * Math.sin(3 * M * rad);
+			console.log('C', C);
 
 			// Ecliptic longitude.
 			var lambda = (M + C + 180 + 102.9372) % 360;
+			console.log('lambda', lambda);
 
 			// Solar transit.
 			var jTransit = 2451545.5 + jStar
 				+ 0.0053 * Math.sin(M * rad)
 				- 0.0069 * Math.sin(2 * lambda * rad);
+			console.log('jTransit', jTransit);
 
 			// Declination of the sun.
 			var delta = Math.asin(Math.sin(lambda * rad) * Math.sin(23.44 * rad));
+			console.log('delta', delta);
 
 			// Hour angle.
 			var cosOmega = (Math.sin(-0.83 * rad) - Math.sin(lat * rad) * Math.sin(delta))
 				/ (Math.cos(lat * rad) * Math.cos(delta));
+			console.log('cosOmega', cosOmega);
 			
 			// Sun never rises.
 			if (cosOmega > 1) {
@@ -95,6 +103,7 @@
 		}
 
 		var result = suntimes(51.748124, -0.461689);
+		console.log(result);
 		document.body.innerText = `${ Math.floor(result[0]) }:${ Math.floor((result[0] % 1) * 60) } ${ Math.floor(result[1]) }:${ Math.floor((result[1] % 1) * 60) }`;
 	</script>
 </html>
