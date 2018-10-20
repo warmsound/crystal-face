@@ -35,7 +35,8 @@ class DataFields extends Ui.Drawable {
 		:FIELD_TYPE_ALTITUDE,
 		:FIELD_TYPE_TEMPERATURE,
 		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
-		:FIELD_TYPE_HR_LIVE_5S
+		:FIELD_TYPE_HR_LIVE_5S,
+		:FIELD_TYPE_SUNRISE_SUNSET
 	];
 
 	// private const CM_PER_KM = 100000;
@@ -449,6 +450,10 @@ class DataFields extends Ui.Drawable {
 						}
 					}
 				}
+				break;
+
+			case :FIELD_TYPE_SUNRISE_SUNSET:
+				value = "6:00p";
 				break;
 		}
 

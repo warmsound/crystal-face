@@ -400,6 +400,8 @@ class CrystalView extends Ui.WatchFace {
 				return "<";
 			// case :LIVE_HR_SPOT:
 			// 	return "=";
+			case :FIELD_TYPE_SUNRISE_SUNSET:
+				return ">"; //return "?";
 		}
 	}
 
@@ -624,7 +626,7 @@ class CrystalView extends Ui.WatchFace {
 		var MFrac = M - MFloor;
 		M = MFloor.toLong() % 360;
 		M = M + MFrac;
-		Sys.println("M " + M);
+		//Sys.println("M " + M);
 
 		// Equation of the centre.
 		var C = 1.9148d * Math.sin(M * rad)
