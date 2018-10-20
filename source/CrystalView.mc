@@ -400,8 +400,11 @@ class CrystalView extends Ui.WatchFace {
 				return "<";
 			// case :LIVE_HR_SPOT:
 			// 	return "=";
-			case :FIELD_TYPE_SUNRISE_SUNSET:
-				return ">"; //return "?";
+			case :FIELD_TYPE_SUNRISE: // Pseudo-field.
+				return ">";
+			case :FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
+			//case :FIELD_TYPE_SUNSET:
+				return "?";
 		}
 	}
 

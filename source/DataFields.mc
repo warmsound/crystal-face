@@ -127,12 +127,12 @@ class DataFields extends Ui.Drawable {
 	private const LIVE_HR_SPOT_RADIUS = 3;
 
 	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
+	private function drawDataField(dc, isPartialUpdate, rawFieldType, x) {
 		var isBattery = false;
 		var isHeartRate = false;
 		var isLiveHeartRate = false;
 
-		switch (FIELD_TYPES[fieldType]) {
+		switch (FIELD_TYPES[rawFieldType]) {
 			case :FIELD_TYPE_BATTERY:
 			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				isBattery = true;
@@ -177,7 +177,8 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// 1. Value: draw first, as top of text overlaps icon.
-		var value = getValueForFieldType(fieldType);
+		var result = getValueForFieldType(rawFieldType);
+		var value = result["value"];
 
 		// Optimisation: if live HR remains unavailable, skip the rest of this partial update.
 		var isHRAvailable = isHeartRate && (value.length() != 0);
@@ -213,7 +214,7 @@ class DataFields extends Ui.Drawable {
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
-		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((value.length() == 0) && (FIELD_TYPES[rawFieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
@@ -282,13 +283,19 @@ class DataFields extends Ui.Drawable {
 
 		// Other icons.
 		} else {
+			var fieldType = FIELD_TYPES[rawFieldType];
+
+			// #19 Show sunrise icon instead of default sunset icon, if sunrise is next.
+			if ((fieldType == :FIELD_TYPE_SUNRISE_SUNSET) && (result["isSunriseNext"] == true)) {
+				fieldType = :FIELD_TYPE_SUNRISE;
+			}
 
 			dc.setColor(colour, backgroundColour);
 			dc.drawText(
 				x,
 				mTop,
 				mIconsFont,
-				App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
+				App.getApp().getView().getIconFontChar(fieldType),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -313,8 +320,11 @@ class DataFields extends Ui.Drawable {
 	}
 
 	// "type" parameter is raw property value (it's converted to symbol below).
-	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
+	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
+	// result["isSunriseNext"] indicates that sunrise icon should be shown for :FIELD_TYPE_SUNRISE_SUNSET, rather than default
+	// sunset icon.
 	private function getValueForFieldType(type) {
+		var result = {};
 		var value = "";
 
 		var activityInfo;
@@ -484,30 +494,46 @@ class DataFields extends Ui.Drawable {
 				}
 
 				if ((lat != null) and (lng != null)) {
+					// Get sunrise/sunset times in current time zone.
 					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null);
-					Sys.println(sunTimes);
+					//Sys.println(sunTimes);
 
-					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-					var nextSunEvent;
+					// Sun never rises/sets.
+					if ((sunTimes[0] == null) || (sunTimes[1] == null)) {
+						value = "---";
 
-					// TODO: Handle sun never rising/setting today.
-					// Daytime: sunset is next.
-					if (now.hour > sunTimes[0] && now.hour < sunTimes[1]) {
-						nextSunEvent = sunTimes[1];
-
-					// Nighttime: sunrise is next.
+						// Sun never rises: sunrise is next, but more than a day from now.
+						if (sunTimes[0] == null) {
+							result["isSunriseNext"] = true;
+						}
 					} else {
-						nextSunEvent = sunTimes[0];
+						var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+						var nextSunEvent;
+
+						// Daytime: sunset is next.
+						if (now.hour > sunTimes[0] && now.hour < sunTimes[1]) {
+							nextSunEvent = sunTimes[1];
+
+						// Nighttime: sunrise is next.
+						} else {
+							nextSunEvent = sunTimes[0];
+							result["isSunriseNext"] = true;
+						}
+
+						var hour = Math.floor(nextSunEvent).toLong() % 24;
+						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
+						value = App.getApp().getView().getFormattedTime(hour, min);
 					}
 
-					var hour = Math.floor(nextSunEvent).toLong() % 24;
-					var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
-					value = App.getApp().getView().getFormattedTime(hour, min);
+				// Waiting for location.
+				} else {
+					value = "...";
 				}
 
 				break;
 		}
 
-		return value;
+		result["value"] = value;
+		return result;
 	}
 }
