@@ -37,4 +37,8 @@
 	<property id="HideSeconds" type="boolean">false</property>
 	<property id="HideHoursLeadingZero" type="boolean">false</property>
 
+	<!-- -360 is a special value, meaning "unitialised". Can't have null float property. -->
+	<property id="LastLocationLat" type="float">-360.0</property>
+	<property id="LastLocationLng" type="float">-360.0</property>
+
 </properties>

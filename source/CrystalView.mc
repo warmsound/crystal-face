@@ -685,4 +685,33 @@ class CrystalView extends Ui.WatchFace {
 		var localSet = (deltaJSet * 24) + tzOffset;
 		return [localRise, localSet];
 	}
+
+	// Return a time string e.g. "12:34p" that respects is24Hour and HideHoursLeadingZero settings.
+	// - hour: 0-23.
+	// - min:  0-59.
+	function getFormattedTime(hour, min) {
+		var amPm = "";
+
+		if (!Sys.getDeviceSettings().is24Hour) {
+			var isPm = (hour >= 12);
+			if (isPm) {
+				// Show noon as 12, not 00.
+				if (hour > 12) {
+					hour = hour - 12;
+				}
+				amPm = "p";
+			} else {
+				// Show midnght as 12, not 00.
+				if (hour == 0) {
+					hour = 12;
+				}
+				amPm = "a";
+			}
+		}
+
+		if (!App.getApp().getProperty("HideHoursLeadingZero")) {
+			hour = hour.format("%02d");
+		}
+		return (hour + ":" + min.format("%02d") + amPm);
+	}
 }

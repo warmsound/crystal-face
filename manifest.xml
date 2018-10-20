@@ -34,6 +34,7 @@
         <iq:permissions>
             <iq:uses-permission id="Background"/>
             <iq:uses-permission id="Communications"/>
+            <iq:uses-permission id="Positioning"/>
             <iq:uses-permission id="SensorHistory"/>
         </iq:permissions>
         <iq:languages>

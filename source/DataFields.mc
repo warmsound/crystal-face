@@ -6,6 +6,9 @@ using Toybox.Activity as Activity;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.SensorHistory as SensorHistory;
 
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+
 class DataFields extends Ui.Drawable {
 
 	private var mLeft;
@@ -322,6 +325,10 @@ class DataFields extends Ui.Drawable {
 		var distance;
 		var altitude;
 		var temperature;
+		var location;
+		var lat;
+		var lng;
+		var sunTimes;
 		var format;
 		var unit;
 
@@ -393,7 +400,7 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case :FIELD_TYPE_ALTITUDE:
-				// #67 Try to retrieve altitude from current activity, before falling back to elevation history.
+				// #67 Try to retrieve altitude from current activity, before falling back on elevation history.
 				// Note that Activity::Info.altitude is supported by CIQ 1.x, but elevation history only on select CIQ 2.x
 				// devices.
 				activityInfo = Activity.getActivityInfo();
@@ -453,7 +460,51 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case :FIELD_TYPE_SUNRISE_SUNSET:
-				value = "6:00p";
+				// #19 Check if location is available from current activity, before falling back on last location from settings.
+				activityInfo = Activity.getActivityInfo();
+				location = activityInfo.currentLocation;
+				if (location != null) {
+					location = location.toDegrees();
+					lat = location[0];
+					lng = location[1];
+
+					// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
+					App.getApp().setProperty("LastLocationLat", lat.toLong());
+					App.getApp().setProperty("LastLocationLng", lng.toLong());
+				} else {
+					lat = App.getApp().getProperty("LastLocationLat");
+					if (lat == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
+						lat = null;
+					}
+
+					lng = App.getApp().getProperty("LastLocationLng");
+					if (lng == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
+						lng = null;
+					}
+				}
+
+				if ((lat != null) and (lng != null)) {
+					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null);
+					Sys.println(sunTimes);
+
+					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+					var nextSunEvent;
+
+					// TODO: Handle sun never rising/setting today.
+					// Daytime: sunset is next.
+					if (now.hour > sunTimes[0] && now.hour < sunTimes[1]) {
+						nextSunEvent = sunTimes[1];
+
+					// Nighttime: sunrise is next.
+					} else {
+						nextSunEvent = sunTimes[0];
+					}
+
+					var hour = Math.floor(nextSunEvent).toLong() % 24;
+					var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
+					value = App.getApp().getView().getFormattedTime(hour, min);
+				}
+
 				break;
 		}
 
