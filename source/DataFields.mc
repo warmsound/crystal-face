@@ -508,10 +508,16 @@ class DataFields extends Ui.Drawable {
 						}
 					} else {
 						var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+						// Convert to same format as sunTimes, for easier comparison. Compare down to minutes only, as seconds not
+						// shown to user.
+						now = now.hour + (now.min / 60.0);
+						//Sys.println(now);
+
 						var nextSunEvent;
 
 						// Daytime: sunset is next.
-						if (now.hour > sunTimes[0] && now.hour < sunTimes[1]) {
+						if (now > sunTimes[0] && now < sunTimes[1]) {
 							nextSunEvent = sunTimes[1];
 
 						// Nighttime: sunrise is next.
