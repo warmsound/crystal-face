@@ -81,12 +81,25 @@ class Indicators extends Ui.Drawable {
 			}
 		}
 
+		var iconFontChar;
+		switch (indicatorType) {
+			case INDICATOR_TYPE_BLUETOOTH:
+				iconFontChar = "8";
+				break;
+			case INDICATOR_TYPE_ALARMS:
+				iconFontChar = ":";
+				break;
+			case INDICATOR_TYPE_NOTIFICATIONS:
+				iconFontChar = "5";
+				break;
+		}
+
 		// Icon.
 		dc.drawText(
 			x,
 			y,
 			mIconsFont,
-			App.getApp().getView().getIconFontCharForIndicator(indicatorType),
+			iconFontChar,
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}

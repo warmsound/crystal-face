@@ -338,7 +338,28 @@ class CrystalView extends Ui.WatchFace {
 
 		// Icon label.
 		iconLabel.setFont(mIconsFont);
-		iconLabel.setText(getIconFontCharForGoal(goalType));
+
+		var iconFontChar;
+		switch (goalType) {
+			case GOAL_TYPE_BATTERY:
+				iconFontChar = "9";
+				break;
+			case GOAL_TYPE_CALORIES:
+				iconFontChar = "6";
+				break;
+			case GOAL_TYPE_STEPS:
+				iconFontChar = "0";
+				break;
+			case GOAL_TYPE_FLOORS_CLIMBED:
+				iconFontChar = "1";
+				break;
+			case GOAL_TYPE_ACTIVE_MINUTES:
+				iconFontChar = "2";
+				break;
+		}
+
+		iconLabel.setText(iconFontChar);
+
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
@@ -349,22 +370,6 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	// Replace dictionary with function to save memory.
-	function getIconFontCharForGoal(fieldType) {
-		switch (fieldType) {
-			case GOAL_TYPE_BATTERY:
-				return "9";
-			case GOAL_TYPE_CALORIES:
-				return "6";
-
-			case GOAL_TYPE_STEPS:
-				return "0";
-			case GOAL_TYPE_FLOORS_CLIMBED:
-				return "1";
-			case GOAL_TYPE_ACTIVE_MINUTES:
-				return "2";
-		}
-	}
-
 	function getIconFontCharForField(fieldType) {
 		switch (fieldType) {
 			case FIELD_TYPE_SUNRISE:
@@ -396,17 +401,6 @@ class CrystalView extends Ui.WatchFace {
 			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
 			//case FIELD_TYPE_SUNSET:
 				return "?";
-		}
-	}
-
-	function getIconFontCharForIndicator(fieldType) {
-		switch (fieldType) {
-			case INDICATOR_TYPE_BLUETOOTH:
-				return "8";
-			case INDICATOR_TYPE_ALARMS:
-				return ":";
-			case INDICATOR_TYPE_NOTIFICATIONS:
-				return "5";
 		}
 	}
 
