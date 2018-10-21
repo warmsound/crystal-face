@@ -32,7 +32,7 @@ class DataArea extends Ui.Drawable {
 	function setGoalValues(leftValues, rightValues) {
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("LeftGoalType") == -1) { // :GOAL_TYPE_BATTERY
+			if (App.getApp().getProperty("LeftGoalType") == GOAL_TYPE_BATTERY) {
 				mLeftGoalMax = "%";
 			} else {
 				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
@@ -44,7 +44,7 @@ class DataArea extends Ui.Drawable {
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("RightGoalType") == -1) { // :GOAL_TYPE_BATTERY
+			if (App.getApp().getProperty("RightGoalType") == GOAL_TYPE_BATTERY) {
 				mRightGoalMax = "%";
 			} else {
 				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);

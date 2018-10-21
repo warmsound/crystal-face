@@ -29,27 +29,27 @@ class CrystalView extends Ui.WatchFace {
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
-	private var THEMES = [
-		:THEME_BLUE_DARK,
-		:THEME_PINK_DARK,
-		:THEME_GREEN_DARK,
-		:THEME_MONO_LIGHT,
-		:THEME_CORNFLOWER_BLUE_DARK,
-		:THEME_LEMON_CREAM_DARK,
-		:THEME_DAYGLO_ORANGE_DARK,
-		:THEME_RED_DARK,
-		:THEME_MONO_DARK,
-		:THEME_BLUE_LIGHT,
-		:THEME_GREEN_LIGHT,
-		:THEME_RED_LIGHT,
-		:THEME_VIVID_YELLOW_DARK,
-	];
+	private enum /* THEMES */ {
+		THEME_BLUE_DARK,
+		THEME_PINK_DARK,
+		THEME_GREEN_DARK,
+		THEME_MONO_LIGHT,
+		THEME_CORNFLOWER_BLUE_DARK,
+		THEME_LEMON_CREAM_DARK,
+		THEME_DAYGLO_ORANGE_DARK,
+		THEME_RED_DARK,
+		THEME_MONO_DARK,
+		THEME_BLUE_LIGHT,
+		THEME_GREEN_LIGHT,
+		THEME_RED_LIGHT,
+		THEME_VIVID_YELLOW_DARK
+	}
 
-	private var COLOUR_OVERRIDES = {
-		-1 => :FROM_THEME,
-		-2 => :MONO_HIGHLIGHT,
-		-3 => :MONO
-	};
+	private enum /* COLOUR_OVERRIDES */ {
+		FROM_THEME = -1,
+		MONO_HIGHLIGHT = -2,
+		MONO = -3
+	}
 
 	function initialize() {
 		WatchFace.initialize();
@@ -148,60 +148,60 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateThemeColours() {
-		var theme = THEMES[App.getApp().getProperty("Theme")];
+		var theme = App.getApp().getProperty("Theme");
 
 		// Theme-specific colours.
 		var themeColour;
 		switch (theme) {
-			case :THEME_BLUE_DARK:
+			case THEME_BLUE_DARK:
 				themeColour = Graphics.COLOR_BLUE;
 				break;
 			
-			case :THEME_PINK_DARK:
+			case THEME_PINK_DARK:
 				themeColour = Graphics.COLOR_PINK;
 				break;
 
-			case :THEME_GREEN_DARK:
+			case THEME_GREEN_DARK:
 				themeColour = Graphics.COLOR_GREEN;
 				break;
 
-			case :THEME_MONO_LIGHT:
+			case THEME_MONO_LIGHT:
 				themeColour = Graphics.COLOR_DK_GRAY;
 				break;
 
-			case :THEME_CORNFLOWER_BLUE_DARK:
+			case THEME_CORNFLOWER_BLUE_DARK:
 				themeColour = 0x55AAFF;
 				break;
 
-			case :THEME_LEMON_CREAM_DARK:
+			case THEME_LEMON_CREAM_DARK:
 				themeColour = 0xFFFFAA;
 				break;
 
-			case :THEME_VIVID_YELLOW_DARK:
+			case THEME_VIVID_YELLOW_DARK:
 				themeColour = 0xFFFF00;
 				break;
 
-			case :THEME_DAYGLO_ORANGE_DARK:
+			case THEME_DAYGLO_ORANGE_DARK:
 				themeColour = Graphics.COLOR_ORANGE;
 				break;
 
-			case :THEME_RED_DARK:
+			case THEME_RED_DARK:
 				themeColour = Graphics.COLOR_RED;
 				break;
 
-			case :THEME_MONO_DARK:
+			case THEME_MONO_DARK:
 				themeColour = Graphics.COLOR_WHITE;
 				break;
 
-			case :THEME_BLUE_LIGHT:
+			case THEME_BLUE_LIGHT:
 				themeColour = Graphics.COLOR_DK_BLUE;
 				break;
 
-			case :THEME_GREEN_LIGHT:
+			case THEME_GREEN_LIGHT:
 				themeColour = Graphics.COLOR_DK_GREEN;
 				break;
 
-			case :THEME_RED_LIGHT:
+			case THEME_RED_LIGHT:
 				themeColour = Graphics.COLOR_DK_RED;
 				break;
 		}
@@ -209,15 +209,15 @@ class CrystalView extends Ui.WatchFace {
 
 		// Light/dark-specific colours.
 		switch (theme) {
-			case :THEME_BLUE_DARK:
-			case :THEME_PINK_DARK:
-			case :THEME_GREEN_DARK:
-			case :THEME_CORNFLOWER_BLUE_DARK:
-			case :THEME_LEMON_CREAM_DARK:
-			case :THEME_VIVID_YELLOW_DARK:
-			case :THEME_DAYGLO_ORANGE_DARK:
-			case :THEME_RED_DARK:
-			case :THEME_MONO_DARK:
+			case THEME_BLUE_DARK:
+			case THEME_PINK_DARK:
+			case THEME_GREEN_DARK:
+			case THEME_CORNFLOWER_BLUE_DARK:
+			case THEME_LEMON_CREAM_DARK:
+			case THEME_VIVID_YELLOW_DARK:
+			case THEME_DAYGLO_ORANGE_DARK:
+			case THEME_RED_DARK:
+			case THEME_MONO_DARK:
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
 
@@ -225,10 +225,10 @@ class CrystalView extends Ui.WatchFace {
 				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
 				break;
 
-			case :THEME_MONO_LIGHT:
-			case :THEME_BLUE_LIGHT:
-			case :THEME_GREEN_LIGHT:
-			case :THEME_RED_LIGHT:
+			case THEME_MONO_LIGHT:
+			case THEME_BLUE_LIGHT:
+			case THEME_GREEN_LIGHT:
+			case THEME_RED_LIGHT:
 				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
 				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
 				
@@ -242,16 +242,16 @@ class CrystalView extends Ui.WatchFace {
 
 		// Hours colour.
 		var hoursColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
-			case :FROM_THEME:
+		switch (App.getApp().getProperty("HoursColourOverride")) {
+			case FROM_THEME:
 				hoursColour = App.getApp().getProperty("ThemeColour");
 				break;
 
-			case :MONO_HIGHLIGHT:
+			case MONO_HIGHLIGHT:
 				hoursColour = App.getApp().getProperty("MonoLightColour");
 				break;
 
-			case :MONO:
+			case MONO:
 				hoursColour = App.getApp().getProperty("MonoDarkColour");
 				break;
 		}
@@ -259,16 +259,16 @@ class CrystalView extends Ui.WatchFace {
 
 		// Minutes colour.
 		var minutesColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
-			case :FROM_THEME:
+		switch (App.getApp().getProperty("MinutesColourOverride")) {
+			case FROM_THEME:
 				minutesColour = App.getApp().getProperty("ThemeColour");
 				break;
 
-			case :MONO_HIGHLIGHT:
+			case MONO_HIGHLIGHT:
 				minutesColour = App.getApp().getProperty("MonoLightColour");
 				break;
 
-			case :MONO:
+			case MONO:
 				minutesColour = App.getApp().getProperty("MonoDarkColour");
 				break;
 		}
@@ -316,13 +316,13 @@ class CrystalView extends Ui.WatchFace {
 
 	function updateGoalMeters() {
 		var leftValues = updateGoalMeter(
-			getGoalType(App.getApp().getProperty("LeftGoalType")),
+			App.getApp().getProperty("LeftGoalType"),
 			mDrawables[:LeftGoalMeter],
 			mDrawables[:LeftGoalIcon]
 		);
 
 		var rightValues = updateGoalMeter(
-			getGoalType(App.getApp().getProperty("RightGoalType")),
+			App.getApp().getProperty("RightGoalType"),
 			mDrawables[:RightGoalMeter],
 			mDrawables[:RightGoalIcon]
 		);
@@ -338,7 +338,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// Icon label.
 		iconLabel.setFont(mIconsFont);
-		iconLabel.setText(getIconFontChar(goalType));
+		iconLabel.setText(getIconFontCharForGoal(goalType));
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
@@ -349,62 +349,64 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	// Replace dictionary with function to save memory.
-	function getGoalType(goalProperty) {
-		switch (goalProperty) {
-			case App.GOAL_TYPE_STEPS:
-				return :GOAL_TYPE_STEPS;
-			case App.GOAL_TYPE_FLOORS_CLIMBED:
-				return :GOAL_TYPE_FLOORS_CLIMBED;
-			case App.GOAL_TYPE_ACTIVE_MINUTES:
-				return :GOAL_TYPE_ACTIVE_MINUTES;
-			case -1:
-				return :GOAL_TYPE_BATTERY;
-			case -2:
-				return :GOAL_TYPE_CALORIES;
+	function getIconFontCharForGoal(fieldType) {
+		switch (fieldType) {
+			case GOAL_TYPE_BATTERY:
+				return "9";
+			case GOAL_TYPE_CALORIES:
+				return "6";
+
+			case GOAL_TYPE_STEPS:
+				return "0";
+			case GOAL_TYPE_FLOORS_CLIMBED:
+				return "1";
+			case GOAL_TYPE_ACTIVE_MINUTES:
+				return "2";
 		}
 	}
 
-	// Replace dictionary with function to save memory.
-	function getIconFontChar(fieldType) {
+	function getIconFontCharForField(fieldType) {
 		switch (fieldType) {
-			case :GOAL_TYPE_STEPS:
-				return "0";
-			case :GOAL_TYPE_FLOORS_CLIMBED:
-				return "1";
-			case :GOAL_TYPE_ACTIVE_MINUTES:
-				return "2";
-			case :FIELD_TYPE_HEART_RATE:
-			case :FIELD_TYPE_HR_LIVE_5S:
-				return "3";
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				return "4";
-			case :FIELD_TYPE_NOTIFICATIONS:
-			case :INDICATOR_TYPE_NOTIFICATIONS:
-				return "5";
-			case :FIELD_TYPE_CALORIES:
-			case :GOAL_TYPE_CALORIES:
-				return "6"; // Use calories icon for both field and goal.
-			case :FIELD_TYPE_DISTANCE:
-				return "7";
-			case :INDICATOR_TYPE_BLUETOOTH:
-				return "8";
-			case :GOAL_TYPE_BATTERY:
-				return "9";
-			case :FIELD_TYPE_ALARMS:
-			case :INDICATOR_TYPE_ALARMS:
-				return ":";
-			case :FIELD_TYPE_ALTITUDE:
-				return ";";
-			case :FIELD_TYPE_TEMPERATURE:
-				return "<";
-			// case :LIVE_HR_SPOT:
-			// 	return "=";
-			case :FIELD_TYPE_SUNRISE: // Pseudo-field.
+			case FIELD_TYPE_SUNRISE:
 				return ">";
-			case :FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
-			//case :FIELD_TYPE_SUNSET:
+			//case FIELD_TYPE_SUNSET:
+			//	return "?";
+
+			case FIELD_TYPE_HEART_RATE:
+			case FIELD_TYPE_HR_LIVE_5S:
+				return "3";
+			case FIELD_TYPE_BATTERY:
+			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				return "4";
+			case FIELD_TYPE_NOTIFICATIONS:
+				return "5";
+			case FIELD_TYPE_CALORIES:
+				return "6";
+			case FIELD_TYPE_DISTANCE:
+				return "7";
+			case FIELD_TYPE_ALARMS:
+				return ":";
+			case FIELD_TYPE_ALTITUDE:
+				return ";";
+			case FIELD_TYPE_TEMPERATURE:
+				return "<";
+			// case LIVE_HR_SPOT:
+			// 	return "=";
+			
+			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
+			//case FIELD_TYPE_SUNSET:
 				return "?";
+		}
+	}
+
+	function getIconFontCharForIndicator(fieldType) {
+		switch (fieldType) {
+			case INDICATOR_TYPE_BLUETOOTH:
+				return "8";
+			case INDICATOR_TYPE_ALARMS:
+				return ":";
+			case INDICATOR_TYPE_NOTIFICATIONS:
+				return "5";
 		}
 	}
 
@@ -418,12 +420,12 @@ class CrystalView extends Ui.WatchFace {
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
-			case :GOAL_TYPE_STEPS:
+			case GOAL_TYPE_STEPS:
 				values[:current] = info.steps;
 				values[:max] = info.stepGoal;
 				break;
 
-			case :GOAL_TYPE_FLOORS_CLIMBED:
+			case GOAL_TYPE_FLOORS_CLIMBED:
 				if (info has :floorsClimbed) {
 					values[:current] = info.floorsClimbed;
 					values[:max] = info.floorsClimbedGoal;
@@ -433,7 +435,7 @@ class CrystalView extends Ui.WatchFace {
 				
 				break;
 
-			case :GOAL_TYPE_ACTIVE_MINUTES:
+			case GOAL_TYPE_ACTIVE_MINUTES:
 				if (info has :activeMinutesWeek) {
 					values[:current] = info.activeMinutesWeek.total;
 					values[:max] = info.activeMinutesWeekGoal;
@@ -442,13 +444,13 @@ class CrystalView extends Ui.WatchFace {
 				}
 				break;
 
-			case :GOAL_TYPE_BATTERY:
+			case GOAL_TYPE_BATTERY:
 				// #8: floor() battery to be consistent.
 				values[:current] = Math.floor(Sys.getSystemStats().battery);
 				values[:max] = 100;
 				break;
 
-			case :GOAL_TYPE_CALORIES:
+			case GOAL_TYPE_CALORIES:
 				values[:current] = info.calories;
 				values[:max] = App.getApp().getProperty("CaloriesGoal");
 				break;

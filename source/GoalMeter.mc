@@ -2,14 +2,16 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
-const GOAL_METER_STYLE = [
-	:MULTI_SEGMENTS,
-	:SINGLE_SEGMENT,
-	:HIDDEN
-];
-
-const SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
 const MIN_WHOLE_SEGMENT_HEIGHT = 5;
+
+enum /* GOAL_TYPES */ {
+	GOAL_TYPE_BATTERY = -1,
+	GOAL_TYPE_CALORIES = -2,
+
+	GOAL_TYPE_STEPS = 0, // App.GOAL_TYPE_STEPS
+	GOAL_TYPE_FLOORS_CLIMBED, // App.GOAL_TYPE_FLOORS_CLIMBED
+	GOAL_TYPE_ACTIVE_MINUTES // App.GOAL_TYPE_ACTIVE_MINUTES
+}
 
 // Buffered drawing behaviour:
 // - On initialisation: calculate clip width (non-trivial for arc shape); create buffers for empty and filled segments.
@@ -39,6 +41,12 @@ class GoalMeter extends Ui.Drawable {
 	private var mCurrentValue;
 	private var mMaxValue;
 
+	private enum /* GOAL_METER_STYLES */ {
+		MULTI_SEGMENTS,
+		SINGLE_SEGMENT,
+		HIDDEN
+	}
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
@@ -64,7 +72,7 @@ class GoalMeter extends Ui.Drawable {
 			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
 			innerRadius = halfScreenWidth - mStroke; 
 			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
-			width = Math.ceil(width); // Round up to cover partial pixels.
+			width = Math.ceil(width).toNumber(); // Round up to cover partial pixels.
 		} else {
 			width = mStroke;
 		}
@@ -96,7 +104,7 @@ class GoalMeter extends Ui.Drawable {
 		mBuffersNeedRecreate = true;
 
 		// #18 Only read separator width from layout if multi segment style is selected.
-		if (GOAL_METER_STYLE[App.getApp().getProperty("GoalMeterStyle")] == :MULTI_SEGMENTS) {
+		if (App.getApp().getProperty("GoalMeterStyle") == MULTI_SEGMENTS) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
 			if (mSeparator != mLayoutSeparator) {
@@ -126,7 +134,7 @@ class GoalMeter extends Ui.Drawable {
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
 	function draw(dc) {
-		if (GOAL_METER_STYLE[App.getApp().getProperty("GoalMeterStyle")] == :HIDDEN) {
+		if (App.getApp().getProperty("GoalMeterStyle") == HIDDEN) {
 			return;
 		}
 
@@ -339,7 +347,7 @@ class GoalMeter extends Ui.Drawable {
 
 			height = end - start;
 
-			segments[i] = height;
+			segments[i] = height.toNumber();
 			//Sys.println("segment " + i + " height " + height);
 		}
 
@@ -356,7 +364,7 @@ class GoalMeter extends Ui.Drawable {
 			totalSegmentHeight += segments[i];
 		}
 
-		var remainingFillHeight = Math.floor((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight); // Excluding separators.
+		var remainingFillHeight = Math.floor((mCurrentValue * 1.0 / mMaxValue) * totalSegmentHeight).toNumber(); // Excluding separators.
 		fillHeight = remainingFillHeight;
 
 		for (i = 0; i < segments.size(); ++i) {
@@ -377,11 +385,13 @@ class GoalMeter extends Ui.Drawable {
 	function getSegmentScale() {
 		var segmentScale;
 
-		var tryScaleIndex = 0;		
+		var tryScaleIndex = 0;
 		var segmentHeight;
 		var numSegments;
 		var numSeparators;
 		var totalSegmentHeight;
+
+		var SEGMENT_SCALES = [1, 10, 100, 1000, 10000];
 
 		do {
 			segmentScale = SEGMENT_SCALES[tryScaleIndex];

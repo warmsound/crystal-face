@@ -9,6 +9,25 @@ using Toybox.SensorHistory as SensorHistory;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+enum /* FIELD_TYPES */ {
+	// Pseudo-fields.
+	FIELD_TYPE_SUNRISE = -1,
+	//FIELD_TYPE_SUNSET = -2,
+
+	// Real fields (used by properties).
+	FIELD_TYPE_HEART_RATE = 0,
+	FIELD_TYPE_BATTERY,
+	FIELD_TYPE_NOTIFICATIONS,
+	FIELD_TYPE_CALORIES,
+	FIELD_TYPE_DISTANCE,
+	FIELD_TYPE_ALARMS,
+	FIELD_TYPE_ALTITUDE,
+	FIELD_TYPE_TEMPERATURE,
+	FIELD_TYPE_BATTERY_HIDE_PERCENT,
+	FIELD_TYPE_HR_LIVE_5S,
+	FIELD_TYPE_SUNRISE_SUNSET
+}
+
 class DataFields extends Ui.Drawable {
 
 	private var mLeft;
@@ -27,20 +46,6 @@ class DataFields extends Ui.Drawable {
 	private var mHasLiveHR = false; // Is a live HR field currently being shown?
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
-
-	private var FIELD_TYPES = [
-		:FIELD_TYPE_HEART_RATE,
-		:FIELD_TYPE_BATTERY,
-		:FIELD_TYPE_NOTIFICATIONS,
-		:FIELD_TYPE_CALORIES,
-		:FIELD_TYPE_DISTANCE,
-		:FIELD_TYPE_ALARMS,
-		:FIELD_TYPE_ALTITUDE,
-		:FIELD_TYPE_TEMPERATURE,
-		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
-		:FIELD_TYPE_HR_LIVE_5S,
-		:FIELD_TYPE_SUNRISE_SUNSET
-	];
 
 	// private const CM_PER_KM = 100000;
 	// private const MI_PER_KM = 0.621371;
@@ -86,9 +91,9 @@ class DataFields extends Ui.Drawable {
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
 		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
 
-		if ((FIELD_TYPES[mFieldTypes[0]] == :FIELD_TYPE_HR_LIVE_5S) ||
-			(FIELD_TYPES[mFieldTypes[1]] == :FIELD_TYPE_HR_LIVE_5S) ||
-			(FIELD_TYPES[mFieldTypes[2]] == :FIELD_TYPE_HR_LIVE_5S)) {
+		if ((mFieldTypes[0] == FIELD_TYPE_HR_LIVE_5S) ||
+			(mFieldTypes[1] == FIELD_TYPE_HR_LIVE_5S) ||
+			(mFieldTypes[2] == FIELD_TYPE_HR_LIVE_5S)) {
 				
 			mHasLiveHR = true;
 		} else {
@@ -126,24 +131,23 @@ class DataFields extends Ui.Drawable {
 	// Both regular and small icon fonts use same spot size for easier optimisation.
 	private const LIVE_HR_SPOT_RADIUS = 3;
 
-	// "fieldType" parameter is raw property value (it's converted to symbol below).
-	private function drawDataField(dc, isPartialUpdate, rawFieldType, x) {
+	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
 		var isBattery = false;
 		var isHeartRate = false;
 		var isLiveHeartRate = false;
 
-		switch (FIELD_TYPES[rawFieldType]) {
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+		switch (fieldType) {
+			case FIELD_TYPE_BATTERY:
+			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				isBattery = true;
 				break;
 
-			case :FIELD_TYPE_HR_LIVE_5S:
+			case FIELD_TYPE_HR_LIVE_5S:
 				isLiveHeartRate = true;
 				isHeartRate = true;
 				break;
 
-			case :FIELD_TYPE_HEART_RATE:			
+			case FIELD_TYPE_HEART_RATE:			
 				isHeartRate = true;
 				break;
 		}
@@ -177,7 +181,7 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// 1. Value: draw first, as top of text overlaps icon.
-		var result = getValueForFieldType(rawFieldType);
+		var result = getValueForFieldType(fieldType);
 		var value = result["value"];
 
 		// Optimisation: if live HR remains unavailable, skip the rest of this partial update.
@@ -214,7 +218,7 @@ class DataFields extends Ui.Drawable {
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
-		if ((value.length() == 0) && (FIELD_TYPES[rawFieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((value.length() == 0) && (fieldType != FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
@@ -234,7 +238,7 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
@@ -245,7 +249,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
@@ -265,7 +269,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+					"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 
@@ -276,18 +280,17 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
 
 		// Other icons.
 		} else {
-			var fieldType = FIELD_TYPES[rawFieldType];
 
 			// #19 Show sunrise icon instead of default sunset icon, if sunrise is next.
-			if ((fieldType == :FIELD_TYPE_SUNRISE_SUNSET) && (result["isSunriseNext"] == true)) {
-				fieldType = :FIELD_TYPE_SUNRISE;
+			if ((fieldType == FIELD_TYPE_SUNRISE_SUNSET) && (result["isSunriseNext"] == true)) {
+				fieldType = FIELD_TYPE_SUNRISE;
 			}
 
 			dc.setColor(colour, backgroundColour);
@@ -295,7 +298,7 @@ class DataFields extends Ui.Drawable {
 				x,
 				mTop,
 				mIconsFont,
-				App.getApp().getView().getIconFontChar(fieldType),
+				App.getApp().getView().getIconFontCharForField(fieldType),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -311,7 +314,7 @@ class DataFields extends Ui.Drawable {
 						x,
 						mTop,
 						mIconsFont,
-						"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+						"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
 						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 					);
 				}
@@ -319,9 +322,8 @@ class DataFields extends Ui.Drawable {
 		}
 	}
 
-	// "type" parameter is raw property value (it's converted to symbol below).
 	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
-	// result["isSunriseNext"] indicates that sunrise icon should be shown for :FIELD_TYPE_SUNRISE_SUNSET, rather than default
+	// result["isSunriseNext"] indicates that sunrise icon should be shown for FIELD_TYPE_SUNRISE_SUNSET, rather than default
 	// sunset icon.
 	private function getValueForFieldType(type) {
 		var result = {};
@@ -342,9 +344,9 @@ class DataFields extends Ui.Drawable {
 		var format;
 		var unit;
 
-		switch (FIELD_TYPES[type]) {
-			case :FIELD_TYPE_HEART_RATE:
-			case :FIELD_TYPE_HR_LIVE_5S:
+		switch (type) {
+			case FIELD_TYPE_HEART_RATE:
+			case FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
 				activityInfo = Activity.getActivityInfo();
 				sample = activityInfo.currentHeartRate;
@@ -359,29 +361,29 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
-			case :FIELD_TYPE_BATTERY:
+			case FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
 				battery = Math.floor(Sys.getSystemStats().battery);
 				value = battery.format(INTEGER_FORMAT) + "%";
 				break;
 
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
 				break;
 
-			case :FIELD_TYPE_NOTIFICATIONS:
+			case FIELD_TYPE_NOTIFICATIONS:
 				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format(INTEGER_FORMAT);
 				}
 				break;
 
-			case :FIELD_TYPE_CALORIES:
+			case FIELD_TYPE_CALORIES:
 				activityInfo = ActivityMonitor.getInfo();
 				value = activityInfo.calories.format(INTEGER_FORMAT);
 				break;
 
-			case :FIELD_TYPE_DISTANCE:
+			case FIELD_TYPE_DISTANCE:
 				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
 				distance = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
@@ -402,14 +404,14 @@ class DataFields extends Ui.Drawable {
 				
 				break;
 
-			case :FIELD_TYPE_ALARMS:
+			case FIELD_TYPE_ALARMS:
 				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
 					value = settings.alarmCount.format(INTEGER_FORMAT);
 				}
 				break;
 
-			case :FIELD_TYPE_ALTITUDE:
+			case FIELD_TYPE_ALTITUDE:
 				// #67 Try to retrieve altitude from current activity, before falling back on elevation history.
 				// Note that Activity::Info.altitude is supported by CIQ 1.x, but elevation history only on select CIQ 2.x
 				// devices.
@@ -444,7 +446,7 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
-			case :FIELD_TYPE_TEMPERATURE:
+			case FIELD_TYPE_TEMPERATURE:
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
 					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
 					sample = iterator.next();
@@ -469,7 +471,7 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
-			case :FIELD_TYPE_SUNRISE_SUNSET:
+			case FIELD_TYPE_SUNRISE_SUNSET:
 				// #19 Check if location is available from current activity, before falling back on last location from settings.
 				activityInfo = Activity.getActivityInfo();
 				location = activityInfo.currentLocation;

@@ -7,20 +7,20 @@ const INDICATOR_1_TYPE = "Indicator1Type";
 const INDICATOR_2_TYPE = "Indicator2Type";
 const INDICATOR_3_TYPE = "Indicator3Type";
 
+enum /* INDICATOR_TYPES */ {
+	INDICATOR_TYPE_BLUETOOTH,
+	INDICATOR_TYPE_ALARMS,
+	INDICATOR_TYPE_NOTIFICATIONS,
+	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
+	INDICATOR_TYPE_BATTERY
+}
+
 class Indicators extends Ui.Drawable {
 
 	private var mIconsFont;
 	private var mSpacingY;
 	private var mBatteryWidth;
 	private var mBatteryHeight;
-
-	private var INDICATOR_TYPES = [
-		:INDICATOR_TYPE_BLUETOOTH,
-		:INDICATOR_TYPE_ALARMS,
-		:INDICATOR_TYPE_NOTIFICATIONS,
-		:INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
-		:INDICATOR_TYPE_BATTERY
-	];
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -53,11 +53,10 @@ class Indicators extends Ui.Drawable {
 		}
 	}
 
-	function drawIndicator(dc, rawIndicatorType, x, y) {
-		var indicatorType = INDICATOR_TYPES[rawIndicatorType];
+	function drawIndicator(dc, indicatorType, x, y) {
 
 		// Battery indicator.
-		if (indicatorType == :INDICATOR_TYPE_BATTERY) {
+		if (indicatorType == INDICATOR_TYPE_BATTERY) {
 			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
 			return;
 		}
@@ -73,12 +72,12 @@ class Indicators extends Ui.Drawable {
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 
 		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
-		if (indicatorType == :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
+		if (indicatorType == INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
 			var settings = Sys.getDeviceSettings();
 			if (settings.phoneConnected && (settings.notificationCount > 0)) {
-				indicatorType = :INDICATOR_TYPE_NOTIFICATIONS;
+				indicatorType = INDICATOR_TYPE_NOTIFICATIONS;
 			} else {
-				indicatorType = :INDICATOR_TYPE_BLUETOOTH;
+				indicatorType = INDICATOR_TYPE_BLUETOOTH;
 			}
 		}
 
@@ -87,7 +86,7 @@ class Indicators extends Ui.Drawable {
 			x,
 			y,
 			mIconsFont,
-			App.getApp().getView().getIconFontChar(indicatorType),
+			App.getApp().getView().getIconFontCharForIndicator(indicatorType),
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}
@@ -98,16 +97,16 @@ class Indicators extends Ui.Drawable {
 		var settings = Sys.getDeviceSettings();
 
 		switch (type) {
-			case :INDICATOR_TYPE_BLUETOOTH:
-			case :INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS:
+			case INDICATOR_TYPE_BLUETOOTH:
+			case INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS:
 				value = settings.phoneConnected;
 				break;
 
-			case :INDICATOR_TYPE_ALARMS:
+			case INDICATOR_TYPE_ALARMS:
 				value = (settings.alarmCount > 0);
 				break;
 
-			case :INDICATOR_TYPE_NOTIFICATIONS:
+			case INDICATOR_TYPE_NOTIFICATIONS:
 				value = (settings.notificationCount > 0);
 				break;
 		}
