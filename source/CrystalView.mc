@@ -380,9 +380,9 @@ class CrystalView extends Ui.WatchFace {
 			case FIELD_TYPE_HEART_RATE:
 			case FIELD_TYPE_HR_LIVE_5S:
 				return "3";
-			case FIELD_TYPE_BATTERY:
-			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				return "4";
+			//case FIELD_TYPE_BATTERY:
+			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+			//	return "4";
 			case FIELD_TYPE_NOTIFICATIONS:
 				return "5";
 			case FIELD_TYPE_CALORIES:
