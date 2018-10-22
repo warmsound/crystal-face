@@ -511,9 +511,9 @@ class DataFields extends Ui.Drawable {
 					} else {
 						var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
-						// Convert to same format as sunTimes, for easier comparison. Compare down to minutes only, as seconds not
-						// shown to user.
-						now = now.hour + (now.min / 60.0);
+						// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+						// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+						now = now.hour + ((now.min + 1) / 60.0);
 						//Sys.println(now);
 
 						var nextSunEvent;
