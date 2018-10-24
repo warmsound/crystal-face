@@ -1,6 +1,15 @@
 <fonts>
-	<font id="HoursFont" filename="titillium-web-bold-48.fnt" antialias="true" />
-	<font id="MinutesFont" filename="titillium-web-light-48.fnt" antialias="true" />
+	<font id="HoursFont0" filename="titillium-web-bold-48.fnt" antialias="true" filter="0"/>
+	<font id="HoursFont1" filename="titillium-web-bold-48.fnt" antialias="true" filter="1"/>
+	<font id="HoursFont2" filename="titillium-web-bold-48.fnt" antialias="true" filter="2"/>
+	<font id="HoursFont3" filename="titillium-web-bold-48.fnt" antialias="true" filter="3"/>
+	<font id="HoursFont4" filename="titillium-web-bold-48.fnt" antialias="true" filter="4"/>
+	<font id="HoursFont5" filename="titillium-web-bold-48.fnt" antialias="true" filter="5"/>
+	<font id="HoursFont6" filename="titillium-web-bold-48.fnt" antialias="true" filter="6"/>
+	<font id="HoursFont7" filename="titillium-web-bold-48.fnt" antialias="true" filter="7"/>
+	<font id="HoursFont8" filename="titillium-web-bold-48.fnt" antialias="true" filter="8"/>
+	<font id="HoursFont9" filename="titillium-web-bold-48.fnt" antialias="true" filter="9"/>
+	<font id="MinutesFont" filename="titillium-web-light-48.fnt" antialias="true"/>
 
 	<!-- Same SecondsFont as resources-small-time -->
 	<!--font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="true" filter="0123456789AP"/-->

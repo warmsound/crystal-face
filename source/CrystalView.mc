@@ -13,10 +13,6 @@ class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
 
-	private var mHoursFont;
-	private var mMinutesFont;
-	private var mSecondsFont;
-
 	private var mIconsFont;
 	private var mNormalFont;
 
@@ -62,10 +58,6 @@ class CrystalView extends Ui.WatchFace {
 
 	// Load your resources here
 	function onLayout(dc) {
-		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
-		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
-		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
-
 		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
@@ -75,7 +67,6 @@ class CrystalView extends Ui.WatchFace {
 		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
-		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
 		mDrawables[:Indicators].setFont(mIconsFont);
 
