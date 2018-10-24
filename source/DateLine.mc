@@ -21,26 +21,23 @@ class DateLine extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
+		var rezFonts = Rez.Fonts;
+		var resourceMap = {
+			"ZHS" => rezFonts.DateFontOverrideZHS,
+			"ZHT" => rezFonts.DateFontOverrideZHT,
+			"RUS" => rezFonts.DateFontOverrideRUS
+		};
+		var dateFont;
+
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
 		// string, then override font in code.
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
-		switch (dateFontOverride) {
-			case "ZHS":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
-				break;
-
-			case "ZHT":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
-				break;
-
-			case "RUS":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideRUS);
-				break;
-
-			default:
-				mFont  = Ui.loadResource(Rez.Fonts.DateFont);
-				break;
+		if (resourceMap.hasKey(dateFontOverride)) {
+			dateFont = resourceMap[dateFontOverride];
+		} else {
+			dateFont = rezFonts.DateFont;
 		}
+		mFont = Ui.loadResource(dateFont);
 
 		mX = params[:x];
 		mY = params[:y];
@@ -49,6 +46,8 @@ class DateLine extends Ui.Drawable {
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.
 	function draw(dc) {
+		var rezStrings = Rez.Strings;
+		var resourceArray;
 
 		// Supply DOW/month strings ourselves, rather than relying on Time.FORMAT_MEDIUM, as latter is inconsistent e.g. returns
 		// "Thurs" instead of "Thu".
@@ -58,74 +57,38 @@ class DateLine extends Ui.Drawable {
 		var dayOfWeek = now.day_of_week;
 		if (dayOfWeek != mDayOfWeek) {
 			mDayOfWeek = dayOfWeek;
-			switch (mDayOfWeek) {
-				case 1:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Sun);
-					break;
-				case 2:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Mon);
-					break;
-				case 3:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Tue);
-					break;
-				case 4:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Wed);
-					break;
-				case 5:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Thu);
-					break;
-				case 6:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Fri);
-					break;
-				case 7:
-					mDayOfWeekString = Ui.loadResource(Rez.Strings.Sat);
-					break;
-			}
-			mDayOfWeekString = mDayOfWeekString.toUpper();
+			
+			resourceArray = [
+				rezStrings.Sun,
+				rezStrings.Mon,
+				rezStrings.Tue,
+				rezStrings.Wed,
+				rezStrings.Thu,
+				rezStrings.Fri,
+				rezStrings.Sat
+				];
+			mDayOfWeekString = Ui.loadResource(resourceArray[mDayOfWeek - 1]).toUpper();
 		}
 
 		var month = now.month;
 		if (month != mMonth) {
 			mMonth = month;
-			switch (mMonth) {
-				case 1:
-					mMonthString = Ui.loadResource(Rez.Strings.Jan);
-					break;
-				case 2:
-					mMonthString = Ui.loadResource(Rez.Strings.Feb);
-					break;
-				case 3:
-					mMonthString = Ui.loadResource(Rez.Strings.Mar);
-					break;
-				case 4:
-					mMonthString = Ui.loadResource(Rez.Strings.Apr);
-					break;
-				case 5:
-					mMonthString = Ui.loadResource(Rez.Strings.May);
-					break;
-				case 6:
-					mMonthString = Ui.loadResource(Rez.Strings.Jun);
-					break;
-				case 7:
-					mMonthString = Ui.loadResource(Rez.Strings.Jul);
-					break;
-				case 8:
-					mMonthString = Ui.loadResource(Rez.Strings.Aug);
-					break;
-				case 9:
-					mMonthString = Ui.loadResource(Rez.Strings.Sep);
-					break;
-				case 10:
-					mMonthString = Ui.loadResource(Rez.Strings.Oct);
-					break;
-				case 11:
-					mMonthString = Ui.loadResource(Rez.Strings.Nov);
-					break;
-				case 12:
-					mMonthString = Ui.loadResource(Rez.Strings.Dec);
-					break;
-			}
-			mMonthString = mMonthString.toUpper();
+
+			resourceArray = [
+				rezStrings.Jan,
+				rezStrings.Feb,
+				rezStrings.Mar,
+				rezStrings.Apr,
+				rezStrings.May,
+				rezStrings.Jun,
+				rezStrings.Jul,
+				rezStrings.Aug,
+				rezStrings.Sep,
+				rezStrings.Oct,
+				rezStrings.Nov,
+				rezStrings.Dec
+				];
+			mMonthString = Ui.loadResource(resourceArray[mMonth - 1]).toUpper();
 		}
 
 		var day = now.day.format(INTEGER_FORMAT);

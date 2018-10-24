@@ -29,27 +29,27 @@ class CrystalView extends Ui.WatchFace {
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
-	private enum /* THEMES */ {
-		THEME_BLUE_DARK,
-		THEME_PINK_DARK,
-		THEME_GREEN_DARK,
-		THEME_MONO_LIGHT,
-		THEME_CORNFLOWER_BLUE_DARK,
-		THEME_LEMON_CREAM_DARK,
-		THEME_DAYGLO_ORANGE_DARK,
-		THEME_RED_DARK,
-		THEME_MONO_DARK,
-		THEME_BLUE_LIGHT,
-		THEME_GREEN_LIGHT,
-		THEME_RED_LIGHT,
-		THEME_VIVID_YELLOW_DARK
-	}
+	// private enum /* THEMES */ {
+	// 	THEME_BLUE_DARK,
+	// 	THEME_PINK_DARK,
+	// 	THEME_GREEN_DARK,
+	// 	THEME_MONO_LIGHT,
+	// 	THEME_CORNFLOWER_BLUE_DARK,
+	// 	THEME_LEMON_CREAM_DARK,
+	// 	THEME_DAYGLO_ORANGE_DARK,
+	// 	THEME_RED_DARK,
+	// 	THEME_MONO_DARK,
+	// 	THEME_BLUE_LIGHT,
+	// 	THEME_GREEN_LIGHT,
+	// 	THEME_RED_LIGHT,
+	// 	THEME_VIVID_YELLOW_DARK
+	// }
 
-	private enum /* COLOUR_OVERRIDES */ {
-		FROM_THEME = -1,
-		MONO_HIGHLIGHT = -2,
-		MONO = -3
-	}
+	// private enum /* COLOUR_OVERRIDES */ {
+	// 	FROM_THEME = -1,
+	// 	MONO_HIGHLIGHT = -2,
+	// 	MONO = -3
+	// }
 
 	function initialize() {
 		WatchFace.initialize();
@@ -151,127 +151,69 @@ class CrystalView extends Ui.WatchFace {
 		var theme = App.getApp().getProperty("Theme");
 
 		// Theme-specific colours.
-		var themeColour;
-		switch (theme) {
-			case THEME_BLUE_DARK:
-				themeColour = Graphics.COLOR_BLUE;
-				break;
-			
-			case THEME_PINK_DARK:
-				themeColour = Graphics.COLOR_PINK;
-				break;
-
-			case THEME_GREEN_DARK:
-				themeColour = Graphics.COLOR_GREEN;
-				break;
-
-			case THEME_MONO_LIGHT:
-				themeColour = Graphics.COLOR_DK_GRAY;
-				break;
-
-			case THEME_CORNFLOWER_BLUE_DARK:
-				themeColour = 0x55AAFF;
-				break;
-
-			case THEME_LEMON_CREAM_DARK:
-				themeColour = 0xFFFFAA;
-				break;
-
-			case THEME_VIVID_YELLOW_DARK:
-				themeColour = 0xFFFF00;
-				break;
-
-			case THEME_DAYGLO_ORANGE_DARK:
-				themeColour = Graphics.COLOR_ORANGE;
-				break;
-
-			case THEME_RED_DARK:
-				themeColour = Graphics.COLOR_RED;
-				break;
-
-			case THEME_MONO_DARK:
-				themeColour = Graphics.COLOR_WHITE;
-				break;
-
-			case THEME_BLUE_LIGHT:
-				themeColour = Graphics.COLOR_DK_BLUE;
-				break;
-
-			case THEME_GREEN_LIGHT:
-				themeColour = Graphics.COLOR_DK_GREEN;
-				break;
-
-			case THEME_RED_LIGHT:
-				themeColour = Graphics.COLOR_DK_RED;
-				break;
-		}
-		App.getApp().setProperty("ThemeColour", themeColour); 
+		var themeColours = [
+			Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
+			Graphics.COLOR_PINK,     // THEME_PINK_DARK
+			Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
+			Graphics.COLOR_DK_GRAY,  // THEME_MONO_LIGHT
+			0x55AAFF,                // THEME_CORNFLOWER_BLUE_DARK
+			0xFFFFAA,                // THEME_LEMON_CREAM_DARK
+			0xFFFF00,                // THEME_VIVID_YELLOW_DARK
+			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_DARK
+			Graphics.COLOR_RED,      // THEME_RED_DARK
+			Graphics.COLOR_WHITE,    // THEME_MONO_DARK
+			Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
+			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
+			Graphics.COLOR_DK_RED    // THEME_RED_LIGHT
+		];
+		App.getApp().setProperty("ThemeColour", themeColours[theme]); 
 
 		// Light/dark-specific colours.
-		switch (theme) {
-			case THEME_BLUE_DARK:
-			case THEME_PINK_DARK:
-			case THEME_GREEN_DARK:
-			case THEME_CORNFLOWER_BLUE_DARK:
-			case THEME_LEMON_CREAM_DARK:
-			case THEME_VIVID_YELLOW_DARK:
-			case THEME_DAYGLO_ORANGE_DARK:
-			case THEME_RED_DARK:
-			case THEME_MONO_DARK:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+		var lightFlags = [
+			false, // THEME_BLUE_DARK
+			false, // THEME_PINK_DARK
+			false, // THEME_GREEN_DARK
+			true,  // THEME_MONO_LIGHT
+			false, // THEME_CORNFLOWER_BLUE_DARK
+			false, // THEME_LEMON_CREAM_DARK
+			false, // THEME_VIVID_YELLOW_DARK
+			false, // THEME_DAYGLO_ORANGE_DARK
+			false, // THEME_RED_DARK
+			false, // THEME_MONO_DARK
+			true,  // THEME_BLUE_LIGHT
+			true,  // THEME_GREEN_LIGHT
+			true   // THEME_RED_LIGHT
+		];
+		if (lightFlags[theme]) {
+			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
+			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
+			
+			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
+			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+		} else {
+			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
+			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
 
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
-				break;
-
-			case THEME_MONO_LIGHT:
-			case THEME_BLUE_LIGHT:
-			case THEME_GREEN_LIGHT:
-			case THEME_RED_LIGHT:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
-				
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
-				break;
+			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
+			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
 		}
 	}
 
 	function updateHoursMinutesColours() {
+		var overrideMap = {
+			-1 => "ThemeColour",     // FROM_THEME
+			-2 => "MonoLightColour", // MONO_HIGHLIGHT
+			-3 => "MonoDarkColour"   // MONO
+		};
 
 		// Hours colour.
-		var hoursColour;
-		switch (App.getApp().getProperty("HoursColourOverride")) {
-			case FROM_THEME:
-				hoursColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case MONO_HIGHLIGHT:
-				hoursColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case MONO:
-				hoursColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
+		var hoursColourOverride = App.getApp().getProperty("HoursColourOverride");
+		var hoursColour = App.getApp().getProperty(overrideMap[hoursColourOverride]);
 		App.getApp().setProperty("HoursColour", hoursColour);
 
 		// Minutes colour.
-		var minutesColour;
-		switch (App.getApp().getProperty("MinutesColourOverride")) {
-			case FROM_THEME:
-				minutesColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case MONO_HIGHLIGHT:
-				minutesColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case MONO:
-				minutesColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
+		var MinutesColourOverride = App.getApp().getProperty("MinutesColourOverride");
+		var minutesColour = App.getApp().getProperty(overrideMap[MinutesColourOverride]);
 		App.getApp().setProperty("MinutesColour", minutesColour);
 	}
 
