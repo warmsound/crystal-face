@@ -496,38 +496,50 @@ class DataFields extends Ui.Drawable {
 				}
 
 				if ((lat != null) and (lng != null)) {
-					// Get sunrise/sunset times in current time zone.
-					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null);
+					var nextSunEvent = 0;
+					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+					now = now.hour + ((now.min + 1) / 60.0);
+					//Sys.println(now);
+
+					// Get today's sunrise/sunset times in current time zone.
+					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ false);
 					//Sys.println(sunTimes);
 
-					// Sun never rises/sets.
-					if ((sunTimes[0] == null) || (sunTimes[1] == null)) {
+					// If sunrise/sunset happens today.
+					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+					if (sunriseSunsetToday) {
+
+						// Before sunrise today: today's sunrise is next.
+						if (now > sunTimes[0]) {
+							nextSunEvent = sunTimes[0];
+							result["isSunriseNext"] = true;
+
+						// After sunrise today, before sunset today: today's sunset is next.
+						} else if (now < sunTimes[1]) {
+							nextSunEvent = sunTimes[1];
+
+						// After sunset today: tomorrow's sunrise (if any) is next.
+						} else {
+							sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ true);
+							nextSunEvent = sunTimes[0];
+							result["isSunriseNext"] = true;
+						}
+					}
+
+					// Sun never rises/sets today.
+					if (!sunriseSunsetToday) {
 						value = "---";
 
 						// Sun never rises: sunrise is next, but more than a day from now.
 						if (sunTimes[0] == null) {
 							result["isSunriseNext"] = true;
 						}
+
+					// We have a sunrise/sunset time.
 					} else {
-						var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
-
-						// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
-						// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
-						now = now.hour + ((now.min + 1) / 60.0);
-						//Sys.println(now);
-
-						var nextSunEvent;
-
-						// Daytime: sunset is next.
-						if (now > sunTimes[0] && now < sunTimes[1]) {
-							nextSunEvent = sunTimes[1];
-
-						// Nighttime: sunrise is next.
-						} else {
-							nextSunEvent = sunTimes[0];
-							result["isSunriseNext"] = true;
-						}
-
 						var hour = Math.floor(nextSunEvent).toLong() % 24;
 						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
 						value = App.getApp().getView().getFormattedTime(hour, min);

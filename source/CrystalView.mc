@@ -528,15 +528,20 @@ class CrystalView extends Ui.WatchFace {
 	* @param {Float} lat Latitude of location (South is negative)
 	* @param {Float} lng Longitude of location (West is negative)
 	* @param {Integer || null} tz Timezone hour offset. e.g. Pacific/Los Angeles is -8 (Specify null for system timezone)
+	* @param {Boolean} tomorrow Calculate tomorrow's sunrise and sunset, instead of today's.
 	* @return {Array} Returns array of length 2 with sunrise and sunset as floats.
 	*                 Returns array with [null, -1] if the sun never rises, and [-1, null] if the sun never sets.
 	*/
-	function getSunTimes(lat, lng, tz) {
+	function getSunTimes(lat, lng, tz, tomorrow) {
 
 		// Use double precision where possible, as floating point errors can affect result by minutes.
 		lat = lat.toDouble();
 		lng = lng.toDouble();
 
+		var now = Time.now();
+		if (tomorrow) {
+			now = now + new Time.Duration(24 * 60 * 60);
+		}
 		var d = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 		var rad = Math.PI / 180.0d;
 		var deg = 180.0d / Math.PI;
