@@ -29,8 +29,8 @@
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
-	<string id="MultiSegments">Multi Segmente</string>
-	<string id="SingleSegment">Single Segment</string>
+	<string id="MultiSegments">Mehrere Abschnitte</string>
+	<string id="SingleSegment">Ein Abschnitt</string>
 	<string id="ShowAllSegments">Zeige alle Segmente</string>
 	<string id="ShowFilledSegments">Zeige gefüllte Segmente</string>
 	<string id="Hidden">Ausgeblendet</string>
