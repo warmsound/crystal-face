@@ -158,13 +158,13 @@ class CrystalView extends Ui.WatchFace {
 			Graphics.COLOR_DK_GRAY,  // THEME_MONO_LIGHT
 			0x55AAFF,                // THEME_CORNFLOWER_BLUE_DARK
 			0xFFFFAA,                // THEME_LEMON_CREAM_DARK
-			0xFFFF00,                // THEME_VIVID_YELLOW_DARK
 			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_DARK
 			Graphics.COLOR_RED,      // THEME_RED_DARK
 			Graphics.COLOR_WHITE,    // THEME_MONO_DARK
 			Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
 			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
-			Graphics.COLOR_DK_RED    // THEME_RED_LIGHT
+			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
+			0xFFFF00                 // THEME_VIVID_YELLOW_DARK
 		];
 		App.getApp().setProperty("ThemeColour", themeColours[theme]); 
 
@@ -176,13 +176,13 @@ class CrystalView extends Ui.WatchFace {
 			true,  // THEME_MONO_LIGHT
 			false, // THEME_CORNFLOWER_BLUE_DARK
 			false, // THEME_LEMON_CREAM_DARK
-			false, // THEME_VIVID_YELLOW_DARK
 			false, // THEME_DAYGLO_ORANGE_DARK
 			false, // THEME_RED_DARK
 			false, // THEME_MONO_DARK
 			true,  // THEME_BLUE_LIGHT
 			true,  // THEME_GREEN_LIGHT
-			true   // THEME_RED_LIGHT
+			true,  // THEME_RED_LIGHT
+			false  // THEME_VIVID_YELLOW_DARK
 		];
 		if (lightFlags[theme]) {
 			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
