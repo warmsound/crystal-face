@@ -531,6 +531,7 @@ class DataFields extends Ui.Drawable {
 						var hour = Math.floor(nextSunEvent).toLong() % 24;
 						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
 						value = App.getApp().getView().getFormattedTime(hour, min);
+						value = value[:hour] + ":" + value[:min] + value[:amPm]; 
 					}
 
 				// Waiting for location.

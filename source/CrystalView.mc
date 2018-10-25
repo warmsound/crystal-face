@@ -627,22 +627,26 @@ class CrystalView extends Ui.WatchFace {
 		return [localRise, localSet];
 	}
 
-	// Return a time string e.g. "12:34p" that respects is24Hour and HideHoursLeadingZero settings.
+	// Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
 	// - hour: 0-23.
 	// - min:  0-59.
 	function getFormattedTime(hour, min) {
 		var amPm = "";
 
 		if (!Sys.getDeviceSettings().is24Hour) {
+
+			// #6 Ensure noon is shown as PM.
 			var isPm = (hour >= 12);
 			if (isPm) {
-				// Show noon as 12, not 00.
+				
+				// But ensure noon is shown as 12, not 00.
 				if (hour > 12) {
 					hour = hour - 12;
 				}
 				amPm = "p";
 			} else {
-				// Show midnght as 12, not 00.
+				
+				// #27 Ensure midnight is shown as 12, not 00.
 				if (hour == 0) {
 					hour = 12;
 				}
@@ -650,9 +654,20 @@ class CrystalView extends Ui.WatchFace {
 			}
 		}
 
-		if (!App.getApp().getProperty("HideHoursLeadingZero")) {
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		// #69 Setting now applies to both 12- and 24-hour modes.
+		if (App.getApp().getProperty("HideHoursLeadingZero")) {
+			hour = hour.format(INTEGER_FORMAT);
+
+		// Otherwise, show leading zero.
+		} else {
 			hour = hour.format("%02d");
 		}
-		return (hour + ":" + min.format("%02d") + amPm);
+
+		return {
+			:hour => hour,
+			:min => min.format("%02d"),
+			:amPm => amPm
+		};
 	}
 }

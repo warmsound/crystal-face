@@ -116,6 +116,7 @@ class DataArea extends Ui.Drawable {
 					timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
 					timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
 					timeZone1Time = App.getApp().getView().getFormattedTime(timeZone1Time.hour, timeZone1Time.min);
+					timeZone1Time = timeZone1Time[:hour] + ":" + timeZone1Time[:min] + timeZone1Time[:amPm]; 
 				}
 
 			// Awaiting response to web request sent by BackgroundService.

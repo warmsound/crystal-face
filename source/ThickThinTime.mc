@@ -65,55 +65,18 @@ class ThickThinTime extends Ui.Drawable {
 		drawSeconds(dc, /* isPartialUpdate */ false);
 	}
 
-	function drawHoursMinutes(dc) {    		
+	function drawHoursMinutes(dc) {
 		var clockTime = Sys.getClockTime();
-		var hours = clockTime.hour;
-		var minutes = clockTime.min.format("%02d");
-
-		var is24Hour = Sys.getDeviceSettings().is24Hour;
-		var isPm = false;
-		var amPmText = "";
-
-		if (!is24Hour) {
-
-			// #6 Ensure noon is shown as PM.
-			if (hours >= 12) {
-				isPm = true;
-
-				// But ensure noon is shown as 12, not 00.
-				if (hours > 12) {
-					hours = hours % 12;
-				}
-
-			// #27 Ensure midnight is shown as 12, not 00.
-			} else if (hours == 0) {
-				hours = 12;
-			}
-			
-			if (isPm) {
-				amPmText = "P";
-			} else {
-				amPmText = "A";
-			}
-		}
-
-		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
-		// #69 Setting now applies to both 12- and 24-hour modes.
-		if (/* !is24Hour && */ App.getApp().getProperty("HideHoursLeadingZero")) {
-			hours = hours.format(INTEGER_FORMAT);
-
-		// Otherwise, show leading zero.
-		} else {
-			hours = hours.format("%02d");
-		}
+		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
+		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		// Vertical (two-line) layout.
 		if (mTwoLineOffset) {
-			drawDoubleLine(dc, hours, minutes, amPmText);
+			drawDoubleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
 
 		// Horizontal (single-line) layout.
 		} else {
-			drawSingleLine(dc, hours, minutes, amPmText);
+			drawSingleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
 		}
 	}
 
