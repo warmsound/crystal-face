@@ -513,7 +513,7 @@ class DataFields extends Ui.Drawable {
 					if (sunriseSunsetToday) {
 
 						// Before sunrise today: today's sunrise is next.
-						if (now > sunTimes[0]) {
+						if (now < sunTimes[0]) {
 							nextSunEvent = sunTimes[0];
 							result["isSunriseNext"] = true;
 
