@@ -540,7 +540,7 @@ class CrystalView extends Ui.WatchFace {
 
 		var now = Time.now();
 		if (tomorrow) {
-			now = now + new Time.Duration(24 * 60 * 60);
+			now = now.add(new Time.Duration(24 * 60 * 60));
 		}
 		var d = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 		var rad = Math.PI / 180.0d;
