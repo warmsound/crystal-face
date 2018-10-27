@@ -65,142 +65,115 @@ class ThickThinTime extends Ui.Drawable {
 		drawSeconds(dc, /* isPartialUpdate */ false);
 	}
 
-	function drawHoursMinutes(dc) {    		
+	function drawHoursMinutes(dc) {
 		var clockTime = Sys.getClockTime();
-		var hours = clockTime.hour;
-		var minutes = clockTime.min.format("%02d");
+		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
+		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
-		var is24Hour = Sys.getDeviceSettings().is24Hour;
-		var isPm = false;
-		var amPmText = "";
+		// Vertical (two-line) layout.
+		if (mTwoLineOffset) {
+			drawDoubleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
 
-		if (!is24Hour) {
-
-			// #6 Ensure noon is shown as PM.
-			if (hours >= 12) {
-				isPm = true;
-
-				// But ensure noon is shown as 12, not 00.
-				if (hours > 12) {
-					hours = hours % 12;
-				}
-
-			// #27 Ensure midnight is shown as 12, not 00.
-			} else if (hours == 0) {
-				hours = 12;
-			}
-			
-			if (isPm) {
-				amPmText = "P";
-			} else {
-				amPmText = "A";
-			}
-		}
-
-		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
-		// #69 Setting now applies to both 12- and 24-hour modes.
-		var isLeadingZeroHidden;
-		if (/* !is24Hour && */ App.getApp().getProperty("HideHoursLeadingZero")) {
-			hours = hours.format(INTEGER_FORMAT);
-
-		// Otherwise, show leading zero.
+		// Horizontal (single-line) layout.
 		} else {
-			hours = hours.format("%02d");
+			drawSingleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
 		}
-		isLeadingZeroHidden = (hours.length() == 1);
+	}
 
+	(:double_line_time)
+	function drawDoubleLine(dc, hours, minutes, amPmText) {
 		var x;
 		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
 
-		// Vertical (two-line) layout.
-		if (mTwoLineOffset) {
+		// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
+		var hoursAscent = Graphics.getFontAscent(mHoursFont);
 
-			// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
-			var hoursAscent = Graphics.getFontAscent(mHoursFont);
+		// #10 hours may be single digit, but calculate layout as if always double-digit.
+		// N.B. Assumes font has tabular (monospaced) numerals.
+		var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
+		x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
 
-			// #10 hours may be single digit, but calculate layout as if always double-digit.
-			// N.B. Assumes font has tabular (monospaced) numerals.
-			var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
-			x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
+		// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
+		dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			halfDCHeight - hoursAscent - (mTwoLineOffset / 2),
+			mHoursFont,
+			hours,
+			Graphics.TEXT_JUSTIFY_RIGHT
+		);
 
-			// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
-			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
+		// Draw minutes, horizontally centred, vertically top aligned.
+		dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			halfDCHeight + (mTwoLineOffset / 2),
+			mMinutesFont,
+			minutes,
+			Graphics.TEXT_JUSTIFY_RIGHT
+		);
+
+		x += AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
+
+		// If required, draw AM/PM after hours, vertically centred.
+		if (amPmText.length() > 0) {
+			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
-				halfDCHeight - hoursAscent - (mTwoLineOffset / 2),
-				mHoursFont,
-				hours,
-				Graphics.TEXT_JUSTIFY_RIGHT
-			);
-
-			// Draw minutes, horizontally centred, vertically top aligned.
-			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				halfDCHeight + (mTwoLineOffset / 2),
-				mMinutesFont,
-				minutes,
-				Graphics.TEXT_JUSTIFY_RIGHT
-			);
-
-			x += AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
-
-			// If required, draw AM/PM after hours, vertically centred.
-			if (!is24Hour) {
-				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
-				dc.drawText(
-					x,
-					halfDCHeight - (hoursAscent / 2) - (mTwoLineOffset / 2),
-					mSecondsFont,
-					amPmText,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
-
-		// Horizontal (single-line) layout.
-		} else {
-
-			// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
-			// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
-			// minutes font is used to calculate total width. 
-			var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
-			x = halfDCWidth - (totalWidth / 2);
-
-			// Draw hours.
-			dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				halfDCHeight,
-				mHoursFont,
-				hours,
+				halfDCHeight - (hoursAscent / 2) - (mTwoLineOffset / 2),
+				mSecondsFont,
+				amPmText,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
-			x += dc.getTextWidthInPixels(hours, mHoursFont);
-
-			// Draw minutes.
-			dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				halfDCHeight,
-				mMinutesFont,
-				minutes,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-			// If required, draw AM/PM after minutes, vertically centred.
-			if (!is24Hour) {
-				dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
-				x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
-				dc.drawText(
-					x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
-					halfDCHeight,
-					mSecondsFont,
-					amPmText,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
 		}
+	}
+
+	(:single_line_time)
+	function drawSingleLine(dc, hours, minutes, amPmText) {
+		var x;
+		var halfDCWidth = dc.getWidth() / 2;
+		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
+
+		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
+		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
+		// minutes font is used to calculate total width. 
+		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
+		x = halfDCWidth - (totalWidth / 2);
+
+		// Draw hours.
+		dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			halfDCHeight,
+			mHoursFont,
+			hours,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+		x += dc.getTextWidthInPixels(hours, mHoursFont);
+
+		// Draw minutes.
+		dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			halfDCHeight,
+			mMinutesFont,
+			minutes,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// If required, draw AM/PM after minutes, vertically centred.
+		if (amPmText.length() > 0) {
+			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+			x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
+			dc.drawText(
+				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+				halfDCHeight,
+				mSecondsFont,
+				amPmText,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}	
 	}
 
 	// Called to draw seconds both as part of full draw(), but also onPartialUpdate() of watch face in low power mode.

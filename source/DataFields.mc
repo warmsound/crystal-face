@@ -6,6 +6,28 @@ using Toybox.Activity as Activity;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.SensorHistory as SensorHistory;
 
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+
+enum /* FIELD_TYPES */ {
+	// Pseudo-fields.
+	FIELD_TYPE_SUNRISE = -1,
+	//FIELD_TYPE_SUNSET = -2,
+
+	// Real fields (used by properties).
+	FIELD_TYPE_HEART_RATE = 0,
+	FIELD_TYPE_BATTERY,
+	FIELD_TYPE_NOTIFICATIONS,
+	FIELD_TYPE_CALORIES,
+	FIELD_TYPE_DISTANCE,
+	FIELD_TYPE_ALARMS,
+	FIELD_TYPE_ALTITUDE,
+	FIELD_TYPE_TEMPERATURE,
+	FIELD_TYPE_BATTERY_HIDE_PERCENT,
+	FIELD_TYPE_HR_LIVE_5S,
+	FIELD_TYPE_SUNRISE_SUNSET
+}
+
 class DataFields extends Ui.Drawable {
 
 	private var mLeft;
@@ -24,19 +46,6 @@ class DataFields extends Ui.Drawable {
 	private var mHasLiveHR = false; // Is a live HR field currently being shown?
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
-
-	private var FIELD_TYPES = [
-		:FIELD_TYPE_HEART_RATE,
-		:FIELD_TYPE_BATTERY,
-		:FIELD_TYPE_NOTIFICATIONS,
-		:FIELD_TYPE_CALORIES,
-		:FIELD_TYPE_DISTANCE,
-		:FIELD_TYPE_ALARMS,
-		:FIELD_TYPE_ALTITUDE,
-		:FIELD_TYPE_TEMPERATURE,
-		:FIELD_TYPE_BATTERY_HIDE_PERCENT,
-		:FIELD_TYPE_HR_LIVE_5S
-	];
 
 	// private const CM_PER_KM = 100000;
 	// private const MI_PER_KM = 0.621371;
@@ -82,9 +91,9 @@ class DataFields extends Ui.Drawable {
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
 		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
 
-		if ((FIELD_TYPES[mFieldTypes[0]] == :FIELD_TYPE_HR_LIVE_5S) ||
-			(FIELD_TYPES[mFieldTypes[1]] == :FIELD_TYPE_HR_LIVE_5S) ||
-			(FIELD_TYPES[mFieldTypes[2]] == :FIELD_TYPE_HR_LIVE_5S)) {
+		if ((mFieldTypes[0] == FIELD_TYPE_HR_LIVE_5S) ||
+			(mFieldTypes[1] == FIELD_TYPE_HR_LIVE_5S) ||
+			(mFieldTypes[2] == FIELD_TYPE_HR_LIVE_5S)) {
 				
 			mHasLiveHR = true;
 		} else {
@@ -122,24 +131,23 @@ class DataFields extends Ui.Drawable {
 	// Both regular and small icon fonts use same spot size for easier optimisation.
 	private const LIVE_HR_SPOT_RADIUS = 3;
 
-	// "fieldType" parameter is raw property value (it's converted to symbol below).
 	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
 		var isBattery = false;
 		var isHeartRate = false;
 		var isLiveHeartRate = false;
 
-		switch (FIELD_TYPES[fieldType]) {
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+		switch (fieldType) {
+			case FIELD_TYPE_BATTERY:
+			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				isBattery = true;
 				break;
 
-			case :FIELD_TYPE_HR_LIVE_5S:
+			case FIELD_TYPE_HR_LIVE_5S:
 				isLiveHeartRate = true;
 				isHeartRate = true;
 				break;
 
-			case :FIELD_TYPE_HEART_RATE:			
+			case FIELD_TYPE_HEART_RATE:			
 				isHeartRate = true;
 				break;
 		}
@@ -173,7 +181,8 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// 1. Value: draw first, as top of text overlaps icon.
-		var value = getValueForFieldType(fieldType);
+		var result = getValueForFieldType(fieldType);
+		var value = result["value"];
 
 		// Optimisation: if live HR remains unavailable, skip the rest of this partial update.
 		var isHRAvailable = isHeartRate && (value.length() != 0);
@@ -209,7 +218,7 @@ class DataFields extends Ui.Drawable {
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
-		if ((value.length() == 0) && (FIELD_TYPES[fieldType] != :FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if ((value.length() == 0) && (fieldType != FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
@@ -229,7 +238,7 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
@@ -240,7 +249,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
@@ -260,7 +269,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+					"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 
@@ -271,7 +280,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontChar(:FIELD_TYPE_HR_LIVE_5S)
+					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
@@ -279,12 +288,17 @@ class DataFields extends Ui.Drawable {
 		// Other icons.
 		} else {
 
+			// #19 Show sunrise icon instead of default sunset icon, if sunrise is next.
+			if ((fieldType == FIELD_TYPE_SUNRISE_SUNSET) && (result["isSunriseNext"] == true)) {
+				fieldType = FIELD_TYPE_SUNRISE;
+			}
+
 			dc.setColor(colour, backgroundColour);
 			dc.drawText(
 				x,
 				mTop,
 				mIconsFont,
-				App.getApp().getView().getIconFontChar(FIELD_TYPES[fieldType]),
+				App.getApp().getView().getIconFontCharForField(fieldType),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -300,7 +314,7 @@ class DataFields extends Ui.Drawable {
 						x,
 						mTop,
 						mIconsFont,
-						"=", // App.getApp().getView().getIconFontChar(:LIVE_HR_SPOT)
+						"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
 						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 					);
 				}
@@ -308,9 +322,11 @@ class DataFields extends Ui.Drawable {
 		}
 	}
 
-	// "type" parameter is raw property value (it's converted to symbol below).
-	// Return empty string if value cannot be retrieved (e.g. unavailable, or unsupported).
+	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
+	// result["isSunriseNext"] indicates that sunrise icon should be shown for FIELD_TYPE_SUNRISE_SUNSET, rather than default
+	// sunset icon.
 	private function getValueForFieldType(type) {
+		var result = {};
 		var value = "";
 
 		var activityInfo;
@@ -321,12 +337,16 @@ class DataFields extends Ui.Drawable {
 		var distance;
 		var altitude;
 		var temperature;
+		var location;
+		var lat;
+		var lng;
+		var sunTimes;
 		var format;
 		var unit;
 
-		switch (FIELD_TYPES[type]) {
-			case :FIELD_TYPE_HEART_RATE:
-			case :FIELD_TYPE_HR_LIVE_5S:
+		switch (type) {
+			case FIELD_TYPE_HEART_RATE:
+			case FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
 				activityInfo = Activity.getActivityInfo();
 				sample = activityInfo.currentHeartRate;
@@ -341,29 +361,29 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
-			case :FIELD_TYPE_BATTERY:
+			case FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
 				battery = Math.floor(Sys.getSystemStats().battery);
 				value = battery.format(INTEGER_FORMAT) + "%";
 				break;
 
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
+			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
 				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
 				break;
 
-			case :FIELD_TYPE_NOTIFICATIONS:
+			case FIELD_TYPE_NOTIFICATIONS:
 				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format(INTEGER_FORMAT);
 				}
 				break;
 
-			case :FIELD_TYPE_CALORIES:
+			case FIELD_TYPE_CALORIES:
 				activityInfo = ActivityMonitor.getInfo();
 				value = activityInfo.calories.format(INTEGER_FORMAT);
 				break;
 
-			case :FIELD_TYPE_DISTANCE:
+			case FIELD_TYPE_DISTANCE:
 				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
 				distance = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
@@ -384,15 +404,15 @@ class DataFields extends Ui.Drawable {
 				
 				break;
 
-			case :FIELD_TYPE_ALARMS:
+			case FIELD_TYPE_ALARMS:
 				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
 					value = settings.alarmCount.format(INTEGER_FORMAT);
 				}
 				break;
 
-			case :FIELD_TYPE_ALTITUDE:
-				// #67 Try to retrieve altitude from current activity, before falling back to elevation history.
+			case FIELD_TYPE_ALTITUDE:
+				// #67 Try to retrieve altitude from current activity, before falling back on elevation history.
 				// Note that Activity::Info.altitude is supported by CIQ 1.x, but elevation history only on select CIQ 2.x
 				// devices.
 				activityInfo = Activity.getActivityInfo();
@@ -426,7 +446,7 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
-			case :FIELD_TYPE_TEMPERATURE:
+			case FIELD_TYPE_TEMPERATURE:
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
 					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
 					sample = iterator.next();
@@ -450,8 +470,91 @@ class DataFields extends Ui.Drawable {
 					}
 				}
 				break;
+
+			case FIELD_TYPE_SUNRISE_SUNSET:
+				// #19 Check if location is available from current activity, before falling back on last location from settings.
+				activityInfo = Activity.getActivityInfo();
+				location = activityInfo.currentLocation;
+				if (location != null) {
+					location = location.toDegrees();
+					lat = location[0];
+					lng = location[1];
+
+					// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
+					App.getApp().setProperty("LastLocationLat", lat.toLong());
+					App.getApp().setProperty("LastLocationLng", lng.toLong());
+				} else {
+					lat = App.getApp().getProperty("LastLocationLat");
+					if (lat == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
+						lat = null;
+					}
+
+					lng = App.getApp().getProperty("LastLocationLng");
+					if (lng == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
+						lng = null;
+					}
+				}
+
+				if ((lat != null) and (lng != null)) {
+					var nextSunEvent = 0;
+					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+					now = now.hour + ((now.min + 1) / 60.0);
+					//Sys.println(now);
+
+					// Get today's sunrise/sunset times in current time zone.
+					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ false);
+					//Sys.println(sunTimes);
+
+					// If sunrise/sunset happens today.
+					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+					if (sunriseSunsetToday) {
+
+						// Before sunrise today: today's sunrise is next.
+						if (now < sunTimes[0]) {
+							nextSunEvent = sunTimes[0];
+							result["isSunriseNext"] = true;
+
+						// After sunrise today, before sunset today: today's sunset is next.
+						} else if (now < sunTimes[1]) {
+							nextSunEvent = sunTimes[1];
+
+						// After sunset today: tomorrow's sunrise (if any) is next.
+						} else {
+							sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ true);
+							nextSunEvent = sunTimes[0];
+							result["isSunriseNext"] = true;
+						}
+					}
+
+					// Sun never rises/sets today.
+					if (!sunriseSunsetToday) {
+						value = "---";
+
+						// Sun never rises: sunrise is next, but more than a day from now.
+						if (sunTimes[0] == null) {
+							result["isSunriseNext"] = true;
+						}
+
+					// We have a sunrise/sunset time.
+					} else {
+						var hour = Math.floor(nextSunEvent).toLong() % 24;
+						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
+						value = App.getApp().getView().getFormattedTime(hour, min);
+						value = value[:hour] + ":" + value[:min] + value[:amPm]; 
+					}
+
+				// Waiting for location.
+				} else {
+					value = "...";
+				}
+
+				break;
 		}
 
-		return value;
+		result["value"] = value;
+		return result;
 	}
 }

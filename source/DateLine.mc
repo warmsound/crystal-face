@@ -10,59 +10,34 @@ class DateLine extends Ui.Drawable {
 	private var mY;	
 	private var mYLine2;
 
-	private var mDayOfWeekStrings;
-	private var mMonthStrings;
+	private var mDayOfWeek;
+	private var mDayOfWeekString;
+
+	private var mMonth;
+	private var mMonthString;
 
 	private var mFont;
 
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mDayOfWeekStrings = [
-			Ui.loadResource(Rez.Strings.Sun),
-			Ui.loadResource(Rez.Strings.Mon),
-			Ui.loadResource(Rez.Strings.Tue),
-			Ui.loadResource(Rez.Strings.Wed),
-			Ui.loadResource(Rez.Strings.Thu),
-			Ui.loadResource(Rez.Strings.Fri),
-			Ui.loadResource(Rez.Strings.Sat),
-		];
-
-		mMonthStrings = [
-			Ui.loadResource(Rez.Strings.Jan),
-			Ui.loadResource(Rez.Strings.Feb),
-			Ui.loadResource(Rez.Strings.Mar),
-			Ui.loadResource(Rez.Strings.Apr),
-			Ui.loadResource(Rez.Strings.May),
-			Ui.loadResource(Rez.Strings.Jun),
-			Ui.loadResource(Rez.Strings.Jul),
-			Ui.loadResource(Rez.Strings.Aug),
-			Ui.loadResource(Rez.Strings.Sep),
-			Ui.loadResource(Rez.Strings.Oct),
-			Ui.loadResource(Rez.Strings.Nov),
-			Ui.loadResource(Rez.Strings.Dec),
-		];
+		var rezFonts = Rez.Fonts;
+		var resourceMap = {
+			"ZHS" => rezFonts.DateFontOverrideZHS,
+			"ZHT" => rezFonts.DateFontOverrideZHT,
+			"RUS" => rezFonts.DateFontOverrideRUS
+		};
+		var dateFont;
 
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
 		// string, then override font in code.
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
-		switch (dateFontOverride) {
-			case "ZHS":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHS);
-				break;
-
-			case "ZHT":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideZHT);
-				break;
-
-			case "RUS":
-				mFont  = Ui.loadResource(Rez.Fonts.DateFontOverrideRUS);
-				break;
-
-			default:
-				mFont  = Ui.loadResource(Rez.Fonts.DateFont);
-				break;
+		if (resourceMap.hasKey(dateFontOverride)) {
+			dateFont = resourceMap[dateFontOverride];
+		} else {
+			dateFont = rezFonts.DateFont;
 		}
+		mFont = Ui.loadResource(dateFont);
 
 		mX = params[:x];
 		mY = params[:y];
@@ -71,88 +46,130 @@ class DateLine extends Ui.Drawable {
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.
 	function draw(dc) {
+		var rezStrings = Rez.Strings;
+		var resourceArray;
 
 		// Supply DOW/month strings ourselves, rather than relying on Time.FORMAT_MEDIUM, as latter is inconsistent e.g. returns
 		// "Thurs" instead of "Thu".
+		// Load strings just-in-time, to save memory. They rarely change, so worthwhile trade-off.
 		var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
-		var dayOfWeek = mDayOfWeekStrings[now.day_of_week - 1].toUpper(); // DOWs are zero-based, starting Sunday.
+		var dayOfWeek = now.day_of_week;
+		if (dayOfWeek != mDayOfWeek) {
+			mDayOfWeek = dayOfWeek;
+			
+			resourceArray = [
+				rezStrings.Sun,
+				rezStrings.Mon,
+				rezStrings.Tue,
+				rezStrings.Wed,
+				rezStrings.Thu,
+				rezStrings.Fri,
+				rezStrings.Sat
+				];
+			mDayOfWeekString = Ui.loadResource(resourceArray[mDayOfWeek - 1]).toUpper();
+		}
+
+		var month = now.month;
+		if (month != mMonth) {
+			mMonth = month;
+
+			resourceArray = [
+				rezStrings.Jan,
+				rezStrings.Feb,
+				rezStrings.Mar,
+				rezStrings.Apr,
+				rezStrings.May,
+				rezStrings.Jun,
+				rezStrings.Jul,
+				rezStrings.Aug,
+				rezStrings.Sep,
+				rezStrings.Oct,
+				rezStrings.Nov,
+				rezStrings.Dec
+				];
+			mMonthString = Ui.loadResource(resourceArray[mMonth - 1]).toUpper();
+		}
+
 		var day = now.day.format(INTEGER_FORMAT);
-		var month = mMonthStrings[now.month - 1].toUpper(); // Months are zero-based, starting January.
 
 		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");
 		var monoLightColour = App.getApp().getProperty("MonoLightColour");
 
-		// drawDoubleLine(dc, dayOfWeek, day, month);
 		if (mYLine2 != null) {
-
-			// Draw day of week, left-aligned at (mX, mY).
-			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				mX,
-				mY,
-				mFont,
-				dayOfWeek,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-			// Draw month, left-aligned at (mX, mYLine2).
-			dc.drawText(
-				mX,
-				mYLine2,
-				mFont,
-				month,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-			// Draw day, after day of week.
-			dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				mX + dc.getTextWidthInPixels(dayOfWeek + " ", mFont),
-				mY,
-				mFont,
-				day,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-		// drawSingleLine(dc, dayOfWeek, day, month);
+			drawDoubleLine(dc, day, monoDarkColour, monoLightColour);
 		} else {
-
-			var dateString = Lang.format("$1$ $2$ $3$", [dayOfWeek, day, month]);
-			var length = dc.getTextWidthInPixels(dateString, mFont);
-			var x = (dc.getWidth() / 2) - (length / 2);
-			
-			// Draw day of week.
-			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mY,
-				mFont,
-				dayOfWeek,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-			x += dc.getTextWidthInPixels(dayOfWeek + " ", mFont);
-
-			// Draw day.
-			dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mY,
-				mFont,
-				day,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-			x += dc.getTextWidthInPixels(day + " ", mFont);
-
-			// Draw month.
-			dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mY,
-				mFont,
-				month,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
+			drawSingleLine(dc, day, monoDarkColour, monoLightColour);
 		}
+	}
+
+	(:double_line_date)
+	function drawDoubleLine(dc, day, monoDarkColour, monoLightColour) {
+		// Draw day of week, left-aligned at (mX, mY).
+		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			mX,
+			mY,
+			mFont,
+			mDayOfWeekString,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// Draw month, left-aligned at (mX, mYLine2).
+		dc.drawText(
+			mX,
+			mYLine2,
+			mFont,
+			mMonthString,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+
+		// Draw day, after day of week.
+		dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			mX + dc.getTextWidthInPixels(mDayOfWeekString + " ", mFont),
+			mY,
+			mFont,
+			day,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+	}
+
+	function drawSingleLine(dc, day, monoDarkColour, monoLightColour) {
+		var dateString = Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]);
+		var length = dc.getTextWidthInPixels(dateString, mFont);
+		var x = (dc.getWidth() / 2) - (length / 2);
+		
+		// Draw day of week.
+		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			mY,
+			mFont,
+			mDayOfWeekString,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+		x += dc.getTextWidthInPixels(mDayOfWeekString + " ", mFont);
+
+		// Draw day.
+		dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			mY,
+			mFont,
+			day,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+		x += dc.getTextWidthInPixels(day + " ", mFont);
+
+		// Draw month.
+		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			mY,
+			mFont,
+			mMonthString,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
 	}
 }

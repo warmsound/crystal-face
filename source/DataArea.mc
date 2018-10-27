@@ -32,7 +32,7 @@ class DataArea extends Ui.Drawable {
 	function setGoalValues(leftValues, rightValues) {
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("LeftGoalType") == -1) { // :GOAL_TYPE_BATTERY
+			if (App.getApp().getProperty("LeftGoalType") == GOAL_TYPE_BATTERY) {
 				mLeftGoalMax = "%";
 			} else {
 				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
@@ -44,7 +44,7 @@ class DataArea extends Ui.Drawable {
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("RightGoalType") == -1) { // :GOAL_TYPE_BATTERY
+			if (App.getApp().getProperty("RightGoalType") == GOAL_TYPE_BATTERY) {
 				mRightGoalMax = "%";
 			} else {
 				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);
@@ -115,31 +115,8 @@ class DataArea extends Ui.Drawable {
 					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
 					timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
 					timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
-
-					var amPm = "";
-					var hour = timeZone1Time.hour;
-
-					if (!Sys.getDeviceSettings().is24Hour) {
-						var isPm = (hour >= 12);
-						if (isPm) {
-							// Show noon as 12, not 00.
-							if (hour > 12) {
-								hour = hour - 12;
-							}
-							amPm = "p";
-						} else {
-							// Show midnght as 12, not 00.
-							if (hour == 0) {
-								hour = 12;
-							}
-							amPm = "a";
-						}
-					}
-
-					if (!App.getApp().getProperty("HideHoursLeadingZero")) {
-						hour = hour.format("%02d");
-					}				
-					timeZone1Time = hour + ":" + timeZone1Time.min.format("%02d") + amPm;
+					timeZone1Time = App.getApp().getView().getFormattedTime(timeZone1Time.hour, timeZone1Time.min);
+					timeZone1Time = timeZone1Time[:hour] + ":" + timeZone1Time[:min] + timeZone1Time[:amPm]; 
 				}
 
 			// Awaiting response to web request sent by BackgroundService.

@@ -6,7 +6,6 @@ char id=48   x=0     y=0     width=21    height=24    xoffset=1     yoffset=0   
 char id=49   x=22    y=0     width=24    height=24    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
 char id=50   x=47    y=0     width=24    height=24    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
 char id=51   x=72    y=0     width=24    height=24    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
-char id=52   x=97    y=0     width=28    height=24    xoffset=0     yoffset=0    xadvance=28    page=0  chnl=15
 char id=53   x=126   y=0     width=24    height=24    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
 char id=54   x=151   y=0     width=14    height=24    xoffset=5     yoffset=0    xadvance=24    page=0  chnl=15
 char id=55   x=166   y=0     width=22    height=24    xoffset=0     yoffset=0    xadvance=22    page=0  chnl=15
@@ -16,3 +15,5 @@ char id=58   x=233   y=0     width=21    height=24    xoffset=0     yoffset=0   
 char id=59   x=0     y=25    width=24    height=24    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
 char id=60   x=25    y=25    width=12    height=24    xoffset=6     yoffset=0    xadvance=24    page=0  chnl=15
 char id=61   x=38    y=25    width=6     height=6     xoffset=0     yoffset=9    xadvance=6     page=0  chnl=15
+char id=62   x=47    y=25    width=28    height=24    xoffset=0     yoffset=0    xadvance=28    page=0  chnl=15
+char id=63   x=76    y=25    width=28    height=24    xoffset=0     yoffset=0    xadvance=28    page=0  chnl=15

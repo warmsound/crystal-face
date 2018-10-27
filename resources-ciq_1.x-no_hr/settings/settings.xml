@@ -40,6 +40,7 @@
 	<setting propertyKey="@Properties.Field1Type" title="@Strings.DataField1Title">
 		<settingConfig type="list">
 			<!--listEntry value="0">@Strings.HeartRate</listEntry-->
+			<!--listEntry value="9">@Strings.HeartRateLive5s</listEntry-->
 			<listEntry value="1">@Strings.Battery</listEntry>
 			<listEntry value="8">@Strings.BatteryHidePercentage</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
@@ -48,12 +49,14 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.Field2Type" title="@Strings.DataField2Title">
 		<settingConfig type="list">
 			<!--listEntry value="0">@Strings.HeartRate</listEntry-->
+			<!--listEntry value="9">@Strings.HeartRateLive5s</listEntry-->
 			<listEntry value="1">@Strings.Battery</listEntry>
 			<listEntry value="8">@Strings.BatteryHidePercentage</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
@@ -62,12 +65,14 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.Field3Type" title="@Strings.DataField3Title">
 		<settingConfig type="list">
 			<!--listEntry value="0">@Strings.HeartRate</listEntry-->
+			<!--listEntry value="9">@Strings.HeartRateLive5s</listEntry-->
 			<listEntry value="1">@Strings.Battery</listEntry>
 			<listEntry value="8">@Strings.BatteryHidePercentage</listEntry>
 			<listEntry value="2">@Strings.Notifications</listEntry>
@@ -76,6 +81,7 @@
 			<listEntry value="5">@Strings.Alarms</listEntry>
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
+			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 		</settingConfig>
 	</setting>
 

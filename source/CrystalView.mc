@@ -4,6 +4,9 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+
 const INTEGER_FORMAT = "%d";
 
 class CrystalView extends Ui.WatchFace {
@@ -26,33 +29,35 @@ class CrystalView extends Ui.WatchFace {
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
-	private var THEMES = [
-		:THEME_BLUE_DARK,
-		:THEME_PINK_DARK,
-		:THEME_GREEN_DARK,
-		:THEME_MONO_LIGHT,
-		:THEME_CORNFLOWER_BLUE_DARK,
-		:THEME_LEMON_CREAM_DARK,
-		:THEME_DAYGLO_ORANGE_DARK,
-		:THEME_RED_DARK,
-		:THEME_MONO_DARK,
-		:THEME_BLUE_LIGHT,
-		:THEME_GREEN_LIGHT,
-		:THEME_RED_LIGHT,
-		:THEME_VIVID_YELLOW_DARK,
-	];
+	// private enum /* THEMES */ {
+	// 	THEME_BLUE_DARK,
+	// 	THEME_PINK_DARK,
+	// 	THEME_GREEN_DARK,
+	// 	THEME_MONO_LIGHT,
+	// 	THEME_CORNFLOWER_BLUE_DARK,
+	// 	THEME_LEMON_CREAM_DARK,
+	// 	THEME_DAYGLO_ORANGE_DARK,
+	// 	THEME_RED_DARK,
+	// 	THEME_MONO_DARK,
+	// 	THEME_BLUE_LIGHT,
+	// 	THEME_GREEN_LIGHT,
+	// 	THEME_RED_LIGHT,
+	// 	THEME_VIVID_YELLOW_DARK
+	// }
 
-	private var COLOUR_OVERRIDES = {
-		-1 => :FROM_THEME,
-		-2 => :MONO_HIGHLIGHT,
-		-3 => :MONO
-	};
+	// private enum /* COLOUR_OVERRIDES */ {
+	// 	FROM_THEME = -1,
+	// 	MONO_HIGHLIGHT = -2,
+	// 	MONO = -3
+	// }
 
 	function initialize() {
 		WatchFace.initialize();
 
 		updateThemeColours();
-		updateHoursMinutesColours();		
+		updateHoursMinutesColours();
+
+		//Sys.println(getSunTimes(51.748124, -0.461689, null));
 	}
 
 	// Load your resources here
@@ -143,130 +148,72 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateThemeColours() {
-		var theme = THEMES[App.getApp().getProperty("Theme")];
+		var theme = App.getApp().getProperty("Theme");
 
 		// Theme-specific colours.
-		var themeColour;
-		switch (theme) {
-			case :THEME_BLUE_DARK:
-				themeColour = Graphics.COLOR_BLUE;
-				break;
-			
-			case :THEME_PINK_DARK:
-				themeColour = Graphics.COLOR_PINK;
-				break;
-
-			case :THEME_GREEN_DARK:
-				themeColour = Graphics.COLOR_GREEN;
-				break;
-
-			case :THEME_MONO_LIGHT:
-				themeColour = Graphics.COLOR_DK_GRAY;
-				break;
-
-			case :THEME_CORNFLOWER_BLUE_DARK:
-				themeColour = 0x55AAFF;
-				break;
-
-			case :THEME_LEMON_CREAM_DARK:
-				themeColour = 0xFFFFAA;
-				break;
-
-			case :THEME_VIVID_YELLOW_DARK:
-				themeColour = 0xFFFF00;
-				break;
-
-			case :THEME_DAYGLO_ORANGE_DARK:
-				themeColour = Graphics.COLOR_ORANGE;
-				break;
-
-			case :THEME_RED_DARK:
-				themeColour = Graphics.COLOR_RED;
-				break;
-
-			case :THEME_MONO_DARK:
-				themeColour = Graphics.COLOR_WHITE;
-				break;
-
-			case :THEME_BLUE_LIGHT:
-				themeColour = Graphics.COLOR_DK_BLUE;
-				break;
-
-			case :THEME_GREEN_LIGHT:
-				themeColour = Graphics.COLOR_DK_GREEN;
-				break;
-
-			case :THEME_RED_LIGHT:
-				themeColour = Graphics.COLOR_DK_RED;
-				break;
-		}
-		App.getApp().setProperty("ThemeColour", themeColour); 
+		var themeColours = [
+			Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
+			Graphics.COLOR_PINK,     // THEME_PINK_DARK
+			Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
+			Graphics.COLOR_DK_GRAY,  // THEME_MONO_LIGHT
+			0x55AAFF,                // THEME_CORNFLOWER_BLUE_DARK
+			0xFFFFAA,                // THEME_LEMON_CREAM_DARK
+			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_DARK
+			Graphics.COLOR_RED,      // THEME_RED_DARK
+			Graphics.COLOR_WHITE,    // THEME_MONO_DARK
+			Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
+			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
+			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
+			0xFFFF00                 // THEME_VIVID_YELLOW_DARK
+		];
+		App.getApp().setProperty("ThemeColour", themeColours[theme]); 
 
 		// Light/dark-specific colours.
-		switch (theme) {
-			case :THEME_BLUE_DARK:
-			case :THEME_PINK_DARK:
-			case :THEME_GREEN_DARK:
-			case :THEME_CORNFLOWER_BLUE_DARK:
-			case :THEME_LEMON_CREAM_DARK:
-			case :THEME_VIVID_YELLOW_DARK:
-			case :THEME_DAYGLO_ORANGE_DARK:
-			case :THEME_RED_DARK:
-			case :THEME_MONO_DARK:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+		var lightFlags = [
+			false, // THEME_BLUE_DARK
+			false, // THEME_PINK_DARK
+			false, // THEME_GREEN_DARK
+			true,  // THEME_MONO_LIGHT
+			false, // THEME_CORNFLOWER_BLUE_DARK
+			false, // THEME_LEMON_CREAM_DARK
+			false, // THEME_DAYGLO_ORANGE_DARK
+			false, // THEME_RED_DARK
+			false, // THEME_MONO_DARK
+			true,  // THEME_BLUE_LIGHT
+			true,  // THEME_GREEN_LIGHT
+			true,  // THEME_RED_LIGHT
+			false  // THEME_VIVID_YELLOW_DARK
+		];
+		if (lightFlags[theme]) {
+			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
+			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
+			
+			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
+			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+		} else {
+			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
+			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
 
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
-				break;
-
-			case :THEME_MONO_LIGHT:
-			case :THEME_BLUE_LIGHT:
-			case :THEME_GREEN_LIGHT:
-			case :THEME_RED_LIGHT:
-				App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
-				App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
-				
-				App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
-				App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
-				break;
+			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
+			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
 		}
 	}
 
 	function updateHoursMinutesColours() {
+		var overrideMap = {
+			-1 => "ThemeColour",     // FROM_THEME
+			-2 => "MonoLightColour", // MONO_HIGHLIGHT
+			-3 => "MonoDarkColour"   // MONO
+		};
 
 		// Hours colour.
-		var hoursColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("HoursColourOverride")]) {
-			case :FROM_THEME:
-				hoursColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case :MONO_HIGHLIGHT:
-				hoursColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case :MONO:
-				hoursColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
+		var hoursColourOverride = App.getApp().getProperty("HoursColourOverride");
+		var hoursColour = App.getApp().getProperty(overrideMap[hoursColourOverride]);
 		App.getApp().setProperty("HoursColour", hoursColour);
 
 		// Minutes colour.
-		var minutesColour;
-		switch (COLOUR_OVERRIDES[App.getApp().getProperty("MinutesColourOverride")]) {
-			case :FROM_THEME:
-				minutesColour = App.getApp().getProperty("ThemeColour");
-				break;
-
-			case :MONO_HIGHLIGHT:
-				minutesColour = App.getApp().getProperty("MonoLightColour");
-				break;
-
-			case :MONO:
-				minutesColour = App.getApp().getProperty("MonoDarkColour");
-				break;
-		}
+		var MinutesColourOverride = App.getApp().getProperty("MinutesColourOverride");
+		var minutesColour = App.getApp().getProperty(overrideMap[MinutesColourOverride]);
 		App.getApp().setProperty("MinutesColour", minutesColour);
 	}
 
@@ -311,13 +258,13 @@ class CrystalView extends Ui.WatchFace {
 
 	function updateGoalMeters() {
 		var leftValues = updateGoalMeter(
-			getGoalType(App.getApp().getProperty("LeftGoalType")),
+			App.getApp().getProperty("LeftGoalType"),
 			mDrawables[:LeftGoalMeter],
 			mDrawables[:LeftGoalIcon]
 		);
 
 		var rightValues = updateGoalMeter(
-			getGoalType(App.getApp().getProperty("RightGoalType")),
+			App.getApp().getProperty("RightGoalType"),
 			mDrawables[:RightGoalMeter],
 			mDrawables[:RightGoalIcon]
 		);
@@ -333,7 +280,28 @@ class CrystalView extends Ui.WatchFace {
 
 		// Icon label.
 		iconLabel.setFont(mIconsFont);
-		iconLabel.setText(getIconFontChar(goalType));
+
+		var iconFontChar;
+		switch (goalType) {
+			case GOAL_TYPE_BATTERY:
+				iconFontChar = "9";
+				break;
+			case GOAL_TYPE_CALORIES:
+				iconFontChar = "6";
+				break;
+			case GOAL_TYPE_STEPS:
+				iconFontChar = "0";
+				break;
+			case GOAL_TYPE_FLOORS_CLIMBED:
+				iconFontChar = "1";
+				break;
+			case GOAL_TYPE_ACTIVE_MINUTES:
+				iconFontChar = "2";
+				break;
+		}
+
+		iconLabel.setText(iconFontChar);
+
 		if (values[:isValid]) {
 			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
 		} else {
@@ -344,57 +312,37 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	// Replace dictionary with function to save memory.
-	function getGoalType(goalProperty) {
-		switch (goalProperty) {
-			case App.GOAL_TYPE_STEPS:
-				return :GOAL_TYPE_STEPS;
-			case App.GOAL_TYPE_FLOORS_CLIMBED:
-				return :GOAL_TYPE_FLOORS_CLIMBED;
-			case App.GOAL_TYPE_ACTIVE_MINUTES:
-				return :GOAL_TYPE_ACTIVE_MINUTES;
-			case -1:
-				return :GOAL_TYPE_BATTERY;
-			case -2:
-				return :GOAL_TYPE_CALORIES;
-		}
-	}
-
-	// Replace dictionary with function to save memory.
-	function getIconFontChar(fieldType) {
+	function getIconFontCharForField(fieldType) {
 		switch (fieldType) {
-			case :GOAL_TYPE_STEPS:
-				return "0";
-			case :GOAL_TYPE_FLOORS_CLIMBED:
-				return "1";
-			case :GOAL_TYPE_ACTIVE_MINUTES:
-				return "2";
-			case :FIELD_TYPE_HEART_RATE:
-			case :FIELD_TYPE_HR_LIVE_5S:
+			case FIELD_TYPE_SUNRISE:
+				return ">";
+			//case FIELD_TYPE_SUNSET:
+			//	return "?";
+
+			case FIELD_TYPE_HEART_RATE:
+			case FIELD_TYPE_HR_LIVE_5S:
 				return "3";
-			case :FIELD_TYPE_BATTERY:
-			case :FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				return "4";
-			case :FIELD_TYPE_NOTIFICATIONS:
-			case :INDICATOR_TYPE_NOTIFICATIONS:
+			//case FIELD_TYPE_BATTERY:
+			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+			//	return "4";
+			case FIELD_TYPE_NOTIFICATIONS:
 				return "5";
-			case :FIELD_TYPE_CALORIES:
-			case :GOAL_TYPE_CALORIES:
-				return "6"; // Use calories icon for both field and goal.
-			case :FIELD_TYPE_DISTANCE:
+			case FIELD_TYPE_CALORIES:
+				return "6";
+			case FIELD_TYPE_DISTANCE:
 				return "7";
-			case :INDICATOR_TYPE_BLUETOOTH:
-				return "8";
-			case :GOAL_TYPE_BATTERY:
-				return "9";
-			case :FIELD_TYPE_ALARMS:
-			case :INDICATOR_TYPE_ALARMS:
+			case FIELD_TYPE_ALARMS:
 				return ":";
-			case :FIELD_TYPE_ALTITUDE:
+			case FIELD_TYPE_ALTITUDE:
 				return ";";
-			case :FIELD_TYPE_TEMPERATURE:
+			case FIELD_TYPE_TEMPERATURE:
 				return "<";
-			// case :LIVE_HR_SPOT:
+			// case LIVE_HR_SPOT:
 			// 	return "=";
+			
+			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
+			//case FIELD_TYPE_SUNSET:
+				return "?";
 		}
 	}
 
@@ -408,12 +356,12 @@ class CrystalView extends Ui.WatchFace {
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
-			case :GOAL_TYPE_STEPS:
+			case GOAL_TYPE_STEPS:
 				values[:current] = info.steps;
 				values[:max] = info.stepGoal;
 				break;
 
-			case :GOAL_TYPE_FLOORS_CLIMBED:
+			case GOAL_TYPE_FLOORS_CLIMBED:
 				if (info has :floorsClimbed) {
 					values[:current] = info.floorsClimbed;
 					values[:max] = info.floorsClimbedGoal;
@@ -423,7 +371,7 @@ class CrystalView extends Ui.WatchFace {
 				
 				break;
 
-			case :GOAL_TYPE_ACTIVE_MINUTES:
+			case GOAL_TYPE_ACTIVE_MINUTES:
 				if (info has :activeMinutesWeek) {
 					values[:current] = info.activeMinutesWeek.total;
 					values[:max] = info.activeMinutesWeekGoal;
@@ -432,13 +380,13 @@ class CrystalView extends Ui.WatchFace {
 				}
 				break;
 
-			case :GOAL_TYPE_BATTERY:
+			case GOAL_TYPE_BATTERY:
 				// #8: floor() battery to be consistent.
 				values[:current] = Math.floor(Sys.getSystemStats().battery);
 				values[:max] = 100;
 				break;
 
-			case :GOAL_TYPE_CALORIES:
+			case GOAL_TYPE_CALORIES:
 				values[:current] = info.calories;
 				values[:max] = App.getApp().getProperty("CaloriesGoal");
 				break;
@@ -564,5 +512,167 @@ class CrystalView extends Ui.WatchFace {
 			y - (height / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
 			Math.ceil(fillWidth * (batteryLevel / 100)), 
 			height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
+	}
+
+	/**
+	* With thanks to ruiokada. Adapted, then translated to Monkey C, from:
+	* https://gist.github.com/ruiokada/b28076d4911820ddcbbc
+	*
+	* Calculates sunrise and sunset in local time given latitude, longitude, and tz.
+	*
+	* Equations taken from:
+	* https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_or_Gregorian_calendar_date_to_Julian_Day_Number
+	* https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
+	*
+	* @method getSunTimes
+	* @param {Float} lat Latitude of location (South is negative)
+	* @param {Float} lng Longitude of location (West is negative)
+	* @param {Integer || null} tz Timezone hour offset. e.g. Pacific/Los Angeles is -8 (Specify null for system timezone)
+	* @param {Boolean} tomorrow Calculate tomorrow's sunrise and sunset, instead of today's.
+	* @return {Array} Returns array of length 2 with sunrise and sunset as floats.
+	*                 Returns array with [null, -1] if the sun never rises, and [-1, null] if the sun never sets.
+	*/
+	function getSunTimes(lat, lng, tz, tomorrow) {
+
+		// Use double precision where possible, as floating point errors can affect result by minutes.
+		lat = lat.toDouble();
+		lng = lng.toDouble();
+
+		var now = Time.now();
+		if (tomorrow) {
+			now = now.add(new Time.Duration(24 * 60 * 60));
+		}
+		var d = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+		var rad = Math.PI / 180.0d;
+		var deg = 180.0d / Math.PI;
+		
+		// Calculate Julian date from Gregorian.
+		var a = Math.floor((14 - d.month) / 12);
+		var y = d.year + 4800 - a;
+		var m = d.month + (12 * a) - 3;
+		var jDate = d.day
+			+ Math.floor(((153 * m) + 2) / 5)
+			+ (365 * y)
+			+ Math.floor(y / 4)
+			- Math.floor(y / 100)
+			+ Math.floor(y / 400)
+			- 32045;
+
+		// Number of days since Jan 1st, 2000 12:00.
+		var n = jDate - 2451545.0d + 0.0008d;
+		//Sys.println("n " + n);
+
+		// Mean solar noon.
+		var jStar = n - (lng / 360.0d);
+		//Sys.println("jStar " + jStar);
+
+		// Solar mean anomaly.
+		var M = 357.5291d + (0.98560028d * jStar);
+		var MFloor = Math.floor(M);
+		var MFrac = M - MFloor;
+		M = MFloor.toLong() % 360;
+		M = M + MFrac;
+		//Sys.println("M " + M);
+
+		// Equation of the centre.
+		var C = 1.9148d * Math.sin(M * rad)
+			+ 0.02d * Math.sin(2 * M * rad)
+			+ 0.0003d * Math.sin(3 * M * rad);
+		//Sys.println("C " + C);
+
+		// Ecliptic longitude.
+		var lambda = (M + C + 180 + 102.9372d);
+		var lambdaFloor = Math.floor(lambda);
+		var lambdaFrac = lambda - lambdaFloor;
+		lambda = lambdaFloor.toLong() % 360;
+		lambda = lambda + lambdaFrac;
+		//Sys.println("lambda " + lambda);
+
+		// Solar transit.
+		var jTransit = 2451545.5d + jStar
+			+ 0.0053d * Math.sin(M * rad)
+			- 0.0069d * Math.sin(2 * lambda * rad);
+		//Sys.println("jTransit " + jTransit);
+
+		// Declination of the sun.
+		var delta = Math.asin(Math.sin(lambda * rad) * Math.sin(23.44d * rad));
+		//Sys.println("delta " + delta);
+
+		// Hour angle.
+		var cosOmega = (Math.sin(-0.83d * rad) - Math.sin(lat * rad) * Math.sin(delta))
+			/ (Math.cos(lat * rad) * Math.cos(delta));
+		//Sys.println("cosOmega " + cosOmega);
+
+		// Sun never rises.
+		if (cosOmega > 1) {
+			return [null, -1];
+		}
+		
+		// Sun never sets.
+		if (cosOmega < -1) {
+			return [-1, null];
+		}
+		
+		// Calculate times from omega.
+		var omega = Math.acos(cosOmega) * deg;
+		var jSet = jTransit + (omega / 360.0);
+		var jRise = jTransit - (omega / 360.0);
+		var deltaJSet = jSet - jDate;
+		var deltaJRise = jRise - jDate;
+
+		var tzOffset;
+		if (tz == null) {
+			tzOffset = (Sys.getClockTime().timeZoneOffset / 3600);
+		} else {
+			tzOffset = tz;
+		}
+		
+		var localRise = (deltaJRise * 24) + tzOffset;
+		var localSet = (deltaJSet * 24) + tzOffset;
+		return [localRise, localSet];
+	}
+
+	// Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
+	// - hour: 0-23.
+	// - min:  0-59.
+	function getFormattedTime(hour, min) {
+		var amPm = "";
+
+		if (!Sys.getDeviceSettings().is24Hour) {
+
+			// #6 Ensure noon is shown as PM.
+			var isPm = (hour >= 12);
+			if (isPm) {
+				
+				// But ensure noon is shown as 12, not 00.
+				if (hour > 12) {
+					hour = hour - 12;
+				}
+				amPm = "p";
+			} else {
+				
+				// #27 Ensure midnight is shown as 12, not 00.
+				if (hour == 0) {
+					hour = 12;
+				}
+				amPm = "a";
+			}
+		}
+
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		// #69 Setting now applies to both 12- and 24-hour modes.
+		if (App.getApp().getProperty("HideHoursLeadingZero")) {
+			hour = hour.format(INTEGER_FORMAT);
+
+		// Otherwise, show leading zero.
+		} else {
+			hour = hour.format("%02d");
+		}
+
+		return {
+			:hour => hour,
+			:min => min.format("%02d"),
+			:amPm => amPm
+		};
 	}
 }
