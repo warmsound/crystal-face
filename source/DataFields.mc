@@ -481,8 +481,8 @@ class DataFields extends Ui.Drawable {
 					lng = location[1];
 
 					// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
-					App.getApp().setProperty("LastLocationLat", lat.toLong());
-					App.getApp().setProperty("LastLocationLng", lng.toLong());
+					App.getApp().setProperty("LastLocationLat", lat.toFloat());
+					App.getApp().setProperty("LastLocationLng", lng.toFloat());
 				} else {
 					lat = App.getApp().getProperty("LastLocationLat");
 					if (lat == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.

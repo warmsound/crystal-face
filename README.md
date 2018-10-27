@@ -23,13 +23,13 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
-### 2.0.3
-- German translation for settings screen (thanks to dragonito).
-
-### 2.0.2
+### 2.1.0
+- Add "Sunrise/Sunset" data field.
 - Read altitude from more up-to-date source, and enable for all watches.
 - Add Croatian date translation (thanks to Kristijan).
 - Russian translation updates, and string fixes (thanks to xgsa).
+- German translation for settings screen (thanks to dragonito).
+- Technical update to CIQ 3.0.4 SDK.
 
 ### 2.0.1
 - Fix crash when changing settings.
