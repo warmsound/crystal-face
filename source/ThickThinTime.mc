@@ -51,12 +51,6 @@ class ThickThinTime extends Ui.Drawable {
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 	}
 
-	function setFonts(hoursFont, minutesFont, secondsFont) {
-		mHoursFont = hoursFont;
-		mMinutesFont = minutesFont;
-		mSecondsFont = secondsFont;
-	}
-
 	function setHideSeconds(hideSeconds) {
 		mHideSeconds = hideSeconds;
 	}
