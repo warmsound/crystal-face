@@ -3,12 +3,6 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 
-const MOVE_BAR_STYLE = [
-	:SHOW_ALL_SEGMENTS,
-	:SHOW_FILLED_SEGMENTS,
-	:HIDDEN
-];
-
 class MoveBar extends Ui.Drawable {
 
 	private var mX, mY, mBaseWidth, mHeight, mSeparator;
@@ -26,6 +20,12 @@ class MoveBar extends Ui.Drawable {
 
 	// Either mBaseWidth, or a calculated full width.
 	private var mCurrentWidth;
+
+	// private enum /* MOVE_BAR_STYLE */ {
+	// 	SHOW_ALL_SEGMENTS,
+	// 	SHOW_FILLED_SEGMENTS,
+	// 	HIDDEN
+	// };
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -51,7 +51,7 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		if (MOVE_BAR_STYLE[App.getApp().getProperty("MoveBarStyle")] == :HIDDEN) {
+		if (App.getApp().getProperty("MoveBarStyle") == 2 /* HIDDEN */) {
 			return;
 		}
 
@@ -125,7 +125,7 @@ class MoveBar extends Ui.Drawable {
 		var thisBarWidth;
 		var thisBarColour = 0;
 		var barX = x + mTailWidth;
-		var moveBarStyle = MOVE_BAR_STYLE[App.getApp().getProperty("MoveBarStyle")];
+		var moveBarStyle = App.getApp().getProperty("MoveBarStyle");
 
 		// One-based, to correspond with move bar level (zero means no bars).
 		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
@@ -142,7 +142,7 @@ class MoveBar extends Ui.Drawable {
 				thisBarColour = themeColour;
 
 			// Move bar below this level, so only show if MoveBarStyle setting is SHOW_ALL_SEGMENTS.
-			} else if (moveBarStyle == :SHOW_ALL_SEGMENTS) {
+			} else if (moveBarStyle == 0 /* SHOW_ALL_SEGMENTS */) {
 				thisBarColour = meterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.

@@ -45,6 +45,10 @@ class ThickThinTime extends Ui.Drawable {
 		mSecondsClipRectY = params[:secondsClipY];
 		mSecondsClipRectWidth = params[:secondsClipWidth];
 		mSecondsClipRectHeight = params[:secondsClipHeight];
+
+		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
+		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
+		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
 	}
 
 	function setFonts(hoursFont, minutesFont, secondsFont) {

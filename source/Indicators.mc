@@ -3,18 +3,6 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
-const INDICATOR_1_TYPE = "Indicator1Type";
-const INDICATOR_2_TYPE = "Indicator2Type";
-const INDICATOR_3_TYPE = "Indicator3Type";
-
-enum /* INDICATOR_TYPES */ {
-	INDICATOR_TYPE_BLUETOOTH,
-	INDICATOR_TYPE_ALARMS,
-	INDICATOR_TYPE_NOTIFICATIONS,
-	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
-	INDICATOR_TYPE_BATTERY
-}
-
 class Indicators extends Ui.Drawable {
 
 	private var mIconsFont;
@@ -22,34 +10,49 @@ class Indicators extends Ui.Drawable {
 	private var mBatteryWidth;
 	private var mBatteryHeight;
 
+	private var mIndicator1Type;
+	private var mIndicator2Type;
+	private var mIndicator3Type;
+
+	private enum /* INDICATOR_TYPES */ {
+		INDICATOR_TYPE_BLUETOOTH,
+		INDICATOR_TYPE_ALARMS,
+		INDICATOR_TYPE_NOTIFICATIONS,
+		INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
+		INDICATOR_TYPE_BATTERY
+	}
+
 	function initialize(params) {
 		Drawable.initialize(params);
 
 		mSpacingY = params[:spacingY];
 		mBatteryWidth = params[:batteryWidth];
 		mBatteryHeight = params[:batteryHeight];
+
+		onSettingsChanged();
 	}
 
 	function setFont(iconsFont) {
 		mIconsFont = iconsFont;
 	}
 
+	function onSettingsChanged() {
+		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
+		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
+		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+	}
+
 	function draw(dc) {
-		switch (App.getApp().getProperty("IndicatorCount")) {
-			case 3:
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - mSpacingY);
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY);
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_3_TYPE), locX, locY + mSpacingY);
-				break;
-			case 2:
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY - (mSpacingY / 2));
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_2_TYPE), locX, locY + (mSpacingY / 2));
-				break;
-			case 1:
-				drawIndicator(dc, App.getApp().getProperty(INDICATOR_1_TYPE), locX, locY);
-				break;
-			case 0:
-				break;
+		var indicatorCount = App.getApp().getProperty("IndicatorCount");
+		if (indicatorCount == 3) {
+			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacingY);
+			drawIndicator(dc, mIndicator2Type, locX, locY);
+			drawIndicator(dc, mIndicator3Type, locX, locY + mSpacingY);
+		} else if (indicatorCount == 2) {
+			drawIndicator(dc, mIndicator1Type, locX, locY - (mSpacingY / 2));
+			drawIndicator(dc, mIndicator2Type, locX, locY + (mSpacingY / 2));
+		} else if (indicatorCount == 1) {
+			drawIndicator(dc, mIndicator1Type, locX, locY);
 		}
 	}
 
@@ -81,6 +84,7 @@ class Indicators extends Ui.Drawable {
 			}
 		}
 
+		/*
 		var iconFontChar;
 		switch (indicatorType) {
 			case INDICATOR_TYPE_BLUETOOTH:
@@ -93,13 +97,14 @@ class Indicators extends Ui.Drawable {
 				iconFontChar = "5";
 				break;
 		}
+		*/
 
 		// Icon.
 		dc.drawText(
 			x,
 			y,
 			mIconsFont,
-			iconFontChar,
+			["8", ":", "5"][indicatorType], // iconFontChar
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}

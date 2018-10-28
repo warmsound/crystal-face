@@ -75,7 +75,7 @@ class DataFields extends Ui.Drawable {
 	function onSettingsChanged() {
 		mFieldCount = App.getApp().getProperty("FieldCount");
 
-		switch (mFieldCount) {
+		/* switch (mFieldCount) {
 			case 3:
 				mMaxFieldLength = 4;
 				break;
@@ -85,7 +85,8 @@ class DataFields extends Ui.Drawable {
 			case 1:
 				mMaxFieldLength = 8;
 				break;
-		}
+		} */
+		mMaxFieldLength = [8, 6, 4][mFieldCount - 1];
 
 		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
@@ -129,28 +130,12 @@ class DataFields extends Ui.Drawable {
 	}
 
 	// Both regular and small icon fonts use same spot size for easier optimisation.
-	private const LIVE_HR_SPOT_RADIUS = 3;
+	//private const LIVE_HR_SPOT_RADIUS = 3;
 
 	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
-		var isBattery = false;
-		var isHeartRate = false;
-		var isLiveHeartRate = false;
-
-		switch (fieldType) {
-			case FIELD_TYPE_BATTERY:
-			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				isBattery = true;
-				break;
-
-			case FIELD_TYPE_HR_LIVE_5S:
-				isLiveHeartRate = true;
-				isHeartRate = true;
-				break;
-
-			case FIELD_TYPE_HEART_RATE:			
-				isHeartRate = true;
-				break;
-		}
+		var isBattery = ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT));
+		var isHeartRate = ((fieldType == FIELD_TYPE_HEART_RATE) || (fieldType == FIELD_TYPE_HR_LIVE_5S));
+		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
 
 		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
 		var seconds = Sys.getClockTime().sec;
@@ -256,10 +241,10 @@ class DataFields extends Ui.Drawable {
 
 			// Clip spot.
 			dc.setClip(
-				x - LIVE_HR_SPOT_RADIUS,
-				mTop - LIVE_HR_SPOT_RADIUS,
-				(2 * LIVE_HR_SPOT_RADIUS) + 1,
-				(2 * LIVE_HR_SPOT_RADIUS) + 1);
+				x - 3 /* LIVE_HR_SPOT_RADIUS */,
+				mTop - 3 /* LIVE_HR_SPOT_RADIUS */,
+				7, // (2 * LIVE_HR_SPOT_RADIUS) + 1
+				7); // (2 * LIVE_HR_SPOT_RADIUS) + 1
 
 			// Draw spot, if it should be shown.
 			// fillCircle() does not anti-aliase, so use font instead.
