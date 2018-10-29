@@ -164,7 +164,7 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
-	<setting propertyKey="@Properties.TimeZone1City" title="@Strings.TimeZone1City">
+	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
 		<settingConfig type="alphaNumeric" readonly="false"/>
 	</setting>
 

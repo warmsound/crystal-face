@@ -47,12 +47,12 @@ class CrystalApp extends App.AppBase {
 
 			// Time zone request:
 			// City has been specified.
-			var timeZone1City = App.getApp().getProperty("TimeZone1City");
+			var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
 			
 			// #78 Setting with value of empty string may cause corresponding property to be null.
-			if ((timeZone1City != null) && (timeZone1City.length() > 0)) {
+			if ((localTimeInCity != null) && (localTimeInCity.length() > 0)) {
 
-				var timeZone1 = App.Storage.getValue("TimeZone1");
+				var timeZone1 = App.Storage.getValue("CityLocalTime");
 
 				// No existing data.
 				if (timeZone1 == null) {
@@ -65,8 +65,8 @@ class CrystalApp extends App.AppBase {
 				// Existing data not for this city: delete it.
 				// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
 				// city again.
-				} else if (!timeZone1["requestCity"].equals(timeZone1City)) {
-					App.Storage.deleteValue("TimeZone1");
+				} else if (!timeZone1["requestCity"].equals(localTimeInCity)) {
+					App.Storage.deleteValue("CityLocalTime");
 					needed = true;
 
 				// Existing data is old.
@@ -131,18 +131,18 @@ class CrystalApp extends App.AppBase {
 	}
 	*/
 	function onBackgroundData(data) {
-		var timeZone1 = App.Storage.getValue("TimeZone1");
+		var timeZone1 = App.Storage.getValue("CityLocalTime");
 
 		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
 		// error conditions exist e.g. roll onto next GMT offset while offline. checkBackgroundRequests() should retry on next
 		// wake (or settings change), as long as timeZone1.error.responseCode is set.
 		if ((timeZone1 != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
 			timeZone1["error"] = data["error"];
-			App.Storage.setValue("TimeZone1", timeZone1);
+			App.Storage.setValue("CityLocalTime", timeZone1);
 
 		// New data received: overwrite existing.
 		} else {
-			App.Storage.setValue("TimeZone1", data);
+			App.Storage.setValue("CityLocalTime", data);
 		}
 		
 		Ui.requestUpdate();

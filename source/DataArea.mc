@@ -56,18 +56,18 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
 
 		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((timeZone1City != null) && (timeZone1City.length() != 0) && (App has :Storage)) {
+		if ((localTimeInCity != null) && (localTimeInCity.length() != 0) && (App has :Storage)) {
 			//drawTimeZone();
-			var timeZone1 = App.Storage.getValue("TimeZone1");
+			var timeZone1 = App.Storage.getValue("CityLocalTime");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
 			// N.B. error response will NOT contain city.
 			if ((timeZone1 != null) && (timeZone1["city"] != null)) {
-				timeZone1City = timeZone1["city"];
+				localTimeInCity = timeZone1["city"];
 			}
 
 			// Time zone 1 city.
@@ -77,7 +77,7 @@ class DataArea extends Ui.Drawable {
 				mRow1Y,
 				mNormalFont,
 				// Limit string length.
-				timeZone1City.substring(0, 10),
+				localTimeInCity.substring(0, 10),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 

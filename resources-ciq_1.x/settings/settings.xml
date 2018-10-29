@@ -87,7 +87,7 @@
 
 	<!-- CIQ 1.x watches do not support background services. -->
 	<!-- TODO: Can we hide this setting completely? -->
-	<setting propertyKey="@Properties.TimeZone1City" title="@Strings.TimeZone1City">
+	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
 		<settingConfig type="alphaNumeric" readonly="true"/>
 	</setting>
 

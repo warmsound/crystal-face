@@ -10,7 +10,7 @@
 	<string id="RightGoalMeterTitle">Rechter Zähler</string>
 	<string id="CaloriesGoalTitle">Kalorienziel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Zähler Style</string>
-	<string id="TimeZone1City">Städtische Lokalzeit hinzufügen (Beta)</string>
+	<string id="LocalTimeInCityTitle">Städtische Lokalzeit hinzufügen (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Sekunden ausblenden</string>
 	<string id="HideHoursLeadingZeroTitle">Blende führende Nullen aus</string>

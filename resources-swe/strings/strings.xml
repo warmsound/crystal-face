@@ -10,7 +10,7 @@
 	<string id="RightGoalMeterTitle">Höger Mätare</string>
 	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
-	<string id="TimeZone1City">Add Local Time in City (Beta)</string>
+	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj Sekunder</string>
 	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>

@@ -30,7 +30,7 @@
 	<property id="Indicator2Type" type="number">1</property>
 	<property id="Indicator3Type" type="number">2</property>
 
-	<property id="TimeZone1City" type="string"></property>
+	<property id="LocalTimeInCity" type="string"></property>
 
 	<property id="MoveBarStyle" type="number">0</property>
 	
