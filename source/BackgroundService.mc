@@ -36,16 +36,16 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function requestTimeZone() {
 		var url = "https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec";
 
-		var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
+		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		// Safety check only, as normally would only expect requestTimeZone() to be called when localTimeInCity is set.
-		if (localTimeInCity == null) {
+		// Safety check only, as normally would only expect requestTimeZone() to be called when city is set.
+		if (city == null) {
 			return;
 		}
 
 		var params = {
-			"city" => localTimeInCity
+			"city" => city
 		};
 
 		var options = {

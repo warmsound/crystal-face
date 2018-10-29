@@ -56,18 +56,18 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
+		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((localTimeInCity != null) && (localTimeInCity.length() != 0) && (App has :Storage)) {
+		if ((city != null) && (city.length() != 0) && (App has :Storage)) {
 			//drawTimeZone();
-			var timeZone1 = App.Storage.getValue("CityLocalTime");
+			var cityLocalTime = App.Storage.getValue("CityLocalTime");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
 			// N.B. error response will NOT contain city.
-			if ((timeZone1 != null) && (timeZone1["city"] != null)) {
-				localTimeInCity = timeZone1["city"];
+			if ((cityLocalTime != null) && (cityLocalTime["city"] != null)) {
+				city = cityLocalTime["city"];
 			}
 
 			// Time zone 1 city.
@@ -77,24 +77,24 @@ class DataArea extends Ui.Drawable {
 				mRow1Y,
 				mNormalFont,
 				// Limit string length.
-				localTimeInCity.substring(0, 10),
+				city.substring(0, 10),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
 			// Time zone 1 time.
-			var timeZone1Time;
-			if (timeZone1) {
+			var time;
+			if (cityLocalTime) {
 
 				// Web request responded with HTTP or server error.
-				if (timeZone1["error"] != null) {
+				if (cityLocalTime["error"] != null) {
 
 					// HTTP error: show response code (no i18n).
-					if (timeZone1["error"]["responseCode"] != null) {
-						timeZone1Time = timeZone1["error"]["responseCode"] + " error";
+					if (cityLocalTime["error"]["responseCode"] != null) {
+						time = cityLocalTime["error"]["responseCode"] + " error";
 
 					// Server error: e.g. unknown city.
 					} else {
-						timeZone1Time = "???";
+						time = "???";
 					}
 
 				// Web request responded with time zone data for city.
@@ -102,10 +102,10 @@ class DataArea extends Ui.Drawable {
 					var timeZoneGmtOffset;
 
 					// Use next GMT offset if it's now applicable (new data will be requested shortly).
-					if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
-						timeZoneGmtOffset = timeZone1["next"]["gmtOffset"];
+					if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
+						timeZoneGmtOffset = cityLocalTime["next"]["gmtOffset"];
 					} else {
-						timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+						timeZoneGmtOffset = cityLocalTime["current"]["gmtOffset"];
 					}
 					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
 					
@@ -113,15 +113,15 @@ class DataArea extends Ui.Drawable {
 					localGmtOffset = new Time.Duration(localGmtOffset);
 
 					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-					timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-					timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
-					timeZone1Time = App.getApp().getView().getFormattedTime(timeZone1Time.hour, timeZone1Time.min);
-					timeZone1Time = timeZone1Time[:hour] + ":" + timeZone1Time[:min] + timeZone1Time[:amPm]; 
+					time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+					time = Gregorian.info(time, Time.FORMAT_SHORT);
+					time = App.getApp().getView().getFormattedTime(time.hour, time.min);
+					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 				}
 
 			// Awaiting response to web request sent by BackgroundService.
 			} else {
-				timeZone1Time = "...";
+				time = "...";
 			}
 
 			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
@@ -129,7 +129,7 @@ class DataArea extends Ui.Drawable {
 				locX + (width / 2),
 				mRow2Y,
 				mNormalFont,
-				timeZone1Time,
+				time,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 

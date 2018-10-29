@@ -125,10 +125,10 @@ class CrystalView extends Ui.WatchFace {
 	// Update drawables that use normal font.
 	function updateNormalFont() {
 
-		var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
+		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((localTimeInCity != null) && (localTimeInCity.length() > 0)) {
+		if ((city != null) && (city.length() > 0)) {
 			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
 		} else {
 			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);

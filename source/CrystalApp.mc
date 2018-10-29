@@ -47,30 +47,30 @@ class CrystalApp extends App.AppBase {
 
 			// Time zone request:
 			// City has been specified.
-			var localTimeInCity = App.getApp().getProperty("LocalTimeInCity");
+			var city = App.getApp().getProperty("LocalTimeInCity");
 			
 			// #78 Setting with value of empty string may cause corresponding property to be null.
-			if ((localTimeInCity != null) && (localTimeInCity.length() > 0)) {
+			if ((city != null) && (city.length() > 0)) {
 
-				var timeZone1 = App.Storage.getValue("CityLocalTime");
+				var cityLocalTime = App.Storage.getValue("CityLocalTime");
 
 				// No existing data.
-				if (timeZone1 == null) {
+				if (cityLocalTime == null) {
 					needed = true;
 
 				// HTTP error: has error and responseCode (but no requestCity): keep retrying. Likely due to no connectivity.
-				} else if ((timeZone1["error"] != null) && (timeZone1["error"]["responseCode"] != null)) {
+				} else if ((cityLocalTime["error"] != null) && (cityLocalTime["error"]["responseCode"] != null)) {
 					needed = true;
 			
 				// Existing data not for this city: delete it.
 				// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
 				// city again.
-				} else if (!timeZone1["requestCity"].equals(localTimeInCity)) {
+				} else if (!cityLocalTime["requestCity"].equals(city)) {
 					App.Storage.deleteValue("CityLocalTime");
 					needed = true;
 
 				// Existing data is old.
-				} else if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
+				} else if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
 					needed = true;
 				}
 			}
@@ -131,14 +131,14 @@ class CrystalApp extends App.AppBase {
 	}
 	*/
 	function onBackgroundData(data) {
-		var timeZone1 = App.Storage.getValue("CityLocalTime");
+		var cityLocalTime = App.Storage.getValue("CityLocalTime");
 
 		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
 		// error conditions exist e.g. roll onto next GMT offset while offline. checkBackgroundRequests() should retry on next
-		// wake (or settings change), as long as timeZone1.error.responseCode is set.
-		if ((timeZone1 != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
-			timeZone1["error"] = data["error"];
-			App.Storage.setValue("CityLocalTime", timeZone1);
+		// wake (or settings change), as long as cityLocalTime.error.responseCode is set.
+		if ((cityLocalTime != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
+			cityLocalTime["error"] = data["error"];
+			App.Storage.setValue("CityLocalTime", cityLocalTime);
 
 		// New data received: overwrite existing.
 		} else {
