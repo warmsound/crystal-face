@@ -424,7 +424,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
-		App.getApp().checkBackgroundRequests();
+		App.getApp().checkPendingWebRequests();
 	}
 
 	// Terminate any active timers and prepare for slow updates.
