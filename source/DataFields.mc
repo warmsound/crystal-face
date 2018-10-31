@@ -25,7 +25,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_TEMPERATURE,
 	FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	FIELD_TYPE_HR_LIVE_5S,
-	FIELD_TYPE_SUNRISE_SUNSET
+	FIELD_TYPE_SUNRISE_SUNSET,
+	FIELD_TYPE_WEATHER
 }
 
 class DataFields extends Ui.Drawable {
@@ -325,6 +326,7 @@ class DataFields extends Ui.Drawable {
 		var location;
 		var lat;
 		var lng;
+		var weather;
 		var sunTimes;
 		var format;
 		var unit;
@@ -517,6 +519,36 @@ class DataFields extends Ui.Drawable {
 					value = "...";
 				}
 
+				break;
+
+			case FIELD_TYPE_WEATHER:
+				if (App has :Storage) {
+					weather = App.Storage.getValue("OpenWeatherMapCurrent");
+
+					// Stored weather data available.
+					if ((weather != null) && (weather["main"] != null)) {
+						temperature = weather["main"]["temp"] - 273; // Convert Kelvin to Celcius.
+
+						settings = Sys.getDeviceSettings();
+						if (settings.temperatureUnits == System.UNIT_METRIC) {
+							unit = "°C";
+						} else {
+							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
+							unit = "°F";
+						}
+
+						value = temperature.format(INTEGER_FORMAT);
+
+						// Show unit only if value plus unit fits within maximum field length.
+						if ((value.length() + unit.length()) <= mMaxFieldLength) {
+							value += unit;
+						}
+
+					// TODO.
+					} else {
+						value = "...";
+					}
+				}
 				break;
 		}
 

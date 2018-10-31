@@ -329,6 +329,7 @@ class CrystalView extends Ui.WatchFace {
 			case FIELD_TYPE_ALTITUDE:
 				return ";";
 			case FIELD_TYPE_TEMPERATURE:
+			case FIELD_TYPE_WEATHER:
 				return "<";
 			// case LIVE_HR_SPOT:
 			// 	return "=";

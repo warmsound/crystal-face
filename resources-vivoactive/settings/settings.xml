@@ -53,6 +53,7 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<!--listEntry value="11">@Strings.Weather</listEntry-->
 		</settingConfig>
 	</setting>
 
@@ -69,6 +70,7 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<!--listEntry value="11">@Strings.Weather</listEntry-->
 		</settingConfig>
 	</setting>
 
@@ -85,6 +87,7 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<!--listEntry value="11">@Strings.Weather</listEntry-->
 		</settingConfig>
 	</setting>
 
