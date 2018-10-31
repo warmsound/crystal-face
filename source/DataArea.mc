@@ -85,17 +85,15 @@ class DataArea extends Ui.Drawable {
 			var time;
 			if (cityLocalTime) {
 
-				// Web request responded with HTTP or server error.
-				if (cityLocalTime["error"] != null) {
+				// Web request responded with HTTP error: show response code (no i18n).
+				if (cityLocalTime["httpError"] != null) {
+					
+					time = cityLocalTime["httpError"] + " error";
 
-					// HTTP error: show response code (no i18n).
-					if (cityLocalTime["error"]["responseCode"] != null) {
-						time = cityLocalTime["error"]["responseCode"] + " error";
+				// Web request responded with server error: e.g. unknown city.
+				} else if (cityLocalTime["error"] != null) {
 
-					// Server error: e.g. unknown city.
-					} else {
-						time = "???";
-					}
+					time = "???";
 
 				// Web request responded with time zone data for city.
 				} else {

@@ -17,47 +17,65 @@ class BackgroundService extends Sys.ServiceDelegate {
 		//Sys.println("onTemporalEvent");
 		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
 		if (pendingWebRequests != null) {
+
+			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
-				requestCityLocalTime();
+				makeWebRequest(
+					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
+					{
+						"city" => App.getApp().getProperty("LocalTimeInCity")
+					},
+					method(:onReceiveCityLocalTime)
+				);
+
+			// 2. Weather.
+			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+				makeWebRequest(
+					"https://api.openweathermap.org/data/2.5/weather",
+					{
+						"lat" => App.getApp().getProperty("LastLocationLat"),
+						"lon" => App.getApp().getProperty("LastLocationLng"),
+						"appid" => "d72271af214d870eb94fe8f9af450db4"
+					},
+					method(:onReceiveOpenWeatherMapCurrent)
+				);
 			}
 		} else {
 			Sys.println("onTemporalEvent() called with no pending web requests!");
 		}
 	}
 
-	function onReceiveTimeZone(responseCode, data) {
-
-		// HTTP success: return data response.
-		if (responseCode == 200) {
-			//Sys.println("Request Successful");
-			Bg.exit(data);
+	function onReceiveCityLocalTime(responseCode, data) {
 
 		// HTTP failure: return responseCode.
-		} else {
-			//Sys.println("Response: " + responseCode);
-			Bg.exit({
-				"error" => {
-					"responseCode" => responseCode
-				}
-			});
+		// Otherwise, return data response.
+		if (responseCode != 200) {
+			data = {
+				"httpError" => responseCode
+			};
 		}
+
+		Bg.exit({
+			"CityLocalTime" => data
+		});
 	}
 
-	function requestCityLocalTime() {
-		var url = "https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec";
-
-		var city = App.getApp().getProperty("LocalTimeInCity");
-
-		// #78 Setting with value of empty string may cause corresponding property to be null.
-		// Safety check only, as normally would only expect requestCityLocalTime() to be called when city is set.
-		if (city == null) {
-			return;
+	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
+		
+		// HTTP failure: return responseCode.
+		// Otherwise, return data response.
+		if (responseCode != 200) {
+			data = {
+				"httpError" => responseCode
+			};
 		}
 
-		var params = {
-			"city" => city
-		};
+		Bg.exit({
+			"OpenWeatherMapCurrent" => data
+		});
+	}
 
+	function makeWebRequest(url, params, callback) {
 		var options = {
 			:method => Comms.HTTP_REQUEST_METHOD_GET,
 			:headers => {
@@ -65,7 +83,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
 		};
 
-		//Sys.println("Making web request");
-		Comms.makeWebRequest(url, params, options, method(:onReceiveTimeZone));
+		Comms.makeWebRequest(url, params, options, callback);
 	}
 }

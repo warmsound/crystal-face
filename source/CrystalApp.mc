@@ -41,7 +41,19 @@ class CrystalApp extends App.AppBase {
 	// Determine if any web requests are needed.
 	// If so, set approrpiate pendingWebRequests flag for use by BackgroundService, then register for
 	// temporal event.
+	// Currently called on initialisation, when settings change, and on exiting sleep.
 	function checkPendingWebRequests() {
+
+		// Attempt to updated stored location, to be used by Sunrise/Sunset, and Weather.
+		var location = Activity.getActivityInfo().currentLocation;
+		if (location != null) {
+			location = location.toDegrees();
+
+			// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
+			App.getApp().setProperty("LastLocationLat", location[0].toFloat());
+			App.getApp().setProperty("LastLocationLng", location[1].toFloat());
+		}
+
 		if (!((Sys has :ServiceDelegate) && (App has :Storage))) {
 			return;
 		}
@@ -51,7 +63,7 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests = {};
 		}
 
-		// Time zone request:
+		// 1. City local time:
 		// City has been specified.
 		var city = App.getApp().getProperty("LocalTimeInCity");
 		
@@ -81,7 +93,21 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
-		if (pendingWebRequests["CityLocalTime"]) {
+		// 2. Weather:
+		// Location must be saved to properties.
+		// Weather data field must be shown.
+		if ((App.getApp().getProperty("LastLocationLat") != -360) /* && TODO */) {
+
+			// TODO:
+			// No existing data.
+			// HTTP error.
+			// Existing data not for this location: delete it.
+			// Existing data is older than an hour.
+			pendingWebRequests["OpenWeatherMapCurrent"] = true;
+		}
+
+		// If there are any pending requests:
+		if (pendingWebRequests.keys().size() > 0) {
 
 			// Register for background temporal event as soon as possible.
 			var lastTime = Bg.getLastTemporalEventTime();
@@ -140,6 +166,8 @@ class CrystalApp extends App.AppBase {
 
 	// Handle data received from BackgroundService.
 	// On success, clear appropriate pendingWebRequests flag.
+	// data is Dictionary with single key that indicates the data type received. This corresponds with App.Storage and
+	// pendingWebRequests keys.
 	function onBackgroundData(data) {
 		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
 		if (pendingWebRequests == null) {
@@ -147,24 +175,24 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests = {};
 		}
 
-		var cityLocalTime = App.Storage.getValue("CityLocalTime");
+		var type = data.keys()[0]; // Type of received data.
+		var storedData = App.Storage.getValue(type);
+		var receivedData = data[type]; // The actual data received: strip away type key.
 
 		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
-		// error conditions exist e.g. roll onto next GMT offset while offline. checkPendingWebRequests() should retry on next
-		// wake (or settings change), as long as cityLocalTime.error.responseCode is set.
-		if ((cityLocalTime != null) && (data["error"] != null) && (data["error"]["responseCode"] != null)) {
-			cityLocalTime["error"] = data["error"];
-			App.Storage.setValue("CityLocalTime", cityLocalTime);
+		// error conditions exist. checkPendingWebRequests() should retry on next wake or settings change.
+		if ((storedData != null) && (receivedData["httpError"] != null)) {
+			storedData["httpError"] = receivedData["httpError"];
 
-		// New data received: overwrite existing.
+		// New data received: overwrite stored  data and clear pendingWebRequests flag.
 		} else {
-			App.Storage.setValue("CityLocalTime", data);
-			pendingWebRequests.remove("CityLocalTime");
+			storedData = receivedData;
+			pendingWebRequests.remove(type);
+			App.Storage.setValue("PendingWebRequests", pendingWebRequests);
 		}
-		
-		Ui.requestUpdate();
 
-		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
+		App.Storage.setValue(type, storedData);
+		Ui.requestUpdate();
 	}
 }
 

@@ -457,30 +457,11 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
-				// #19 Check if location is available from current activity, before falling back on last location from settings.
-				activityInfo = Activity.getActivityInfo();
-				location = activityInfo.currentLocation;
-				if (location != null) {
-					location = location.toDegrees();
-					lat = location[0];
-					lng = location[1];
+				// Read stored location.
+				lat = App.getApp().getProperty("LastLocationLat");
+				lng = App.getApp().getProperty("LastLocationLng");
 
-					// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
-					App.getApp().setProperty("LastLocationLat", lat.toFloat());
-					App.getApp().setProperty("LastLocationLng", lng.toFloat());
-				} else {
-					lat = App.getApp().getProperty("LastLocationLat");
-					if (lat == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
-						lat = null;
-					}
-
-					lng = App.getApp().getProperty("LastLocationLng");
-					if (lng == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
-						lng = null;
-					}
-				}
-
-				if ((lat != null) and (lng != null)) {
+				if (lat != -360) { // -360 is a special value, meaning "unitialised". Can't have null float property.
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
