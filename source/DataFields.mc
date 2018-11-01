@@ -350,9 +350,9 @@ class DataFields extends Ui.Drawable {
 				value = value.format(INTEGER_FORMAT) + "%";
 				break;
 
-			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
-				break;
+			// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
+			// case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				// break;
 
 			case FIELD_TYPE_NOTIFICATIONS:
 				if (settings.notificationCount > 0) {
@@ -432,19 +432,11 @@ class DataFields extends Ui.Drawable {
 					if ((sample != null) && (sample.data != null)) {
 						temperature = sample.data;
 
-						if (settings.temperatureUnits == System.UNIT_METRIC) {
-							unit = "°C";
-						} else {
-							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
-							unit = "°F";
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
 
-						value = temperature.format(INTEGER_FORMAT);
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= mMaxFieldLength) {
-							value += unit;
-						}
+						value = temperature.format(INTEGER_FORMAT) + "°";
 					}
 				}
 				break;
@@ -520,19 +512,11 @@ class DataFields extends Ui.Drawable {
 					if ((weather != null) && (weather["main"] != null)) {
 						temperature = weather["main"]["temp"] - 273; // Convert Kelvin to Celcius.
 
-						if (settings.temperatureUnits == System.UNIT_METRIC) {
-							unit = "°C";
-						} else {
-							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
-							unit = "°F";
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
 
-						value = temperature.format(INTEGER_FORMAT);
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= mMaxFieldLength) {
-							value += unit;
-						}
+						value = temperature.format(INTEGER_FORMAT) + "°";
 
 					// TODO.
 					} else {
