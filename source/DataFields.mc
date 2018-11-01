@@ -321,8 +321,7 @@ class DataFields extends Ui.Drawable {
 		var sample;	
 		var altitude;
 		var temperature;
-		var lat;
-		var lng;
+		var lat, lng;
 		var weather;
 		var sunTimes;
 		var unit;

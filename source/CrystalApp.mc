@@ -45,13 +45,19 @@ class CrystalApp extends App.AppBase {
 	function checkPendingWebRequests() {
 
 		// Attempt to updated stored location, to be used by Sunrise/Sunset, and Weather.
+		var lat, lng;
 		var location = Activity.getActivityInfo().currentLocation;
-		if (location != null) {
-			location = location.toDegrees();
+		if (location) {
+			location = location.toDegrees(); // Array of Doubles.
+			lat = location[0].toFloat();
+			lng = location[1].toFloat();
 
 			// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
-			App.getApp().setProperty("LastLocationLat", location[0].toFloat());
-			App.getApp().setProperty("LastLocationLng", location[1].toFloat());
+			App.getApp().setProperty("LastLocationLat", lat);
+			App.getApp().setProperty("LastLocationLng", lng);
+		} else {
+			lat = App.getApp().getProperty("LastLocationLat");
+			lng = App.getApp().getProperty("LastLocationLng");
 		}
 
 		if (!((Sys has :ServiceDelegate) && (App has :Storage))) {
@@ -73,11 +79,11 @@ class CrystalApp extends App.AppBase {
 			var cityLocalTime = App.Storage.getValue("CityLocalTime");
 
 			// No existing data.
-			if (cityLocalTime == null) {
-				pendingWebRequests["CityLocalTime"] = true;
+			if ((cityLocalTime == null) ||
 
-			// HTTP error: has error and responseCode (but no requestCity): keep retrying. Likely due to no connectivity.
-			} else if ((cityLocalTime["error"] != null) && (cityLocalTime["error"]["responseCode"] != null)) {
+				// Existing data is old.
+				(cityLocalTime["next"] && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
+
 				pendingWebRequests["CityLocalTime"] = true;
 		
 			// Existing data not for this city: delete it.
@@ -86,24 +92,34 @@ class CrystalApp extends App.AppBase {
 			} else if (!cityLocalTime["requestCity"].equals(city)) {
 				App.Storage.deleteValue("CityLocalTime");
 				pendingWebRequests["CityLocalTime"] = true;
-
-			// Existing data is old.
-			} else if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
-				pendingWebRequests["CityLocalTime"] = true;
 			}
 		}
 
 		// 2. Weather:
 		// Location must be saved to properties.
 		// Weather data field must be shown.
-		if ((App.getApp().getProperty("LastLocationLat") != -360) /* && TODO */) {
+		if ((lat != -360) /* && TODO */) {
 
-			// TODO:
+			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
+
 			// No existing data.
-			// HTTP error.
+			if ((owmCurrent == null) ||
+
+				// Existing data is older than an hour.
+				(Time.now().value() > (owmCurrent["dt"] + 3600))) {
+				
+				pendingWebRequests["OpenWeatherMapCurrent"] = true;
+
 			// Existing data not for this location: delete it.
-			// Existing data is older than an hour.
-			pendingWebRequests["OpenWeatherMapCurrent"] = true;
+			// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than true
+			// distance calculation.
+			// 0.02 degree of latitude is just over a mile.
+			} else if ((Math.abs(lat - owmCurrent["coord"]["lat"]) > 0.02) ||
+				(Math.abs(lng - owmCurrent["coord"]["lon"]) > 0.02)) {
+
+				App.Storage.deleteValue("OpenWeatherMapCurrent");
+				pendingWebRequests["OpenWeatherMapCurrent"] = true;
+			}
 		}
 
 		// If there are any pending requests:
@@ -111,7 +127,7 @@ class CrystalApp extends App.AppBase {
 
 			// Register for background temporal event as soon as possible.
 			var lastTime = Bg.getLastTemporalEventTime();
-			if (lastTime != null) {
+			if (lastTime) {
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
 				Bg.registerForTemporalEvent(nextTime);
@@ -179,7 +195,7 @@ class CrystalApp extends App.AppBase {
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
 		// Leave pendingWebRequests flag set, and simply return early.
-		if (receivedData["httpError"] != null) {
+		if (receivedData["httpError"]) {
 			return;
 		}
 
