@@ -85,13 +85,8 @@ class DataArea extends Ui.Drawable {
 			var time;
 			if (cityLocalTime) {
 
-				// Web request responded with HTTP error: show response code (no i18n).
-				if (cityLocalTime["httpError"] != null) {
-					
-					time = cityLocalTime["httpError"] + " error";
-
-				// Web request responded with server error: e.g. unknown city.
-				} else if (cityLocalTime["error"] != null) {
+				// Web request responded with server error e.g. unknown city.
+				if (cityLocalTime["error"] != null) {
 
 					time = "???";
 

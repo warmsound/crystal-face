@@ -158,9 +158,7 @@ class CrystalApp extends App.AppBase {
 	// Sample HTTP error:
 	/*
 	{
-	"error":{
-		"responseCode":404
-		}
+	"httpError":404
 	}
 	*/
 
@@ -178,19 +176,17 @@ class CrystalApp extends App.AppBase {
 		var type = data.keys()[0]; // Type of received data.
 		var storedData = App.Storage.getValue(type);
 		var receivedData = data[type]; // The actual data received: strip away type key.
-
-		// HTTP error with existing data: merge HTTP error into existing data, so that existing data can still be used while HTTP
-		// error conditions exist. checkPendingWebRequests() should retry on next wake or settings change.
-		if ((storedData != null) && (receivedData["httpError"] != null)) {
-			storedData["httpError"] = receivedData["httpError"];
-
-		// New data received: overwrite stored  data and clear pendingWebRequests flag.
-		} else {
-			storedData = receivedData;
-			pendingWebRequests.remove(type);
-			App.Storage.setValue("PendingWebRequests", pendingWebRequests);
+		
+		// No value in showing any HTTP error to the user, so no need to modify stored data.
+		// Leave pendingWebRequests flag set, and simply return early.
+		if (receivedData["httpError"] != null) {
+			return;
 		}
 
+		// New data received: overwrite stored data and clear pendingWebRequests flag.
+		storedData = receivedData;
+		pendingWebRequests.remove(type);
+		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
 		App.Storage.setValue(type, storedData);
 		Ui.requestUpdate();
 	}
