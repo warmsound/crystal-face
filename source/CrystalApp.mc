@@ -96,9 +96,13 @@ class CrystalApp extends App.AppBase {
 		}
 
 		// 2. Weather:
-		// Location must be saved to properties.
-		// Weather data field must be shown.
-		if ((lat != -360) /* && TODO */) {
+		// Location must be available.
+		if ((lat != -360) &&
+
+			// Weather data field must be shown.
+			((App.getApp().getProperty("Field1Type") == FIELD_TYPE_WEATHER) ||
+				(App.getApp().getProperty("Field2Type") == FIELD_TYPE_WEATHER) ||
+				(App.getApp().getProperty("Field3Type") == FIELD_TYPE_WEATHER))) {
 
 			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 
@@ -106,18 +110,15 @@ class CrystalApp extends App.AppBase {
 			if ((owmCurrent == null) ||
 
 				// Existing data is older than an hour.
-				(Time.now().value() > (owmCurrent["dt"] + 3600))) {
+				(Time.now().value() > (owmCurrent["dt"] + 3600)) ||
 				
-				pendingWebRequests["OpenWeatherMapCurrent"] = true;
+				// Existing data not for this location.
+				// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than true
+				// distance calculation. 0.02 degree of latitude is just over a mile.
+				((Math.abs(lat - owmCurrent["coord"]["lat"]) > 0.02) ||
+					(Math.abs(lng - owmCurrent["coord"]["lon"]) > 0.02))) {
 
-			// Existing data not for this location: delete it.
-			// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than true
-			// distance calculation.
-			// 0.02 degree of latitude is just over a mile.
-			} else if ((Math.abs(lat - owmCurrent["coord"]["lat"]) > 0.02) ||
-				(Math.abs(lng - owmCurrent["coord"]["lon"]) > 0.02)) {
-
-				App.Storage.deleteValue("OpenWeatherMapCurrent");
+				// TODO: Should we ever delete weather data?
 				pendingWebRequests["OpenWeatherMapCurrent"] = true;
 			}
 		}
