@@ -1,0 +1,21 @@
+info face="Weather Icons" size=20 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=20 base=15 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="weather-icons-20_0.png"
+chars count=17
+char id=61441 x=84    y=0     width=21    height=17    xoffset=0     yoffset=0     xadvance=21    page=0  chnl=15
+char id=61442 x=177   y=0     width=20    height=15    xoffset=0     yoffset=0     xadvance=20    page=0  chnl=15
+char id=61445 x=0     y=0     width=20    height=20    xoffset=0     yoffset=0     xadvance=20    page=0  chnl=15
+char id=61448 x=21    y=0     width=20    height=20    xoffset=0     yoffset=0     xadvance=20    page=0  chnl=15
+char id=61449 x=42    y=0     width=20    height=20    xoffset=0     yoffset=0     xadvance=20    page=0  chnl=15
+char id=61450 x=63    y=0     width=20    height=19    xoffset=0     yoffset=0     xadvance=20    page=0  chnl=15
+char id=61452 x=140   y=0     width=19    height=16    xoffset=-1    yoffset=0     xadvance=17    page=0  chnl=15
+char id=61453 x=198   y=0     width=16    height=15    xoffset=0     yoffset=2     xadvance=15    page=0  chnl=15
+char id=61459 x=17    y=21    width=16    height=11    xoffset=0     yoffset=4     xadvance=16    page=0  chnl=15
+char id=61475 x=232   y=0     width=18    height=14    xoffset=0     yoffset=3     xadvance=18    page=0  chnl=15
+char id=61477 x=215   y=0     width=16    height=15    xoffset=0     yoffset=3     xadvance=16    page=0  chnl=15
+char id=61480 x=106   y=0     width=16    height=17    xoffset=0     yoffset=3     xadvance=16    page=0  chnl=15
+char id=61481 x=123   y=0     width=16    height=17    xoffset=0     yoffset=3     xadvance=16    page=0  chnl=15
+char id=61482 x=160   y=0     width=16    height=16    xoffset=0     yoffset=3     xadvance=16    page=0  chnl=15
+char id=61486 x=34    y=21    width=11    height=11    xoffset=0     yoffset=4     xadvance=10    page=0  chnl=15
+char id=61569 x=46    y=21    width=11    height=11    xoffset=0     yoffset=5     xadvance=12    page=0  chnl=15
+char id=61574 x=0     y=21    width=16    height=12    xoffset=0     yoffset=3     xadvance=16    page=0  chnl=15

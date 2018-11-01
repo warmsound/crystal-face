@@ -1,3 +1,4 @@
 <fonts>
-	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="true" />
+	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="true"/>
+	<font id="WeatherIconsFont" filename="weather-icons-20.fnt" antialias="true"/>
 </fonts>
