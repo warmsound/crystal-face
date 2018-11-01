@@ -315,20 +315,16 @@ class DataFields extends Ui.Drawable {
 		var result = {};
 		var value = "";
 
+		var settings = Sys.getDeviceSettings();
+
 		var activityInfo;
-		var iterator;
-		var sample;
-		var battery;
-		var settings;
-		var distance;
+		var sample;	
 		var altitude;
 		var temperature;
-		var location;
 		var lat;
 		var lng;
 		var weather;
 		var sunTimes;
-		var format;
 		var unit;
 
 		switch (type) {
@@ -340,8 +336,8 @@ class DataFields extends Ui.Drawable {
 				if (sample != null) {
 					value = sample.format(INTEGER_FORMAT);
 				} else if (ActivityMonitor has :getHeartRateHistory) {
-					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
-					sample = iterator.next();
+					sample = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true)
+						.next();
 					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
 						value = sample.heartRate.format(INTEGER_FORMAT);
 					}
@@ -350,8 +346,8 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
-				battery = Math.floor(Sys.getSystemStats().battery);
-				value = battery.format(INTEGER_FORMAT) + "%";
+				value = Math.floor(Sys.getSystemStats().battery);
+				value = value.format(INTEGER_FORMAT) + "%";
 				break;
 
 			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
@@ -359,7 +355,6 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format(INTEGER_FORMAT);
 				}
@@ -371,18 +366,17 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_DISTANCE:
-				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
+				value = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
 
 				if (settings.distanceUnits == System.UNIT_METRIC) {
 					unit = "km";					
 				} else {
-					distance *= /* MI_PER_KM */ 0.621371;
+					value *= /* MI_PER_KM */ 0.621371;
 					unit = "mi";
 				}
 
-				value = distance.format("%.1f");
+				value = value.format("%.1f");
 
 				// Show unit only if value plus unit fits within maximum field length.
 				if ((value.length() + unit.length()) <= mMaxFieldLength) {
@@ -392,7 +386,6 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_ALARMS:
-				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
 					value = settings.alarmCount.format(INTEGER_FORMAT);
 				}
@@ -405,14 +398,13 @@ class DataFields extends Ui.Drawable {
 				activityInfo = Activity.getActivityInfo();
 				altitude = activityInfo.altitude;
 				if ((altitude == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
-					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
+					sample = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
+						.next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
 					}
 				}
 				if (altitude != null) {
-					settings = Sys.getDeviceSettings();
 
 					// Metres (no conversion necessary).
 					if (settings.elevationUnits == System.UNIT_METRIC) {
@@ -435,12 +427,11 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_TEMPERATURE:
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
-					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
+					sample = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
+						.next();
 					if ((sample != null) && (sample.data != null)) {
 						temperature = sample.data;
 
-						settings = Sys.getDeviceSettings();
 						if (settings.temperatureUnits == System.UNIT_METRIC) {
 							unit = "°C";
 						} else {
@@ -529,7 +520,6 @@ class DataFields extends Ui.Drawable {
 					if ((weather != null) && (weather["main"] != null)) {
 						temperature = weather["main"]["temp"] - 273; // Convert Kelvin to Celcius.
 
-						settings = Sys.getDeviceSettings();
 						if (settings.temperatureUnits == System.UNIT_METRIC) {
 							unit = "°C";
 						} else {
