@@ -29,6 +29,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				);
 
 			// 2. Weather.
+			// TODO: Record API key used, to detect when user changes it in case of "invalid API key" response.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",

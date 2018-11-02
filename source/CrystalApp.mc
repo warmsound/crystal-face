@@ -81,8 +81,8 @@ class CrystalApp extends App.AppBase {
 			// No existing data.
 			if ((cityLocalTime == null) ||
 
-				// Existing data is old.
-				(cityLocalTime["next"] && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
+			// Existing data is old.
+			((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
 
 				pendingWebRequests["CityLocalTime"] = true;
 		
@@ -90,6 +90,7 @@ class CrystalApp extends App.AppBase {
 			// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
 			// city again.
 			} else if (!cityLocalTime["requestCity"].equals(city)) {
+
 				App.Storage.deleteValue("CityLocalTime");
 				pendingWebRequests["CityLocalTime"] = true;
 			}
@@ -97,29 +98,36 @@ class CrystalApp extends App.AppBase {
 
 		// 2. Weather:
 		// Location must be available.
-		if ((lat != -360) &&
+		if (lat != -360) {
 
 			// Weather data field must be shown.
-			((App.getApp().getProperty("Field1Type") == FIELD_TYPE_WEATHER) ||
+			if ((App.getApp().getProperty("Field1Type") == FIELD_TYPE_WEATHER) ||
 				(App.getApp().getProperty("Field2Type") == FIELD_TYPE_WEATHER) ||
-				(App.getApp().getProperty("Field3Type") == FIELD_TYPE_WEATHER))) {
+				(App.getApp().getProperty("Field3Type") == FIELD_TYPE_WEATHER)) {
 
-			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
+				var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 
-			// No existing data.
-			if ((owmCurrent == null) ||
+				// No existing data.
+				if (owmCurrent == null) {
 
-				// Existing data is older than an hour.
-				(Time.now().value() > (owmCurrent["dt"] + 3600)) ||
-				
-				// Existing data not for this location.
-				// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than true
-				// distance calculation. 0.02 degree of latitude is just over a mile.
-				((Math.abs(lat - owmCurrent["coord"]["lat"]) > 0.02) ||
-					(Math.abs(lng - owmCurrent["coord"]["lon"]) > 0.02))) {
+					pendingWebRequests["OpenWeatherMapCurrent"] = true;
 
+				// Successfully received weather data.
+				} else if (owmCurrent["cod"] == 200) {
+
+					// Existing data is older than an hour.
+					if ((Time.now().value() > (owmCurrent["dt"] + 3600)) ||
+
+					// Existing data not for this location.
+					// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
+					// true distance calculation. 0.02 degree of latitude is just over a mile.
+					(((lat - owmCurrent["coord"]["lat"]).abs() > 0.02) || ((lng - owmCurrent["coord"]["lon"]).abs() > 0.02))) {
+
+						pendingWebRequests["OpenWeatherMapCurrent"] = true;
+					}
+				}
+				// TODO: Else if "invalid API key" response, and user has since changed key.
 				// TODO: Should we ever delete weather data?
-				pendingWebRequests["OpenWeatherMapCurrent"] = true;
 			}
 		}
 
