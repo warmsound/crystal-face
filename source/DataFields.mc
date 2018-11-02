@@ -41,6 +41,7 @@ class DataFields extends Ui.Drawable {
 
 	private var mIconsFont;
 	private var mLabelFont;
+	private var mWeatherIconsFont;
 
 	private var mFieldCount;
 	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
@@ -94,6 +95,13 @@ class DataFields extends Ui.Drawable {
 		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
 
 		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
+
+		// Dynamic loading/unloading of weather icons font.
+		if (hasField(FIELD_TYPE_WEATHER)) {
+			mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFont);
+		} else {
+			mWeatherIconsFont = null;
+		}
 	}
 
 	function hasField(fieldType) {
@@ -278,12 +286,22 @@ class DataFields extends Ui.Drawable {
 				fieldType = FIELD_TYPE_SUNRISE;
 			}
 
+			var font;
+			var icon;
+			if (fieldType == FIELD_TYPE_WEATHER) {
+				font = mWeatherIconsFont;
+				icon = getWeatherIconChar(result["weatherIcon"]);
+			} else {
+				font = mIconsFont;
+				icon = getIconFontCharForField(fieldType);
+			}
+
 			dc.setColor(colour, backgroundColour);
 			dc.drawText(
 				x,
 				mTop,
-				mIconsFont,
-				getIconFontCharForField(fieldType),
+				font,
+				icon,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -305,6 +323,22 @@ class DataFields extends Ui.Drawable {
 				}
 			}
 		}
+	}
+
+	// weatherIcon is weather icon code e.g. "01d": https://openweathermap.org/weather-conditions.
+	private function getWeatherIconChar(weatherIcon) {
+		return {
+			// Day icon     Night icon         Description
+			"01d" => 61453, "01n" => 61486, // clear sky
+			"02d" => 61452, "02n" => 61569, // few clouds
+			"03d" => 61442, "03n" => 61574, // scattered clouds
+			"04d" => 61459, "04n" => 61459, // broken clouds: day and night use same icon
+			"09d" => 61449, "09n" => 61481, // shower rain
+			"10d" => 61448, "10n" => 61480, // rain
+			"11d" => 61445, "11n" => 61477, // thunderstorm
+			"13d" => 61450, "13n" => 61482, // snow
+			"50d" => 61441, "50n" => 61475, // mist
+		}[weatherIcon].toChar().toString(); // Icon code --> Unicode --> Char --> String.
 	}
 
 	// Replace dictionary with function to save memory.
@@ -357,7 +391,7 @@ class DataFields extends Ui.Drawable {
 			FIELD_TYPE_TEMPERATURE => "<",
 			FIELD_TYPE_WEATHER => "<",
 			// LIVE_HR_SPOT => "=",
-			
+
 			FIELD_TYPE_SUNRISE_SUNSET => "?"
 		}[fieldType];
 	}
@@ -570,10 +604,12 @@ class DataFields extends Ui.Drawable {
 						}
 
 						value = temperature.format(INTEGER_FORMAT) + "°";
+						result["weatherIcon"] = weather["weather"][0]["icon"];
 
 					// TODO.
 					} else {
 						value = "...";
+						result["weatherIcon"] = "01d"; // Default = sunshine!
 					}
 				}
 				break;
