@@ -17,7 +17,7 @@ class CrystalView extends Ui.WatchFace {
 	private var mNormalFont;
 
 	private var mTime;
-	private var mDataFields;
+	var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -70,7 +70,8 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:Indicators].setFont(mIconsFont);
 
-		mDataFields = View.findDrawableById("DataFields");		
+		mDataFields = View.findDrawableById("DataFields");
+		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 
@@ -302,43 +303,7 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		return values;
-	}
-
-	// Replace dictionary with function to save memory.
-	function getIconFontCharForField(fieldType) {
-		switch (fieldType) {
-			case FIELD_TYPE_SUNRISE:
-				return ">";
-			//case FIELD_TYPE_SUNSET:
-			//	return "?";
-
-			case FIELD_TYPE_HEART_RATE:
-			case FIELD_TYPE_HR_LIVE_5S:
-				return "3";
-			//case FIELD_TYPE_BATTERY:
-			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-			//	return "4";
-			case FIELD_TYPE_NOTIFICATIONS:
-				return "5";
-			case FIELD_TYPE_CALORIES:
-				return "6";
-			case FIELD_TYPE_DISTANCE:
-				return "7";
-			case FIELD_TYPE_ALARMS:
-				return ":";
-			case FIELD_TYPE_ALTITUDE:
-				return ";";
-			case FIELD_TYPE_TEMPERATURE:
-			case FIELD_TYPE_WEATHER:
-				return "<";
-			// case LIVE_HR_SPOT:
-			// 	return "=";
-			
-			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
-			//case FIELD_TYPE_SUNSET:
-				return "?";
-		}
-	}
+	}	
 
 	function getValuesForGoalType(type) {
 		var values = {

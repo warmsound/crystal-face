@@ -23,7 +23,6 @@ class CrystalApp extends App.AppBase {
 	// Return the initial view of your application here
 	function getInitialView() {
 		mView = new CrystalView();
-		checkPendingWebRequests();
 		return [mView];
 	}
 
@@ -101,9 +100,7 @@ class CrystalApp extends App.AppBase {
 		if (lat != -360) {
 
 			// Weather data field must be shown.
-			if ((App.getApp().getProperty("Field1Type") == FIELD_TYPE_WEATHER) ||
-				(App.getApp().getProperty("Field2Type") == FIELD_TYPE_WEATHER) ||
-				(App.getApp().getProperty("Field3Type") == FIELD_TYPE_WEATHER)) {
+			if (mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
 				var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 

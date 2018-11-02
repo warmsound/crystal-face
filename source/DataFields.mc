@@ -10,8 +10,8 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 enum /* FIELD_TYPES */ {
-	// Pseudo-fields.
-	FIELD_TYPE_SUNRISE = -1,
+	// Pseudo-fields.	
+	FIELD_TYPE_SUNRISE = -1,	
 	//FIELD_TYPE_SUNSET = -2,
 
 	// Real fields (used by properties).
@@ -93,14 +93,13 @@ class DataFields extends Ui.Drawable {
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
 		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
 
-		if ((mFieldTypes[0] == FIELD_TYPE_HR_LIVE_5S) ||
-			(mFieldTypes[1] == FIELD_TYPE_HR_LIVE_5S) ||
-			(mFieldTypes[2] == FIELD_TYPE_HR_LIVE_5S)) {
-				
-			mHasLiveHR = true;
-		} else {
-			mHasLiveHR = false;
-		}
+		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
+	}
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0] == fieldType) ||
+			(mFieldTypes[1] == fieldType) ||
+			(mFieldTypes[2] == fieldType));
 	}
 
 	function draw(dc) {
@@ -224,7 +223,7 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", mIconsFont); // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
@@ -235,7 +234,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+					"3", // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
@@ -255,7 +254,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
+					"=", // getIconFontCharForField(LIVE_HR_SPOT)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 
@@ -266,7 +265,7 @@ class DataFields extends Ui.Drawable {
 					x,
 					mTop,
 					mIconsFont,
-					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+					"3", // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
@@ -284,7 +283,7 @@ class DataFields extends Ui.Drawable {
 				x,
 				mTop,
 				mIconsFont,
-				App.getApp().getView().getIconFontCharForField(fieldType),
+				getIconFontCharForField(fieldType),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -300,12 +299,67 @@ class DataFields extends Ui.Drawable {
 						x,
 						mTop,
 						mIconsFont,
-						"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
+						"=", // getIconFontCharForField(LIVE_HR_SPOT)
 						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 					);
 				}
 			}
 		}
+	}
+
+	// Replace dictionary with function to save memory.
+	private function getIconFontCharForField(fieldType) {
+		/* switch (fieldType) {
+			case FIELD_TYPE_SUNRISE:
+				return ">";
+			//case FIELD_TYPE_SUNSET:
+			//	return "?";
+
+			case FIELD_TYPE_HEART_RATE:
+			case FIELD_TYPE_HR_LIVE_5S:
+				return "3";
+			//case FIELD_TYPE_BATTERY:
+			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+			//	return "4";
+			case FIELD_TYPE_NOTIFICATIONS:
+				return "5";
+			case FIELD_TYPE_CALORIES:
+				return "6";
+			case FIELD_TYPE_DISTANCE:
+				return "7";
+			case FIELD_TYPE_ALARMS:
+				return ":";
+			case FIELD_TYPE_ALTITUDE:
+				return ";";
+			case FIELD_TYPE_TEMPERATURE:
+			case FIELD_TYPE_WEATHER:
+				return "<";
+			// case LIVE_HR_SPOT:
+			// 	return "=";
+			
+			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
+			//case FIELD_TYPE_SUNSET:
+				return "?";
+		} */
+		return {
+			FIELD_TYPE_SUNRISE => ">",
+			// FIELD_TYPE_SUNSET => "?",
+
+			FIELD_TYPE_HEART_RATE => "3",
+			FIELD_TYPE_HR_LIVE_5S => "3",
+			// FIELD_TYPE_BATTERY => "4",
+			// FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
+			FIELD_TYPE_NOTIFICATIONS => "5",
+			FIELD_TYPE_CALORIES => "6",
+			FIELD_TYPE_DISTANCE => "7",
+			FIELD_TYPE_ALARMS => ":",
+			FIELD_TYPE_ALTITUDE => ";",
+			FIELD_TYPE_TEMPERATURE => "<",
+			FIELD_TYPE_WEATHER => "<",
+			// LIVE_HR_SPOT => "=",
+			
+			FIELD_TYPE_SUNRISE_SUNSET => "?"
+		}[fieldType];
 	}
 
 	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
