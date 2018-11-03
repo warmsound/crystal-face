@@ -366,7 +366,7 @@ class DataFields extends Ui.Drawable {
 			case FIELD_TYPE_ALTITUDE:
 				return ";";
 			case FIELD_TYPE_TEMPERATURE:
-			case FIELD_TYPE_WEATHER:
+			// case FIELD_TYPE_WEATHER:
 				return "<";
 			// case LIVE_HR_SPOT:
 			// 	return "=";
@@ -389,7 +389,7 @@ class DataFields extends Ui.Drawable {
 			FIELD_TYPE_ALARMS => ":",
 			FIELD_TYPE_ALTITUDE => ";",
 			FIELD_TYPE_TEMPERATURE => "<",
-			FIELD_TYPE_WEATHER => "<",
+			// FIELD_TYPE_WEATHER => "<",
 			// LIVE_HR_SPOT => "=",
 
 			FIELD_TYPE_SUNRISE_SUNSET => "?"
@@ -592,6 +592,9 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_WEATHER:
+				// Default = sunshine!
+				result["weatherIcon"] = "01d";
+
 				if (App has :Storage) {
 					weather = App.Storage.getValue("OpenWeatherMapCurrent");
 
@@ -609,7 +612,6 @@ class DataFields extends Ui.Drawable {
 					// TODO.
 					} else {
 						value = "...";
-						result["weatherIcon"] = "01d"; // Default = sunshine!
 					}
 				}
 				break;

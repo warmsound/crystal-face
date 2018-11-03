@@ -15,7 +15,7 @@
 
 	<!-- Symlinked from resources-small-icons/fonts. -->
 	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="false"/>
-	<font id="IconsFont" filename="weather-icons-20.fnt" antialias="false"/>
+	<font id="WeatherIconsFont" filename="weather-icons-20.fnt" antialias="false"/>
 
 	<!-- Symlinked from resources-smaller-time/fonts. -->
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->

@@ -6,6 +6,8 @@
 	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" filter="%-.0123456789:CFafikmpt°"/>
 	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="true" filter=" %',-.0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true"/>
+
+	<!-- Font size chosen so height of sunshine icon is 24px -->
 	<font id="WeatherIconsFont" filename="weather-icons-24.fnt" antialias="true"/>
 
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
