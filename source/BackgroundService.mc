@@ -36,14 +36,15 @@ class BackgroundService extends Sys.ServiceDelegate {
 					{
 						"lat" => App.getApp().getProperty("LastLocationLat"),
 						"lon" => App.getApp().getProperty("LastLocationLng"),
-						"appid" => "d72271af214d870eb94fe8f9af450db4"
+						"appid" => App.getApp().getProperty("OpenWeatherMapKey"),
+						"units" => "metric" // Celcius.
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
 				);
 			}
-		} else {
+		} /* else {
 			Sys.println("onTemporalEvent() called with no pending web requests!");
-		}
+		} */
 	}
 
 	// Sample time zone data:
@@ -144,34 +145,30 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
 		var result;
 		
-		// HTTP failure: return responseCode.
-		// Otherwise, return data response.
-		if (responseCode != 200) {
+		// Useful data only available if result was successful.
+		// Filter and flatten data response for data that we actually need.
+		// Reduces runtime memory spike in main app.
+		if (data["cod"] == 200) {
+			result = {
+				"cod" => data["cod"],
+				"lat" => data["coord"]["lat"],
+				"lon" => data["coord"]["lon"],
+				"dt" => data["dt"],
+				"temp" => data["main"]["temp"],
+				"icon" => data["weather"][0]["icon"]
+			};
+
+		// Invalid API key: save this response, as it can be reported to user.
+		} else if (data["cod"] == 401) {
+			result = {
+				"cod" => data["cod"]
+			};
+
+		// Other HTTP error: do not save.
+		} else {
 			result = {
 				"httpError" => responseCode
 			};
-
-		// Otherwise, filter and flatten data response for data that we actually need.
-		// Reduces runtime memory spike in main app.
-		} else {
-
-			// Useful data only available if result was successful.
-			if (data["cod"] == 200) {
-				result = {
-					"cod" => data["cod"],
-					"lat" => data["coord"]["lat"],
-					"lon" => data["coord"]["lon"],
-					"dt" => data["dt"],
-					"temp" => data["main"]["temp"],
-					"icon" => data["weather"][0]["icon"]
-				};
-
-			// Return result code only in unsuccessful e.g. invalid API key.
-			} else {
-				result = {
-					"cod" => data["cod"],
-				};
-			}
 		}
 
 		Bg.exit({

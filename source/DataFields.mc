@@ -368,7 +368,6 @@ class DataFields extends Ui.Drawable {
 		var altitude;
 		var temperature;
 		var lat, lng;
-		var weather;
 		var sunTimes;
 		var unit;
 
@@ -491,7 +490,7 @@ class DataFields extends Ui.Drawable {
 				lat = App.getApp().getProperty("LastLocationLat");
 				lng = App.getApp().getProperty("LastLocationLng");
 
-				if (lat != -360) { // -360 is a special value, meaning "unitialised". Can't have null float property.
+				if (lat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
@@ -544,30 +543,51 @@ class DataFields extends Ui.Drawable {
 
 				// Waiting for location.
 				} else {
-					value = "...";
+					value = "gps?";
 				}
 
 				break;
 
 			case FIELD_TYPE_WEATHER:
+
 				// Default = sunshine!
 				result["weatherIcon"] = "01d";
 
 				if (App has :Storage) {
-					weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var key = App.getApp().getProperty("OpenWeatherMapKey");
+
+					// Weather data probably not requested because of missing key.
+					// Put this condition first in case user deletes key after weather data has been received.
+					if ((key == null) || (key.length() == 0)) {
+						value = "key?";
 
 					// Stored weather data available.
-					if ((weather != null) && (weather["temp"] != null)) {
-						temperature = weather["temp"] - 273; // Convert Kelvin to Celcius.
+					// Display this even if no location is currently available.
+					} else if (weather) {
 
-						if (settings.temperatureUnits == System.UNIT_STATUTE) {
-							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+						// Invalid API key.
+						if (weather["cod"] == 401) {
+							value = "key!";
+
+						// Weather was successfully received.
+						} else if (weather["temp"] != null) {
+							temperature = weather["temp"]; // Celcius.
+
+							if (settings.temperatureUnits == System.UNIT_STATUTE) {
+								temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							}
+
+							value = temperature.format(INTEGER_FORMAT) + "°";
+							result["weatherIcon"] = weather["icon"];
 						}
+						// TODO: Any other error codes will currently show as disabled.
 
-						value = temperature.format(INTEGER_FORMAT) + "°";
-						result["weatherIcon"] = weather["icon"];
+					// Weather data probably not requested because of no location.
+					} else if (App.getApp().getProperty("LastLocationLat") == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+						value = "gps?";
 
-					// TODO.
+					// Probably awaiting response.
 					} else {
 						value = "...";
 					}

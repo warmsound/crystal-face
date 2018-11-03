@@ -96,8 +96,9 @@ class CrystalApp extends App.AppBase {
 		}
 
 		// 2. Weather:
-		// Location must be available.
-		if (lat != -360) {
+		// Location must be available, key must be specified.
+		var key = App.getApp().getProperty("OpenWeatherMapKey");
+		if ((lat != -360.0) && (key != null) && (key.length() > 0)) {
 
 			// Weather data field must be shown.
 			if (mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
@@ -122,8 +123,12 @@ class CrystalApp extends App.AppBase {
 
 						pendingWebRequests["OpenWeatherMapCurrent"] = true;
 					}
+
+				// If API key was previously invalid, simply retry now, in case user has since changed key.
+				// TODO: Actually check for changed key by storing key that generated the 401 error.
+				} else if (owmCurrent["cod"] == 401) {
+					pendingWebRequests["OpenWeatherMapCurrent"] = true;
 				}
-				// TODO: Else if "invalid API key" response, and user has since changed key.
 				// TODO: Should we ever delete weather data?
 			}
 		}

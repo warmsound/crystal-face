@@ -19,6 +19,7 @@
 	<string id="DataField1Title">Поле данных 1</string>
 	<string id="DataField2Title">Поле данных 2</string>
 	<string id="DataField3Title">Поле данных 3</string>
+	<string id="OpenWeatherMapKeyTitle">OpenWeatherMap Key</string>
 
 	<string id="IndicatorCountTitle">Количество индикаторов</string>
 	<string id="Indicator1Title">Индикатор 1</string>
