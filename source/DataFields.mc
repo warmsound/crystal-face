@@ -557,15 +557,15 @@ class DataFields extends Ui.Drawable {
 					weather = App.Storage.getValue("OpenWeatherMapCurrent");
 
 					// Stored weather data available.
-					if ((weather != null) && (weather["main"] != null)) {
-						temperature = weather["main"]["temp"] - 273; // Convert Kelvin to Celcius.
+					if ((weather != null) && (weather["temp"] != null)) {
+						temperature = weather["temp"] - 273; // Convert Kelvin to Celcius.
 
 						if (settings.temperatureUnits == System.UNIT_STATUTE) {
 							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
 
 						value = temperature.format(INTEGER_FORMAT) + "°";
-						result["weatherIcon"] = weather["weather"][0]["icon"];
+						result["weatherIcon"] = weather["icon"];
 
 					// TODO.
 					} else {

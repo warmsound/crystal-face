@@ -46,6 +46,33 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 	}
 
+	// Sample time zone data:
+	/*
+	{
+	"requestCity":"london",
+	"city":"London",
+	"current":{
+		"gmtOffset":3600,
+		"dst":true
+		},
+	"next":{
+		"when":1540688400,
+		"gmtOffset":0,
+		"dst":false
+		}
+	}
+	*/
+
+	// Sample error when city is not found:
+	/*
+	{
+	"requestCity":"atlantis",
+	"error":{
+		"code":2, // CITY_NOT_FOUND
+		"message":"City \"atlantis\" not found."
+		}
+	}
+	*/
 	function onReceiveCityLocalTime(responseCode, data) {
 
 		// HTTP failure: return responseCode.
@@ -61,18 +88,94 @@ class BackgroundService extends Sys.ServiceDelegate {
 		});
 	}
 
+	// Sample invalid API key:
+	/*
+	{
+		"cod":401,
+		"message": "Invalid API key. Please see http://openweathermap.org/faq#error401 for more info."
+	}
+	*/
+
+	// Sample current weather:
+	/*
+	{
+		"coord":{
+			"lon":-0.46,
+			"lat":51.75
+		},
+		"weather":[
+			{
+				"id":521,
+				"main":"Rain",
+				"description":"shower rain",
+				"icon":"09d"
+			}
+		],
+		"base":"stations",
+		"main":{
+			"temp":281.82,
+			"pressure":1018,
+			"humidity":70,
+			"temp_min":280.15,
+			"temp_max":283.15
+		},
+		"visibility":10000,
+		"wind":{
+			"speed":6.2,
+			"deg":10
+		},
+		"clouds":{
+			"all":0
+		},
+		"dt":1540741800,
+		"sys":{
+			"type":1,
+			"id":5078,
+			"message":0.0036,
+			"country":"GB",
+			"sunrise":1540709390,
+			"sunset":1540744829
+		},
+		"id":2647138,
+		"name":"Hemel Hempstead",
+		"cod":200
+	}
+	*/
 	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
+		var result;
 		
 		// HTTP failure: return responseCode.
 		// Otherwise, return data response.
 		if (responseCode != 200) {
-			data = {
+			result = {
 				"httpError" => responseCode
 			};
+
+		// Otherwise, filter and flatten data response for data that we actually need.
+		// Reduces runtime memory spike in main app.
+		} else {
+
+			// Useful data only available if result was successful.
+			if (data["cod"] == 200) {
+				result = {
+					"cod" => data["cod"],
+					"lat" => data["coord"]["lat"],
+					"lon" => data["coord"]["lon"],
+					"dt" => data["dt"],
+					"temp" => data["main"]["temp"],
+					"icon" => data["weather"][0]["icon"]
+				};
+
+			// Return result code only in unsuccessful e.g. invalid API key.
+			} else {
+				result = {
+					"cod" => data["cod"],
+				};
+			}
 		}
 
 		Bg.exit({
-			"OpenWeatherMapCurrent" => data
+			"OpenWeatherMapCurrent" => result
 		});
 	}
 
