@@ -14,13 +14,13 @@ class Indicators extends Ui.Drawable {
 	private var mIndicator2Type;
 	private var mIndicator3Type;
 
-	private enum /* INDICATOR_TYPES */ {
-		INDICATOR_TYPE_BLUETOOTH,
-		INDICATOR_TYPE_ALARMS,
-		INDICATOR_TYPE_NOTIFICATIONS,
-		INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
-		INDICATOR_TYPE_BATTERY
-	}
+	// private enum /* INDICATOR_TYPES */ {
+	// 	INDICATOR_TYPE_BLUETOOTH,
+	// 	INDICATOR_TYPE_ALARMS,
+	// 	INDICATOR_TYPE_NOTIFICATIONS,
+	// 	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
+	// 	INDICATOR_TYPE_BATTERY
+	// }
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -59,12 +59,27 @@ class Indicators extends Ui.Drawable {
 	function drawIndicator(dc, indicatorType, x, y) {
 
 		// Battery indicator.
-		if (indicatorType == INDICATOR_TYPE_BATTERY) {
+		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
 			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
 			return;
 		}
 
-		var value = getValueForIndicatorType(indicatorType);
+		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
+		var settings = Sys.getDeviceSettings();
+		if (indicatorType == 3 /* INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS */) {			
+			if (settings.phoneConnected && (settings.notificationCount > 0)) {
+				indicatorType = 2; // INDICATOR_TYPE_NOTIFICATIONS
+			} else {
+				indicatorType = 0; // INDICATOR_TYPE_BLUETOOTH
+			}
+		}
+
+		// Get value for indicator type.
+		var value = [
+			/* INDICATOR_TYPE_BLUETOOTH */ settings.phoneConnected,
+			/* INDICATOR_TYPE_ALARMS */ settings.alarmCount > 0,
+			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0
+		][indicatorType];
 
 		var colour;
 		if (value) {
@@ -73,62 +88,14 @@ class Indicators extends Ui.Drawable {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		}
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-
-		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
-		if (indicatorType == INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS) {
-			var settings = Sys.getDeviceSettings();
-			if (settings.phoneConnected && (settings.notificationCount > 0)) {
-				indicatorType = INDICATOR_TYPE_NOTIFICATIONS;
-			} else {
-				indicatorType = INDICATOR_TYPE_BLUETOOTH;
-			}
-		}
-
-		/*
-		var iconFontChar;
-		switch (indicatorType) {
-			case INDICATOR_TYPE_BLUETOOTH:
-				iconFontChar = "8";
-				break;
-			case INDICATOR_TYPE_ALARMS:
-				iconFontChar = ":";
-				break;
-			case INDICATOR_TYPE_NOTIFICATIONS:
-				iconFontChar = "5";
-				break;
-		}
-		*/
-
+		
 		// Icon.
 		dc.drawText(
 			x,
 			y,
 			mIconsFont,
-			["8", ":", "5"][indicatorType], // iconFontChar
+			["8", ":", "5"][indicatorType], // Get icon font char for indicator type.
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
-	}
-
-	function getValueForIndicatorType(type) {
-		var value = false;
-
-		var settings = Sys.getDeviceSettings();
-
-		switch (type) {
-			case INDICATOR_TYPE_BLUETOOTH:
-			case INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS:
-				value = settings.phoneConnected;
-				break;
-
-			case INDICATOR_TYPE_ALARMS:
-				value = (settings.alarmCount > 0);
-				break;
-
-			case INDICATOR_TYPE_NOTIFICATIONS:
-				value = (settings.notificationCount > 0);
-				break;
-		}
-
-		return value;
 	}
 }
