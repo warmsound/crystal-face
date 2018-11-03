@@ -147,7 +147,7 @@ class ThickThinTime extends Ui.Drawable {
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
 
 		// Draw minutes.
-		dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMinutesColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			halfDCHeight,
