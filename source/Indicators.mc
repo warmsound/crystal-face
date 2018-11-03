@@ -66,7 +66,7 @@ class Indicators extends Ui.Drawable {
 
 		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
 		var settings = Sys.getDeviceSettings();
-		if (indicatorType == 3 /* INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS */) {			
+		if (indicatorType == 3 /* INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS */) {
 			if (settings.phoneConnected && (settings.notificationCount > 0)) {
 				indicatorType = 2; // INDICATOR_TYPE_NOTIFICATIONS
 			} else {
@@ -88,7 +88,7 @@ class Indicators extends Ui.Drawable {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		}
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
-		
+
 		// Icon.
 		dc.drawText(
 			x,

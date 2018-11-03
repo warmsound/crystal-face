@@ -140,12 +140,10 @@ class DataFields extends Ui.Drawable {
 	// Both regular and small icon fonts use same spot size for easier optimisation.
 	//private const LIVE_HR_SPOT_RADIUS = 3;
 
-	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
-		var isBattery = ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT));
-		var isHeartRate = ((fieldType == FIELD_TYPE_HEART_RATE) || (fieldType == FIELD_TYPE_HR_LIVE_5S));
-		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
+	private function drawDataField(dc, isPartialUpdate, fieldType, x) {		
 
 		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
+		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
 		var seconds = Sys.getClockTime().sec;
 		if (isPartialUpdate && (!isLiveHeartRate || (seconds % 5))) {
 			return;
@@ -153,6 +151,7 @@ class DataFields extends Ui.Drawable {
 
 		// Decide whether spot should be shown or not, based on current seconds.
 		var showLiveHRSpot = false;
+		var isHeartRate = ((fieldType == FIELD_TYPE_HEART_RATE) || isLiveHeartRate);
 		if (isHeartRate) {
 
 			// High power mode: 0 on, 1 off, 2 on, etc.
@@ -211,14 +210,14 @@ class DataFields extends Ui.Drawable {
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
-		if ((value.length() == 0) && (fieldType != FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
+		if (value.length() == 0) {
 			colour = App.getApp().getProperty("MeterBackgroundColour");
 		} else {
 			colour = App.getApp().getProperty("ThemeColour");
 		}
 
 		// Battery.
-		if (isBattery) {
+		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 
 			App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
 
@@ -256,27 +255,23 @@ class DataFields extends Ui.Drawable {
 
 			// Draw spot, if it should be shown.
 			// fillCircle() does not anti-aliase, so use font instead.
+			var spotChar;
 			if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
 				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					"=", // getIconFontCharForField(LIVE_HR_SPOT)
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+				spotChar = "="; // getIconFontCharForField(LIVE_HR_SPOT)
 
 			// Otherwise, fill in spot by drawing heart.
 			} else {
 				dc.setColor(colour, backgroundColour);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					"3", // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+				spotChar = "3"; // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 			}
+			dc.drawText(
+				x,
+				mTop,
+				mIconsFont,
+				spotChar,
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 
 		// Other icons.
 		} else {
@@ -290,10 +285,45 @@ class DataFields extends Ui.Drawable {
 			var icon;
 			if (fieldType == FIELD_TYPE_WEATHER) {
 				font = mWeatherIconsFont;
-				icon = getWeatherIconChar(result["weatherIcon"]);
+
+				// Map weather icon code --> Unicode --> Char --> String.
+				// See https://openweathermap.org/weather-conditions.
+				icon = {
+					// Day icon     Night icon         Description
+					"01d" => 61453, "01n" => 61486, // clear sky
+					"02d" => 61452, "02n" => 61569, // few clouds
+					"03d" => 61442, "03n" => 61574, // scattered clouds
+					"04d" => 61459, "04n" => 61459, // broken clouds: day and night use same icon
+					"09d" => 61449, "09n" => 61481, // shower rain
+					"10d" => 61448, "10n" => 61480, // rain
+					"11d" => 61445, "11n" => 61477, // thunderstorm
+					"13d" => 61450, "13n" => 61482, // snow
+					"50d" => 61441, "50n" => 61475, // mist
+				}[result["weatherIcon"]].toChar().toString();
+
 			} else {
 				font = mIconsFont;
-				icon = getIconFontCharForField(fieldType);
+
+				// Map fieldType to icon font char.
+				icon = {
+					FIELD_TYPE_SUNRISE => ">",
+					// FIELD_TYPE_SUNSET => "?",
+
+					FIELD_TYPE_HEART_RATE => "3",
+					FIELD_TYPE_HR_LIVE_5S => "3",
+					// FIELD_TYPE_BATTERY => "4",
+					// FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
+					FIELD_TYPE_NOTIFICATIONS => "5",
+					FIELD_TYPE_CALORIES => "6",
+					FIELD_TYPE_DISTANCE => "7",
+					FIELD_TYPE_ALARMS => ":",
+					FIELD_TYPE_ALTITUDE => ";",
+					FIELD_TYPE_TEMPERATURE => "<",
+					// FIELD_TYPE_WEATHER => "<",
+					// LIVE_HR_SPOT => "=",
+
+					FIELD_TYPE_SUNRISE_SUNSET => "?"
+				}[fieldType];
 			}
 
 			dc.setColor(colour, backgroundColour);
@@ -323,77 +353,6 @@ class DataFields extends Ui.Drawable {
 				}
 			}
 		}
-	}
-
-	// weatherIcon is weather icon code e.g. "01d": https://openweathermap.org/weather-conditions.
-	private function getWeatherIconChar(weatherIcon) {
-		return {
-			// Day icon     Night icon         Description
-			"01d" => 61453, "01n" => 61486, // clear sky
-			"02d" => 61452, "02n" => 61569, // few clouds
-			"03d" => 61442, "03n" => 61574, // scattered clouds
-			"04d" => 61459, "04n" => 61459, // broken clouds: day and night use same icon
-			"09d" => 61449, "09n" => 61481, // shower rain
-			"10d" => 61448, "10n" => 61480, // rain
-			"11d" => 61445, "11n" => 61477, // thunderstorm
-			"13d" => 61450, "13n" => 61482, // snow
-			"50d" => 61441, "50n" => 61475, // mist
-		}[weatherIcon].toChar().toString(); // Icon code --> Unicode --> Char --> String.
-	}
-
-	// Replace dictionary with function to save memory.
-	private function getIconFontCharForField(fieldType) {
-		/* switch (fieldType) {
-			case FIELD_TYPE_SUNRISE:
-				return ">";
-			//case FIELD_TYPE_SUNSET:
-			//	return "?";
-
-			case FIELD_TYPE_HEART_RATE:
-			case FIELD_TYPE_HR_LIVE_5S:
-				return "3";
-			//case FIELD_TYPE_BATTERY:
-			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-			//	return "4";
-			case FIELD_TYPE_NOTIFICATIONS:
-				return "5";
-			case FIELD_TYPE_CALORIES:
-				return "6";
-			case FIELD_TYPE_DISTANCE:
-				return "7";
-			case FIELD_TYPE_ALARMS:
-				return ":";
-			case FIELD_TYPE_ALTITUDE:
-				return ";";
-			case FIELD_TYPE_TEMPERATURE:
-			// case FIELD_TYPE_WEATHER:
-				return "<";
-			// case LIVE_HR_SPOT:
-			// 	return "=";
-			
-			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
-			//case FIELD_TYPE_SUNSET:
-				return "?";
-		} */
-		return {
-			FIELD_TYPE_SUNRISE => ">",
-			// FIELD_TYPE_SUNSET => "?",
-
-			FIELD_TYPE_HEART_RATE => "3",
-			FIELD_TYPE_HR_LIVE_5S => "3",
-			// FIELD_TYPE_BATTERY => "4",
-			// FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
-			FIELD_TYPE_NOTIFICATIONS => "5",
-			FIELD_TYPE_CALORIES => "6",
-			FIELD_TYPE_DISTANCE => "7",
-			FIELD_TYPE_ALARMS => ":",
-			FIELD_TYPE_ALTITUDE => ";",
-			FIELD_TYPE_TEMPERATURE => "<",
-			// FIELD_TYPE_WEATHER => "<",
-			// LIVE_HR_SPOT => "=",
-
-			FIELD_TYPE_SUNRISE_SUNSET => "?"
-		}[fieldType];
 	}
 
 	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
