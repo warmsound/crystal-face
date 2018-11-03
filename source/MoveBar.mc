@@ -58,9 +58,6 @@ class MoveBar extends Ui.Drawable {
 		var info = ActivityMonitor.getInfo();
 		var currentMoveBarLevel = info.moveBarLevel;
 
-		var themeColour = App.getApp().getProperty("ThemeColour");
-		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
-
 		// Calculate current width here, now that DC is accessible.
 		if (mIsFullWidth) {
 			mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
@@ -70,21 +67,21 @@ class MoveBar extends Ui.Drawable {
 
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
-			drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
+			drawBuffered(dc, currentMoveBarLevel);
 		} else {
-			//drawUnbuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour);
+			//drawUnbuffered(dc, currentMoveBarLevel);
 
 			// Draw bars vertically centred on mY.
-			drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel, themeColour, meterBackgroundColour);
+			drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);
 		}		
 	}
 
 	(:buffered)
-	function drawBuffered(dc, currentMoveBarLevel, themeColour, meterBackgroundColour) {
+	function drawBuffered(dc, currentMoveBarLevel) {
 		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
 		// move bar width changes from base width to full width.
 		if (mBufferNeedsRecreate) {
-			recreateBuffer(themeColour, meterBackgroundColour);
+			recreateBuffer();
 		}
 
 		// #7 Redraw buffer (only) if move bar level changes.
@@ -95,7 +92,7 @@ class MoveBar extends Ui.Drawable {
 		
 		if (mBufferNeedsRedraw) {
 			// Draw bars at top left of buffer.
-			drawBars(mBuffer.getDc(), 0, 0, currentMoveBarLevel, themeColour, meterBackgroundColour);
+			drawBars(mBuffer.getDc(), 0, 0, currentMoveBarLevel);
 			mBufferNeedsRedraw = false;
 		}
 
@@ -106,13 +103,13 @@ class MoveBar extends Ui.Drawable {
 	}
 
 	(:buffered)
-	function recreateBuffer(themeColour, meterBackgroundColour) {
+	function recreateBuffer() {
 		mBuffer = new Graphics.BufferedBitmap({
 			:width => mCurrentWidth,
 			:height => mHeight,
 
 			// First palette colour appears to determine initial colour of buffer.
-			:palette => [Graphics.COLOR_TRANSPARENT, meterBackgroundColour, themeColour]
+			:palette => [Graphics.COLOR_TRANSPARENT, gMeterBackgroundColour, gThemeColour]
 		});
 		mBufferNeedsRecreate = false;
 		mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
@@ -120,7 +117,7 @@ class MoveBar extends Ui.Drawable {
 
 	// Draw bars to supplied DC: screen or buffer, depending on drawing mode.
 	// x and y are co-ordinates of top-left corner of move bar.
-	function drawBars(dc, x, y, currentMoveBarLevel, themeColour, meterBackgroundColour) {
+	function drawBars(dc, x, y, currentMoveBarLevel) {
 		var barWidth = getBarWidth();
 		var thisBarWidth;
 		var thisBarColour = 0;
@@ -139,11 +136,11 @@ class MoveBar extends Ui.Drawable {
 
 			// Move bar at this level or greater, so show regardless of MoveBarStyle setting.
 			if (i <= currentMoveBarLevel) {
-				thisBarColour = themeColour;
+				thisBarColour = gThemeColour;
 
 			// Move bar below this level, so only show if MoveBarStyle setting is SHOW_ALL_SEGMENTS.
 			} else if (moveBarStyle == 0 /* SHOW_ALL_SEGMENTS */) {
-				thisBarColour = meterBackgroundColour;
+				thisBarColour = gMeterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.
 			} else {

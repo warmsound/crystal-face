@@ -9,6 +9,14 @@ using Toybox.Time.Gregorian;
 
 const INTEGER_FORMAT = "%d";
 
+var gThemeColour;
+var gMonoLightColour;
+var gMonoDarkColour;
+var gBackgroundColour;
+var gMeterBackgroundColour;
+var gHoursColour;
+var gMinutesColour;
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
@@ -143,7 +151,7 @@ class CrystalView extends Ui.WatchFace {
 		var theme = App.getApp().getProperty("Theme");
 
 		// Theme-specific colours.
-		var themeColours = [
+		gThemeColour = [
 			Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
 			Graphics.COLOR_PINK,     // THEME_PINK_DARK
 			Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
@@ -157,8 +165,7 @@ class CrystalView extends Ui.WatchFace {
 			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
 			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
 			0xFFFF00                 // THEME_VIVID_YELLOW_DARK
-		];
-		App.getApp().setProperty("ThemeColour", themeColours[theme]); 
+		][theme];
 
 		// Light/dark-specific colours.
 		var lightFlags = [
@@ -177,36 +184,29 @@ class CrystalView extends Ui.WatchFace {
 			false  // THEME_VIVID_YELLOW_DARK
 		];
 		if (lightFlags[theme]) {
-			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
-			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
+			gMonoLightColour = Graphics.COLOR_BLACK;
+			gMonoDarkColour = Graphics.COLOR_DK_GRAY;
 			
-			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
-			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+			gMeterBackgroundColour = Graphics.COLOR_LT_GRAY;
+			gBackgroundColour = Graphics.COLOR_WHITE;
 		} else {
-			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
-			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+			gMonoLightColour = Graphics.COLOR_WHITE;
+			gMonoDarkColour = Graphics.COLOR_LT_GRAY;
 
-			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
-			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
+			gMeterBackgroundColour = Graphics.COLOR_DK_GRAY;
+			gBackgroundColour = Graphics.COLOR_BLACK;
 		}
 	}
 
 	function updateHoursMinutesColours() {
-		var overrideMap = {
-			-1 => "ThemeColour",     // FROM_THEME
-			-2 => "MonoLightColour", // MONO_HIGHLIGHT
-			-3 => "MonoDarkColour"   // MONO
-		};
+		var overrideColours = [
+			gThemeColour,     // FROM_THEME
+			gMonoLightColour, // MONO_HIGHLIGHT
+			gMonoDarkColour   // MONO
+		];
 
-		// Hours colour.
-		var hoursColourOverride = App.getApp().getProperty("HoursColourOverride");
-		var hoursColour = App.getApp().getProperty(overrideMap[hoursColourOverride]);
-		App.getApp().setProperty("HoursColour", hoursColour);
-
-		// Minutes colour.
-		var MinutesColourOverride = App.getApp().getProperty("MinutesColourOverride");
-		var minutesColour = App.getApp().getProperty(overrideMap[MinutesColourOverride]);
-		App.getApp().setProperty("MinutesColour", minutesColour);
+		gHoursColour = overrideColours[App.getApp().getProperty("HoursColourOverride")];
+		gMinutesColour = overrideColours[App.getApp().getProperty("MinutesColourOverride")];
 	}
 
 	function onSettingsChangedSinceLastDraw() {
@@ -297,9 +297,9 @@ class CrystalView extends Ui.WatchFace {
 		iconLabel.setText(iconFontChar);
 
 		if (values[:isValid]) {
-			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
+			iconLabel.setColor(gThemeColour);
 		} else {
-			iconLabel.setColor(App.getApp().getProperty("MeterBackgroundColour"));
+			iconLabel.setColor(gMeterBackgroundColour);
 		}
 
 		return values;
@@ -427,8 +427,7 @@ class CrystalView extends Ui.WatchFace {
 	// x, y are co-ordinates of centre point.
 	// width and height are outer dimensions of battery "body".
 	function drawBatteryMeter(dc, x, y, width, height) {
-		var themeColour = App.getApp().getProperty("ThemeColour");
-		dc.setColor(themeColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 		dc.setPenWidth(BATTERY_LINE_WIDTH);
 
 		// Body.
@@ -460,7 +459,7 @@ class CrystalView extends Ui.WatchFace {
 		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
 			fillColour = Graphics.COLOR_YELLOW;
 		} else {
-			fillColour = themeColour;
+			fillColour = gThemeColour;
 		}
 
 		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);

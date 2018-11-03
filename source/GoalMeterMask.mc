@@ -14,7 +14,7 @@ class GoalMeterMask extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		dc.setColor(App.getApp().getProperty("BackgroundColour"), Gfx.COLOR_TRANSPARENT);
+		dc.setColor(gBackgroundColour, Gfx.COLOR_TRANSPARENT);
 		dc.fillCircle(dc.getWidth() / 2, dc.getHeight() / 2, (dc.getWidth() / 2) - mStroke);
 	}
 }

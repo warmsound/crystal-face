@@ -184,8 +184,7 @@ class DataFields extends Ui.Drawable {
 
 		// #34 Clip live HR value.
 		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
-		var backgroundColour = App.getApp().getProperty("BackgroundColour");
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), backgroundColour);
+		dc.setColor(gMonoLightColour, gBackgroundColour);
 
 		if (isPartialUpdate) {
 			dc.setClip(
@@ -211,9 +210,9 @@ class DataFields extends Ui.Drawable {
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
 		if (value.length() == 0) {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
+			colour = gMeterBackgroundColour;
 		} else {
-			colour = App.getApp().getProperty("ThemeColour");
+			colour = gThemeColour;
 		}
 
 		// Battery.
@@ -236,7 +235,7 @@ class DataFields extends Ui.Drawable {
 					mTop - (heartDims[1] / 2),
 					heartDims[0] + 1,
 					heartDims[1] + 1);
-				dc.setColor(colour, backgroundColour);
+				dc.setColor(colour, gBackgroundColour);
 				dc.drawText(
 					x,
 					mTop,
@@ -257,12 +256,12 @@ class DataFields extends Ui.Drawable {
 			// fillCircle() does not anti-aliase, so use font instead.
 			var spotChar;
 			if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				dc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 				spotChar = "="; // getIconFontCharForField(LIVE_HR_SPOT)
 
 			// Otherwise, fill in spot by drawing heart.
 			} else {
-				dc.setColor(colour, backgroundColour);
+				dc.setColor(colour, gBackgroundColour);
 				spotChar = "3"; // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 			}
 			dc.drawText(
@@ -326,7 +325,7 @@ class DataFields extends Ui.Drawable {
 				}[fieldType];
 			}
 
-			dc.setColor(colour, backgroundColour);
+			dc.setColor(colour, gBackgroundColour);
 			dc.drawText(
 				x,
 				mTop,
@@ -342,7 +341,7 @@ class DataFields extends Ui.Drawable {
 
 				// #34 Live HR in high power mode.
 				if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-					dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+					dc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 					dc.drawText(
 						x,
 						mTop,

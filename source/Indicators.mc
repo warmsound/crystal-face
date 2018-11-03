@@ -83,9 +83,9 @@ class Indicators extends Ui.Drawable {
 
 		var colour;
 		if (value) {
-			colour = App.getApp().getProperty("ThemeColour");
+			colour = gThemeColour;
 		} else {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
+			colour = gMeterBackgroundColour;
 		}
 		dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 

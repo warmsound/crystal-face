@@ -4,7 +4,6 @@ using Toybox.Application as App;
 
 class ThickThinTime extends Ui.Drawable {
 
-	private var mThemeColour, mBackgroundColour;
 	private var mHoursFont, mMinutesFont, mSecondsFont;
 
 	// "y" parameter passed to drawText(), read from layout.xml.
@@ -56,9 +55,6 @@ class ThickThinTime extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		mThemeColour = App.getApp().getProperty("ThemeColour");
-		mBackgroundColour = App.getApp().getProperty("BackgroundColour");
-
 		drawHoursMinutes(dc);
 		drawSeconds(dc, /* isPartialUpdate */ false);
 	}
@@ -93,7 +89,7 @@ class ThickThinTime extends Ui.Drawable {
 		x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
 
 		// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
-		dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gHoursColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			halfDCHeight - hoursAscent - (mTwoLineOffset / 2),
@@ -103,7 +99,7 @@ class ThickThinTime extends Ui.Drawable {
 		);
 
 		// Draw minutes, horizontally centred, vertically top aligned.
-		dc.setColor(App.getApp().getProperty("MinutesColour"), Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMinutesColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			halfDCHeight + (mTwoLineOffset / 2),
@@ -116,7 +112,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		// If required, draw AM/PM after hours, vertically centred.
 		if (amPmText.length() > 0) {
-			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				halfDCHeight - (hoursAscent / 2) - (mTwoLineOffset / 2),
@@ -140,7 +136,7 @@ class ThickThinTime extends Ui.Drawable {
 		x = halfDCWidth - (totalWidth / 2);
 
 		// Draw hours.
-		dc.setColor(App.getApp().getProperty("HoursColour"), Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gHoursColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			halfDCHeight,
@@ -162,7 +158,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		// If required, draw AM/PM after minutes, vertically centred.
 		if (amPmText.length() > 0) {
-			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 			x = x + dc.getTextWidthInPixels(minutes, mMinutesFont);
 			dc.drawText(
 				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
@@ -196,7 +192,7 @@ class ThickThinTime extends Ui.Drawable {
 
 			// Can't optimise setting colour once, at start of low power mode, at this goes wrong on real hardware: alternates
 			// every second with inverse (e.g. blue text on black, then black text on blue).
-			dc.setColor(mThemeColour, /* Graphics.COLOR_RED */ mBackgroundColour);	
+			dc.setColor(gThemeColour, /* Graphics.COLOR_RED */ gBackgroundColour);	
 
 			// Clear old rect (assume nothing overlaps seconds text).
 			dc.clear();
@@ -205,7 +201,7 @@ class ThickThinTime extends Ui.Drawable {
 
 			// Drawing will not be clipped, so ensure background is transparent in case font height overlaps with another
 			// drawable.
-			dc.setColor(mThemeColour, Graphics.COLOR_TRANSPARENT);
+			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 		}
 
 		dc.drawText(

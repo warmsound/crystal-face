@@ -149,32 +149,28 @@ class GoalMeter extends Ui.Drawable {
 
 		top = (dc.getHeight() - mHeight) / 2;
 
-		var meterBackgroundColour = App.getApp().getProperty("MeterBackgroundColour");
-		var themeColour = App.getApp().getProperty("ThemeColour");
-
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		// Now changed to use buffered drawing only on round watches.
 		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)
 			&& (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND)) {
 
-			drawBuffered(dc, left, top, themeColour, meterBackgroundColour);
+			drawBuffered(dc, left, top);
 		
 		} else {
-			// drawUnbuffered(dc, left, top, themeColour, meterBackgroundColour);
+			// drawUnbuffered(dc, left, top);
 
 			// Filled segments: 0 --> fill height.
-			drawSegments(dc, left, top, themeColour, mSegments, 0, mFillHeight);
+			drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
 
 			// Unfilled segments: fill height --> height.
-			drawSegments(dc, left, top, meterBackgroundColour, mSegments, mFillHeight, mHeight);
+			drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
 		}
 	}
 
 	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
 	// remaining height.
 	(:buffered)
-	function drawBuffered(dc, left, top, themeColour, meterBackgroundColour) {
-		var backgroundColour = App.getApp().getProperty("BackgroundColour");
+	function drawBuffered(dc, left, top) {
 		var emptyBufferDc;
 		var filledBufferDc;
 
@@ -189,8 +185,8 @@ class GoalMeter extends Ui.Drawable {
 		// Recreate buffers only if this is the very first draw(), or if optimised colour palette has changed e.g. theme colour
 		// change.
 		if (mBuffersNeedRecreate) {
-			mEmptyBuffer = createSegmentBuffer(meterBackgroundColour);
-			mFilledBuffer = createSegmentBuffer(themeColour);
+			mEmptyBuffer = createSegmentBuffer(gMeterBackgroundColour);
+			mFilledBuffer = createSegmentBuffer(gThemeColour);
 			mBuffersNeedRecreate = false;
 			mBuffersNeedRedraw = true; // Ensure newly-created buffers are drawn next.
 		}
@@ -198,18 +194,18 @@ class GoalMeter extends Ui.Drawable {
 		// Redraw buffers only if maximum value changes.
 		if (mBuffersNeedRedraw) {
 
-			// Clear both buffers with background colour.	
+			// Clear both buffers with background colour.
 			emptyBufferDc = mEmptyBuffer.getDc();
-			emptyBufferDc.setColor(Graphics.COLOR_TRANSPARENT, backgroundColour);
+			emptyBufferDc.setColor(Graphics.COLOR_TRANSPARENT, gBackgroundColour);
 			emptyBufferDc.clear();
 
-			filledBufferDc = mFilledBuffer.getDc();			
-			filledBufferDc.setColor(Graphics.COLOR_TRANSPARENT, backgroundColour);
+			filledBufferDc = mFilledBuffer.getDc();
+			filledBufferDc.setColor(Graphics.COLOR_TRANSPARENT, gBackgroundColour);
 			filledBufferDc.clear();
 
 			// Draw full fill height for each buffer.
-			drawSegments(emptyBufferDc, 0, 0, meterBackgroundColour, mSegments, 0, mHeight);
-			drawSegments(filledBufferDc, 0, 0, themeColour, mSegments, 0, mHeight);
+			drawSegments(emptyBufferDc, 0, 0, gMeterBackgroundColour, mSegments, 0, mHeight);
+			drawSegments(filledBufferDc, 0, 0, gThemeColour, mSegments, 0, mHeight);
 
 			// For arc meters, draw circular mask for each buffer.
 			if (mShape == :arc) {
@@ -221,10 +217,10 @@ class GoalMeter extends Ui.Drawable {
 				}
 				radius = halfScreenDcWidth - mStroke;
 
-				emptyBufferDc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				emptyBufferDc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 				emptyBufferDc.fillCircle(x, (mHeight / 2), radius);
 
-				filledBufferDc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+				filledBufferDc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 				filledBufferDc.fillCircle(x, (mHeight / 2), radius);
 
 			}
@@ -263,7 +259,7 @@ class GoalMeter extends Ui.Drawable {
 			:height => mHeight,
 
 			// First palette colour appears to determine initial colour of buffer.
-			:palette => [App.getApp().getProperty("BackgroundColour"), fillColour]
+			:palette => [gBackgroundColour, fillColour]
 		});
 	}
 

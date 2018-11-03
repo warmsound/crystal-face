@@ -71,7 +71,7 @@ class DataArea extends Ui.Drawable {
 			}
 
 			// Time zone 1 city.
-			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
 				locX + (width / 2),
 				mRow1Y,
@@ -117,7 +117,7 @@ class DataArea extends Ui.Drawable {
 				time = "...";
 			}
 
-			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
 				locX + (width / 2),
 				mRow2Y,
@@ -128,7 +128,7 @@ class DataArea extends Ui.Drawable {
 
 		} else {
 			//drawGoalVales(dc);
-			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
 
 			if (mLeftGoalCurrent != null) {
 				dc.drawText(
@@ -150,7 +150,7 @@ class DataArea extends Ui.Drawable {
 				);
 			}
 
-			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 
 			if (mLeftGoalMax != null) {
 				dc.drawText(

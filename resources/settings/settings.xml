@@ -145,17 +145,17 @@
 
 	<setting propertyKey="@Properties.HoursColourOverride" title="@Strings.HoursColourTitle">
 		<settingConfig type="list">
-			<listEntry value="-1">@Strings.FromTheme</listEntry>
-			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
-			<listEntry value="-3">@Strings.Mono</listEntry>
+			<listEntry value="0">@Strings.FromTheme</listEntry>
+			<listEntry value="1">@Strings.MonoHighlight</listEntry>
+			<listEntry value="2">@Strings.Mono</listEntry>
 		</settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.MinutesColourOverride" title="@Strings.MinutesColourTitle">
 		<settingConfig type="list">
-			<listEntry value="-1">@Strings.FromTheme</listEntry>
-			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
-			<listEntry value="-3">@Strings.Mono</listEntry>
+			<listEntry value="0">@Strings.FromTheme</listEntry>
+			<listEntry value="1">@Strings.MonoHighlight</listEntry>
+			<listEntry value="2">@Strings.Mono</listEntry>
 		</settingConfig>
 	</setting>
 
