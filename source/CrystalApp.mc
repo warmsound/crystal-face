@@ -124,12 +124,14 @@ class CrystalApp extends App.AppBase {
 						pendingWebRequests["OpenWeatherMapCurrent"] = true;
 					}
 
-				// If API key was previously invalid, simply retry now, in case user has since changed key.
-				// TODO: Actually check for changed key by storing key that generated the 401 error.
-				} else if (owmCurrent["cod"] == 401) {
+				// If API key was previously invalid, and user has updated key, delete and retry.
+				// User should see "key!" change back to "...".
+				// Do not request weather again using a known invalid key.
+				} else if ((owmCurrent["cod"] == 401) && (!key.equals(owmCurrent["key"]))) {
+
+					App.Storage.deleteValue("OpenWeatherMapCurrent");
 					pendingWebRequests["OpenWeatherMapCurrent"] = true;
 				}
-				// TODO: Should we ever delete weather data?
 			}
 		}
 

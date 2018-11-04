@@ -557,14 +557,9 @@ class DataFields extends Ui.Drawable {
 					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
 					var key = App.getApp().getProperty("OpenWeatherMapKey");
 
-					// Weather data probably not requested because of missing key.
-					// Put this condition first in case user deletes key after weather data has been received.
-					if ((key == null) || (key.length() == 0)) {
-						value = "key?";
-
 					// Stored weather data available.
 					// Display this even if no location is currently available.
-					} else if (weather) {
+					if (weather) {
 
 						// Invalid API key.
 						if (weather["cod"] == 401) {
@@ -583,13 +578,17 @@ class DataFields extends Ui.Drawable {
 						}
 						// TODO: Any other error codes will currently show as disabled.
 
-					// Weather data probably not requested because of no location.
+					// Awaiting response.
+					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+						value = "...";
+
+					// Awaiting key.
+					} else if ((key == null) || (key.length() == 0)) {
+						value = "key?";
+
+					// Awaiting location.
 					} else if (App.getApp().getProperty("LastLocationLat") == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 						value = "gps?";
-
-					// Probably awaiting response.
-					} else {
-						value = "...";
 					}
 				}
 				break;

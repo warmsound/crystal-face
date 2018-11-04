@@ -29,7 +29,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 				);
 
 			// 2. Weather.
-			// TODO: Record API key used, to detect when user changes it in case of "invalid API key" response.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -159,9 +158,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 			};
 
 		// Invalid API key: save this response, as it can be reported to user.
+		// Record key used for request, so we can tell when the user updates it.
+		// Assume user has not updated key between request and response.
 		} else if (data["cod"] == 401) {
 			result = {
-				"cod" => data["cod"]
+				"cod" => data["cod"],
+				"key" => App.getApp().getProperty("OpenWeatherMapKey")
 			};
 
 		// Other HTTP error: do not save.
