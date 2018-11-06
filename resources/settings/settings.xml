@@ -172,7 +172,7 @@
 	</setting>
 
 	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
-		<settingConfig type="alphaNumeric" readonly="false"/>
+		<settingConfig type="alphaNumeric"/>
 	</setting>
 
 	<setting propertyKey="@Properties.MoveBarStyle" title="@Strings.MoveBarStyleTitle">
