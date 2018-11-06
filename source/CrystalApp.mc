@@ -113,8 +113,9 @@ class CrystalApp extends App.AppBase {
 				// Successfully received weather data.
 				} else if (owmCurrent["cod"] == 200) {
 
-					// Existing data is older than an hour.
-					if ((Time.now().value() > (owmCurrent["dt"] + 3600)) ||
+					// Existing data is older than 30 mins.
+					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
+					if ((Time.now().value() > (owmCurrent["dt"] + 1800)) ||
 
 					// Existing data not for this location.
 					// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
