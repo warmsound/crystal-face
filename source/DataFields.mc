@@ -39,8 +39,6 @@ class DataFields extends Ui.Drawable {
 	private var mBatteryWidth;
 	private var mBatteryHeight;
 
-	private var mIconsFont;
-	private var mLabelFont;
 	private var mWeatherIconsFont;
 
 	private var mFieldCount;
@@ -66,11 +64,6 @@ class DataFields extends Ui.Drawable {
 
 		// Initialise mFieldCount and mMaxFieldLength.
 		onSettingsChanged();
-	}
-
-	function setFonts(iconsFont, labelFont) {
-		mIconsFont = iconsFont;
-		mLabelFont = labelFont;
 	}
 
 	// Cache FieldCount setting, and determine appropriate maximum field length.
@@ -199,7 +192,7 @@ class DataFields extends Ui.Drawable {
 		dc.drawText(
 			x,
 			mBottom,
-			mLabelFont,
+			gNormalFont,
 			value,
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
@@ -229,7 +222,7 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", mIconsFont); // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", gIconsFont); // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
@@ -239,7 +232,7 @@ class DataFields extends Ui.Drawable {
 				dc.drawText(
 					x,
 					mTop,
-					mIconsFont,
+					gIconsFont,
 					"3", // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
@@ -267,7 +260,7 @@ class DataFields extends Ui.Drawable {
 			dc.drawText(
 				x,
 				mTop,
-				mIconsFont,
+				gIconsFont,
 				spotChar,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
@@ -301,7 +294,7 @@ class DataFields extends Ui.Drawable {
 				}[result["weatherIcon"]].toChar().toString();
 
 			} else {
-				font = mIconsFont;
+				font = gIconsFont;
 
 				// Map fieldType to icon font char.
 				icon = {
@@ -345,7 +338,7 @@ class DataFields extends Ui.Drawable {
 					dc.drawText(
 						x,
 						mTop,
-						mIconsFont,
+						gIconsFont,
 						"=", // getIconFontCharForField(LIVE_HR_SPOT)
 						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 					);

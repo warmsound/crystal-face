@@ -41,11 +41,11 @@ class GoalMeter extends Ui.Drawable {
 	private var mCurrentValue;
 	private var mMaxValue;
 
-	private enum /* GOAL_METER_STYLES */ {
-		MULTI_SEGMENTS,
-		SINGLE_SEGMENT,
-		HIDDEN
-	}
+	// private enum /* GOAL_METER_STYLES */ {
+	// 	MULTI_SEGMENTS,
+	// 	SINGLE_SEGMENT,
+	// 	HIDDEN
+	// }
 
 	function initialize(params) {
 		Drawable.initialize(params);
@@ -104,7 +104,7 @@ class GoalMeter extends Ui.Drawable {
 		mBuffersNeedRecreate = true;
 
 		// #18 Only read separator width from layout if multi segment style is selected.
-		if (App.getApp().getProperty("GoalMeterStyle") == MULTI_SEGMENTS) {
+		if (App.getApp().getProperty("GoalMeterStyle") == 0 /* MULTI_SEGMENTS */) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
 			if (mSeparator != mLayoutSeparator) {
@@ -134,7 +134,7 @@ class GoalMeter extends Ui.Drawable {
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
 	function draw(dc) {
-		if (App.getApp().getProperty("GoalMeterStyle") == HIDDEN) {
+		if (App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) {
 			return;
 		}
 

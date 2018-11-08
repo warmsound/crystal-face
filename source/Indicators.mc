@@ -5,7 +5,6 @@ using Toybox.Application as App;
 
 class Indicators extends Ui.Drawable {
 
-	private var mIconsFont;
 	private var mSpacingY;
 	private var mBatteryWidth;
 	private var mBatteryHeight;
@@ -30,10 +29,6 @@ class Indicators extends Ui.Drawable {
 		mBatteryHeight = params[:batteryHeight];
 
 		onSettingsChanged();
-	}
-
-	function setFont(iconsFont) {
-		mIconsFont = iconsFont;
 	}
 
 	function onSettingsChanged() {
@@ -93,7 +88,7 @@ class Indicators extends Ui.Drawable {
 		dc.drawText(
 			x,
 			y,
-			mIconsFont,
+			gIconsFont,
 			["8", ":", "5"][indicatorType], // Get icon font char for indicator type.
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);

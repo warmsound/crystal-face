@@ -10,8 +10,6 @@ class DataArea extends Ui.Drawable {
 	private var mRow1Y;
 	private var mRow2Y;
 
-	private var mNormalFont;
-
 	private var mLeftGoalCurrent;
 	private var mLeftGoalMax;
 
@@ -23,10 +21,6 @@ class DataArea extends Ui.Drawable {
 
 		mRow1Y = params[:row1Y];
 		mRow2Y = params[:row2Y];
-	}
-
-	function setFont(normalFont) {
-		mNormalFont = normalFont;
 	}
 
 	function setGoalValues(leftValues, rightValues) {
@@ -75,7 +69,7 @@ class DataArea extends Ui.Drawable {
 			dc.drawText(
 				locX + (width / 2),
 				mRow1Y,
-				mNormalFont,
+				gNormalFont,
 				// Limit string length.
 				city.substring(0, 10),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
@@ -121,7 +115,7 @@ class DataArea extends Ui.Drawable {
 			dc.drawText(
 				locX + (width / 2),
 				mRow2Y,
-				mNormalFont,
+				gNormalFont,
 				time,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
@@ -134,7 +128,7 @@ class DataArea extends Ui.Drawable {
 				dc.drawText(
 					locX,
 					mRow1Y,
-					mNormalFont,
+					gNormalFont,
 					mLeftGoalCurrent,
 					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 				);
@@ -144,7 +138,7 @@ class DataArea extends Ui.Drawable {
 				dc.drawText(
 					locX + width,
 					mRow1Y,
-					mNormalFont,
+					gNormalFont,
 					mRightGoalCurrent,
 					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 				);
@@ -156,7 +150,7 @@ class DataArea extends Ui.Drawable {
 				dc.drawText(
 					locX,
 					mRow2Y,
-					mNormalFont,
+					gNormalFont,
 					mLeftGoalMax,
 					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 				);
@@ -166,7 +160,7 @@ class DataArea extends Ui.Drawable {
 				dc.drawText(
 					locX + width,
 					mRow2Y,
-					mNormalFont,
+					gNormalFont,
 					mRightGoalMax,
 					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 				);

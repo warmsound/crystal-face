@@ -17,12 +17,12 @@ var gMeterBackgroundColour;
 var gHoursColour;
 var gMinutesColour;
 
+var gNormalFont;
+var gIconsFont;
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
-
-	private var mIconsFont;
-	private var mNormalFont;
 
 	private var mTime;
 	var mDataFields;
@@ -66,7 +66,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Load your resources here
 	function onLayout(dc) {
-		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
@@ -76,14 +76,12 @@ class CrystalView extends Ui.WatchFace {
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
 
-		mDrawables[:Indicators].setFont(mIconsFont);
-
 		mDataFields = View.findDrawableById("DataFields");
 		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 
-		updateNormalFont(); // Requires mIconsFont, mDrawables, mDataFields.
+		updateNormalFont(); // Requires mDrawables, mDataFields.
 	}
 
 	function cacheDrawables() {
@@ -138,13 +136,10 @@ class CrystalView extends Ui.WatchFace {
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
-			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
 		} else {
-			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 		}
-
-		mDataFields.setFonts(mIconsFont, mNormalFont);
-		mDrawables[:DataArea].setFont(mNormalFont);
 	}
 
 	function updateThemeColours() {
@@ -273,7 +268,7 @@ class CrystalView extends Ui.WatchFace {
 		meter.setValues(values[:current], values[:max]);
 
 		// Icon label.
-		iconLabel.setFont(mIconsFont);
+		iconLabel.setFont(gIconsFont);
 
 		var iconFontChar;
 		switch (goalType) {
