@@ -83,18 +83,31 @@ class DataFields extends Ui.Drawable {
 
 		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		// Dynamic loading/unloading of weather icons font.
-		if (hasField(FIELD_TYPE_WEATHER)) {
-			mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFont);
-		} else {
-			mWeatherIconsFont = null;
-		}
+		updateWeatherIconsFont();
 	}
 
 	function hasField(fieldType) {
 		return ((mFieldTypes[0] == fieldType) ||
 			(mFieldTypes[1] == fieldType) ||
 			(mFieldTypes[2] == fieldType));
+	}
+
+	// Dynamic loading/unloading of day/night weather icons font, to save memory.
+	function updateWeatherIconsFont() {
+		if (hasField(FIELD_TYPE_WEATHER)) {
+
+			// Day.
+			if (getValueForFieldType(FIELD_TYPE_WEATHER)["weatherIcon"].substring(2, 3).equals("d")) {
+				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
+
+			// Night.
+			} else {
+				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
+			}
+			
+		} else {
+			mWeatherIconsFont = null;
+		}
 	}
 
 	function draw(dc) {
