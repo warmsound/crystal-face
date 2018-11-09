@@ -6,8 +6,6 @@ using Toybox.Application as App;
 class Indicators extends Ui.Drawable {
 
 	private var mSpacingY;
-	private var mBatteryWidth;
-	private var mBatteryHeight;
 
 	private var mIndicator1Type;
 	private var mIndicator2Type;
@@ -25,8 +23,6 @@ class Indicators extends Ui.Drawable {
 		Drawable.initialize(params);
 
 		mSpacingY = params[:spacingY];
-		mBatteryWidth = params[:batteryWidth];
-		mBatteryHeight = params[:batteryHeight];
 
 		onSettingsChanged();
 	}
@@ -55,7 +51,11 @@ class Indicators extends Ui.Drawable {
 
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
-			App.getApp().getView().drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryHeight);
+			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
+				drawBatteryMeter(dc, x, y, 24, 12);
+			} else {
+				drawBatteryMeter(dc, x, y, 20, 10);
+			}
 			return;
 		}
 

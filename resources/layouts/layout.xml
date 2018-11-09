@@ -16,7 +16,7 @@
 		<param name="height">160</param>
 		<param name="separator">2</param>
 	</drawable>
-	
+
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">76</param>
 		<param name="width">88</param>
@@ -32,8 +32,6 @@
 		<param name="right">160</param>
 		<param name="top">24</param>
 		<param name="bottom">45</param>
-		<param name="batteryWidth">28</param>
-		<param name="batteryHeight">14</param>
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
@@ -44,8 +42,6 @@
 		<param name="locX">31</param>
 		<param name="locY">120</param>
 		<param name="spacingY">30</param>
-		<param name="batteryWidth">24</param>
-		<param name="batteryHeight">12</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">

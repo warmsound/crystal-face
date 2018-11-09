@@ -36,9 +36,6 @@ class DataFields extends Ui.Drawable {
 	private var mTop;
 	private var mBottom;
 
-	private var mBatteryWidth;
-	private var mBatteryHeight;
-
 	private var mWeatherIconsFont;
 
 	private var mFieldCount;
@@ -58,9 +55,6 @@ class DataFields extends Ui.Drawable {
 		mRight = params[:right];
 		mTop = params[:top];
 		mBottom = params[:bottom];
-
-		mBatteryWidth = params[:batteryWidth];
-		mBatteryHeight = params[:batteryHeight];
 
 		// Initialise mFieldCount and mMaxFieldLength.
 		onSettingsChanged();
@@ -211,7 +205,11 @@ class DataFields extends Ui.Drawable {
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 
-			App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
+			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
+				drawBatteryMeter(dc, x, mTop, 28, 14);
+			} else {
+				drawBatteryMeter(dc, x, mTop, 24, 12);
+			}
 
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {
