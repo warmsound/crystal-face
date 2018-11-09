@@ -22,15 +22,14 @@
 		<param name="stroke">8</param>
 	</drawable>
 
-	<label id="LeftGoalIcon" text="0" x="40" y="166" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-
-	<label id="RightGoalIcon" text="1" x="178" y="166" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">67</param>
 		<param name="width">84</param>
 		<param name="row1Y">170</param>
 		<param name="row2Y">186</param>
+		<param name="goalIconY">166</param>
+		<param name="goalIconLeftX">40</param>
+		<param name="goalIconRightX">178</param>
 	</drawable>
 
 	<drawable id="DataFields" class="DataFields">

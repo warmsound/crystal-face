@@ -16,16 +16,15 @@
 		<param name="height">205</param>
 		<param name="separator">2</param>
 	</drawable>
-
-	<label id="LeftGoalIcon" text="0" x="11" y="172" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-
-	<label id="RightGoalIcon" text="1" x="137" y="172" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-
+	
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">34</param>
 		<param name="width">80</param>
 		<param name="row1Y">174</param>
 		<param name="row2Y">190</param>
+		<param name="goalIconY">172</param>
+		<param name="goalIconLeftX">11</param>
+		<param name="goalIconRightX">137</param>
 	</drawable>
 
 	<drawable id="DataFields" class="DataFields">

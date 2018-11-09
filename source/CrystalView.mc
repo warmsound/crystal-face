@@ -245,60 +245,18 @@ class CrystalView extends Ui.WatchFace {
 		View.onUpdate(dc);
 	}
 
+	// Update each goal meter separately, then also pass types and values to data area to draw goal icons.
 	function updateGoalMeters() {
-		var leftValues = updateGoalMeter(
-			App.getApp().getProperty("LeftGoalType"),
-			mDrawables[:LeftGoalMeter],
-			mDrawables[:LeftGoalIcon]
-		);
+		var leftType = App.getApp().getProperty("LeftGoalType");
+		var leftValues = getValuesForGoalType(leftType);
+		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max]);
 
-		var rightValues = updateGoalMeter(
-			App.getApp().getProperty("RightGoalType"),
-			mDrawables[:RightGoalMeter],
-			mDrawables[:RightGoalIcon]
-		);
+		var rightType = App.getApp().getProperty("RightGoalType");
+		var rightValues = getValuesForGoalType(rightType);
+		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max]);
 
-		mDrawables[:DataArea].setGoalValues(leftValues, rightValues);
+		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
-
-	function updateGoalMeter(goalType, meter, iconLabel) {
-		var values = getValuesForGoalType(goalType);
-
-		// Meter.
-		meter.setValues(values[:current], values[:max]);
-
-		// Icon label.
-		iconLabel.setFont(gIconsFont);
-
-		var iconFontChar;
-		switch (goalType) {
-			case GOAL_TYPE_BATTERY:
-				iconFontChar = "9";
-				break;
-			case GOAL_TYPE_CALORIES:
-				iconFontChar = "6";
-				break;
-			case GOAL_TYPE_STEPS:
-				iconFontChar = "0";
-				break;
-			case GOAL_TYPE_FLOORS_CLIMBED:
-				iconFontChar = "1";
-				break;
-			case GOAL_TYPE_ACTIVE_MINUTES:
-				iconFontChar = "2";
-				break;
-		}
-
-		iconLabel.setText(iconFontChar);
-
-		if (values[:isValid]) {
-			iconLabel.setColor(gThemeColour);
-		} else {
-			iconLabel.setColor(gMeterBackgroundColour);
-		}
-
-		return values;
-	}	
 
 	function getValuesForGoalType(type) {
 		var values = {

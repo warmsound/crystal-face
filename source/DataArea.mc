@@ -10,23 +10,38 @@ class DataArea extends Ui.Drawable {
 	private var mRow1Y;
 	private var mRow2Y;
 
+	private var mLeftGoalType;
+	private var mLeftGoalIsValid;
 	private var mLeftGoalCurrent;
 	private var mLeftGoalMax;
 
+	private var mRightGoalType;
+	private var mRightGoalIsValid;
 	private var mRightGoalCurrent;
 	private var mRightGoalMax;
+
+	private var mGoalIconY;
+	private var mGoalIconLeftX;
+	private var mGoalIconRightX;
 
 	function initialize(params) {
 		Drawable.initialize(params);
 
 		mRow1Y = params[:row1Y];
 		mRow2Y = params[:row2Y];
+
+		mGoalIconY = params[:goalIconY];
+		mGoalIconLeftX = params[:goalIconLeftX];
+		mGoalIconRightX = params[:goalIconRightX];
 	}
 
-	function setGoalValues(leftValues, rightValues) {
+	function setGoalValues(leftType, leftValues, rightType, rightValues) {
+		mLeftGoalType = leftType;
+		mLeftGoalIsValid = leftValues[:isValid];
+
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("LeftGoalType") == GOAL_TYPE_BATTERY) {
+			if (mLeftGoalType == GOAL_TYPE_BATTERY) {
 				mLeftGoalMax = "%";
 			} else {
 				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
@@ -36,9 +51,12 @@ class DataArea extends Ui.Drawable {
 			mLeftGoalMax = null;
 		}
 
+		mRightGoalType = rightType;
+		mRightGoalIsValid = rightValues[:isValid];
+
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("RightGoalType") == GOAL_TYPE_BATTERY) {
+			if (mRightGoalType == GOAL_TYPE_BATTERY) {
 				mRightGoalMax = "%";
 			} else {
 				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);
@@ -50,6 +68,9 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
+		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, Graphics.TEXT_JUSTIFY_LEFT);
+		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, Graphics.TEXT_JUSTIFY_RIGHT);
+
 		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
@@ -121,50 +142,58 @@ class DataArea extends Ui.Drawable {
 			);
 
 		} else {
-			//drawGoalVales(dc);
+			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
+			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
+		}
+	}
+
+	function drawGoalIcon(dc, x, type, isValid, align) {
+		var icon = {
+			GOAL_TYPE_BATTERY => "9",
+			GOAL_TYPE_CALORIES => "6",
+			GOAL_TYPE_STEPS => "0",
+			GOAL_TYPE_FLOORS_CLIMBED => "1",
+			GOAL_TYPE_ACTIVE_MINUTES => "2",
+		}[type];
+
+		var colour;
+		if (isValid) {
+			colour = gThemeColour;
+		} else {
+			colour = gMeterBackgroundColour;
+		}
+
+		dc.setColor(colour, Gfx.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			mGoalIconY,
+			gIconsFont,
+			icon,
+			align
+		);
+	}
+
+	function drawGoalValues(dc, x, currentValue, maxValue, align) {
+		if (currentValue != null) {
 			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mRow1Y,
+				gNormalFont,
+				currentValue,
+				align | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 
-			if (mLeftGoalCurrent != null) {
-				dc.drawText(
-					locX,
-					mRow1Y,
-					gNormalFont,
-					mLeftGoalCurrent,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
-
-			if (mRightGoalCurrent != null) {
-				dc.drawText(
-					locX + width,
-					mRow1Y,
-					gNormalFont,
-					mRightGoalCurrent,
-					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
-
+		if (maxValue != null) {
 			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-
-			if (mLeftGoalMax != null) {
-				dc.drawText(
-					locX,
-					mRow2Y,
-					gNormalFont,
-					mLeftGoalMax,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
-
-			if (mRightGoalMax != null) {
-				dc.drawText(
-					locX + width,
-					mRow2Y,
-					gNormalFont,
-					mRightGoalMax,
-					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
+			dc.drawText(
+				x,
+				mRow2Y,
+				gNormalFont,
+				maxValue,
+				align | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 		}
 	}
 }
