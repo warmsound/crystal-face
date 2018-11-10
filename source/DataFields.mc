@@ -561,9 +561,16 @@ class DataFields extends Ui.Drawable {
 					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
 					var key = App.getApp().getProperty("OpenWeatherMapKey");
 
+					// Awaiting location.
+					if (App.getApp().getProperty("LastLocationLat") == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+						value = "gps?";
+
+					// Awaiting key.
+					} else if ((key == null) || (key.length() == 0)) {
+						value = "key?";
+
 					// Stored weather data available.
-					// Display this even if no location is currently available.
-					if (weather) {
+					} else if (weather) {
 
 						// Invalid API key.
 						if (weather["cod"] == 401) {
@@ -580,19 +587,10 @@ class DataFields extends Ui.Drawable {
 							value = temperature.format(INTEGER_FORMAT) + "°";
 							result["weatherIcon"] = weather["icon"];
 						}
-						// TODO: Any other error codes will currently show as disabled.
 
 					// Awaiting response.
 					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
 						value = "...";
-
-					// Awaiting key.
-					} else if ((key == null) || (key.length() == 0)) {
-						value = "key?";
-
-					// Awaiting location.
-					} else if (App.getApp().getProperty("LastLocationLat") == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
-						value = "gps?";
 					}
 				}
 				break;

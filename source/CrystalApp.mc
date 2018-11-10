@@ -97,14 +97,11 @@ class CrystalApp extends App.AppBase {
 		}
 
 		// 2. Weather:
-		// Location must be available, key must be specified.
+		// Location must be available, key must be specified, weather data field must be shown.
 		var key = App.getApp().getProperty("OpenWeatherMapKey");
-		if ((lat != -360.0) && (key != null) && (key.length() > 0)) {
+		if ((lat != -360.0) && (key != null) && (key.length() > 0) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
-			// Weather data field must be shown.
-			if (mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
-
-				var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
+			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 
 				// No existing data.
 				if (owmCurrent == null) {
@@ -132,8 +129,7 @@ class CrystalApp extends App.AppBase {
 				} else if ((owmCurrent["cod"] == 401) && (!key.equals(owmCurrent["key"]))) {
 
 					App.Storage.deleteValue("OpenWeatherMapCurrent");
-					pendingWebRequests["OpenWeatherMapCurrent"] = true;
-				}
+				pendingWebRequests["OpenWeatherMapCurrent"] = true;
 			}
 		}
 

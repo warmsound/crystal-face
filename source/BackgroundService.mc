@@ -147,7 +147,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		// Useful data only available if result was successful.
 		// Filter and flatten data response for data that we actually need.
 		// Reduces runtime memory spike in main app.
-		if (data["cod"] == 200) {
+		if (responseCode == 200) {
 			result = {
 				"cod" => data["cod"],
 				"lat" => data["coord"]["lat"],
@@ -160,9 +160,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 		// Invalid API key: save this response, as it can be reported to user.
 		// Record key used for request, so we can tell when the user updates it.
 		// Assume user has not updated key between request and response.
-		} else if (data["cod"] == 401) {
+		// N.B. data can be supplied as null in case of 401 response.
+		} else if (responseCode == 401) {
 			result = {
-				"cod" => data["cod"],
+				"cod" => responseCode,
 				"key" => App.getApp().getProperty("OpenWeatherMapKey")
 			};
 
