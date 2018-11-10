@@ -1,6 +1,7 @@
 using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Graphics;
 
 const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 

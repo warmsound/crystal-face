@@ -2,6 +2,7 @@ using Toybox.Application as App;
 using Toybox.Background as Bg;
 using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
+using Toybox.Time;
 
 (:background)
 class CrystalApp extends App.AppBase {
