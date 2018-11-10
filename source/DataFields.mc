@@ -371,7 +371,6 @@ class DataFields extends Ui.Drawable {
 		var sample;	
 		var altitude;
 		var temperature;
-		var lat, lng;
 		var sunTimes;
 		var unit;
 
@@ -490,11 +489,8 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
-				// Read stored location.
-				lat = App.getApp().getProperty("LastLocationLat");
-				lng = App.getApp().getProperty("LastLocationLng");
-
-				if (lat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+			
+				if (gLocationLat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
@@ -504,7 +500,7 @@ class DataFields extends Ui.Drawable {
 					//Sys.println(now);
 
 					// Get today's sunrise/sunset times in current time zone.
-					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ false);
+					sunTimes = App.getApp().getView().getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
 					//Sys.println(sunTimes);
 
 					// If sunrise/sunset happens today.
@@ -522,7 +518,7 @@ class DataFields extends Ui.Drawable {
 
 						// After sunset today: tomorrow's sunrise (if any) is next.
 						} else {
-							sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ true);
+							sunTimes = App.getApp().getView().getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ true);
 							nextSunEvent = sunTimes[0];
 							result["isSunriseNext"] = true;
 						}
@@ -562,7 +558,7 @@ class DataFields extends Ui.Drawable {
 					var key = App.getApp().getProperty("OpenWeatherMapKey");
 
 					// Awaiting location.
-					if (App.getApp().getProperty("LastLocationLat") == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 						value = "gps?";
 
 					// Awaiting key.

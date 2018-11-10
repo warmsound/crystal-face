@@ -4,6 +4,13 @@ using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Time;
 
+// In-memory current location.
+// Important for CIQ 1.x watches that only support Object Store, where stored location is overwritten with default when user
+// changes any setting (this happens for any properties that do not have corresponding setting). Object Store is still useful for
+// when user moves away from watch face and returns to it.
+var gLocationLat = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+var gLocationLng = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+
 (:background)
 class CrystalApp extends App.AppBase {
 
@@ -41,24 +48,55 @@ class CrystalApp extends App.AppBase {
 	// Determine if any web requests are needed.
 	// If so, set approrpiate pendingWebRequests flag for use by BackgroundService, then register for
 	// temporal event.
-	// Currently called on initialisation, when settings change, and on exiting sleep.
+	// Currently called on layout initialisation, when settings change, and on exiting sleep.
 	function checkPendingWebRequests() {
 
-		// Attempt to updated stored location, to be used by Sunrise/Sunset, and Weather.
-		var lat, lng;
+		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
+		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
+			// Sys.println("Saving location");
 			location = location.toDegrees(); // Array of Doubles.
-			lat = location[0].toFloat();
-			lng = location[1].toFloat();
+			gLocationLat = location[0].toFloat();
+			gLocationLng = location[1].toFloat();
 
-			// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
-			App.getApp().setProperty("LastLocationLat", lat);
-			App.getApp().setProperty("LastLocationLng", lng);
+			// Use App.Storage if possible, as this is not overwritten with default property value (-360.0) when user changes any
+			// setting.
+			if (App has :Storage) {
+				App.Storage.setValue("LastLocationLat", gLocationLat);
+				App.Storage.setValue("LastLocationLng", gLocationLng);
+			} else {
+				App.getApp().setProperty("LastLocationLat", gLocationLat);
+				App.getApp().setProperty("LastLocationLng", gLocationLng);
+			}
+
+		// If current location is not available, read stored value from Storage or Object Store, being careful not to overwrite
+		// a valid in-memory value with an invalid stored one.
 		} else {
-			lat = App.getApp().getProperty("LastLocationLat");
-			lng = App.getApp().getProperty("LastLocationLng");
+			var lat, lng;
+			if (App has :Storage) {
+				// Most likely null if location has not yet been saved to Storage: leave value at -360.0.
+				lat = App.Storage.getValue("LastLocationLat");
+				if (lat != null) {
+					gLocationLat = lat;
+				}
+				lng = App.Storage.getValue("LastLocationLng");
+				if (lng != null) {
+					gLocationLng = lng;
+				}
+			} else {
+				// Gets reset to -360.0 as soon as settings are changed, because this property has no corresponding setting.
+				lat = App.getApp().getProperty("LastLocationLat");
+				if (lat != -360.0) {
+					gLocationLat = lat;
+				}
+				lng = App.getApp().getProperty("LastLocationLng");
+				if (lng != -360) {
+					gLocationLng = lng;
+				}
+			}
 		}
+		// Sys.println(gLocationLat + ", " + gLocationLng);
 
 		if (!((Sys has :ServiceDelegate) && (App has :Storage))) {
 			return;
@@ -99,36 +137,36 @@ class CrystalApp extends App.AppBase {
 		// 2. Weather:
 		// Location must be available, key must be specified, weather data field must be shown.
 		var key = App.getApp().getProperty("OpenWeatherMapKey");
-		if ((lat != -360.0) && (key != null) && (key.length() > 0) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
+		if ((gLocationLat != -360.0) && (key != null) && (key.length() > 0) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
 			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 
-				// No existing data.
-				if (owmCurrent == null) {
+			// No existing data.
+			if (owmCurrent == null) {
+
+				pendingWebRequests["OpenWeatherMapCurrent"] = true;
+
+			// Successfully received weather data.
+			} else if (owmCurrent["cod"] == 200) {
+
+				// Existing data is older than 30 mins.
+				// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
+				if ((Time.now().value() > (owmCurrent["dt"] + 1800)) ||
+
+				// Existing data not for this location.
+				// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
+				// true distance calculation. 0.02 degree of latitude is just over a mile.
+				(((gLocationLat - owmCurrent["lat"]).abs() > 0.02) || ((gLocationLng - owmCurrent["lon"]).abs() > 0.02))) {
 
 					pendingWebRequests["OpenWeatherMapCurrent"] = true;
+				}
 
-				// Successfully received weather data.
-				} else if (owmCurrent["cod"] == 200) {
+			// If API key was previously invalid, and user has updated key, delete and retry.
+			// User should see "key!" change back to "...".
+			// Do not request weather again using a known invalid key.
+			} else if ((owmCurrent["cod"] == 401) && (!key.equals(owmCurrent["key"]))) {
 
-					// Existing data is older than 30 mins.
-					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
-					if ((Time.now().value() > (owmCurrent["dt"] + 1800)) ||
-
-					// Existing data not for this location.
-					// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
-					// true distance calculation. 0.02 degree of latitude is just over a mile.
-					(((lat - owmCurrent["lat"]).abs() > 0.02) || ((lng - owmCurrent["lon"]).abs() > 0.02))) {
-
-						pendingWebRequests["OpenWeatherMapCurrent"] = true;
-					}
-
-				// If API key was previously invalid, and user has updated key, delete and retry.
-				// User should see "key!" change back to "...".
-				// Do not request weather again using a known invalid key.
-				} else if ((owmCurrent["cod"] == 401) && (!key.equals(owmCurrent["key"]))) {
-
-					App.Storage.deleteValue("OpenWeatherMapCurrent");
+				App.Storage.deleteValue("OpenWeatherMapCurrent");
 				pendingWebRequests["OpenWeatherMapCurrent"] = true;
 			}
 		}
