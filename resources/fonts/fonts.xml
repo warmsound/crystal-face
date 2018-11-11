@@ -1,11 +1,17 @@
 <fonts>
-	<font id="HoursFont" filename="titillium-web-bold-64.fnt" antialias="true" />
-	<font id="MinutesFont" filename="titillium-web-light-64.fnt" antialias="true" />
+	<font id="HoursFont" filename="titillium-web-bold-64.fnt" antialias="true"/>
+	<font id="MinutesFont" filename="titillium-web-light-64.fnt" antialias="true"/>
 	<font id="SecondsFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter="0123456789AP"/>
 	<font id="DateFont" filename="titillium-web-semibold-24.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
-	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" filter="%-.0123456789:CFafikmpt°"/>
-	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="true" filter=" %',-.0123456789:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
-	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true" />
+	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="true" filter="%-.0123456789!:?CFaefgikmpsty°"/>
+	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
+	<font id="IconsFont" filename="crystal-icons.fnt" antialias="true"/>
+
+	<!-- Font size chosen such that height of sunshine icon is 24px -->
+	<!-- JavaScript: String.fromCharCode(61453, 61452, 61442, 61459, 61449, 61448, 61445, 61450, 61441) -->
+	<font id="WeatherIconsFontDay" filename="weather-icons-24.fnt" antialias="true" filter=""/>
+	<!-- JavaScript: String.fromCharCode(61486, 61569, 61574, 61459, 61481, 61480, 61477, 61482, 61475) -->
+	<font id="WeatherIconsFontNight" filename="weather-icons-24.fnt" antialias="true" filter=""/>
 
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
 	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-24.fnt" antialias="true"/>

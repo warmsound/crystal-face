@@ -10,8 +10,8 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 enum /* FIELD_TYPES */ {
-	// Pseudo-fields.
-	FIELD_TYPE_SUNRISE = -1,
+	// Pseudo-fields.	
+	FIELD_TYPE_SUNRISE = -1,	
 	//FIELD_TYPE_SUNSET = -2,
 
 	// Real fields (used by properties).
@@ -25,7 +25,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_TEMPERATURE,
 	FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	FIELD_TYPE_HR_LIVE_5S,
-	FIELD_TYPE_SUNRISE_SUNSET
+	FIELD_TYPE_SUNRISE_SUNSET,
+	FIELD_TYPE_WEATHER
 }
 
 class DataFields extends Ui.Drawable {
@@ -35,11 +36,7 @@ class DataFields extends Ui.Drawable {
 	private var mTop;
 	private var mBottom;
 
-	private var mBatteryWidth;
-	private var mBatteryHeight;
-
-	private var mIconsFont;
-	private var mLabelFont;
+	private var mWeatherIconsFont;
 
 	private var mFieldCount;
 	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
@@ -59,23 +56,15 @@ class DataFields extends Ui.Drawable {
 		mTop = params[:top];
 		mBottom = params[:bottom];
 
-		mBatteryWidth = params[:batteryWidth];
-		mBatteryHeight = params[:batteryHeight];
-
 		// Initialise mFieldCount and mMaxFieldLength.
 		onSettingsChanged();
-	}
-
-	function setFonts(iconsFont, labelFont) {
-		mIconsFont = iconsFont;
-		mLabelFont = labelFont;
 	}
 
 	// Cache FieldCount setting, and determine appropriate maximum field length.
 	function onSettingsChanged() {
 		mFieldCount = App.getApp().getProperty("FieldCount");
 
-		switch (mFieldCount) {
+		/* switch (mFieldCount) {
 			case 3:
 				mMaxFieldLength = 4;
 				break;
@@ -85,19 +74,39 @@ class DataFields extends Ui.Drawable {
 			case 1:
 				mMaxFieldLength = 8;
 				break;
-		}
+		} */
+		mMaxFieldLength = [8, 6, 4][mFieldCount - 1];
 
 		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
 		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
 
-		if ((mFieldTypes[0] == FIELD_TYPE_HR_LIVE_5S) ||
-			(mFieldTypes[1] == FIELD_TYPE_HR_LIVE_5S) ||
-			(mFieldTypes[2] == FIELD_TYPE_HR_LIVE_5S)) {
-				
-			mHasLiveHR = true;
+		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
+
+		updateWeatherIconsFont();
+	}
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0] == fieldType) ||
+			(mFieldTypes[1] == fieldType) ||
+			(mFieldTypes[2] == fieldType));
+	}
+
+	// Dynamic loading/unloading of day/night weather icons font, to save memory.
+	function updateWeatherIconsFont() {
+		if (hasField(FIELD_TYPE_WEATHER)) {
+
+			// Day.
+			if (getValueForFieldType(FIELD_TYPE_WEATHER)["weatherIcon"].substring(2, 3).equals("d")) {
+				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
+
+			// Night.
+			} else {
+				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
+			}
+			
 		} else {
-			mHasLiveHR = false;
+			mWeatherIconsFont = null;
 		}
 	}
 
@@ -129,30 +138,12 @@ class DataFields extends Ui.Drawable {
 	}
 
 	// Both regular and small icon fonts use same spot size for easier optimisation.
-	private const LIVE_HR_SPOT_RADIUS = 3;
+	//private const LIVE_HR_SPOT_RADIUS = 3;
 
-	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
-		var isBattery = false;
-		var isHeartRate = false;
-		var isLiveHeartRate = false;
-
-		switch (fieldType) {
-			case FIELD_TYPE_BATTERY:
-			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				isBattery = true;
-				break;
-
-			case FIELD_TYPE_HR_LIVE_5S:
-				isLiveHeartRate = true;
-				isHeartRate = true;
-				break;
-
-			case FIELD_TYPE_HEART_RATE:			
-				isHeartRate = true;
-				break;
-		}
+	private function drawDataField(dc, isPartialUpdate, fieldType, x) {		
 
 		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
+		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
 		var seconds = Sys.getClockTime().sec;
 		if (isPartialUpdate && (!isLiveHeartRate || (seconds % 5))) {
 			return;
@@ -160,6 +151,7 @@ class DataFields extends Ui.Drawable {
 
 		// Decide whether spot should be shown or not, based on current seconds.
 		var showLiveHRSpot = false;
+		var isHeartRate = ((fieldType == FIELD_TYPE_HEART_RATE) || isLiveHeartRate);
 		if (isHeartRate) {
 
 			// High power mode: 0 on, 1 off, 2 on, etc.
@@ -192,8 +184,7 @@ class DataFields extends Ui.Drawable {
 
 		// #34 Clip live HR value.
 		// Optimisation: hard-code clip rect dimensions. Possible, as all watches use same label font.
-		var backgroundColour = App.getApp().getProperty("BackgroundColour");
-		dc.setColor(App.getApp().getProperty("MonoLightColour"), backgroundColour);
+		dc.setColor(gMonoLightColour, gBackgroundColour);
 
 		if (isPartialUpdate) {
 			dc.setClip(
@@ -208,7 +199,7 @@ class DataFields extends Ui.Drawable {
 		dc.drawText(
 			x,
 			mBottom,
-			mLabelFont,
+			gNormalFont,
 			value,
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
@@ -218,16 +209,20 @@ class DataFields extends Ui.Drawable {
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
 		var colour;
-		if ((value.length() == 0) && (fieldType != FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			colour = App.getApp().getProperty("MeterBackgroundColour");
+		if (value.length() == 0) {
+			colour = gMeterBackgroundColour;
 		} else {
-			colour = App.getApp().getProperty("ThemeColour");
+			colour = gThemeColour;
 		}
 
 		// Battery.
-		if (isBattery) {
+		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
 
-			App.getApp().getView().drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryHeight);
+			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
+				drawBatteryMeter(dc, x, mTop, 28, 14);
+			} else {
+				drawBatteryMeter(dc, x, mTop, 24, 12);
+			}
 
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {
@@ -238,52 +233,48 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", mIconsFont); // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", gIconsFont); // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
 					heartDims[0] + 1,
 					heartDims[1] + 1);
-				dc.setColor(colour, backgroundColour);
+				dc.setColor(colour, gBackgroundColour);
 				dc.drawText(
 					x,
 					mTop,
-					mIconsFont,
-					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+					gIconsFont,
+					"3", // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 				);
 			}
 
 			// Clip spot.
 			dc.setClip(
-				x - LIVE_HR_SPOT_RADIUS,
-				mTop - LIVE_HR_SPOT_RADIUS,
-				(2 * LIVE_HR_SPOT_RADIUS) + 1,
-				(2 * LIVE_HR_SPOT_RADIUS) + 1);
+				x - 3 /* LIVE_HR_SPOT_RADIUS */,
+				mTop - 3 /* LIVE_HR_SPOT_RADIUS */,
+				7, // (2 * LIVE_HR_SPOT_RADIUS) + 1
+				7); // (2 * LIVE_HR_SPOT_RADIUS) + 1
 
 			// Draw spot, if it should be shown.
 			// fillCircle() does not anti-aliase, so use font instead.
+			var spotChar;
 			if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-				dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+				dc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
+				spotChar = "="; // getIconFontCharForField(LIVE_HR_SPOT)
 
 			// Otherwise, fill in spot by drawing heart.
 			} else {
-				dc.setColor(colour, backgroundColour);
-				dc.drawText(
-					x,
-					mTop,
-					mIconsFont,
-					"3", // App.getApp().getView().getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
+				dc.setColor(colour, gBackgroundColour);
+				spotChar = "3"; // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 			}
+			dc.drawText(
+				x,
+				mTop,
+				gIconsFont,
+				spotChar,
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 
 		// Other icons.
 		} else {
@@ -293,12 +284,57 @@ class DataFields extends Ui.Drawable {
 				fieldType = FIELD_TYPE_SUNRISE;
 			}
 
-			dc.setColor(colour, backgroundColour);
+			var font;
+			var icon;
+			if (fieldType == FIELD_TYPE_WEATHER) {
+				font = mWeatherIconsFont;
+
+				// Map weather icon code --> Unicode --> Char --> String.
+				// See https://openweathermap.org/weather-conditions.
+				icon = {
+					// Day icon     Night icon         Description
+					"01d" => 61453, "01n" => 61486, // clear sky
+					"02d" => 61452, "02n" => 61569, // few clouds
+					"03d" => 61442, "03n" => 61574, // scattered clouds
+					"04d" => 61459, "04n" => 61459, // broken clouds: day and night use same icon
+					"09d" => 61449, "09n" => 61481, // shower rain
+					"10d" => 61448, "10n" => 61480, // rain
+					"11d" => 61445, "11n" => 61477, // thunderstorm
+					"13d" => 61450, "13n" => 61482, // snow
+					"50d" => 61441, "50n" => 61475, // mist
+				}[result["weatherIcon"]].toChar().toString();
+
+			} else {
+				font = gIconsFont;
+
+				// Map fieldType to icon font char.
+				icon = {
+					FIELD_TYPE_SUNRISE => ">",
+					// FIELD_TYPE_SUNSET => "?",
+
+					FIELD_TYPE_HEART_RATE => "3",
+					FIELD_TYPE_HR_LIVE_5S => "3",
+					// FIELD_TYPE_BATTERY => "4",
+					// FIELD_TYPE_BATTERY_HIDE_PERCENT => "4",
+					FIELD_TYPE_NOTIFICATIONS => "5",
+					FIELD_TYPE_CALORIES => "6",
+					FIELD_TYPE_DISTANCE => "7",
+					FIELD_TYPE_ALARMS => ":",
+					FIELD_TYPE_ALTITUDE => ";",
+					FIELD_TYPE_TEMPERATURE => "<",
+					// FIELD_TYPE_WEATHER => "<",
+					// LIVE_HR_SPOT => "=",
+
+					FIELD_TYPE_SUNRISE_SUNSET => "?"
+				}[fieldType];
+			}
+
+			dc.setColor(colour, gBackgroundColour);
 			dc.drawText(
 				x,
 				mTop,
-				mIconsFont,
-				App.getApp().getView().getIconFontCharForField(fieldType),
+				font,
+				icon,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
@@ -309,12 +345,12 @@ class DataFields extends Ui.Drawable {
 
 				// #34 Live HR in high power mode.
 				if (showLiveHRSpot && (Activity.getActivityInfo().currentHeartRate != null)) {
-					dc.setColor(backgroundColour, Graphics.COLOR_TRANSPARENT);
+					dc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 					dc.drawText(
 						x,
 						mTop,
-						mIconsFont,
-						"=", // App.getApp().getView().getIconFontCharForField(LIVE_HR_SPOT)
+						gIconsFont,
+						"=", // getIconFontCharForField(LIVE_HR_SPOT)
 						Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 					);
 				}
@@ -329,19 +365,13 @@ class DataFields extends Ui.Drawable {
 		var result = {};
 		var value = "";
 
+		var settings = Sys.getDeviceSettings();
+
 		var activityInfo;
-		var iterator;
-		var sample;
-		var battery;
-		var settings;
-		var distance;
+		var sample;	
 		var altitude;
 		var temperature;
-		var location;
-		var lat;
-		var lng;
 		var sunTimes;
-		var format;
 		var unit;
 
 		switch (type) {
@@ -353,8 +383,8 @@ class DataFields extends Ui.Drawable {
 				if (sample != null) {
 					value = sample.format(INTEGER_FORMAT);
 				} else if (ActivityMonitor has :getHeartRateHistory) {
-					iterator = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true);
-					sample = iterator.next();
+					sample = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true)
+						.next();
 					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
 						value = sample.heartRate.format(INTEGER_FORMAT);
 					}
@@ -363,16 +393,15 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
-				battery = Math.floor(Sys.getSystemStats().battery);
-				value = battery.format(INTEGER_FORMAT) + "%";
+				value = Math.floor(Sys.getSystemStats().battery);
+				value = value.format(INTEGER_FORMAT) + "%";
 				break;
 
-			case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-				// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
-				break;
+			// #37 Return empty string. updateDataField() has special case so that battery icon is not greyed out.
+			// case FIELD_TYPE_BATTERY_HIDE_PERCENT:
+				// break;
 
 			case FIELD_TYPE_NOTIFICATIONS:
-				settings = Sys.getDeviceSettings();
 				if (settings.notificationCount > 0) {
 					value = settings.notificationCount.format(INTEGER_FORMAT);
 				}
@@ -384,18 +413,17 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_DISTANCE:
-				settings = Sys.getDeviceSettings();
 				activityInfo = ActivityMonitor.getInfo();
-				distance = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
+				value = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
 
 				if (settings.distanceUnits == System.UNIT_METRIC) {
 					unit = "km";					
 				} else {
-					distance *= /* MI_PER_KM */ 0.621371;
+					value *= /* MI_PER_KM */ 0.621371;
 					unit = "mi";
 				}
 
-				value = distance.format("%.1f");
+				value = value.format("%.1f");
 
 				// Show unit only if value plus unit fits within maximum field length.
 				if ((value.length() + unit.length()) <= mMaxFieldLength) {
@@ -405,7 +433,6 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_ALARMS:
-				settings = Sys.getDeviceSettings();
 				if (settings.alarmCount > 0) {
 					value = settings.alarmCount.format(INTEGER_FORMAT);
 				}
@@ -418,14 +445,13 @@ class DataFields extends Ui.Drawable {
 				activityInfo = Activity.getActivityInfo();
 				altitude = activityInfo.altitude;
 				if ((altitude == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
-					iterator = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
+					sample = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
+						.next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
 					}
 				}
 				if (altitude != null) {
-					settings = Sys.getDeviceSettings();
 
 					// Metres (no conversion necessary).
 					if (settings.elevationUnits == System.UNIT_METRIC) {
@@ -448,54 +474,23 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_TEMPERATURE:
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
-					iterator = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST });
-					sample = iterator.next();
+					sample = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
+						.next();
 					if ((sample != null) && (sample.data != null)) {
 						temperature = sample.data;
 
-						settings = Sys.getDeviceSettings();
-						if (settings.temperatureUnits == System.UNIT_METRIC) {
-							unit = "°C";
-						} else {
-							temperature = (temperature * (9.0 / 5)) + 32; // Ensure floating point division.
-							unit = "°F";
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
 
-						value = temperature.format(INTEGER_FORMAT);
-
-						// Show unit only if value plus unit fits within maximum field length.
-						if ((value.length() + unit.length()) <= mMaxFieldLength) {
-							value += unit;
-						}
+						value = temperature.format(INTEGER_FORMAT) + "°";
 					}
 				}
 				break;
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
-				// #19 Check if location is available from current activity, before falling back on last location from settings.
-				activityInfo = Activity.getActivityInfo();
-				location = activityInfo.currentLocation;
-				if (location != null) {
-					location = location.toDegrees();
-					lat = location[0];
-					lng = location[1];
-
-					// Save current location, in case it goes "stale" and can not longer be retrieved from current activity.
-					App.getApp().setProperty("LastLocationLat", lat.toFloat());
-					App.getApp().setProperty("LastLocationLng", lng.toFloat());
-				} else {
-					lat = App.getApp().getProperty("LastLocationLat");
-					if (lat == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
-						lat = null;
-					}
-
-					lng = App.getApp().getProperty("LastLocationLng");
-					if (lng == -360.0) { // -360 is a special value, meaning "unitialised". Can't have null float property.
-						lng = null;
-					}
-				}
-
-				if ((lat != null) and (lng != null)) {
+			
+				if (gLocationLat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
@@ -505,7 +500,7 @@ class DataFields extends Ui.Drawable {
 					//Sys.println(now);
 
 					// Get today's sunrise/sunset times in current time zone.
-					sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ false);
+					sunTimes = App.getApp().getView().getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
 					//Sys.println(sunTimes);
 
 					// If sunrise/sunset happens today.
@@ -523,7 +518,7 @@ class DataFields extends Ui.Drawable {
 
 						// After sunset today: tomorrow's sunrise (if any) is next.
 						} else {
-							sunTimes = App.getApp().getView().getSunTimes(lat, lng, null, /* tomorrow */ true);
+							sunTimes = App.getApp().getView().getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ true);
 							nextSunEvent = sunTimes[0];
 							result["isSunriseNext"] = true;
 						}
@@ -548,9 +543,52 @@ class DataFields extends Ui.Drawable {
 
 				// Waiting for location.
 				} else {
-					value = "...";
+					value = "gps?";
 				}
 
+				break;
+
+			case FIELD_TYPE_WEATHER:
+
+				// Default = sunshine!
+				result["weatherIcon"] = "01d";
+
+				if (App has :Storage) {
+					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var key = App.getApp().getProperty("OpenWeatherMapKey");
+
+					// Awaiting location.
+					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+						value = "gps?";
+
+					// Awaiting key.
+					} else if ((key == null) || (key.length() == 0)) {
+						value = "key?";
+
+					// Stored weather data available.
+					} else if (weather) {
+
+						// Invalid API key.
+						if (weather["cod"] == 401) {
+							value = "key!";
+
+						// Weather was successfully received.
+						} else if (weather["temp"] != null) {
+							temperature = weather["temp"]; // Celcius.
+
+							if (settings.temperatureUnits == System.UNIT_STATUTE) {
+								temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							}
+
+							value = temperature.format(INTEGER_FORMAT) + "°";
+							result["weatherIcon"] = weather["icon"];
+						}
+
+					// Awaiting response.
+					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+						value = "...";
+					}
+				}
 				break;
 		}
 

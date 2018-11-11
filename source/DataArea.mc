@@ -10,29 +10,38 @@ class DataArea extends Ui.Drawable {
 	private var mRow1Y;
 	private var mRow2Y;
 
-	private var mNormalFont;
-
+	private var mLeftGoalType;
+	private var mLeftGoalIsValid;
 	private var mLeftGoalCurrent;
 	private var mLeftGoalMax;
 
+	private var mRightGoalType;
+	private var mRightGoalIsValid;
 	private var mRightGoalCurrent;
 	private var mRightGoalMax;
+
+	private var mGoalIconY;
+	private var mGoalIconLeftX;
+	private var mGoalIconRightX;
 
 	function initialize(params) {
 		Drawable.initialize(params);
 
 		mRow1Y = params[:row1Y];
 		mRow2Y = params[:row2Y];
+
+		mGoalIconY = params[:goalIconY];
+		mGoalIconLeftX = params[:goalIconLeftX];
+		mGoalIconRightX = params[:goalIconRightX];
 	}
 
-	function setFont(normalFont) {
-		mNormalFont = normalFont;
-	}
+	function setGoalValues(leftType, leftValues, rightType, rightValues) {
+		mLeftGoalType = leftType;
+		mLeftGoalIsValid = leftValues[:isValid];
 
-	function setGoalValues(leftValues, rightValues) {
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("LeftGoalType") == GOAL_TYPE_BATTERY) {
+			if (mLeftGoalType == GOAL_TYPE_BATTERY) {
 				mLeftGoalMax = "%";
 			} else {
 				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
@@ -42,9 +51,12 @@ class DataArea extends Ui.Drawable {
 			mLeftGoalMax = null;
 		}
 
+		mRightGoalType = rightType;
+		mRightGoalIsValid = rightValues[:isValid];
+
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (App.getApp().getProperty("RightGoalType") == GOAL_TYPE_BATTERY) {
+			if (mRightGoalType == GOAL_TYPE_BATTERY) {
 				mRightGoalMax = "%";
 			} else {
 				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);
@@ -56,56 +68,52 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, Graphics.TEXT_JUSTIFY_LEFT);
+		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, Graphics.TEXT_JUSTIFY_RIGHT);
+
+		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((timeZone1City != null) && (timeZone1City.length() != 0) && (App has :Storage)) {
+		if ((city != null) && (city.length() != 0) && (App has :Storage)) {
 			//drawTimeZone();
-			var timeZone1 = App.Storage.getValue("TimeZone1");
+			var cityLocalTime = App.Storage.getValue("CityLocalTime");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
 			// N.B. error response will NOT contain city.
-			if ((timeZone1 != null) && (timeZone1["city"] != null)) {
-				timeZone1City = timeZone1["city"];
+			if ((cityLocalTime != null) && (cityLocalTime["city"] != null)) {
+				city = cityLocalTime["city"];
 			}
 
 			// Time zone 1 city.
-			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
 				locX + (width / 2),
 				mRow1Y,
-				mNormalFont,
+				gNormalFont,
 				// Limit string length.
-				timeZone1City.substring(0, 10),
+				city.substring(0, 10),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
 			// Time zone 1 time.
-			var timeZone1Time;
-			if (timeZone1) {
+			var time;
+			if (cityLocalTime) {
 
-				// Web request responded with HTTP or server error.
-				if (timeZone1["error"] != null) {
+				// Web request responded with server error e.g. unknown city.
+				if (cityLocalTime["error"] != null) {
 
-					// HTTP error: show response code (no i18n).
-					if (timeZone1["error"]["responseCode"] != null) {
-						timeZone1Time = timeZone1["error"]["responseCode"] + " error";
-
-					// Server error: e.g. unknown city.
-					} else {
-						timeZone1Time = "???";
-					}
+					time = "???";
 
 				// Web request responded with time zone data for city.
 				} else {
 					var timeZoneGmtOffset;
 
 					// Use next GMT offset if it's now applicable (new data will be requested shortly).
-					if ((timeZone1["next"] != null) && (Time.now().value() >= timeZone1["next"]["when"])) {
-						timeZoneGmtOffset = timeZone1["next"]["gmtOffset"];
+					if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
+						timeZoneGmtOffset = cityLocalTime["next"]["gmtOffset"];
 					} else {
-						timeZoneGmtOffset = timeZone1["current"]["gmtOffset"];
+						timeZoneGmtOffset = cityLocalTime["current"]["gmtOffset"];
 					}
 					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
 					
@@ -113,71 +121,79 @@ class DataArea extends Ui.Drawable {
 					localGmtOffset = new Time.Duration(localGmtOffset);
 
 					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-					timeZone1Time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-					timeZone1Time = Gregorian.info(timeZone1Time, Time.FORMAT_SHORT);
-					timeZone1Time = App.getApp().getView().getFormattedTime(timeZone1Time.hour, timeZone1Time.min);
-					timeZone1Time = timeZone1Time[:hour] + ":" + timeZone1Time[:min] + timeZone1Time[:amPm]; 
+					time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+					time = Gregorian.info(time, Time.FORMAT_SHORT);
+					time = App.getApp().getView().getFormattedTime(time.hour, time.min);
+					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 				}
 
 			// Awaiting response to web request sent by BackgroundService.
 			} else {
-				timeZone1Time = "...";
+				time = "...";
 			}
 
-			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
+			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
 				locX + (width / 2),
 				mRow2Y,
-				mNormalFont,
-				timeZone1Time,
+				gNormalFont,
+				time,
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
 		} else {
-			//drawGoalVales(dc);
-			dc.setColor(App.getApp().getProperty("MonoLightColour"), Gfx.COLOR_TRANSPARENT);
+			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
+			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
+		}
+	}
 
-			if (mLeftGoalCurrent != null) {
-				dc.drawText(
-					locX,
-					mRow1Y,
-					mNormalFont,
-					mLeftGoalCurrent,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
+	function drawGoalIcon(dc, x, type, isValid, align) {
+		var icon = {
+			GOAL_TYPE_BATTERY => "9",
+			GOAL_TYPE_CALORIES => "6",
+			GOAL_TYPE_STEPS => "0",
+			GOAL_TYPE_FLOORS_CLIMBED => "1",
+			GOAL_TYPE_ACTIVE_MINUTES => "2",
+		}[type];
 
-			if (mRightGoalCurrent != null) {
-				dc.drawText(
-					locX + width,
-					mRow1Y,
-					mNormalFont,
-					mRightGoalCurrent,
-					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
+		var colour;
+		if (isValid) {
+			colour = gThemeColour;
+		} else {
+			colour = gMeterBackgroundColour;
+		}
 
-			dc.setColor(App.getApp().getProperty("MonoDarkColour"), Gfx.COLOR_TRANSPARENT);
+		dc.setColor(colour, Gfx.COLOR_TRANSPARENT);
+		dc.drawText(
+			x,
+			mGoalIconY,
+			gIconsFont,
+			icon,
+			align
+		);
+	}
 
-			if (mLeftGoalMax != null) {
-				dc.drawText(
-					locX,
-					mRow2Y,
-					mNormalFont,
-					mLeftGoalMax,
-					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
+	function drawGoalValues(dc, x, currentValue, maxValue, align) {
+		if (currentValue != null) {
+			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mRow1Y,
+				gNormalFont,
+				currentValue,
+				align | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 
-			if (mRightGoalMax != null) {
-				dc.drawText(
-					locX + width,
-					mRow2Y,
-					mNormalFont,
-					mRightGoalMax,
-					Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-				);
-			}
+		if (maxValue != null) {
+			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mRow2Y,
+				gNormalFont,
+				maxValue,
+				align | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 		}
 	}
 }

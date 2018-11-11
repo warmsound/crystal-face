@@ -92,21 +92,17 @@ class DateLine extends Ui.Drawable {
 		}
 
 		var day = now.day.format(INTEGER_FORMAT);
-
-		var monoDarkColour = App.getApp().getProperty("MonoDarkColour");
-		var monoLightColour = App.getApp().getProperty("MonoLightColour");
-
 		if (mYLine2 != null) {
-			drawDoubleLine(dc, day, monoDarkColour, monoLightColour);
+			drawDoubleLine(dc, day);
 		} else {
-			drawSingleLine(dc, day, monoDarkColour, monoLightColour);
+			drawSingleLine(dc, day);
 		}
 	}
 
 	(:double_line_date)
-	function drawDoubleLine(dc, day, monoDarkColour, monoLightColour) {
+	function drawDoubleLine(dc, day) {
 		// Draw day of week, left-aligned at (mX, mY).
-		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			mX,
 			mY,
@@ -125,7 +121,7 @@ class DateLine extends Ui.Drawable {
 		);
 
 		// Draw day, after day of week.
-		dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMonoLightColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			mX + dc.getTextWidthInPixels(mDayOfWeekString + " ", mFont),
 			mY,
@@ -135,13 +131,13 @@ class DateLine extends Ui.Drawable {
 		);
 	}
 
-	function drawSingleLine(dc, day, monoDarkColour, monoLightColour) {
+	function drawSingleLine(dc, day) {
 		var dateString = Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]);
 		var length = dc.getTextWidthInPixels(dateString, mFont);
 		var x = (dc.getWidth() / 2) - (length / 2);
 		
 		// Draw day of week.
-		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mY,
@@ -152,7 +148,7 @@ class DateLine extends Ui.Drawable {
 		x += dc.getTextWidthInPixels(mDayOfWeekString + " ", mFont);
 
 		// Draw day.
-		dc.setColor(monoLightColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMonoLightColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mY,
@@ -163,7 +159,7 @@ class DateLine extends Ui.Drawable {
 		x += dc.getTextWidthInPixels(day + " ", mFont);
 
 		// Draw month.
-		dc.setColor(monoDarkColour, Graphics.COLOR_TRANSPARENT);
+		dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mY,

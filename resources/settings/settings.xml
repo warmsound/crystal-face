@@ -71,6 +71,7 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<listEntry value="11">@Strings.Weather</listEntry>			
 		</settingConfig>
 	</setting>
 
@@ -87,6 +88,7 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<listEntry value="11">@Strings.Weather</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -103,7 +105,12 @@
 			<listEntry value="6">@Strings.Altitude</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
+			<listEntry value="11">@Strings.Weather</listEntry>
 		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.OpenWeatherMapKey" title="@Strings.OpenWeatherMapKeyTitle">
+		<settingConfig type="alphaNumeric"/>
 	</setting>
 
 	<setting propertyKey="@Properties.IndicatorCount" title="@Strings.IndicatorCountTitle">
@@ -142,17 +149,17 @@
 
 	<setting propertyKey="@Properties.HoursColourOverride" title="@Strings.HoursColourTitle">
 		<settingConfig type="list">
-			<listEntry value="-1">@Strings.FromTheme</listEntry>
-			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
-			<listEntry value="-3">@Strings.Mono</listEntry>
+			<listEntry value="0">@Strings.FromTheme</listEntry>
+			<listEntry value="1">@Strings.MonoHighlight</listEntry>
+			<listEntry value="2">@Strings.Mono</listEntry>
 		</settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.MinutesColourOverride" title="@Strings.MinutesColourTitle">
 		<settingConfig type="list">
-			<listEntry value="-1">@Strings.FromTheme</listEntry>
-			<listEntry value="-2">@Strings.MonoHighlight</listEntry>
-			<listEntry value="-3">@Strings.Mono</listEntry>
+			<listEntry value="0">@Strings.FromTheme</listEntry>
+			<listEntry value="1">@Strings.MonoHighlight</listEntry>
+			<listEntry value="2">@Strings.Mono</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -164,8 +171,8 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
-	<setting propertyKey="@Properties.TimeZone1City" title="@Strings.TimeZone1City">
-		<settingConfig type="alphaNumeric" readonly="false"/>
+	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
+		<settingConfig type="alphaNumeric"/>
 	</setting>
 
 	<setting propertyKey="@Properties.MoveBarStyle" title="@Strings.MoveBarStyleTitle">

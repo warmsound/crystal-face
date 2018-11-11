@@ -10,7 +10,7 @@
 	<string id="RightGoalMeterTitle">Rechter Zähler</string>
 	<string id="CaloriesGoalTitle">Kalorienziel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Zähler Style</string>
-	<string id="TimeZone1City">Städtische Lokalzeit hinzufügen (Beta)</string>
+	<string id="LocalTimeInCityTitle">Städtische Lokalzeit hinzufügen (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Sekunden ausblenden</string>
 	<string id="HideHoursLeadingZeroTitle">Blende führende Nullen aus</string>
@@ -19,6 +19,7 @@
 	<string id="DataField1Title">Datenfeld 1</string>
 	<string id="DataField2Title">Datenfeld 2</string>
 	<string id="DataField3Title">Datenfeldd 3</string>
+	<string id="OpenWeatherMapKeyTitle">OpenWeatherMap Key</string>
 
 	<string id="IndicatorCountTitle">Anzahl der Indikatoren</string>
 	<string id="Indicator1Title">Indikator 1</string>
@@ -63,10 +64,11 @@
 	<string id="Distance">Distanz</string>
 	<string id="Alarms">Alarme</string>
 	<string id="Altitude">Höhe</string>	
-	<string id="Temperature">Temperatur</string>
+	<string id="Temperature">Thermometer</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Hinweise</string>
 	<string id="SunriseSunset">Sonnenaufgang/Sonnenuntergang</string>
+	<string id="Weather">Wetter</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

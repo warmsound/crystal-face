@@ -10,44 +10,177 @@ class BackgroundService extends Sys.ServiceDelegate {
 		Sys.ServiceDelegate.initialize();
 	}
 
+	// Read pending web requests, and call appropriate web request function.
+	// This function determines priority of web requests, if multiple are pending.
+	// Pending web request flag will be cleared only once the background data has been successfully received.
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		requestTimeZone();
+		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		if (pendingWebRequests != null) {
+
+			// 1. City local time.
+			if (pendingWebRequests["CityLocalTime"] != null) {
+				makeWebRequest(
+					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
+					{
+						"city" => App.getApp().getProperty("LocalTimeInCity")
+					},
+					method(:onReceiveCityLocalTime)
+				);
+
+			// 2. Weather.
+			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+				makeWebRequest(
+					"https://api.openweathermap.org/data/2.5/weather",
+					{
+						// Assume that any watch that can make web requests, also supports App.Storage.
+						"lat" => App.Storage.getValue("LastLocationLat"),
+						"lon" => App.Storage.getValue("LastLocationLng"),
+						"appid" => App.getApp().getProperty("OpenWeatherMapKey"),
+						"units" => "metric" // Celcius.
+					},
+					method(:onReceiveOpenWeatherMapCurrent)
+				);
+			}
+		} /* else {
+			Sys.println("onTemporalEvent() called with no pending web requests!");
+		} */
 	}
 
-	function onReceiveTimeZone(responseCode, data) {
+	// Sample time zone data:
+	/*
+	{
+	"requestCity":"london",
+	"city":"London",
+	"current":{
+		"gmtOffset":3600,
+		"dst":true
+		},
+	"next":{
+		"when":1540688400,
+		"gmtOffset":0,
+		"dst":false
+		}
+	}
+	*/
 
-		// HTTP success: return data response.
-		if (responseCode == 200) {
-			//Sys.println("Request Successful");
-			Bg.exit(data);
+	// Sample error when city is not found:
+	/*
+	{
+	"requestCity":"atlantis",
+	"error":{
+		"code":2, // CITY_NOT_FOUND
+		"message":"City \"atlantis\" not found."
+		}
+	}
+	*/
+	function onReceiveCityLocalTime(responseCode, data) {
 
 		// HTTP failure: return responseCode.
-		} else {
-			//Sys.println("Response: " + responseCode);
-			Bg.exit({
-				"error" => {
-					"responseCode" => responseCode
-				}
-			});
+		// Otherwise, return data response.
+		if (responseCode != 200) {
+			data = {
+				"httpError" => responseCode
+			};
 		}
+
+		Bg.exit({
+			"CityLocalTime" => data
+		});
 	}
 
-	function requestTimeZone() {
-		var url = "https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec";
+	// Sample invalid API key:
+	/*
+	{
+		"cod":401,
+		"message": "Invalid API key. Please see http://openweathermap.org/faq#error401 for more info."
+	}
+	*/
 
-		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+	// Sample current weather:
+	/*
+	{
+		"coord":{
+			"lon":-0.46,
+			"lat":51.75
+		},
+		"weather":[
+			{
+				"id":521,
+				"main":"Rain",
+				"description":"shower rain",
+				"icon":"09d"
+			}
+		],
+		"base":"stations",
+		"main":{
+			"temp":281.82,
+			"pressure":1018,
+			"humidity":70,
+			"temp_min":280.15,
+			"temp_max":283.15
+		},
+		"visibility":10000,
+		"wind":{
+			"speed":6.2,
+			"deg":10
+		},
+		"clouds":{
+			"all":0
+		},
+		"dt":1540741800,
+		"sys":{
+			"type":1,
+			"id":5078,
+			"message":0.0036,
+			"country":"GB",
+			"sunrise":1540709390,
+			"sunset":1540744829
+		},
+		"id":2647138,
+		"name":"Hemel Hempstead",
+		"cod":200
+	}
+	*/
+	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
+		var result;
+		
+		// Useful data only available if result was successful.
+		// Filter and flatten data response for data that we actually need.
+		// Reduces runtime memory spike in main app.
+		if (responseCode == 200) {
+			result = {
+				"cod" => data["cod"],
+				"lat" => data["coord"]["lat"],
+				"lon" => data["coord"]["lon"],
+				"dt" => data["dt"],
+				"temp" => data["main"]["temp"],
+				"icon" => data["weather"][0]["icon"]
+			};
 
-		// #78 Setting with value of empty string may cause corresponding property to be null.
-		// Safety check only, as normally would only expect requestTimeZone() to be called when timeZone1City is set.
-		if (timeZone1City == null) {
-			return;
+		// Invalid API key: save this response, as it can be reported to user.
+		// Record key used for request, so we can tell when the user updates it.
+		// Assume user has not updated key between request and response.
+		// N.B. data can be supplied as null in case of 401 response.
+		} else if (responseCode == 401) {
+			result = {
+				"cod" => responseCode,
+				"key" => App.getApp().getProperty("OpenWeatherMapKey")
+			};
+
+		// Other HTTP error: do not save.
+		} else {
+			result = {
+				"httpError" => responseCode
+			};
 		}
 
-		var params = {
-			"city" => timeZone1City
-		};
+		Bg.exit({
+			"OpenWeatherMapCurrent" => result
+		});
+	}
 
+	function makeWebRequest(url, params, callback) {
 		var options = {
 			:method => Comms.HTTP_REQUEST_METHOD_GET,
 			:headers => {
@@ -55,7 +188,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
 		};
 
-		//Sys.println("Making web request");
-		Comms.makeWebRequest(url, params, options, method(:onReceiveTimeZone));
+		Comms.makeWebRequest(url, params, options, callback);
 	}
 }

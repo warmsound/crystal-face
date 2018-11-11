@@ -17,15 +17,14 @@
 		<param name="separator">2</param>
 	</drawable>
 
-	<label id="LeftGoalIcon" text="0" x="14" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_LEFT"/>
-
-	<label id="RightGoalIcon" text="1" x="191" y="120" font="Gfx.FONT_MEDIUM" color="Gfx.COLOR_BLUE" justification="Gfx.TEXT_JUSTIFY_RIGHT"/>
-
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">42</param>
 		<param name="width">121</param>
 		<param name="row1Y">122</param>
 		<param name="row2Y">138</param>
+		<param name="goalIconY">120</param>
+		<param name="goalIconLeftX">14</param>
+		<param name="goalIconRightX">191</param>
 	</drawable>
 
 	<drawable id="DataFields" class="DataFields">
@@ -33,8 +32,6 @@
 		<param name="right">174</param>
 		<param name="top">16</param>
 		<param name="bottom">35</param>
-		<param name="batteryWidth">24</param>
-		<param name="batteryHeight">12</param>
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
@@ -47,8 +44,6 @@
 		<param name="locX">30</param>
 		<param name="locY">80</param>
 		<param name="spacingY">26</param>
-		<param name="batteryWidth">20</param>
-		<param name="batteryHeight">10</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">

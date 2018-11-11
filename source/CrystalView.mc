@@ -1,5 +1,5 @@
 using Toybox.WatchUi as Ui;
-using Toybox.Graphics as Gfx;
+using Toybox.Graphics as Graphics;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
@@ -7,21 +7,82 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+using Toybox.Math;
+
 const INTEGER_FORMAT = "%d";
+
+var gThemeColour;
+var gMonoLightColour;
+var gMonoDarkColour;
+var gBackgroundColour;
+var gMeterBackgroundColour;
+var gHoursColour;
+var gMinutesColour;
+
+var gNormalFont;
+var gIconsFont;
+
+const BATTERY_LINE_WIDTH = 2;
+const BATTERY_HEAD_HEIGHT = 4;
+const BATTERY_MARGIN = 1;
+
+const BATTERY_LEVEL_LOW = 20;
+const BATTERY_LEVEL_CRITICAL = 10;
+
+// x, y are co-ordinates of centre point.
+// width and height are outer dimensions of battery "body".
+function drawBatteryMeter(dc, x, y, width, height) {
+	dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
+	dc.setPenWidth(BATTERY_LINE_WIDTH);
+
+	// Body.
+	// drawRoundedRectangle's x and y are top-left corner of middle of stroke.
+	// Bottom-right corner of middle of stroke will be (x + width - 1, y + height - 1).
+	dc.drawRoundedRectangle(
+		x - (width / 2) + (BATTERY_LINE_WIDTH / 2),
+		y - (height / 2) + (BATTERY_LINE_WIDTH / 2),
+		width - BATTERY_LINE_WIDTH + 1,
+		height - BATTERY_LINE_WIDTH + 1,
+		/* BATTERY_CORNER_RADIUS */ 2);
+
+	// Head.
+	// fillRectangle() works as expected.
+	dc.fillRectangle(
+		x + (width / 2) + BATTERY_MARGIN,
+		y - (BATTERY_HEAD_HEIGHT / 2),
+		/* BATTERY_HEAD_WIDTH */ 2,
+		BATTERY_HEAD_HEIGHT);
+
+	// Fill.
+	// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
+	var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
+
+	// Fill colour based on battery level.
+	var fillColour;
+	if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
+		fillColour = Graphics.COLOR_RED;
+	} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
+		fillColour = Graphics.COLOR_YELLOW;
+	} else {
+		fillColour = gThemeColour;
+	}
+
+	dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
+
+	var fillWidth = width - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN));
+	dc.fillRectangle(
+		x - (width / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
+		y - (height / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
+		Math.ceil(fillWidth * (batteryLevel / 100)), 
+		height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
+}
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
 
-	private var mHoursFont;
-	private var mMinutesFont;
-	private var mSecondsFont;
-
-	private var mIconsFont;
-	private var mNormalFont;
-
 	private var mTime;
-	private var mDataFields;
+	var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -62,11 +123,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Load your resources here
 	function onLayout(dc) {
-		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
-		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
-		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
-
-		mIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 
@@ -75,15 +132,14 @@ class CrystalView extends Ui.WatchFace {
 		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
 		// Slighly faster than mDrawables lookup.
 		mTime = View.findDrawableById("Time");
-		mTime.setFonts(mHoursFont, mMinutesFont, mSecondsFont);
 
-		mDrawables[:Indicators].setFont(mIconsFont);
-
-		mDataFields = View.findDrawableById("DataFields");		
+		mDataFields = View.findDrawableById("DataFields");
+		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
+		mDataFields.updateWeatherIconsFont(); // Now that in-memory location is available.
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 
-		updateNormalFont(); // Requires mIconsFont, mDrawables, mDataFields.
+		updateNormalFont(); // Requires mDrawables, mDataFields.
 	}
 
 	function cacheDrawables() {
@@ -134,24 +190,21 @@ class CrystalView extends Ui.WatchFace {
 	// Update drawables that use normal font.
 	function updateNormalFont() {
 
-		var timeZone1City = App.getApp().getProperty("TimeZone1City");
+		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((timeZone1City != null) && (timeZone1City.length() > 0)) {
-			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+		if ((city != null) && (city.length() > 0)) {
+			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
 		} else {
-			mNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
+			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
 		}
-
-		mDataFields.setFonts(mIconsFont, mNormalFont);
-		mDrawables[:DataArea].setFont(mNormalFont);
 	}
 
 	function updateThemeColours() {
 		var theme = App.getApp().getProperty("Theme");
 
 		// Theme-specific colours.
-		var themeColours = [
+		gThemeColour = [
 			Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
 			Graphics.COLOR_PINK,     // THEME_PINK_DARK
 			Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
@@ -165,8 +218,7 @@ class CrystalView extends Ui.WatchFace {
 			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
 			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
 			0xFFFF00                 // THEME_VIVID_YELLOW_DARK
-		];
-		App.getApp().setProperty("ThemeColour", themeColours[theme]); 
+		][theme];
 
 		// Light/dark-specific colours.
 		var lightFlags = [
@@ -185,36 +237,29 @@ class CrystalView extends Ui.WatchFace {
 			false  // THEME_VIVID_YELLOW_DARK
 		];
 		if (lightFlags[theme]) {
-			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_BLACK);
-			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_DK_GRAY);
+			gMonoLightColour = Graphics.COLOR_BLACK;
+			gMonoDarkColour = Graphics.COLOR_DK_GRAY;
 			
-			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_LT_GRAY);
-			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_WHITE);
+			gMeterBackgroundColour = Graphics.COLOR_LT_GRAY;
+			gBackgroundColour = Graphics.COLOR_WHITE;
 		} else {
-			App.getApp().setProperty("MonoLightColour", Graphics.COLOR_WHITE);
-			App.getApp().setProperty("MonoDarkColour", Graphics.COLOR_LT_GRAY);
+			gMonoLightColour = Graphics.COLOR_WHITE;
+			gMonoDarkColour = Graphics.COLOR_LT_GRAY;
 
-			App.getApp().setProperty("MeterBackgroundColour", Graphics.COLOR_DK_GRAY);
-			App.getApp().setProperty("BackgroundColour", Graphics.COLOR_BLACK);
+			gMeterBackgroundColour = Graphics.COLOR_DK_GRAY;
+			gBackgroundColour = Graphics.COLOR_BLACK;
 		}
 	}
 
 	function updateHoursMinutesColours() {
-		var overrideMap = {
-			-1 => "ThemeColour",     // FROM_THEME
-			-2 => "MonoLightColour", // MONO_HIGHLIGHT
-			-3 => "MonoDarkColour"   // MONO
-		};
+		var overrideColours = [
+			gThemeColour,     // FROM_THEME
+			gMonoLightColour, // MONO_HIGHLIGHT
+			gMonoDarkColour   // MONO
+		];
 
-		// Hours colour.
-		var hoursColourOverride = App.getApp().getProperty("HoursColourOverride");
-		var hoursColour = App.getApp().getProperty(overrideMap[hoursColourOverride]);
-		App.getApp().setProperty("HoursColour", hoursColour);
-
-		// Minutes colour.
-		var MinutesColourOverride = App.getApp().getProperty("MinutesColourOverride");
-		var minutesColour = App.getApp().getProperty(overrideMap[MinutesColourOverride]);
-		App.getApp().setProperty("MinutesColour", minutesColour);
+		gHoursColour = overrideColours[App.getApp().getProperty("HoursColourOverride")];
+		gMinutesColour = overrideColours[App.getApp().getProperty("MinutesColourOverride")];
 	}
 
 	function onSettingsChangedSinceLastDraw() {
@@ -226,6 +271,8 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:MoveBar].onSettingsChanged();
 
 		mDataFields.onSettingsChanged();
+
+		mDrawables[:Indicators].onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
@@ -256,94 +303,17 @@ class CrystalView extends Ui.WatchFace {
 		View.onUpdate(dc);
 	}
 
+	// Update each goal meter separately, then also pass types and values to data area to draw goal icons.
 	function updateGoalMeters() {
-		var leftValues = updateGoalMeter(
-			App.getApp().getProperty("LeftGoalType"),
-			mDrawables[:LeftGoalMeter],
-			mDrawables[:LeftGoalIcon]
-		);
+		var leftType = App.getApp().getProperty("LeftGoalType");
+		var leftValues = getValuesForGoalType(leftType);
+		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max]);
 
-		var rightValues = updateGoalMeter(
-			App.getApp().getProperty("RightGoalType"),
-			mDrawables[:RightGoalMeter],
-			mDrawables[:RightGoalIcon]
-		);
+		var rightType = App.getApp().getProperty("RightGoalType");
+		var rightValues = getValuesForGoalType(rightType);
+		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max]);
 
-		mDrawables[:DataArea].setGoalValues(leftValues, rightValues);
-	}
-
-	function updateGoalMeter(goalType, meter, iconLabel) {
-		var values = getValuesForGoalType(goalType);
-
-		// Meter.
-		meter.setValues(values[:current], values[:max]);
-
-		// Icon label.
-		iconLabel.setFont(mIconsFont);
-
-		var iconFontChar;
-		switch (goalType) {
-			case GOAL_TYPE_BATTERY:
-				iconFontChar = "9";
-				break;
-			case GOAL_TYPE_CALORIES:
-				iconFontChar = "6";
-				break;
-			case GOAL_TYPE_STEPS:
-				iconFontChar = "0";
-				break;
-			case GOAL_TYPE_FLOORS_CLIMBED:
-				iconFontChar = "1";
-				break;
-			case GOAL_TYPE_ACTIVE_MINUTES:
-				iconFontChar = "2";
-				break;
-		}
-
-		iconLabel.setText(iconFontChar);
-
-		if (values[:isValid]) {
-			iconLabel.setColor(App.getApp().getProperty("ThemeColour"));
-		} else {
-			iconLabel.setColor(App.getApp().getProperty("MeterBackgroundColour"));
-		}
-
-		return values;
-	}
-
-	// Replace dictionary with function to save memory.
-	function getIconFontCharForField(fieldType) {
-		switch (fieldType) {
-			case FIELD_TYPE_SUNRISE:
-				return ">";
-			//case FIELD_TYPE_SUNSET:
-			//	return "?";
-
-			case FIELD_TYPE_HEART_RATE:
-			case FIELD_TYPE_HR_LIVE_5S:
-				return "3";
-			//case FIELD_TYPE_BATTERY:
-			//case FIELD_TYPE_BATTERY_HIDE_PERCENT:
-			//	return "4";
-			case FIELD_TYPE_NOTIFICATIONS:
-				return "5";
-			case FIELD_TYPE_CALORIES:
-				return "6";
-			case FIELD_TYPE_DISTANCE:
-				return "7";
-			case FIELD_TYPE_ALARMS:
-				return ":";
-			case FIELD_TYPE_ALTITUDE:
-				return ";";
-			case FIELD_TYPE_TEMPERATURE:
-				return "<";
-			// case LIVE_HR_SPOT:
-			// 	return "=";
-			
-			case FIELD_TYPE_SUNRISE_SUNSET: // Show sunset icon by default.
-			//case FIELD_TYPE_SUNSET:
-				return "?";
-		}
+		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
 
 	function getValuesForGoalType(type) {
@@ -431,7 +401,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
-		App.getApp().checkBackgroundRequests();
+		App.getApp().checkPendingWebRequests();
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -456,62 +426,6 @@ class CrystalView extends Ui.WatchFace {
 	function setHideSeconds(hideSeconds) {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
-	}
-
-	private const BATTERY_LINE_WIDTH = 2;
-	private const BATTERY_HEAD_HEIGHT = 4;
-	private const BATTERY_MARGIN = 1;
-
-	private const BATTERY_LEVEL_LOW = 20;
-	private const BATTERY_LEVEL_CRITICAL = 10;
-
-	// x, y are co-ordinates of centre point.
-	// width and height are outer dimensions of battery "body".
-	function drawBatteryMeter(dc, x, y, width, height) {
-		var themeColour = App.getApp().getProperty("ThemeColour");
-		dc.setColor(themeColour, Graphics.COLOR_TRANSPARENT);
-		dc.setPenWidth(BATTERY_LINE_WIDTH);
-
-		// Body.
-		// drawRoundedRectangle's x and y are top-left corner of middle of stroke.
-		// Bottom-right corner of middle of stroke will be (x + width - 1, y + height - 1).
-		dc.drawRoundedRectangle(
-			x - (width / 2) + (BATTERY_LINE_WIDTH / 2),
-			y - (height / 2) + (BATTERY_LINE_WIDTH / 2),
-			width - BATTERY_LINE_WIDTH + 1,
-			height - BATTERY_LINE_WIDTH + 1,
-			/* BATTERY_CORNER_RADIUS */ 2);
-
-		// Head.
-		// fillRectangle() works as expected.
-		dc.fillRectangle(
-			x + (width / 2) + BATTERY_MARGIN,
-			y - (BATTERY_HEAD_HEIGHT / 2),
-			/* BATTERY_HEAD_WIDTH */ 2,
-			BATTERY_HEAD_HEIGHT);
-
-		// Fill.
-		// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
-		var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
-
-		// Fill colour based on battery level.
-		var fillColour;
-		if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
-			fillColour = Graphics.COLOR_RED;
-		} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
-			fillColour = Graphics.COLOR_YELLOW;
-		} else {
-			fillColour = themeColour;
-		}
-
-		dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
-
-		var fillWidth = width - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN));
-		dc.fillRectangle(
-			x - (width / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
-			y - (height / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
-			Math.ceil(fillWidth * (batteryLevel / 100)), 
-			height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
 	}
 
 	/**

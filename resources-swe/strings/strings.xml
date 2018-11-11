@@ -10,7 +10,7 @@
 	<string id="RightGoalMeterTitle">Höger Mätare</string>
 	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
-	<string id="TimeZone1City">Add Local Time in City (Beta)</string>
+	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj Sekunder</string>
 	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>
@@ -19,6 +19,7 @@
 	<string id="DataField1Title">Data Field 1</string>
 	<string id="DataField2Title">Data Field 2</string>
 	<string id="DataField3Title">Data Field 3</string>
+	<string id="OpenWeatherMapKeyTitle">OpenWeatherMap Key</string>
 
 	<string id="IndicatorCountTitle">Number Of Indicators</string>
 	<string id="Indicator1Title">Indicator 1</string>
@@ -63,10 +64,11 @@
 	<string id="Distance">Distans</string>
 	<string id="Alarms">Alarm</string>
 	<string id="Altitude">Altitud</string>
-	<string id="Temperature">Temperatur</string>
+	<string id="Temperature">Termometer</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notifieringar</string>
-	<string id="SunriseSunset">Sunrise/Sunset</string>
+	<string id="SunriseSunset">Soluppgång/Solnedgång</string>
+	<string id="Weather">Väder</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	
