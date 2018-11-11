@@ -11,8 +11,9 @@ https://github.com/warmsound/crystal-face/wiki/FAQ
 A crystal clear watch face, with LCD-like goal meter segments, written while snow crystals were falling during an unusually cold spell of weather here in England.
 
 Features (depending on watch support):
-- Big time digits right in the middle, with hours in bold. Leading zero can be hidden in 12 hr mode. Hours and minutes colours can be set independently. Seconds can be hidden.
-- 3 customisable data fields: HR history, battery, notifications, calories, distance, alarms, altitude, temperature.
+- Big time digits right in the middle, with hours in bold. Leading zero and seconds can be hidden. Hours and minutes colours can be set independently.
+- Up to 3 customisable data fields: HR (historical/live), battery, notifications, calories, distance, alarms, altitude, thermometer, sunrise/sunset, weather (OpenWeatherMap).
+- Up to 3 customisable indicators: Bluetooth, alarms, notifications, Bluetooth/notifications, battery.
 - 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
 - 12 colour themes.
@@ -22,6 +23,9 @@ The techie bit: to save your watch battery, the goal meters and move bar are dra
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 ## What's New
+
+### 2.2.0
+- Add "Weather" data field: CIQ 2.x devices only, requires free OpenWeatherMap API key (https://openweathermap.org/).
 
 ### 2.1.0
 - Add "Sunrise/Sunset" data field.
