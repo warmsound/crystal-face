@@ -135,7 +135,6 @@ class CrystalView extends Ui.WatchFace {
 
 		mDataFields = View.findDrawableById("DataFields");
 		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
-		mDataFields.updateWeatherIconsFont(); // Now that in-memory location is available.
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 

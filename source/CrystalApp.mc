@@ -219,11 +219,6 @@ class CrystalApp extends App.AppBase {
 		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
 		App.Storage.setValue(type, storedData);
 
-		// Load appropriate day/night weather icons font, before draw cycle.
-		if (type.equals("OpenWeatherMapCurrent")) {
-			mView.mDataFields.updateWeatherIconsFont();
-		}
-
 		Ui.requestUpdate();
 	}
 }
