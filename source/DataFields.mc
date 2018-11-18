@@ -37,6 +37,7 @@ class DataFields extends Ui.Drawable {
 	private var mBottom;
 
 	private var mWeatherIconsFont;
+	private var mWeatherIconsSubset = null; // null, "d" for day subset, "n" for night subset.
 
 	private var mFieldCount;
 	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
@@ -83,31 +84,16 @@ class DataFields extends Ui.Drawable {
 
 		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		updateWeatherIconsFont();
+		if (!hasField(FIELD_TYPE_WEATHER)) {
+			mWeatherIconsFont = null;
+			mWeatherIconsSubset = null;
+		}
 	}
 
 	function hasField(fieldType) {
 		return ((mFieldTypes[0] == fieldType) ||
 			(mFieldTypes[1] == fieldType) ||
 			(mFieldTypes[2] == fieldType));
-	}
-
-	// Dynamic loading/unloading of day/night weather icons font, to save memory.
-	function updateWeatherIconsFont() {
-		if (hasField(FIELD_TYPE_WEATHER)) {
-
-			// Day.
-			if (getValueForFieldType(FIELD_TYPE_WEATHER)["weatherIcon"].substring(2, 3).equals("d")) {
-				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
-
-			// Night.
-			} else {
-				mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
-			}
-			
-		} else {
-			mWeatherIconsFont = null;
-		}
 	}
 
 	function draw(dc) {
@@ -287,6 +273,18 @@ class DataFields extends Ui.Drawable {
 			var font;
 			var icon;
 			if (fieldType == FIELD_TYPE_WEATHER) {
+
+				// #83 Dynamic loading/unloading of day/night weather icons font, to save memory.
+				// If subset has changed since last draw, save new subset, and load appropriate font for it.
+				var weatherIconsSubset = result["weatherIcon"].substring(2, 3);
+				if (!weatherIconsSubset.equals(mWeatherIconsSubset)) {
+					mWeatherIconsSubset = weatherIconsSubset;
+					if (mWeatherIconsSubset.equals("d")) {
+						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
+					} else {
+						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
+					}
+				}
 				font = mWeatherIconsFont;
 
 				// Map weather icon code --> Unicode --> Char --> String.
