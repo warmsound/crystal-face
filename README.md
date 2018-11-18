@@ -24,6 +24,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.2.1
+- Fix intermittent crash after receiving weather data.
+
 ### 2.2.0
 - Add "Weather" data field: CIQ 2.x devices only, requires free OpenWeatherMap API key (https://openweathermap.org/).
 
