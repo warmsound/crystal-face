@@ -36,7 +36,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 						// Assume that any watch that can make web requests, also supports App.Storage.
 						"lat" => App.Storage.getValue("LastLocationLat"),
 						"lon" => App.Storage.getValue("LastLocationLng"),
-						"appid" => App.getApp().getProperty("OpenWeatherMapKey"),
+						"appid" => "d72271af214d870eb94fe8f9af450db4",
 						"units" => "metric" // Celcius.
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
@@ -158,17 +158,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				"icon" => data["weather"][0]["icon"]
 			};
 
-		// Invalid API key: save this response, as it can be reported to user.
-		// Record key used for request, so we can tell when the user updates it.
-		// Assume user has not updated key between request and response.
-		// N.B. data can be supplied as null in case of 401 response.
-		} else if (responseCode == 401) {
-			result = {
-				"cod" => responseCode,
-				"key" => App.getApp().getProperty("OpenWeatherMapKey")
-			};
-
-		// Other HTTP error: do not save.
+		// HTTP error: do not save.
 		} else {
 			result = {
 				"httpError" => responseCode

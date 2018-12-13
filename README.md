@@ -24,6 +24,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.2.3
+- Technical update to CIQ 3.0.6 SDK.
+
 ### 2.2.2
 - Fix issue with stuck "key!" if weather key is used before it has been activated.
 
