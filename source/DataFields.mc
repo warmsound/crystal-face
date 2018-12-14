@@ -553,34 +553,21 @@ class DataFields extends Ui.Drawable {
 
 				if (App has :Storage) {
 					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
-					var key = App.getApp().getProperty("OpenWeatherMapKey");
 
 					// Awaiting location.
 					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 						value = "gps?";
 
-					// Awaiting key.
-					} else if ((key == null) || (key.length() == 0)) {
-						value = "key?";
-
 					// Stored weather data available.
-					} else if (weather) {
+					} else if ((weather != null) && (weather["temp"] != null)) {
+						temperature = weather["temp"]; // Celcius.
 
-						// Invalid API key.
-						if (weather["cod"] == 401) {
-							value = "key!";
-
-						// Weather was successfully received.
-						} else if (weather["temp"] != null) {
-							temperature = weather["temp"]; // Celcius.
-
-							if (settings.temperatureUnits == System.UNIT_STATUTE) {
-								temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-							}
-
-							value = temperature.format(INTEGER_FORMAT) + "°";
-							result["weatherIcon"] = weather["icon"];
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
+
+						value = temperature.format(INTEGER_FORMAT) + "°";
+						result["weatherIcon"] = weather["icon"];
 
 					// Awaiting response.
 					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {

@@ -91,12 +91,6 @@
 		</settingConfig>
 	</setting>
 
-	<!-- CIQ 1.x watches do not support background services. -->
-	<!-- TODO: Can we hide these settings completely? -->
-	<setting propertyKey="@Properties.OpenWeatherMapKey" title="@Strings.OpenWeatherMapKeyTitle">
-		<settingConfig type="alphaNumeric" readonly="true"/>
-	</setting>
-	
 	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
 		<settingConfig type="alphaNumeric" readonly="true"/>
 	</setting>

@@ -109,10 +109,6 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.OpenWeatherMapKey" title="@Strings.OpenWeatherMapKeyTitle">
-		<settingConfig type="alphaNumeric"/>
-	</setting>
-
 	<setting propertyKey="@Properties.IndicatorCount" title="@Strings.IndicatorCountTitle">
 		<settingConfig type="numeric" min="0" max="3" required="true"/>
 	</setting>
