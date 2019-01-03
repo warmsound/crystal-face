@@ -1,25 +1,25 @@
 <!-- #17 Anti-aliased custom fonts not supported on fr920xt. -->
 <fonts>
 
-	<!-- Symlinked from resources-smaller-time/fonts. -->
-	<font id="HoursFont" filename="titillium-web-bold-48.fnt" antialias="false"/>
-	<font id="MinutesFont" filename="titillium-web-light-48.fnt" antialias="false"/>
+	<!-- Manually symlinked from resources-smaller-time/fonts. -->
+	<font id="HoursFont" filename="../../resources-smaller-time/fonts/titillium-web-bold-48.fnt" antialias="false"/>
+	<font id="MinutesFont" filename="../../resources-smaller-time/fonts/titillium-web-light-48.fnt" antialias="false"/>
 
-	<!-- Symlinked from resources-small-time/fonts. -->
-	<font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
+	<!-- Manually symlinked from resources-small-time/fonts. -->
+	<font id="SecondsFont" filename="../../resources-small-time/fonts/titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
 
-	<!-- Symlinked from resources/fonts. -->
-	<font id="DateFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
-	<font id="NormalFont" filename="titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789!:?CFafgikmpst°"/>
-	<font id="NormalFontCities" filename="titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
+	<!-- Manually symlinked from resources/fonts. -->
+	<font id="DateFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
+	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789!:?CFafgikmpst°"/>
+	<font id="NormalFontCities" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 
-	<!-- Symlinked from resources-small-icons/fonts. -->
-	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="false"/>
-	<font id="WeatherIconsFont" filename="weather-icons-20.fnt" antialias="false"/>
+	<!-- Manually symlinked from resources-small-icons/fonts. -->
+	<font id="IconsFont" filename="../../resources-small-icons/fonts/crystal-icons-small.fnt" antialias="false"/>
+	<font id="WeatherIconsFont" filename="../../resources-small-icons/fonts/weather-icons-20.fnt" antialias="false"/>
 
-	<!-- Symlinked from resources-smaller-time/fonts. -->
+	<!-- Manually symlinked from resources-smaller-time/fonts. -->
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
-	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-16.fnt" antialias="false"/>
-	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
-	<font id="DateFontOverrideRUS" filename="noto-sans-rus-bold-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideZHS" filename="../../resources-smaller-time/fonts/noto-sans-cjk-sc-medium-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideZHT" filename="../../resources-smaller-time/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideRUS" filename="../../resources-smaller-time/fonts/noto-sans-rus-bold-16.fnt" antialias="false"/>
 </fonts>
