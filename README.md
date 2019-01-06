@@ -24,6 +24,12 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.2.4
+- Fix issue with move bar not clearing in "Show Filled Segments" mode (thanks to BrettL for reproduction steps).
+- Add "Corn Yellow (Dark)" and "Dayglo Orange (Light)" themes.
+- Add "Pressure" data field.
+- Technical update to CIQ 3.0.7 SDK.
+
 ### 2.2.3
 - Remove need to enter OpenWeatherMap key.
 - Technical update to CIQ 3.0.6 SDK.
