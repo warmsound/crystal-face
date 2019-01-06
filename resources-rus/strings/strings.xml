@@ -69,6 +69,7 @@
 	<string id="BluetoothOrNotifications">Bluetooth/Уведомления</string>
 	<string id="SunriseSunset">Восход/Закат</string>
 	<string id="Weather">Погода</string>
+	<string id="Pressure">Pressure</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE">RUS</string>	
