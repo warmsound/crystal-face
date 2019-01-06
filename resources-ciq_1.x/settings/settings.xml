@@ -8,12 +8,14 @@
 			<!--listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry-->
 			<!--listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry-->
 			<!--listEntry value="12">@Strings.ThemeVividYellowDark</listEntry-->
+			<listEntry value="14">@Strings.ThemeYellowDark</listEntry>
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
 			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
 			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
 			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
+			<listEntry value="13">@Strings.ThemeDaygloOrangeLight</listEntry>
 		</settingConfig>
 	</setting>
 
