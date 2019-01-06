@@ -26,7 +26,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_BATTERY_HIDE_PERCENT,
 	FIELD_TYPE_HR_LIVE_5S,
 	FIELD_TYPE_SUNRISE_SUNSET,
-	FIELD_TYPE_WEATHER
+	FIELD_TYPE_WEATHER,
+	FIELD_TYPE_PRESSURE
 }
 
 class DataFields extends Ui.Drawable {
@@ -323,7 +324,8 @@ class DataFields extends Ui.Drawable {
 					// FIELD_TYPE_WEATHER => "<",
 					// LIVE_HR_SPOT => "=",
 
-					FIELD_TYPE_SUNRISE_SUNSET => "?"
+					FIELD_TYPE_SUNRISE_SUNSET => "?",
+					FIELD_TYPE_PRESSURE => "@",
 				}[fieldType];
 			}
 
@@ -368,6 +370,7 @@ class DataFields extends Ui.Drawable {
 		var activityInfo;
 		var sample;	
 		var altitude;
+		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
 		var sunTimes;
 		var unit;
@@ -472,8 +475,7 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_TEMPERATURE:
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getTemperatureHistory)) {
-					sample = SensorHistory.getTemperatureHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
-						.next();
+					sample = SensorHistory.getTemperatureHistory(null).next();
 					if ((sample != null) && (sample.data != null)) {
 						temperature = sample.data;
 
@@ -572,6 +574,38 @@ class DataFields extends Ui.Drawable {
 					// Awaiting response.
 					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
 						value = "...";
+					}
+				}
+				break;
+
+			case FIELD_TYPE_PRESSURE:
+
+				// Try ActivityInfo.ambientPressure first.
+				activityInfo = Activity.getActivityInfo();
+				if (activityInfo has :ambientPressure) {
+					pressure = activityInfo.ambientPressure;
+				}
+
+				// Failing that, try SensorHistory.getPressureHistory().
+				if ((pressure == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getPressureHistory)) {
+					sample = SensorHistory.getPressureHistory(null).next();
+					if ((sample != null) && (sample.data != null)) {
+						pressure = sample.data;
+					}
+				}
+
+				if (pressure != null) {
+					unit = "mb";
+					pressure = pressure / 100; // Pa --> mbar;
+					value = pressure.format("%.1f");
+					
+					// If single decimal place doesn't fit, truncate to integer.
+					if (value.length() > mMaxFieldLength) {
+						value = pressure.format(INTEGER_FORMAT);
+
+					// Otherwise, if unit fits as well, add it.
+					} else if (value.length() + unit.length() <= mMaxFieldLength) {
+						value = value + unit;
 					}
 				}
 				break;
