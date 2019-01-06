@@ -10,7 +10,7 @@
 
 	<!-- Manually symlinked from resources/fonts. -->
 	<font id="DateFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
-	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789!:?CFafgikmpst°"/>
+	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789!:?CFabfgikmpst°"/>
 	<font id="NormalFontCities" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 
 	<!-- Manually symlinked from resources-small-icons/fonts. -->
