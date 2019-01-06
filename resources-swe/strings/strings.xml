@@ -49,6 +49,8 @@
 	<string id="ThemeBlueLight">Blå (Ljus)</string>
 	<string id="ThemeRedLight">Röd (Ljus)</string>
 	<string id="ThemeGreenLight">Grön (Ljus)</string>
+	<string id="ThemeDaygloOrangeLight">Lysande Orange (Ljus)</string>
+	<string id="ThemeCornYellowDark">Corn Yellow (Mörk)</string><!-- TODO_TRANSLATE -->
 
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>

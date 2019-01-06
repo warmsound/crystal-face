@@ -49,6 +49,8 @@
 	<string id="ThemeBlueLight">Niebieski (Jasny)</string>
 	<string id="ThemeRedLight">Czerwony (Jasny)</string>
 	<string id="ThemeGreenLight">Zielony (Jasny)</string>
+	<string id="ThemeDaygloOrangeLight">Rażący Pomarańczowy (Jasny)</string>
+	<string id="ThemeCornYellowDark">Corn Yellow (Ciemny)</string><!-- TODO_TRANSLATE -->
 
 	<string id="Steps">Kroki</string>
 	<string id="FloorsClimbed">Pokonane Piętra</string>

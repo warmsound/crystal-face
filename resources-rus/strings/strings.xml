@@ -49,6 +49,8 @@
 	<string id="ThemeBlueLight">Синяя (светлый фон)</string>
 	<string id="ThemeRedLight">Красная (светлый фон)</string>
 	<string id="ThemeGreenLight">Зеленая (светлый фон)</string>
+	<string id="ThemeDaygloOrangeLight">Оранжевая (светлый фон)</string>
+	<string id="ThemeCornYellowDark">Corn Yellow (тёмный фон)</string><!-- TODO_TRANSLATE -->
 
 	<string id="Steps">Шаги</string>
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
