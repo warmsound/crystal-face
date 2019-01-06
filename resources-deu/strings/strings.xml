@@ -49,6 +49,8 @@
 	<string id="ThemeBlueLight">Blau (Hell)</string>
 	<string id="ThemeRedLight">Rot (Hell)</string>
 	<string id="ThemeGreenLight">Grün (Hell)</string>
+	<string id="ThemeDaygloOrangeLight">Dayglo Orange (Hell)</string>
+	<string id="ThemeCornYellowDark">Korngelb (Dunkel)</string>
 
 	<string id="Steps">Schritte</string>
 	<string id="FloorsClimbed">Stockwerke</string>
