@@ -8,7 +8,7 @@
 			<!--listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry-->
 			<!--listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry-->
 			<!--listEntry value="12">@Strings.ThemeVividYellowDark</listEntry-->
-			<listEntry value="14">@Strings.ThemeYellowDark</listEntry>
+			<listEntry value="14">@Strings.ThemeCornYellowDark</listEntry>
 			<listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry>
 			<listEntry value="8">@Strings.ThemeMonoDark</listEntry>
 			<listEntry value="3">@Strings.ThemeMonoLight</listEntry>
