@@ -103,7 +103,9 @@ class CrystalView extends Ui.WatchFace {
 	// 	THEME_BLUE_LIGHT,
 	// 	THEME_GREEN_LIGHT,
 	// 	THEME_RED_LIGHT,
-	// 	THEME_VIVID_YELLOW_DARK
+	// 	THEME_VIVID_YELLOW_DARK,
+	// 	THEME_DAYGLO_ORANGE_LIGHT,
+	// 	THEME_CORN_YELLOW_DARK
 	// }
 
 	// private enum /* COLOUR_OVERRIDES */ {
@@ -216,7 +218,9 @@ class CrystalView extends Ui.WatchFace {
 			Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
 			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
 			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
-			0xFFFF00                 // THEME_VIVID_YELLOW_DARK
+			0xFFFF00,                // THEME_VIVID_YELLOW_DARK
+			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_LIGHT
+			Graphics.COLOR_YELLOW    // THEME_CORN_YELLOW_DARK
 		][theme];
 
 		// Light/dark-specific colours.
@@ -233,7 +237,9 @@ class CrystalView extends Ui.WatchFace {
 			true,  // THEME_BLUE_LIGHT
 			true,  // THEME_GREEN_LIGHT
 			true,  // THEME_RED_LIGHT
-			false  // THEME_VIVID_YELLOW_DARK
+			false, // THEME_VIVID_YELLOW_DARK
+			true,  // THEME_DAYGLO_ORANGE_LIGHT
+			false, // THEME_CORN_YELLOW_DARK
 		];
 		if (lightFlags[theme]) {
 			gMonoLightColour = Graphics.COLOR_BLACK;
