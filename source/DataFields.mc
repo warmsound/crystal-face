@@ -580,14 +580,10 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_PRESSURE:
 
-				// Try ActivityInfo.ambientPressure first.
-				activityInfo = Activity.getActivityInfo();
-				if (activityInfo has :ambientPressure) {
-					pressure = activityInfo.ambientPressure;
-				}
-
-				// Failing that, try SensorHistory.getPressureHistory().
-				if ((pressure == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getPressureHistory)) {
+				// Avoid using ActivityInfo.ambientPressure, as this bypasses any manual pressure calibration e.g. on Fenix
+				// 5. Pressure is unlikely to change frequently, so there isn't the same concern with getting a "live" value,
+				// compared with HR. Use SensorHistory only.
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getPressureHistory)) {
 					sample = SensorHistory.getPressureHistory(null).next();
 					if ((sample != null) && (sample.data != null)) {
 						pressure = sample.data;
