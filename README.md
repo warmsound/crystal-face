@@ -24,6 +24,9 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.2.5
+- "Pressure" data field should use historical data, to respect manual pressure calibration on fēnix® 5 watches (thanks to Allalin72 for help with this).
+
 ### 2.2.4
 - Fix issue with move bar not clearing in "Show Filled Segments" mode (thanks to BrettL for reproduction steps).
 - Add "Corn Yellow (Dark)" and "Dayglo Orange (Light)" themes.
