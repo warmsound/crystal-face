@@ -594,7 +594,7 @@ class DataFields extends Ui.Drawable {
 					} else if ((weather != null) && (weather["humidity"] != null)) {
 						humidity = weather["humidity"];
 
-						value = humidity.format(INTEGER_FORMAT);
+						value = humidity.format(INTEGER_FORMAT) + "%";
 
 					// Awaiting response.
 					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
