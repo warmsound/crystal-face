@@ -591,7 +591,7 @@ class DataFields extends Ui.Drawable {
 						value = "gps?";
 
 					// Stored weather data available.
-					} else if ((weather != null) && (weather["rh"] != null)) {
+					} else if ((weather != null) && (weather["humidity"] != null)) {
 						humidity = weather["humidity"];
 
 						value = humidity.format(INTEGER_FORMAT);
