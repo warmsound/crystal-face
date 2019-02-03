@@ -70,6 +70,7 @@
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
 	<string id="SunriseSunset">Sunrise/Sunset</string>
 	<string id="Weather">Weather</string>
+	<string id="Humidity">Humidity</string>
 	<string id="Pressure">Pressure</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
