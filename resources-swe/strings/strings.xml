@@ -70,10 +70,11 @@
 	<string id="BluetoothOrNotifications">Bluetooth/Notifieringar</string>
 	<string id="SunriseSunset">Soluppgång/Solnedgång</string>
 	<string id="Weather">Väder</string>
+	<string id="Humidity">Humidity</string><!-- TODO_TRANSLATE -->
 	<string id="Pressure">Tryck</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
-	<string id="DATE_FONT_OVERRIDE"></string>	
+	<string id="DATE_FONT_OVERRIDE"></string>
 
 	<string id="Sun">sön</string>
 	<string id="Mon">mån</string>
