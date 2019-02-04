@@ -14,7 +14,7 @@
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
 	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero</string>
-	
+
 	<string id="FieldCountTitle">Number Of Data Fields</string>
 	<string id="DataField1Title">Data Field 1</string>
 	<string id="DataField2Title">Data Field 2</string>
@@ -70,6 +70,7 @@
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
 	<string id="SunriseSunset">Sunrise/Sunset</string>
 	<string id="Weather">Weather</string>
+	<string id="Humidity">Humidity</string>
 	<string id="Pressure">Pressure</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->

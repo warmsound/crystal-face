@@ -74,7 +74,8 @@
 			<listEntry value="12">@Strings.Pressure</listEntry>
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
-			<listEntry value="11">@Strings.Weather</listEntry>			
+			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -93,6 +94,7 @@
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -111,6 +113,7 @@
 			<listEntry value="7">@Strings.Temperature</listEntry>
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 		</settingConfig>
 	</setting>
 

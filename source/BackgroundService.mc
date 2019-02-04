@@ -155,6 +155,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				"lon" => data["coord"]["lon"],
 				"dt" => data["dt"],
 				"temp" => data["main"]["temp"],
+				"humidity" => data["main"]["humidity"],
 				"icon" => data["weather"][0]["icon"]
 			};
 
