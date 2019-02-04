@@ -24,6 +24,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.2.6
+- Add "Humidity" data field (uses OpenWeatherMap). Many thanks to jrmcsoftware for implementing this.
+- Technical update to CIQ 3.0.8 SDK.
+
 ### 2.2.5
 - "Pressure" data field should use historical data, to respect manual pressure calibration on fēnix® 5 watches (thanks to Allalin72 for help with this).
 
