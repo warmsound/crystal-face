@@ -5,7 +5,8 @@ using Toybox.Application as App;
 
 class Indicators extends Ui.Drawable {
 
-	private var mSpacingY;
+	private var mSpacing;
+	private var mIsHorizontal = false;
 
 	private var mIndicator1Type;
 	private var mIndicator2Type;
@@ -22,7 +23,12 @@ class Indicators extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mSpacingY = params[:spacingY];
+		if (params[:spacingX] != null) {
+			mSpacing = params[:spacingX];
+			mIsHorizontal = true;
+		} else {
+			mSpacing = params[:spacingY];
+		}		
 
 		onSettingsChanged();
 	}
@@ -35,13 +41,40 @@ class Indicators extends Ui.Drawable {
 
 	function draw(dc) {
 		var indicatorCount = App.getApp().getProperty("IndicatorCount");
+
+		// Horizontal layout for rectangle-148x205.
+		if (mIsHorizontal) {
+			drawHorizontal(dc, indicatorCount);
+
+		// Vertical layout for others.
+		} else {
+			drawVertical(dc, indicatorCount);
+		}
+	}
+
+	(:horizontal_indicators)
+	function drawHorizontal(dc, indicatorCount) {
 		if (indicatorCount == 3) {
-			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacingY);
+			drawIndicator(dc, mIndicator1Type, locX - mSpacing, locY);
 			drawIndicator(dc, mIndicator2Type, locX, locY);
-			drawIndicator(dc, mIndicator3Type, locX, locY + mSpacingY);
+			drawIndicator(dc, mIndicator3Type, locX + mSpacing, locY);
 		} else if (indicatorCount == 2) {
-			drawIndicator(dc, mIndicator1Type, locX, locY - (mSpacingY / 2));
-			drawIndicator(dc, mIndicator2Type, locX, locY + (mSpacingY / 2));
+			drawIndicator(dc, mIndicator1Type, locX - (mSpacing / 2), locY);
+			drawIndicator(dc, mIndicator2Type, locX + (mSpacing / 2), locY);
+		} else if (indicatorCount == 1) {
+			drawIndicator(dc, mIndicator1Type, locX, locY);
+		}
+	}
+
+	(:vertical_indicators)
+	function drawVertical(dc, indicatorCount) {
+		if (indicatorCount == 3) {
+			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacing);
+			drawIndicator(dc, mIndicator2Type, locX, locY);
+			drawIndicator(dc, mIndicator3Type, locX, locY + mSpacing);
+		} else if (indicatorCount == 2) {
+			drawIndicator(dc, mIndicator1Type, locX, locY - (mSpacing / 2));
+			drawIndicator(dc, mIndicator2Type, locX, locY + (mSpacing / 2));
 		} else if (indicatorCount == 1) {
 			drawIndicator(dc, mIndicator1Type, locX, locY);
 		}

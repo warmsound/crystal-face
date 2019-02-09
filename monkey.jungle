@@ -48,3 +48,7 @@ vivoactive.excludeAnnotations = buffered
 # Continue to use fr735xt-specific properties and settings, however, as does support active minutes.
 fr735xt.resourcePath = $(fr735xt.resourcePath);resources-semiround-215x180-ciq_1.x
 fr735xt.excludeAnnotations = buffered
+
+# Exclude unused date/indicator code from 60kB devices (extend to other devices as necessary).
+fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;horizontal_indicators
+vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;vertical_indicators
