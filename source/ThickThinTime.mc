@@ -33,6 +33,10 @@ class ThickThinTime extends Ui.Drawable {
 			mAdjustY = params[:adjustY];
 		}
 
+		if (params[:amPmOffset] != null) {
+			AM_PM_X_OFFSET = params[:amPmOffset];
+		}
+
 		mSecondsY = params[:secondsY];
 
 		mSecondsClipRectX = params[:secondsX];

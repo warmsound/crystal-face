@@ -45,8 +45,6 @@
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<!--param name="twoLineOffset">6</param--> 
-
 		<param name="secondsX">105</param>
 		<param name="secondsY">112</param>
 
@@ -57,6 +55,9 @@
 
 		<!-- Move time up slightly to centre vertically within available space -->
 		<param name="adjustY">-5</param>
+
+		<!-- Limited horizontal space, so reduce AM/PM offset -->
+		<param name="amPmOffset">0</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
