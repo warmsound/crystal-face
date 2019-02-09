@@ -56,7 +56,7 @@
 		<!-- param name="secondsClipHeight">15</param-->
 
 		<!-- Move time up slightly to centre vertically within available space -->
-		<param name="adjustY">-4</param>
+		<param name="adjustY">-5</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
