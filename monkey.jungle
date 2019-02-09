@@ -51,4 +51,4 @@ fr735xt.excludeAnnotations = buffered
 
 # Exclude unused date/time code from 60kB devices (extend to other devices as necessary).
 fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;double_line_time
-vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;single_line_time
+#vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;single_line_time

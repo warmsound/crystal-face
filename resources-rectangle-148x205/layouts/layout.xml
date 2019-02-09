@@ -35,7 +35,7 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">51</param>
+		<param name="y">58</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
@@ -45,21 +45,24 @@
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="twoLineOffset">6</param> 
+		<!--param name="twoLineOffset">6</param--> 
 
-		<param name="secondsX">102</param>
-		<param name="secondsY">115</param>
+		<param name="secondsX">105</param>
+		<param name="secondsY">112</param>
 
 		<!-- Partial updates not supported -->	
-		<!-- param name="secondsClipY">124</param-->
+		<!-- param name="secondsClipY">121</param-->
 		<!-- param name="secondsClipWidth">22</param-->
 		<!-- param name="secondsClipHeight">15</param-->
+
+		<!-- Move time up slightly to centre vertically within available space -->
+		<param name="adjustY">-5</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">33</param>
-		<param name="y">152</param>
-		<param name="width">85</param>
+		<param name="x">23</param>
+		<param name="y">129</param>
+		<param name="width">75</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>
