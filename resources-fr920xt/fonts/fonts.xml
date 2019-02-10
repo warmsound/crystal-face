@@ -2,8 +2,8 @@
 <fonts>
 
 	<!-- Manually symlinked from resources-rectangle-205x148/fonts. -->
-	<font id="HoursFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-bold-52.fnt" antialias="false"/>
-	<font id="MinutesFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-light-52.fnt" antialias="false"/>
+	<font id="HoursFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-bold-54.fnt" antialias="false"/>
+	<font id="MinutesFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-light-54.fnt" antialias="false"/>
 
 	<!-- Manually symlinked from resources-small-time/fonts. -->
 	<font id="SecondsFont" filename="../../resources-small-time/fonts/titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
