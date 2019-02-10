@@ -20,9 +20,9 @@
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">34</param>
 		<param name="width">80</param>
-		<param name="row1Y">174</param>
-		<param name="row2Y">190</param>
-		<param name="goalIconY">172</param>
+		<param name="row1Y">180</param>
+		<param name="row2Y">196</param>
+		<param name="goalIconY">178</param>
 		<param name="goalIconLeftX">11</param>
 		<param name="goalIconRightX">137</param>
 	</drawable>
@@ -35,12 +35,12 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">58</param>
+		<param name="y">57</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
 		<param name="locX">74</param>
-		<param name="locY">151</param>
+		<param name="locY">152</param>
 		<param name="spacingX">32</param>
 	</drawable>
 
@@ -54,7 +54,7 @@
 		<!-- param name="secondsClipHeight">15</param-->
 
 		<!-- Move time up slightly to centre vertically within available space -->
-		<param name="adjustY">-5</param>
+		<param name="adjustY">-6</param>
 
 		<!-- Limited horizontal space, so reduce AM/PM offset -->
 		<param name="amPmOffset">0</param>
