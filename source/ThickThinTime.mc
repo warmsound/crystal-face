@@ -8,9 +8,6 @@ class ThickThinTime extends Ui.Drawable {
 
 	// "y" parameter passed to drawText(), read from layout.xml.
 	private var mSecondsY;
-	
-	// Vertical layouts only: offset between bottom of hours and top of minutes.
-	private var mTwoLineOffset;
 
 	// Wide rectangle: time should be moved up slightly to centre within available space.
 	private var mAdjustY = 0;
@@ -32,10 +29,12 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
-		mTwoLineOffset = params[:twoLineOffset];
-
 		if (params[:adjustY] != null) {
 			mAdjustY = params[:adjustY];
+		}
+
+		if (params[:amPmOffset] != null) {
+			AM_PM_X_OFFSET = params[:amPmOffset];
 		}
 
 		mSecondsY = params[:secondsY];
@@ -64,67 +63,10 @@ class ThickThinTime extends Ui.Drawable {
 		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
-		// Vertical (two-line) layout.
-		if (mTwoLineOffset) {
-			drawDoubleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
+		var hours = formattedTime[:hour];
+		var minutes = formattedTime[:min];
+		var amPmText = formattedTime[:amPm];
 
-		// Horizontal (single-line) layout.
-		} else {
-			drawSingleLine(dc, formattedTime[:hour], formattedTime[:min], formattedTime[:amPm]);
-		}
-	}
-
-	(:double_line_time)
-	function drawDoubleLine(dc, hours, minutes, amPmText) {
-		var x;
-		var halfDCWidth = dc.getWidth() / 2;
-		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
-
-		// N.B. Font metrics have been manually adjusted in .fnt files so that ascent = glyph height.
-		var hoursAscent = Graphics.getFontAscent(mHoursFont);
-
-		// #10 hours may be single digit, but calculate layout as if always double-digit.
-		// N.B. Assumes font has tabular (monospaced) numerals.
-		var maxHoursWidth = dc.getTextWidthInPixels(/* hours */ "00", mHoursFont);
-		x = halfDCWidth + (maxHoursWidth / 2); // Right edge of double-digit hours.
-
-		// Draw hours, horizontally centred if double-digit, vertically bottom aligned.
-		dc.setColor(gHoursColour, Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			halfDCHeight - hoursAscent - (mTwoLineOffset / 2),
-			mHoursFont,
-			hours,
-			Graphics.TEXT_JUSTIFY_RIGHT
-		);
-
-		// Draw minutes, horizontally centred, vertically top aligned.
-		dc.setColor(gMinutesColour, Graphics.COLOR_TRANSPARENT);
-		dc.drawText(
-			x,
-			halfDCHeight + (mTwoLineOffset / 2),
-			mMinutesFont,
-			minutes,
-			Graphics.TEXT_JUSTIFY_RIGHT
-		);
-
-		x += AM_PM_X_OFFSET; // Breathing space between minutes and AM/PM.
-
-		// If required, draw AM/PM after hours, vertically centred.
-		if (amPmText.length() > 0) {
-			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				halfDCHeight - (hoursAscent / 2) - (mTwoLineOffset / 2),
-				mSecondsFont,
-				amPmText,
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-		}
-	}
-
-	(:single_line_time)
-	function drawSingleLine(dc, hours, minutes, amPmText) {
 		var x;
 		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;

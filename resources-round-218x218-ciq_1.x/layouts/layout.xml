@@ -40,17 +40,17 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">70</param>
+		<param name="y">69</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
-		<param name="locX">31</param>
+		<param name="locX">30</param>
 		<param name="locY">109</param>
 		<param name="spacingY">30</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">147</param>
+		<param name="secondsX">149</param>
 		<param name="secondsY">129</param>
 
 		<!-- Partial updates not supported -->	
@@ -60,9 +60,9 @@
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">50</param>
+		<param name="x">49</param>
 		<param name="y">146</param>
-		<param name="width">90</param>
+		<param name="width">94</param>
 		<param name="height">9</param>
 		<param name="separator">3</param>
 	</drawable>

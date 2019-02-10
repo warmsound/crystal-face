@@ -6,8 +6,8 @@ round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 # Flat tyre watches use small time font and small icons.
 semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
 
-# Rectangle watches use smaller time font (but same seconds font as small time) and small icons.
-rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-smaller-time;resources-small-icons
+# Rectangle watches generally same as flat tyre, but have some overrides.
+rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-small-icons
 
 # CIQ 1.x watches only have 16 colours, so cannot support all themes.
 # No Floors or Active Minutes support, so default to showing Battery in right meter, and Calories in the centre field.
@@ -49,6 +49,6 @@ vivoactive.excludeAnnotations = buffered
 fr735xt.resourcePath = $(fr735xt.resourcePath);resources-semiround-215x180-ciq_1.x
 fr735xt.excludeAnnotations = buffered
 
-# Exclude unused date/time code from 60kB devices (extend to other devices as necessary).
-fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;double_line_time
-vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;single_line_time
+# Exclude unused date/indicator code from 60kB devices (extend to other devices as necessary).
+fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;horizontal_indicators
+vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;vertical_indicators

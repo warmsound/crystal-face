@@ -20,9 +20,9 @@
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">34</param>
 		<param name="width">80</param>
-		<param name="row1Y">174</param>
-		<param name="row2Y">190</param>
-		<param name="goalIconY">172</param>
+		<param name="row1Y">180</param>
+		<param name="row2Y">196</param>
+		<param name="goalIconY">178</param>
 		<param name="goalIconLeftX">11</param>
 		<param name="goalIconRightX">137</param>
 	</drawable>
@@ -35,31 +35,35 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">51</param>
+		<param name="y">57</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
-		<param name="locX">29</param>
-		<param name="locY">102</param>
-		<param name="spacingY">26</param>
+		<param name="locX">74</param>
+		<param name="locY">154</param>
+		<param name="spacingX">32</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="twoLineOffset">6</param> 
-
-		<param name="secondsX">102</param>
-		<param name="secondsY">115</param>
+		<param name="secondsX">105</param>
+		<param name="secondsY">113</param>
 
 		<!-- Partial updates not supported -->	
-		<!-- param name="secondsClipY">124</param-->
+		<!-- param name="secondsClipY">122</param-->
 		<!-- param name="secondsClipWidth">22</param-->
 		<!-- param name="secondsClipHeight">15</param-->
+
+		<!-- Move time up slightly to centre vertically within available space -->
+		<param name="adjustY">-6</param>
+
+		<!-- Limited horizontal space, so reduce AM/PM offset -->
+		<param name="amPmOffset">0</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">33</param>
-		<param name="y">152</param>
-		<param name="width">85</param>
+		<param name="x">23</param>
+		<param name="y">130</param>
+		<param name="width">75</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>

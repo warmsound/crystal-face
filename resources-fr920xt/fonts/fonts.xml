@@ -1,9 +1,9 @@
 <!-- #17 Anti-aliased custom fonts not supported on fr920xt. -->
 <fonts>
 
-	<!-- Manually symlinked from resources-smaller-time/fonts. -->
-	<font id="HoursFont" filename="../../resources-smaller-time/fonts/titillium-web-bold-48.fnt" antialias="false"/>
-	<font id="MinutesFont" filename="../../resources-smaller-time/fonts/titillium-web-light-48.fnt" antialias="false"/>
+	<!-- Manually symlinked from resources-rectangle-205x148/fonts. -->
+	<font id="HoursFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-bold-54.fnt" antialias="false"/>
+	<font id="MinutesFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-light-54.fnt" antialias="false"/>
 
 	<!-- Manually symlinked from resources-small-time/fonts. -->
 	<font id="SecondsFont" filename="../../resources-small-time/fonts/titillium-web-semibold-20.fnt" antialias="false" filter="0123456789AP"/>
@@ -17,9 +17,9 @@
 	<font id="IconsFont" filename="../../resources-small-icons/fonts/crystal-icons-small.fnt" antialias="false"/>
 	<font id="WeatherIconsFont" filename="../../resources-small-icons/fonts/weather-icons-20.fnt" antialias="false"/>
 
-	<!-- Manually symlinked from resources-smaller-time/fonts. -->
+	<!-- Manually symlinked from resources-rectangle-205x148/fonts. -->
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
-	<font id="DateFontOverrideZHS" filename="../../resources-smaller-time/fonts/noto-sans-cjk-sc-medium-16.fnt" antialias="false"/>
-	<font id="DateFontOverrideZHT" filename="../../resources-smaller-time/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
-	<font id="DateFontOverrideRUS" filename="../../resources-smaller-time/fonts/noto-sans-rus-bold-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideZHS" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-sc-medium-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideZHT" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideRUS" filename="../../resources-rectangle-205x148/fonts/noto-sans-rus-bold-16.fnt" antialias="false"/>
 </fonts>

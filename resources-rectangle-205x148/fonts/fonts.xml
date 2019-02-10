@@ -1,0 +1,16 @@
+<fonts>	
+	<font id="HoursFont" filename="titillium-web-bold-54.fnt" antialias="true" />
+	<font id="MinutesFont" filename="titillium-web-light-54.fnt" antialias="true" />
+
+	<!-- Same SecondsFont and DateFont as resources-small-time -->
+	<!--font id="SecondsFont" filename="titillium-web-semibold-20.fnt" antialias="true" filter="0123456789AP"/-->
+
+	<!-- Manually symlinked from resources/fonts. -->
+	<!-- Select date glyphs from titillium-web-semibold-16.fnt -->
+	<font id="DateFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
+
+	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
+	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-16.fnt" antialias="true"/>
+	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-16.fnt" antialias="true"/>
+	<font id="DateFontOverrideRUS" filename="noto-sans-rus-bold-16.fnt" antialias="true"/>
+</fonts>

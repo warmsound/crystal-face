@@ -35,27 +35,27 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">74</param>
+		<param name="y">73</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
-		<param name="locX">31</param>
+		<param name="locX">30</param>
 		<param name="locY">120</param>
 		<param name="spacingY">30</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">163</param>
-		<param name="secondsY">142</param>
-		<param name="secondsClipY">154</param>
+		<param name="secondsX">167</param>
+		<param name="secondsY">145</param>
+		<param name="secondsClipY">157</param>
 		<param name="secondsClipWidth">26</param>
 		<param name="secondsClipHeight">17</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">52</param>
-		<param name="y">161</param>
-		<param name="width">105</param>
+		<param name="x">48</param>
+		<param name="y">164</param>
+		<param name="width">110</param>
 		<param name="height">9</param>
 		<param name="separator">3</param>
 	</drawable>
