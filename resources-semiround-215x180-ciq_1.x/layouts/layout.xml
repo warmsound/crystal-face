@@ -40,7 +40,7 @@
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
-		<param name="y">52</param>
+		<param name="y">53</param>
 	</drawable>
 
 	<drawable id="Indicators" class="Indicators">
@@ -57,6 +57,8 @@
 		<!-- param name="secondsClipY">117</param-->
 		<!-- param name="secondsClipWidth">22</param-->
 		<!-- param name="secondsClipHeight">15</param-->
+
+		<param name="adjustY">1</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
