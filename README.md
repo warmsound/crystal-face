@@ -24,6 +24,10 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 
 ## What's New
 
+### 2.3.0
+- Increase time font size and revise layouts for all watches.
+- Single line time for vívoactive® HR.
+
 ### 2.2.6
 - Add "Humidity" data field (uses OpenWeatherMap). Many thanks to jrmcsoftware for implementing this.
 - Technical update to CIQ 3.0.8 SDK.
