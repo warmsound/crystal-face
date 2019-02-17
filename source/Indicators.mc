@@ -109,6 +109,11 @@ class Indicators extends Ui.Drawable {
 			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0
 		][indicatorType];
 
+		// Special exception for bluetooth. If bluetooth is disabled, don't draw indicator at all
+		if (indicatorType == 0 && getBluetoothConnectionState() == 0 /*System.CONNECTION_STATE_DISABLED*/) {
+			return;
+		}
+
 		var colour;
 		if (value) {
 			colour = gThemeColour;
@@ -126,4 +131,24 @@ class Indicators extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}
+	
+	// Get the tri-state bluetooth status:
+	//   CONNECTION_STATE_DISABLED (0), CONNECTION_STATE_NOT_CONNECTED (1), CONNECTION_STATE_CONNECTED (2)
+	private var haveBluetoothConnectionInfo = null;
+	function getBluetoothConnectionState() {
+		if (haveBluetoothConnectionInfo == null) {
+			var deviceSettings = System.getDeviceSettings();
+			if (deviceSettings has :connectionInfo && deviceSettings.connectionInfo[:bluetooth] != null) {
+			   haveBluetoothConnectionInfo = true;
+			} else {
+			   haveBluetoothConnectionInfo = false;
+			}
+		}
+		
+		if (haveBluetoothConnectionInfo) {
+			return System.getDeviceSettings().connectionInfo[:bluetooth].state;
+		}
+		
+		return null;
+	}	
 }
