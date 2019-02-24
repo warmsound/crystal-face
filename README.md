@@ -22,6 +22,9 @@ The techie bit: to save your watch battery, the goal meters and move bar are dra
 
 This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
+Reviews:
+- Video review in Spanish, by Sergio: https://www.youtube.com/watch?v=TZFhnm_y1MM.
+
 ## What's New
 
 ### 2.3.0
