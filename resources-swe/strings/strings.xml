@@ -1,29 +1,29 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Version</string>
+	<string id="AppVersionTitle">App-version</string>
 
 	<string id="ThemeTitle">Tema</string>
-	<string id="HoursColourTitle">Färg Timme</string>
-	<string id="MinutesColourTitle">Färg Minut</string>
-	<string id="LeftGoalMeterTitle">Vänster Mätare</string>
-	<string id="RightGoalMeterTitle">Höger Mätare</string>
+	<string id="HoursColourTitle">Färg timme</string>
+	<string id="MinutesColourTitle">Färg minut</string>
+	<string id="LeftGoalMeterTitle">Vänster mätare</string>
+	<string id="RightGoalMeterTitle">Höger mätare</string>
 	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
-	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string><!-- TODO_TRANSLATE -->
+	<string id="LocalTimeInCityTitle">Lägg till lokal tid för stad (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
-	<string id="HideSecondsTitle">Dölj Sekunder</string>
+	<string id="HideSecondsTitle">Dölj sekunder</string>
 	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>
 
-	<string id="FieldCountTitle">Number Of Data Fields</string>
-	<string id="DataField1Title">Data Field 1</string>
-	<string id="DataField2Title">Data Field 2</string>
-	<string id="DataField3Title">Data Field 3</string>
+	<string id="FieldCountTitle">Antal datafält</string>
+	<string id="DataField1Title">Datafält 1</string>
+	<string id="DataField2Title">Datafält 2</string>
+	<string id="DataField3Title">Datafält 3</string>
 
-	<string id="IndicatorCountTitle">Number Of Indicators</string>
-	<string id="Indicator1Title">Indicator 1</string>
-	<string id="Indicator2Title">Indicator 2</string>
-	<string id="Indicator3Title">Indicator 3</string>
+	<string id="IndicatorCountTitle">Indikatorantal</string>
+	<string id="Indicator1Title">Indikator 1</string>
+	<string id="Indicator2Title">Indikator 2</string>
+	<string id="Indicator3Title">Indikator 3</string>
 
 	<string id="FromTheme">(Från tema)</string>
 	<string id="MonoHighlight">Mono Highlight</string>
@@ -31,8 +31,8 @@
 
 	<string id="MultiSegments">Multisegment</string>
 	<string id="SingleSegment">Enkelsegment</string>
-	<string id="ShowAllSegments">Visa Alla Segment</string>
-	<string id="ShowFilledSegments">Visa Fyllda Segment</string>
+	<string id="ShowAllSegments">Visa alla segment</string>
+	<string id="ShowFilledSegments">Visa fyllda segment</string>
 	<string id="Hidden">Dold</string>
 
 	<string id="ThemeBlueDark">Blå (Mörk)</string>
@@ -49,17 +49,17 @@
 	<string id="ThemeRedLight">Röd (Ljus)</string>
 	<string id="ThemeGreenLight">Grön (Ljus)</string>
 	<string id="ThemeDaygloOrangeLight">Lysande Orange (Ljus)</string>
-	<string id="ThemeCornYellowDark">Corn Yellow (Mörk)</string><!-- TODO_TRANSLATE -->
+	<string id="ThemeCornYellowDark">Majsgul (Mörk)</string>
 
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>
-	<string id="ActiveMinutes">Aktiva Minuter (Vecka)</string>
+	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 
 	<string id="HeartRate">Puls</string>
 	<string id="HeartRateLive5s">Puls (Live 5s)</string>
 	<string id="Battery">Batteri</string>
-	<string id="BatteryHidePercentage">Batteri (Dölj Procent)</string>
+	<string id="BatteryHidePercentage">Batteri (Dölj procent)</string>
 	<string id="Notifications">Notifieringar</string>
 	<string id="Calories">Kalorier</string>
 	<string id="Distance">Distans</string>
@@ -70,7 +70,7 @@
 	<string id="BluetoothOrNotifications">Bluetooth/Notifieringar</string>
 	<string id="SunriseSunset">Soluppgång/Solnedgång</string>
 	<string id="Weather">Väder</string>
-	<string id="Humidity">Humidity</string><!-- TODO_TRANSLATE -->
+	<string id="Humidity">Luftfuktighet</string>
 	<string id="Pressure">Tryck</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
