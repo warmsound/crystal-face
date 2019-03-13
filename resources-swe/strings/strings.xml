@@ -71,6 +71,7 @@
 	<string id="SunriseSunset">Soluppgång/Solnedgång</string>
 	<string id="Weather">Väder</string>
 	<string id="Humidity">Luftfuktighet</string>
+	<string id="WindSpeed">Wind Speed</string><!-- TODO_TRANSLATE -->
 	<string id="Pressure">Tryck</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->

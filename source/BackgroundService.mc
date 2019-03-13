@@ -30,6 +30,14 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 			// 2. Weather.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+				var units;	
+		
+				if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_METRIC) {
+					units = "metric";
+				} else {
+					units = "imperial";
+				}
+				
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
@@ -37,7 +45,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 						"lat" => App.Storage.getValue("LastLocationLat"),
 						"lon" => App.Storage.getValue("LastLocationLng"),
 						"appid" => "d72271af214d870eb94fe8f9af450db4",
-						"units" => "metric" // Celcius.
+						"units" => units
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
 				);
@@ -156,6 +164,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				"dt" => data["dt"],
 				"temp" => data["main"]["temp"],
 				"humidity" => data["main"]["humidity"],
+				"wind-speed" => data["wind"]["speed"],
 				"icon" => data["weather"][0]["icon"]
 			};
 

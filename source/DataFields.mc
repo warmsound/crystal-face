@@ -5,6 +5,7 @@ using Toybox.Application as App;
 using Toybox.Activity as Activity;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.SensorHistory as SensorHistory;
+using Toybox.Math as Math;
 
 using Toybox.Time;
 using Toybox.Time.Gregorian;
@@ -28,7 +29,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_SUNRISE_SUNSET,
 	FIELD_TYPE_WEATHER,
 	FIELD_TYPE_PRESSURE,
-	FIELD_TYPE_HUMIDITY
+	FIELD_TYPE_HUMIDITY,
+	FIELD_TYPE_WIND_SPEED
 }
 
 class DataFields extends Ui.Drawable {
@@ -328,6 +330,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_TYPE_SUNRISE_SUNSET => "?",
 					FIELD_TYPE_PRESSURE => "@",
 					FIELD_TYPE_HUMIDITY => "A",
+					FIELD_TYPE_WIND_SPEED => "B",
 				}[fieldType];
 			}
 
@@ -565,14 +568,31 @@ class DataFields extends Ui.Drawable {
 
 					// Stored weather data available.
 					} else if ((weather != null) && (weather["temp"] != null)) {
-						temperature = weather["temp"]; // Celcius.
-
-						if (settings.temperatureUnits == System.UNIT_STATUTE) {
-							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-						}
+						temperature = Math.round(weather["temp"]);
 
 						value = temperature.format(INTEGER_FORMAT) + "°";
 						result["weatherIcon"] = weather["icon"];
+
+					// Awaiting response.
+					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+						value = "...";
+					}
+				}
+				break;
+			case FIELD_TYPE_WIND_SPEED:
+
+				if (App has :Storage) {
+					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+
+					// Awaiting location.
+					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+						value = "gps?";
+
+					// Stored weather data available.
+					} else if ((weather != null) && (weather["wind-speed"] != null)) {
+						var windSpeed = Math.round(weather["wind-speed"]);
+						
+						value = windSpeed.format(INTEGER_FORMAT);
 
 					// Awaiting response.
 					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
