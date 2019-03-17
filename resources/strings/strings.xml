@@ -72,6 +72,7 @@
 	<string id="Weather">Weather</string>
 	<string id="Humidity">Humidity</string>
 	<string id="Pressure">Pressure</string>
+	<string id="MetersClimbed">Meters climbed</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
