@@ -10,8 +10,8 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 
 enum /* FIELD_TYPES */ {
-	// Pseudo-fields.	
-	FIELD_TYPE_SUNRISE = -1,	
+	// Pseudo-fields.
+	FIELD_TYPE_SUNRISE = -1,
 	//FIELD_TYPE_SUNSET = -2,
 
 	// Real fields (used by properties).
@@ -20,6 +20,7 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_NOTIFICATIONS,
 	FIELD_TYPE_CALORIES,
 	FIELD_TYPE_DISTANCE,
+	FIELD_TYPE_METERS_CLIMBED,
 	FIELD_TYPE_ALARMS,
 	FIELD_TYPE_ALTITUDE,
 	FIELD_TYPE_TEMPERATURE,
@@ -128,7 +129,7 @@ class DataFields extends Ui.Drawable {
 	// Both regular and small icon fonts use same spot size for easier optimisation.
 	//private const LIVE_HR_SPOT_RADIUS = 3;
 
-	private function drawDataField(dc, isPartialUpdate, fieldType, x) {		
+	private function drawDataField(dc, isPartialUpdate, fieldType, x) {
 
 		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
 		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
@@ -180,10 +181,10 @@ class DataFields extends Ui.Drawable {
 				mBottom - 4,
 				25,
 				12);
-			
+
 			dc.clear();
 		}
-		
+
 		dc.drawText(
 			x,
 			mBottom,
@@ -319,6 +320,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_TYPE_NOTIFICATIONS => "5",
 					FIELD_TYPE_CALORIES => "6",
 					FIELD_TYPE_DISTANCE => "7",
+					FIELD_TYPE_METERS_CLIMBED => ";",
 					FIELD_TYPE_ALARMS => ":",
 					FIELD_TYPE_ALTITUDE => ";",
 					FIELD_TYPE_TEMPERATURE => "<",
@@ -370,7 +372,7 @@ class DataFields extends Ui.Drawable {
 		var settings = Sys.getDeviceSettings();
 
 		var activityInfo;
-		var sample;	
+		var sample;
 		var altitude;
 		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
@@ -421,7 +423,7 @@ class DataFields extends Ui.Drawable {
 				value = activityInfo.distance.toFloat() / /* CM_PER_KM */ 100000; // #11: Ensure floating point division!
 
 				if (settings.distanceUnits == System.UNIT_METRIC) {
-					unit = "km";					
+					unit = "km";
 				} else {
 					value *= /* MI_PER_KM */ 0.621371;
 					unit = "mi";
@@ -433,7 +435,30 @@ class DataFields extends Ui.Drawable {
 				if ((value.length() + unit.length()) <= mMaxFieldLength) {
 					value += unit;
 				}
-				
+
+				break;
+
+			case FIELD_TYPE_METERS_CLIMBED:
+				activityInfo = ActivityMonitor.getInfo();
+				value = activityInfo.metersClimbed;
+
+				// Metres (no conversion necessary).
+				if (settings.elevationUnits == System.UNIT_METRIC) {
+					unit = "m";
+
+				// Feet.
+				} else {
+					value *= /* FT_PER_M */ 3.28084;
+					unit = "ft";
+				}
+
+				value = value.format(INTEGER_FORMAT);
+
+				// Show unit only if value plus unit fits within maximum field length.
+				if ((value.length() + unit.length()) <= mMaxFieldLength) {
+					value += unit;
+				}
+
 				break;
 
 			case FIELD_TYPE_ALARMS:
@@ -492,7 +517,7 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
-			
+
 				if (gLocationLat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
@@ -541,7 +566,7 @@ class DataFields extends Ui.Drawable {
 						var hour = Math.floor(nextSunEvent).toLong() % 24;
 						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
 						value = App.getApp().getView().getFormattedTime(hour, min);
-						value = value[:hour] + ":" + value[:min] + value[:amPm]; 
+						value = value[:hour] + ":" + value[:min] + value[:amPm];
 					}
 
 				// Waiting for location.
@@ -619,7 +644,7 @@ class DataFields extends Ui.Drawable {
 					unit = "mb";
 					pressure = pressure / 100; // Pa --> mbar;
 					value = pressure.format("%.1f");
-					
+
 					// If single decimal place doesn't fit, truncate to integer.
 					if (value.length() > mMaxFieldLength) {
 						value = pressure.format(INTEGER_FORMAT);
