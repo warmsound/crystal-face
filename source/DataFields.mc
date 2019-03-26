@@ -557,7 +557,7 @@ class DataFields extends Ui.Drawable {
 				result["weatherIcon"] = "01d";
 
 				if (App has :Storage) {
-					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 					// Awaiting location.
 					if (gLocationLat == null) {
@@ -584,7 +584,7 @@ class DataFields extends Ui.Drawable {
 			case FIELD_TYPE_HUMIDITY:
 
 				if (App has :Storage) {
-					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 					// Awaiting location.
 					if (gLocationLat == null) {

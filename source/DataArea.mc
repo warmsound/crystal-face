@@ -77,7 +77,7 @@ class DataArea extends Ui.Drawable {
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() != 0) && (App has :Storage)) {
 			//drawTimeZone();
-			var cityLocalTime = App.Storage.getValue("CityLocalTime");
+			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
 			// N.B. error response will NOT contain city.

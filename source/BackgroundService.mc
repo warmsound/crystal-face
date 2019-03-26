@@ -33,7 +33,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
-						// Assume that any watch that can make web requests, also supports App.Storage.
 						"lat" => App.getApp().getProperty("LastLocationLat"),
 						"lon" => App.getApp().getProperty("LastLocationLng"),
 						"appid" => "d72271af214d870eb94fe8f9af450db4",

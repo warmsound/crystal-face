@@ -96,7 +96,7 @@ class CrystalApp extends App.AppBase {
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = App.Storage.getValue("CityLocalTime");
+			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
@@ -111,7 +111,7 @@ class CrystalApp extends App.AppBase {
 			// city again.
 			} else if (!cityLocalTime["requestCity"].equals(city)) {
 
-				App.Storage.deleteValue("CityLocalTime");
+				App.getApp().deleteProperty("CityLocalTime");
 				pendingWebRequests["CityLocalTime"] = true;
 			}
 		}
@@ -120,7 +120,7 @@ class CrystalApp extends App.AppBase {
 		// Location must be available, weather data field must be shown.
 		if ((gLocationLat != null) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
-			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
+			var owmCurrent = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 			// No existing data.
 			if (owmCurrent == null) {
@@ -167,7 +167,7 @@ class CrystalApp extends App.AppBase {
 
 	// Handle data received from BackgroundService.
 	// On success, clear appropriate pendingWebRequests flag.
-	// data is Dictionary with single key that indicates the data type received. This corresponds with App.Storage and
+	// data is Dictionary with single key that indicates the data type received. This corresponds with Object Store and
 	// pendingWebRequests keys.
 	function onBackgroundData(data) {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
@@ -177,7 +177,7 @@ class CrystalApp extends App.AppBase {
 		}
 
 		var type = data.keys()[0]; // Type of received data.
-		var storedData = App.Storage.getValue(type);
+		var storedData = App.getApp().getProperty(type);
 		var receivedData = data[type]; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
@@ -190,7 +190,7 @@ class CrystalApp extends App.AppBase {
 		storedData = receivedData;
 		pendingWebRequests.remove(type);
 		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
-		App.Storage.setValue(type, storedData);
+		App.getApp().setProperty(type, storedData);
 
 		Ui.requestUpdate();
 	}
