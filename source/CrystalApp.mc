@@ -8,8 +8,8 @@ using Toybox.Time;
 // Important for CIQ 1.x watches that only support Object Store, where stored location is overwritten with default when user
 // changes any setting (this happens for any properties that do not have corresponding setting). Object Store is still useful for
 // when user moves away from watch face and returns to it.
-var gLocationLat = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
-var gLocationLng = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+var gLocationLat = null;
+var gLocationLng = null;
 
 (:background)
 class CrystalApp extends App.AppBase {
@@ -60,40 +60,22 @@ class CrystalApp extends App.AppBase {
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();
 
-			// Use App.Storage if possible, as this is not overwritten with default property value (-360.0) when user changes any
-			// setting.
-			if (App has :Storage) {
-				App.Storage.setValue("LastLocationLat", gLocationLat);
-				App.Storage.setValue("LastLocationLng", gLocationLng);
-			} else {
-				App.getApp().setProperty("LastLocationLat", gLocationLat);
-				App.getApp().setProperty("LastLocationLng", gLocationLng);
-			}
+			App.getApp().setProperty("LastLocationLat", gLocationLat);
+			App.getApp().setProperty("LastLocationLng", gLocationLng);
 
-		// If current location is not available, read stored value from Storage or Object Store, being careful not to overwrite
-		// a valid in-memory value with an invalid stored one.
+		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
+		// in-memory value with an invalid stored one.
 		} else {
 			var lat, lng;
-			if (App has :Storage) {
-				// Most likely null if location has not yet been saved to Storage: leave value at -360.0.
-				lat = App.Storage.getValue("LastLocationLat");
-				if (lat != null) {
-					gLocationLat = lat;
-				}
-				lng = App.Storage.getValue("LastLocationLng");
-				if (lng != null) {
-					gLocationLng = lng;
-				}
-			} else {
-				// Gets reset to -360.0 as soon as settings are changed, because this property has no corresponding setting.
-				lat = App.getApp().getProperty("LastLocationLat");
-				if (lat != -360.0) {
-					gLocationLat = lat;
-				}
-				lng = App.getApp().getProperty("LastLocationLng");
-				if (lng != -360) {
-					gLocationLng = lng;
-				}
+
+			// Gets reset to null as soon as settings are changed, because this property has no corresponding setting.
+			lat = App.getApp().getProperty("LastLocationLat");
+			if (lat != null) {
+				gLocationLat = lat;
+			}
+			lng = App.getApp().getProperty("LastLocationLng");
+			if (lng != null) {
+				gLocationLng = lng;
 			}
 		}
 		// Sys.println(gLocationLat + ", " + gLocationLng);
@@ -136,7 +118,7 @@ class CrystalApp extends App.AppBase {
 
 		// 2. Weather:
 		// Location must be available, weather data field must be shown.
-		if ((gLocationLat != -360.0) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
+		if ((gLocationLat != null) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
 			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
 
