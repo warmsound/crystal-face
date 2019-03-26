@@ -15,7 +15,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.

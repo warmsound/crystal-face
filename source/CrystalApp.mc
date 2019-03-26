@@ -84,7 +84,7 @@ class CrystalApp extends App.AppBase {
 			return;
 		}
 
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -158,7 +158,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
-		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
+		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
 	}
 
 	function getServiceDelegate() {
@@ -170,7 +170,7 @@ class CrystalApp extends App.AppBase {
 	// data is Dictionary with single key that indicates the data type received. This corresponds with App.Storage and
 	// pendingWebRequests keys.
 	function onBackgroundData(data) {
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			//Sys.println("onBackgroundData() called with no pending web requests!");
 			pendingWebRequests = {};
@@ -189,7 +189,7 @@ class CrystalApp extends App.AppBase {
 		// New data received: clear pendingWebRequests flag and overwrite stored data.
 		storedData = receivedData;
 		pendingWebRequests.remove(type);
-		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
+		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
 		App.Storage.setValue(type, storedData);
 
 		Ui.requestUpdate();
