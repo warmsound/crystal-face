@@ -15,7 +15,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -33,9 +33,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
-						// Assume that any watch that can make web requests, also supports App.Storage.
-						"lat" => App.Storage.getValue("LastLocationLat"),
-						"lon" => App.Storage.getValue("LastLocationLng"),
+						"lat" => App.getApp().getProperty("LastLocationLat"),
+						"lon" => App.getApp().getProperty("LastLocationLng"),
 						"appid" => "d72271af214d870eb94fe8f9af450db4",
 						"units" => "metric" // Celcius.
 					},

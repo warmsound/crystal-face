@@ -493,7 +493,7 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
 			
-				if (gLocationLat != -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+				if (gLocationLat != null) {
 					var nextSunEvent = 0;
 					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
 
@@ -557,10 +557,10 @@ class DataFields extends Ui.Drawable {
 				result["weatherIcon"] = "01d";
 
 				if (App has :Storage) {
-					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 					// Awaiting location.
-					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+					if (gLocationLat == null) {
 						value = "gps?";
 
 					// Stored weather data available.
@@ -575,7 +575,7 @@ class DataFields extends Ui.Drawable {
 						result["weatherIcon"] = weather["icon"];
 
 					// Awaiting response.
-					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+					} else if (App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
 						value = "...";
 					}
 				}
@@ -584,10 +584,10 @@ class DataFields extends Ui.Drawable {
 			case FIELD_TYPE_HUMIDITY:
 
 				if (App has :Storage) {
-					var weather = App.Storage.getValue("OpenWeatherMapCurrent");
+					var weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 					// Awaiting location.
-					if (gLocationLat == -360.0) { // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+					if (gLocationLat == null) {
 						value = "gps?";
 
 					// Stored weather data available.
@@ -597,7 +597,7 @@ class DataFields extends Ui.Drawable {
 						value = humidity.format(INTEGER_FORMAT) + "%";
 
 					// Awaiting response.
-					} else if (App.Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+					} else if (App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
 						value = "...";
 					}
 				}

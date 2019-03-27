@@ -5,11 +5,12 @@ using Toybox.WatchUi as Ui;
 using Toybox.Time;
 
 // In-memory current location.
-// Important for CIQ 1.x watches that only support Object Store, where stored location is overwritten with default when user
-// changes any setting (this happens for any properties that do not have corresponding setting). Object Store is still useful for
-// when user moves away from watch face and returns to it.
-var gLocationLat = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
-var gLocationLng = -360.0; // -360.0 is a special value, meaning "unitialised". Can't have null float property.
+// Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
+// Current location retrieved/saved in checkPendingWebRequests().
+// Persistence allows weather and sunrise/sunset features to be used after watch face restart, even if watch no longer has current
+// location available.
+var gLocationLat = null;
+var gLocationLng = null;
 
 (:background)
 class CrystalApp extends App.AppBase {
@@ -60,40 +61,20 @@ class CrystalApp extends App.AppBase {
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();
 
-			// Use App.Storage if possible, as this is not overwritten with default property value (-360.0) when user changes any
-			// setting.
-			if (App has :Storage) {
-				App.Storage.setValue("LastLocationLat", gLocationLat);
-				App.Storage.setValue("LastLocationLng", gLocationLng);
-			} else {
-				App.getApp().setProperty("LastLocationLat", gLocationLat);
-				App.getApp().setProperty("LastLocationLng", gLocationLng);
+			App.getApp().setProperty("LastLocationLat", gLocationLat);
+			App.getApp().setProperty("LastLocationLng", gLocationLng);
+
+		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
+		// in-memory value with an invalid stored one.
+		} else {
+			var lat = App.getApp().getProperty("LastLocationLat");
+			if (lat != null) {
+				gLocationLat = lat;
 			}
 
-		// If current location is not available, read stored value from Storage or Object Store, being careful not to overwrite
-		// a valid in-memory value with an invalid stored one.
-		} else {
-			var lat, lng;
-			if (App has :Storage) {
-				// Most likely null if location has not yet been saved to Storage: leave value at -360.0.
-				lat = App.Storage.getValue("LastLocationLat");
-				if (lat != null) {
-					gLocationLat = lat;
-				}
-				lng = App.Storage.getValue("LastLocationLng");
-				if (lng != null) {
-					gLocationLng = lng;
-				}
-			} else {
-				// Gets reset to -360.0 as soon as settings are changed, because this property has no corresponding setting.
-				lat = App.getApp().getProperty("LastLocationLat");
-				if (lat != -360.0) {
-					gLocationLat = lat;
-				}
-				lng = App.getApp().getProperty("LastLocationLng");
-				if (lng != -360) {
-					gLocationLng = lng;
-				}
+			var lng = App.getApp().getProperty("LastLocationLng");
+			if (lng != null) {
+				gLocationLng = lng;
 			}
 		}
 		// Sys.println(gLocationLat + ", " + gLocationLng);
@@ -102,7 +83,7 @@ class CrystalApp extends App.AppBase {
 			return;
 		}
 
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -114,7 +95,7 @@ class CrystalApp extends App.AppBase {
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = App.Storage.getValue("CityLocalTime");
+			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
@@ -129,16 +110,16 @@ class CrystalApp extends App.AppBase {
 			// city again.
 			} else if (!cityLocalTime["requestCity"].equals(city)) {
 
-				App.Storage.deleteValue("CityLocalTime");
+				App.getApp().deleteProperty("CityLocalTime");
 				pendingWebRequests["CityLocalTime"] = true;
 			}
 		}
 
 		// 2. Weather:
 		// Location must be available, weather data field must be shown.
-		if ((gLocationLat != -360.0) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
+		if ((gLocationLat != null) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
 
-			var owmCurrent = App.Storage.getValue("OpenWeatherMapCurrent");
+			var owmCurrent = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 			// No existing data.
 			if (owmCurrent == null) {
@@ -176,7 +157,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
-		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
+		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
 	}
 
 	function getServiceDelegate() {
@@ -185,17 +166,17 @@ class CrystalApp extends App.AppBase {
 
 	// Handle data received from BackgroundService.
 	// On success, clear appropriate pendingWebRequests flag.
-	// data is Dictionary with single key that indicates the data type received. This corresponds with App.Storage and
+	// data is Dictionary with single key that indicates the data type received. This corresponds with Object Store and
 	// pendingWebRequests keys.
 	function onBackgroundData(data) {
-		var pendingWebRequests = App.Storage.getValue("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			//Sys.println("onBackgroundData() called with no pending web requests!");
 			pendingWebRequests = {};
 		}
 
 		var type = data.keys()[0]; // Type of received data.
-		var storedData = App.Storage.getValue(type);
+		var storedData = App.getApp().getProperty(type);
 		var receivedData = data[type]; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
@@ -207,8 +188,8 @@ class CrystalApp extends App.AppBase {
 		// New data received: clear pendingWebRequests flag and overwrite stored data.
 		storedData = receivedData;
 		pendingWebRequests.remove(type);
-		App.Storage.setValue("PendingWebRequests", pendingWebRequests);
-		App.Storage.setValue(type, storedData);
+		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
+		App.getApp().setProperty(type, storedData);
 
 		Ui.requestUpdate();
 	}
