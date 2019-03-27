@@ -27,6 +27,11 @@ Reviews:
 
 ## What's New
 
+### 2.3.1
+- Putative fix for intermittent storage-related crashes on fēnix® 5 series, vívoactive® 3 series and Approach® S60.
+- Update Swedish translation (thanks to fredrikaverpil).
+- Technical update to CIQ 3.0.9 SDK. Add support for vívoactive® 3 Music LTE.
+
 ### 2.3.0
 - Increase time font size and revise layouts for all watches.
 - Single line time for vívoactive® HR.
