@@ -5,9 +5,10 @@ using Toybox.WatchUi as Ui;
 using Toybox.Time;
 
 // In-memory current location.
-// Important for CIQ 1.x watches that only support Object Store, where stored location is overwritten with default when user
-// changes any setting (this happens for any properties that do not have corresponding setting). Object Store is still useful for
-// when user moves away from watch face and returns to it.
+// Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
+// Current location retrieved/saved in checkPendingWebRequests().
+// Persistence allows weather and sunrise/sunset features to be used after watch face restart, even if watch no longer has current
+// location available.
 var gLocationLat = null;
 var gLocationLng = null;
 
@@ -66,14 +67,12 @@ class CrystalApp extends App.AppBase {
 		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
 		// in-memory value with an invalid stored one.
 		} else {
-			var lat, lng;
-
-			// Gets reset to null as soon as settings are changed, because this property has no corresponding setting.
-			lat = App.getApp().getProperty("LastLocationLat");
+			var lat = App.getApp().getProperty("LastLocationLat");
 			if (lat != null) {
 				gLocationLat = lat;
 			}
-			lng = App.getApp().getProperty("LastLocationLng");
+
+			var lng = App.getApp().getProperty("LastLocationLng");
 			if (lng != null) {
 				gLocationLng = lng;
 			}
