@@ -79,7 +79,7 @@ class CrystalApp extends App.AppBase {
 		}
 		// Sys.println(gLocationLat + ", " + gLocationLng);
 
-		if (!((Sys has :ServiceDelegate) && (App has :Storage))) {
+		if (!(Sys has :ServiceDelegate)) {
 			return;
 		}
 
