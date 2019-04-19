@@ -184,6 +184,20 @@ class CrystalView extends Ui.WatchFace {
 
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
+
+		// #113 Propagate onSettingsChanged() to each drawable ASAP, rather than waiting for next onUpdate().
+		// DataFields recaches its field type settings, which may be requested immediately via hasField(), so this recaching
+		// must happen immediately.
+
+		// Recreate background buffers for each meter, in case theme colour has changed.
+		mDrawables[:LeftGoalMeter].onSettingsChanged();
+		mDrawables[:RightGoalMeter].onSettingsChanged();
+
+		mDrawables[:MoveBar].onSettingsChanged();
+
+		mDataFields.onSettingsChanged();
+
+		mDrawables[:Indicators].onSettingsChanged();
 	}
 
 	// Select normal font, based on whether time zone feature is being used.
@@ -268,16 +282,6 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function onSettingsChangedSinceLastDraw() {
-
-		// Recreate background buffers for each meter, in case theme colour has changed.
-		mDrawables[:LeftGoalMeter].onSettingsChanged();
-		mDrawables[:RightGoalMeter].onSettingsChanged();
-
-		mDrawables[:MoveBar].onSettingsChanged();
-
-		mDataFields.onSettingsChanged();
-
-		mDrawables[:Indicators].onSettingsChanged();
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
