@@ -116,8 +116,9 @@ class CrystalApp extends App.AppBase {
 		}
 
 		// 2. Weather:
-		// Location must be available, weather data field must be shown.
-		if ((gLocationLat != null) && mView.mDataFields.hasField(FIELD_TYPE_WEATHER)) {
+		// Location must be available, weather or humidity (#113) data field must be shown.
+		if ((gLocationLat != null) &&
+			(mView.mDataFields.hasField(FIELD_TYPE_WEATHER) || mView.mDataFields.hasField(FIELD_TYPE_HUMIDITY))) {
 
 			var owmCurrent = App.getApp().getProperty("OpenWeatherMapCurrent");
 
