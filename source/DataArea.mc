@@ -73,9 +73,8 @@ class DataArea extends Ui.Drawable {
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
 
-		// Check for has :Storage, in case we're loading settings in the simulator from a different device.
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null) && (city.length() != 0) && (App has :Storage)) {
+		if ((city != null) && (city.length() != 0)) {
 			//drawTimeZone();
 			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
 
