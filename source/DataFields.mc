@@ -575,7 +575,9 @@ class DataFields extends Ui.Drawable {
 					result["weatherIcon"] = weather["icon"];
 
 				// Awaiting response.
-				} else if (App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
+					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+
 					value = "...";
 				}
 				break;
@@ -595,7 +597,9 @@ class DataFields extends Ui.Drawable {
 					value = humidity.format(INTEGER_FORMAT) + "%";
 
 				// Awaiting response.
-				} else if (App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
+					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+						
 					value = "...";
 				}
 				break;
