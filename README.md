@@ -27,6 +27,10 @@ Reviews:
 
 ## What's New
 
+### 2.3.2
+- Fix issues with weather and humidity not updating.
+- Technical update to CIQ 3.0.10 SDK. Add support for MARQ™ series and vívoactive® 3 Mercedes-Benz.
+
 ### 2.3.1
 - Putative fix for intermittent storage-related crashes on fēnix® 5 series, vívoactive® 3 series and Approach® S60.
 - Update Swedish translation (thanks to fredrikaverpil).
