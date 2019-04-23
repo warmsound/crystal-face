@@ -8,8 +8,8 @@ ENV SDK_FILE=sdk.zip
 ENV SDK_DIR=/opt/connectiq
 
 
-RUN echo "deb http://ftp.us.debian.org/debian/ jessie main" >> /etc/apt/sources.list
-RUN echo "deb http://ftp.us.debian.org/debian/ wheezy main" >> /etc/apt/sources.list
+#RUN echo "deb http://ftp.us.debian.org/debian/ jessie main" >> /etc/apt/sources.list
+#RUN echo "deb http://ftp.us.debian.org/debian/ wheezy main" >> /etc/apt/sources.list
 RUN apt-get update -qq && DEBIAN_FRONTEND=noninteractive 
 RUN apt-get install -y wget openjdk-8-jdk unzip build-essential xvfb libusb-1.0-0-dev xorg libpng12-0 libwebkitgtk-1.0-0
 RUN apt-get install -y libjpeg8 imagemagick
