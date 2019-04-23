@@ -55,6 +55,7 @@
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
+	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
 
 	<string id="HeartRate">Пульс</string>
 	<string id="HeartRateLive5s">Пульс (обновлять каждые 5сек)</string>

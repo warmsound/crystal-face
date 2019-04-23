@@ -55,6 +55,7 @@
 	<string id="FloorsClimbed">Stockwerke</string>
 	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string>
 	<string id="CaloriesManualGoal">Kalorien (menuelles Ziel)</string>
+	<string id="Off">Aus</string>
 
 	<string id="HeartRate">Herzfrequenz</string>
 	<string id="HeartRateLive5s">Herzfrequenz (Live 5s)</string>

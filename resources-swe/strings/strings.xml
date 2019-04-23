@@ -55,6 +55,7 @@
 	<string id="FloorsClimbed">Våningar</string>
 	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
+	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
 
 	<string id="HeartRate">Puls</string>
 	<string id="HeartRateLive5s">Puls (Live 5s)</string>
