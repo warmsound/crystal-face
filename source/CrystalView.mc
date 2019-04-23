@@ -316,11 +316,11 @@ class CrystalView extends Ui.WatchFace {
 	function updateGoalMeters() {
 		var leftType = App.getApp().getProperty("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
-		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max]);
+		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
 		var rightType = App.getApp().getProperty("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
-		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max]);
+		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
 		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
@@ -368,6 +368,10 @@ class CrystalView extends Ui.WatchFace {
 			case GOAL_TYPE_CALORIES:
 				values[:current] = info.calories;
 				values[:max] = App.getApp().getProperty("CaloriesGoal");
+				break;
+
+			case GOAL_TYPE_OFF:
+				values[:isValid] = false;
 				break;
 		}
 

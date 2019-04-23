@@ -147,6 +147,10 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalIcon(dc, x, type, isValid, align) {
+		if (type == GOAL_TYPE_OFF) {
+			return;
+		}
+		
 		var icon = {
 			GOAL_TYPE_BATTERY => "9",
 			GOAL_TYPE_CALORIES => "6",

@@ -8,6 +8,7 @@ const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 enum /* GOAL_TYPES */ {
 	GOAL_TYPE_BATTERY = -1,
 	GOAL_TYPE_CALORIES = -2,
+	GOAL_TYPE_OFF = -3,
 
 	GOAL_TYPE_STEPS = 0, // App.GOAL_TYPE_STEPS
 	GOAL_TYPE_FLOORS_CLIMBED, // App.GOAL_TYPE_FLOORS_CLIMBED
@@ -41,6 +42,7 @@ class GoalMeter extends Ui.Drawable {
 
 	private var mCurrentValue;
 	private var mMaxValue;
+	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
 
 	// private enum /* GOAL_METER_STYLES */ {
 	// 	MULTI_SEGMENTS,
@@ -81,7 +83,7 @@ class GoalMeter extends Ui.Drawable {
 		return width;
 	}
 
-	function setValues(current, max) {
+	function setValues(current, max, isOff) {
 
 		// If max value changes, recalculate and cache segment layout, and set mBuffersNeedRedraw flag. Can't redraw buffers here,
 		// as we don't have reference to screen DC, in order to determine its dimensions - do this later, in draw() (already in
@@ -97,8 +99,10 @@ class GoalMeter extends Ui.Drawable {
 		// If current value changes, recalculate fill height, ahead of draw().
 		if (current != mCurrentValue) {
 			mCurrentValue = current;
-			mFillHeight = getFillHeight(mSegments);			
-		}		
+			mFillHeight = getFillHeight(mSegments);
+		}
+
+		mIsOff = isOff;
 	}
 
 	function onSettingsChanged() {
@@ -135,7 +139,9 @@ class GoalMeter extends Ui.Drawable {
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
 	function draw(dc) {
-		if (App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) {
+
+		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
+		if ((App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
 			return;
 		}
 
