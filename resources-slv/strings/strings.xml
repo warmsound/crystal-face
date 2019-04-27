@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Right Meter</string>
 	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Meter Style</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string>
 	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
@@ -34,6 +35,8 @@
 	<string id="AllSegments">All Segments</string>
 	<string id="FilledSegments">Filled Segments</string>
 	<string id="Hidden">Hidden</string>
+	<string id="CurrentTarget">Current/Target</string>
+	<string id="Current">Current</string>
 
 	<string id="ThemeBlueDark">Blue (Dark)</string>
 	<string id="ThemePinkDark">Pink (Dark)</string>

@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Rechter Zähler</string>
 	<string id="CaloriesGoalTitle">Kalorienziel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Zähler Style</string>
+	<string id="MeterDigitsStyleTitle">Zähler Ziffern Style</string><!-- TODO_TRANSLATE: Is this correct? -->
 	<string id="LocalTimeInCityTitle">Städtische Lokalzeit hinzufügen (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Sekunden ausblenden</string>
@@ -18,7 +19,7 @@
 	<string id="FieldCountTitle">Anzahl der Datenfelder</string>
 	<string id="DataField1Title">Datenfeld 1</string>
 	<string id="DataField2Title">Datenfeld 2</string>
-	<string id="DataField3Title">Datenfeldd 3</string>
+	<string id="DataField3Title">Datenfeld 3</string>
 
 	<string id="IndicatorCountTitle">Anzahl der Indikatoren</string>
 	<string id="Indicator1Title">Indikator 1</string>
@@ -34,6 +35,8 @@
 	<string id="AllSegments">Alle Segmente</string>
 	<string id="FilledSegments">Gefüllte Segmente</string>
 	<string id="Hidden">Ausgeblendet</string>
+	<string id="CurrentTarget">Current/Target</string><!-- TODO_TRANSLATE -->
+	<string id="Current">Current</string><!-- TODO_TRANSLATE -->
 
 	<string id="ThemeBlueDark">Blau (Dunkel)</string>
 	<string id="ThemePinkDark">Pink (Dunkel)</string>

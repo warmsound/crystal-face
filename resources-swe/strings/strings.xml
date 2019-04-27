@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Höger mätare</string>
 	<string id="CaloriesGoalTitle">Kalorimål (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Mätarstil</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string><!-- TODO_TRANSLATE -->
 	<string id="LocalTimeInCityTitle">Lägg till lokal tid för stad (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj sekunder</string>
@@ -34,6 +35,8 @@
 	<string id="AllSegments">Alla segment</string>
 	<string id="FilledSegments">Fyllda segment</string>
 	<string id="Hidden">Dold</string>
+	<string id="CurrentTarget">Current/Target</string><!-- TODO_TRANSLATE -->
+	<string id="Current">Current</string><!-- TODO_TRANSLATE -->
 
 	<string id="ThemeBlueDark">Blå (Mörk)</string>
 	<string id="ThemePinkDark">Rosa (Mörk)</string>
