@@ -31,8 +31,8 @@
 
 	<string id="MultiSegments">Wiele Segmentów</string>
 	<string id="SingleSegment">Jeden Segment</string>
-	<string id="ShowAllSegments">Pokaż Wszystkie Segmenty</string>
-	<string id="ShowFilledSegments">Pokaż Wypełnione Segmenty</string>
+	<string id="AllSegments">Wszystkie Segmenty</string>
+	<string id="FilledSegments">Wypełnione Segmenty</string>
 	<string id="Hidden">Ukryte</string>
 
 	<string id="ThemeBlueDark">Niebieski (Ciemny)</string>

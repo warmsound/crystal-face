@@ -31,8 +31,8 @@
 
 	<string id="MultiSegments">Multisegment</string>
 	<string id="SingleSegment">Enkelsegment</string>
-	<string id="ShowAllSegments">Visa alla segment</string>
-	<string id="ShowFilledSegments">Visa fyllda segment</string>
+	<string id="AllSegments">Alla segment</string>
+	<string id="FilledSegments">Fyllda segment</string>
 	<string id="Hidden">Dold</string>
 
 	<string id="ThemeBlueDark">Blå (Mörk)</string>

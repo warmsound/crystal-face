@@ -31,8 +31,8 @@
 
 	<string id="MultiSegments">Мультисегментный</string>
 	<string id="SingleSegment">Односегментный</string>
-	<string id="ShowAllSegments">Показывать все сегменты</string>
-	<string id="ShowFilledSegments">Показывать заполненные сегменты</string>
+	<string id="AllSegments">Все сегменты</string>
+	<string id="FilledSegments">Заполненные сегменты</string>
 	<string id="Hidden">Скрытый</string>
 
 	<string id="ThemeBlueDark">Синяя (тёмный фон)</string>

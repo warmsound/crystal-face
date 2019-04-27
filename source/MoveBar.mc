@@ -94,7 +94,7 @@ class MoveBar extends Ui.Drawable {
 		if (mBufferNeedsRedraw) {
 			var bufferDc = mBuffer.getDc();
 
-			// #85: Clear buffer before any redraw, so that move bar clears correctly in "Show Filled Segments" mode (no bars will
+			// #85: Clear buffer before any redraw, so that move bar clears correctly in "Filled Segments" mode (no bars will
 			// be drawn in this mode when move bar clears). Does not seem possible to clear with COLOR_TRANSPARENT, so use
 			// background colour instead.
 			bufferDc.setColor(Graphics.COLOR_TRANSPARENT, gBackgroundColour);
