@@ -177,26 +177,35 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
-		if (currentValue != null) {
-			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mRow1Y,
-				gNormalFont,
-				currentValue,
-				align | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-		}
+		var digitStyle = App.getApp().getProperty("GoalMeterDigitsStyle");
 
-		if (maxValue != null) {
-			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mRow2Y,
-				gNormalFont,
-				maxValue,
-				align | Graphics.TEXT_JUSTIFY_VCENTER
-			);
+		// #107 Only draw values if digit style is not Hidden.
+		if (digitStyle != 2 /* HIDDEN */) {
+			if (currentValue != null) {
+				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+
+					// #107 Draw current value vertically centred if digit style is Current (i.e. not drawing max/target).
+					(digitStyle == 1 /* CURRENT */) ? ((mRow1Y + mRow2Y) / 2) : mRow1Y,
+
+					gNormalFont,
+					currentValue,
+					align | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
+
+			// #107 Only draw max/target goal value if digit style is set to Current/Target.
+			if ((maxValue != null) && (digitStyle == 0) /* CURRENT_TARGET */) {
+				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+					mRow2Y,
+					gNormalFont,
+					maxValue,
+					align | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
 		}
 	}
 }

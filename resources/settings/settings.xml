@@ -56,6 +56,14 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.GoalMeterDigitsStyle" title="@Strings.MeterDigitsStyleTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.CurrentTarget</listEntry>
+			<listEntry value="1">@Strings.Current</listEntry>
+			<listEntry value="2">@Strings.Hidden</listEntry>
+		</settingConfig>
+	</setting>
+
 	<setting propertyKey="@Properties.CaloriesGoal" title="@Strings.CaloriesGoalTitle">
 		<settingConfig type="numeric" min="1" max="10000" required="true"/>
 	</setting>
