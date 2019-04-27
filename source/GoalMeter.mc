@@ -45,9 +45,11 @@ class GoalMeter extends Ui.Drawable {
 	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
 
 	// private enum /* GOAL_METER_STYLES */ {
-	// 	MULTI_SEGMENTS,
-	// 	SINGLE_SEGMENT,
-	// 	HIDDEN
+	// 	ALL_SEGMENTS,
+	// 	ALL_SEGMENTS_MERGED,
+	// 	HIDDEN,
+	// 	FILLED_SEGMENTS,
+	// 	FILLED_SEGMENTS_MERGED
 	// }
 
 	function initialize(params) {
@@ -109,7 +111,9 @@ class GoalMeter extends Ui.Drawable {
 		mBuffersNeedRecreate = true;
 
 		// #18 Only read separator width from layout if multi segment style is selected.
-		if (App.getApp().getProperty("GoalMeterStyle") == 0 /* MULTI_SEGMENTS */) {
+		// #62 Or if filled segment style is selected.
+		var goalMeterStyle = App.getApp().getProperty("GoalMeterStyle");
+		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
 			if (mSeparator != mLayoutSeparator) {
@@ -170,7 +174,10 @@ class GoalMeter extends Ui.Drawable {
 			drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
 
 			// Unfilled segments: fill height --> height.
-			drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
+			// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
+			if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+				drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
+			}
 		}
 	}
 
@@ -212,6 +219,7 @@ class GoalMeter extends Ui.Drawable {
 
 			// Draw full fill height for each buffer.
 			drawSegments(emptyBufferDc, 0, 0, gMeterBackgroundColour, mSegments, 0, mHeight);
+			// #62 Could avoid drawing filled segments buffer if style is not ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
 			drawSegments(filledBufferDc, 0, 0, gThemeColour, mSegments, 0, mHeight);
 
 			// For arc meters, draw circular mask for each buffer.
@@ -235,7 +243,7 @@ class GoalMeter extends Ui.Drawable {
 			mBuffersNeedRedraw = false;
 		}
 
-		// Draw filled segments.		
+		// Draw filled segments.
 		clipBottom = dc.getHeight() - top;
 		clipTop = clipBottom - mFillHeight;
 		clipHeight = clipBottom - clipTop;
@@ -246,13 +254,16 @@ class GoalMeter extends Ui.Drawable {
 		}
 
 		// Draw unfilled segments.
-		clipBottom = clipTop;
-		clipTop = top;
-		clipHeight = clipBottom - clipTop;
+		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
+		if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+			clipBottom = clipTop;
+			clipTop = top;
+			clipHeight = clipBottom - clipTop;
 
-		if (clipHeight > 0) {
-			dc.setClip(left, clipTop, mWidth, clipHeight);
-			dc.drawBitmap(left, top, mEmptyBuffer);
+			if (clipHeight > 0) {
+				dc.setClip(left, clipTop, mWidth, clipHeight);
+				dc.drawBitmap(left, top, mEmptyBuffer);
+			}
 		}
 
 		dc.clearClip();

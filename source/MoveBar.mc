@@ -23,8 +23,8 @@ class MoveBar extends Ui.Drawable {
 	private var mCurrentWidth;
 
 	// private enum /* MOVE_BAR_STYLE */ {
-	// 	SHOW_ALL_SEGMENTS,
-	// 	SHOW_FILLED_SEGMENTS,
+	// 	ALL_SEGMENTS,
+	// 	FILLED_SEGMENTS,
 	// 	HIDDEN
 	// };
 
@@ -147,8 +147,8 @@ class MoveBar extends Ui.Drawable {
 			if (i <= currentMoveBarLevel) {
 				thisBarColour = gThemeColour;
 
-			// Move bar below this level, so only show if MoveBarStyle setting is SHOW_ALL_SEGMENTS.
-			} else if (moveBarStyle == 0 /* SHOW_ALL_SEGMENTS */) {
+			// Move bar below this level, so only show if MoveBarStyle setting is ALL_SEGMENTS.
+			} else if (moveBarStyle == 0 /* ALL_SEGMENTS */) {
 				thisBarColour = gMeterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.

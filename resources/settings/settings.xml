@@ -48,8 +48,10 @@
 
 	<setting propertyKey="@Properties.GoalMeterStyle" title="@Strings.GoalMeterStyleTitle">
 		<settingConfig type="list">
-			<listEntry value="0">@Strings.AllSegmentsMerged</listEntry>
-			<listEntry value="1">@Strings.FilledSegmentsMerged</listEntry>
+			<listEntry value="0">@Strings.AllSegments</listEntry>
+			<listEntry value="1">@Strings.AllSegmentsMerged</listEntry>
+			<listEntry value="3">@Strings.FilledSegments</listEntry>
+			<listEntry value="4">@Strings.FilledSegmentsMerged</listEntry>
 			<listEntry value="2">@Strings.Hidden</listEntry>
 		</settingConfig>
 	</setting>
