@@ -29,7 +29,7 @@
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
-	<string id="AllSegmentsMerged">Mehrere Abschnitte</string>
+	<string id="AllSegmentsMerged">Alle Segmente (Merged)</string><!-- TODO_TRANSLATE -->
 	<string id="FilledSegmentsMerged">Gefüllte Segmente (Merged)</string><!-- TODO_TRANSLATE -->
 	<string id="AllSegments">Alle Segmente</string>
 	<string id="FilledSegments">Gefüllte Segmente</string>

@@ -29,7 +29,7 @@
 	<string id="MonoHighlight">Pojedyncze Wyróżnienie</string>
 	<string id="Mono">Mono</string>
 
-	<string id="AllSegmentsMerged">Wiele Segmentów</string>
+	<string id="AllSegmentsMerged">Wszystkie Segmenty (Merged)</string><!-- TODO_TRANSLATE -->
 	<string id="FilledSegmentsMerged">Wypełnione Segmenty (Merged)</string><!-- TODO_TRANSLATE -->
 	<string id="AllSegments">Wszystkie Segmenty</string>
 	<string id="FilledSegments">Wypełnione Segmenty</string>
