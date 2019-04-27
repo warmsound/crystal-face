@@ -196,12 +196,7 @@ class DataFields extends Ui.Drawable {
 
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
-		var colour;
-		if (value.length() == 0) {
-			colour = gMeterBackgroundColour;
-		} else {
-			colour = gThemeColour;
-		}
+		var colour = (value.length() == 0) ? gMeterBackgroundColour : gThemeColour;
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
@@ -281,11 +276,8 @@ class DataFields extends Ui.Drawable {
 				var weatherIconsSubset = result["weatherIcon"].substring(2, 3);
 				if (!weatherIconsSubset.equals(mWeatherIconsSubset)) {
 					mWeatherIconsSubset = weatherIconsSubset;
-					if (mWeatherIconsSubset.equals("d")) {
-						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
-					} else {
-						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
-					}
+					mWeatherIconsFont = Ui.loadResource((mWeatherIconsSubset.equals("d")) ?
+						Rez.Fonts.WeatherIconsFontDay : Rez.Fonts.WeatherIconsFontNight);
 				}
 				font = mWeatherIconsFont;
 

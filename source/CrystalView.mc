@@ -208,11 +208,8 @@ class CrystalView extends Ui.WatchFace {
 		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null) && (city.length() > 0)) {
-			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
-		} else {
-			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
-		}
+		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
+			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
 	}
 
 	function updateThemeColours() {
@@ -547,12 +544,7 @@ class CrystalView extends Ui.WatchFace {
 		var deltaJSet = jSet - jDate;
 		var deltaJRise = jRise - jDate;
 
-		var tzOffset;
-		if (tz == null) {
-			tzOffset = (Sys.getClockTime().timeZoneOffset / 3600);
-		} else {
-			tzOffset = tz;
-		}
+		var tzOffset = (tz == null) ? (Sys.getClockTime().timeZoneOffset / 3600) : tz;
 		
 		var localRise = (deltaJRise * 24) + tzOffset;
 		var localSet = (deltaJSet * 24) + tzOffset;
@@ -586,15 +578,9 @@ class CrystalView extends Ui.WatchFace {
 			}
 		}
 
-		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero. Otherwise, show leading zero.
 		// #69 Setting now applies to both 12- and 24-hour modes.
-		if (App.getApp().getProperty("HideHoursLeadingZero")) {
-			hour = hour.format(INTEGER_FORMAT);
-
-		// Otherwise, show leading zero.
-		} else {
-			hour = hour.format("%02d");
-		}
+		hour = hour.format(App.getApp().getProperty("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
 
 		return {
 			:hour => hour,

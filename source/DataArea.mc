@@ -41,11 +41,7 @@ class DataArea extends Ui.Drawable {
 
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (mLeftGoalType == GOAL_TYPE_BATTERY) {
-				mLeftGoalMax = "%";
-			} else {
-				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
-			}
+			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
@@ -56,11 +52,7 @@ class DataArea extends Ui.Drawable {
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (mRightGoalType == GOAL_TYPE_BATTERY) {
-				mRightGoalMax = "%";
-			} else {
-				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);
-			}
+			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
@@ -159,14 +151,7 @@ class DataArea extends Ui.Drawable {
 			GOAL_TYPE_ACTIVE_MINUTES => "2",
 		}[type];
 
-		var colour;
-		if (isValid) {
-			colour = gThemeColour;
-		} else {
-			colour = gMeterBackgroundColour;
-		}
-
-		dc.setColor(colour, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(isValid ? gThemeColour : gMeterBackgroundColour, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mGoalIconY,

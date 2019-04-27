@@ -149,16 +149,8 @@ class GoalMeter extends Ui.Drawable {
 			return;
 		}
 
-		var left;
-		var top;
-
-		if (mSide == :left) {
-			left = 0;
-		} else {
-			left = dc.getWidth() - mWidth;
-		}
-
-		top = (dc.getHeight() - mHeight) / 2;
+		var left = (mSide == :left) ? 0 : (dc.getWidth() - mWidth);
+		var top = (dc.getHeight() - mHeight) / 2;
 
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		// Now changed to use buffered drawing only on round watches.
@@ -225,11 +217,8 @@ class GoalMeter extends Ui.Drawable {
 			// For arc meters, draw circular mask for each buffer.
 			if (mShape == :arc) {
 
-				if (mSide == :left) {
-					x = halfScreenDcWidth; // Beyond right edge of bufferDc.
-				} else {
-					x = mWidth - halfScreenDcWidth - 1; // Beyond left edge of bufferDc.
-				}
+				// Beyond right edge of bufferDc : Beyond left edge of bufferDc.
+				x = (mSide == :left) ? halfScreenDcWidth : (mWidth - halfScreenDcWidth - 1);
 				radius = halfScreenDcWidth - mStroke;
 
 				emptyBufferDc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
@@ -237,7 +226,6 @@ class GoalMeter extends Ui.Drawable {
 
 				filledBufferDc.setColor(gBackgroundColour, Graphics.COLOR_TRANSPARENT);
 				filledBufferDc.fillCircle(x, (mHeight / 2), radius);
-
 			}
 
 			mBuffersNeedRedraw = false;
@@ -387,7 +375,7 @@ class GoalMeter extends Ui.Drawable {
 				fillHeight += mSeparator; // Fill extends beyond end of this segment, so add separator height.
 			} else {
 				break; // Fill does not extend beyond end of this segment, because this segment is not full.
-			}			
+			}
 		}
 
 		//Sys.println("fillHeight " + fillHeight);
