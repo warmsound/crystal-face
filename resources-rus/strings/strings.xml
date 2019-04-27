@@ -29,8 +29,8 @@
 	<string id="MonoHighlight">Монохромный светлый</string>
 	<string id="Mono">Монохромный темный</string>
 
-	<string id="MultiSegments">Мультисегментный</string>
-	<string id="SingleSegment">Односегментный</string>
+	<string id="AllSegmentsMerged">Мультисегментный</string>
+	<string id="FilledSegmentsMerged">Заполненные сегменты (Merged)</string><!-- TODO_TRANSLATE -->
 	<string id="AllSegments">Все сегменты</string>
 	<string id="FilledSegments">Заполненные сегменты</string>
 	<string id="Hidden">Скрытый</string>
