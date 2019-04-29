@@ -3,7 +3,8 @@ FROM gitpod/workspace-full:latest
 USER root
 
 ENV SDK_VERSION=3.0.10
-ENV SDK_URL=https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-$SDK_VERSION-2019-4-9-b0d8876.zip
+
+ENV SDK_URL=https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk-lin-3.0.10-2019-4-23-e0f78e3e.zip
 ENV SDK_FILE=sdk.zip
 ENV SDK_DIR=/opt/connectiq
 
