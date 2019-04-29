@@ -78,7 +78,9 @@ class DataFields extends Ui.Drawable {
 				mMaxFieldLength = 8;
 				break;
 		} */
-		mMaxFieldLength = [8, 6, 4][mFieldCount - 1];
+
+		// #116 Handle FieldCount = 0 correctly.
+		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
 		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
