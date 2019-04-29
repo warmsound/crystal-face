@@ -120,8 +120,10 @@ class DataFields extends Ui.Drawable {
 			case 1:
 				drawDataField(dc, isPartialUpdate, mFieldTypes[0], (mRight + mLeft) / 2);
 				break;
+			/*
 			case 0:
 				break;
+			*/
 		}
 	}
 
@@ -367,7 +369,7 @@ class DataFields extends Ui.Drawable {
 		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
 		var weather;
-		var humidity;
+		var weatherValue;
 		var sunTimes;
 		var unit;
 
@@ -545,37 +547,13 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_WEATHER:
-
-				// Default = sunshine!
-				result["weatherIcon"] = "01d";
-
-				weather = App.getApp().getProperty("OpenWeatherMapCurrent");
-
-				// Awaiting location.
-				if (gLocationLat == null) {
-					value = "gps?";
-
-				// Stored weather data available.
-				} else if ((weather != null) && (weather["temp"] != null)) {
-					temperature = weather["temp"]; // Celcius.
-
-					if (settings.temperatureUnits == System.UNIT_STATUTE) {
-						temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-					}
-
-					value = temperature.format(INTEGER_FORMAT) + "°";
-					result["weatherIcon"] = weather["icon"];
-
-				// Awaiting response.
-				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
-					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
-
-					value = "...";
-				}
-				break;
-
 			case FIELD_TYPE_HUMIDITY:
 
+				// Default = sunshine!
+				if (type == FIELD_TYPE_WEATHER) {
+					result["weatherIcon"] = "01d";
+				}
+
 				weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 				// Awaiting location.
@@ -583,15 +561,29 @@ class DataFields extends Ui.Drawable {
 					value = "gps?";
 
 				// Stored weather data available.
-				} else if ((weather != null) && (weather["humidity"] != null)) {
-					humidity = weather["humidity"];
+				} else if (weather != null) {
 
-					value = humidity.format(INTEGER_FORMAT) + "%";
+					// FIELD_TYPE_WEATHER.
+					if (type == FIELD_TYPE_WEATHER) {
+						weatherValue = weather["temp"]; // Celcius.
+
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+						}
+
+						value = weatherValue.format(INTEGER_FORMAT) + "°";
+						result["weatherIcon"] = weather["icon"];
+
+					// FIELD_TYPE_HUMIDITY.
+					} else {
+						weatherValue = weather["humidity"];
+						value = weatherValue.format(INTEGER_FORMAT) + "%";
+					}
 
 				// Awaiting response.
 				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
 					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
-						
+
 					value = "...";
 				}
 				break;

@@ -60,11 +60,8 @@ class MoveBar extends Ui.Drawable {
 		var currentMoveBarLevel = info.moveBarLevel;
 
 		// Calculate current width here, now that DC is accessible.
-		if (mIsFullWidth) {
-			mCurrentWidth = dc.getWidth() - (2 * mX) + mTailWidth; // Balance head/tail positions.
-		} else {
-			mCurrentWidth = mBaseWidth;
-		}
+		// Balance head/tail positions in full width mode.
+		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
 
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
@@ -137,11 +134,7 @@ class MoveBar extends Ui.Drawable {
 		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
 
 			// First bar is double width.
-			if (i == 1) {
-				thisBarWidth = 2 * barWidth;
-			} else {
-				thisBarWidth = barWidth;
-			}
+			thisBarWidth = (i == 1) ? (2 * barWidth) : barWidth;
 
 			// Move bar at this level or greater, so show regardless of MoveBarStyle setting.
 			if (i <= currentMoveBarLevel) {
@@ -186,7 +179,7 @@ class MoveBar extends Ui.Drawable {
 	function drawBar(dc, colour, x, y, width) {
 		var points = new [6];
 		var halfHeight = (mHeight / 2);
-		width = width - 1; // E.g. width 5 covers pixels 0 to 4.
+		width -= 1; // E.g. width 5 covers pixels 0 to 4.
 
 		points[0] = [x                     , y];
 		points[1] = [x - mTailWidth        , y - halfHeight];

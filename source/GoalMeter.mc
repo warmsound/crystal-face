@@ -3,7 +3,7 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Graphics;
 
-const MIN_WHOLE_SEGMENT_HEIGHT = 5;
+// const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
 enum /* GOAL_TYPES */ {
 	GOAL_TYPE_BATTERY = -1,
@@ -404,7 +404,7 @@ class GoalMeter extends Ui.Drawable {
 			segmentHeight = Math.floor(totalSegmentHeight / numSegments);
 
 			tryScaleIndex++;	
-		} while (segmentHeight <= MIN_WHOLE_SEGMENT_HEIGHT);
+		} while (segmentHeight <= /* MIN_WHOLE_SEGMENT_HEIGHT */ 5);
 
 		//Sys.println("scale " + segmentScale);
 		return segmentScale;
