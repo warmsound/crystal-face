@@ -8,7 +8,7 @@ ENV SDK_URL=https://developer.garmin.com/downloads/connect-iq/sdks/connectiq-sdk
 ENV SDK_FILE=sdk.zip
 ENV SDK_DIR=/opt/connectiq
 
-
+RUN add-apt-repository "deb http://mirrors.kernel.org/ubuntu/ xenial main"
 #RUN echo "deb http://ftp.us.debian.org/debian/ jessie main" >> /etc/apt/sources.list
 #RUN echo "deb http://ftp.us.debian.org/debian/ wheezy main" >> /etc/apt/sources.list
 RUN apt-get update
