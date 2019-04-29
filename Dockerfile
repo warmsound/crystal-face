@@ -17,7 +17,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq wget openjdk-8-jdk unzip 
 #RUN echo "deb http://ftp.us.debian.org/debian/ wheezy main" >> /etc/apt/sources.list
 #RUN DEBIAN_FRONTEND=noninteractive && apt-get update -qq 
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libwebkitgtk-1.0-0
-#RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libpng12-0 libwebkitgtk-1.0-0
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libpng12-0 libwebkitgtk-1.0-0
 RUN DEBIAN_FRONTEND=noninteractive apt-get install -yq libjpeg8 imagemagick
 RUN wget -O "$SDK_FILE" "$SDK_URL"
 RUN unzip "$SDK_FILE" -d "${SDK_DIR}"
