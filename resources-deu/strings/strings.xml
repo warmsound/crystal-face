@@ -18,7 +18,7 @@
 	<string id="FieldCountTitle">Anzahl der Datenfelder</string>
 	<string id="DataField1Title">Datenfeld 1</string>
 	<string id="DataField2Title">Datenfeld 2</string>
-	<string id="DataField3Title">Datenfeldd 3</string>
+	<string id="DataField3Title">Datenfeld 3</string>
 
 	<string id="IndicatorCountTitle">Anzahl der Indikatoren</string>
 	<string id="Indicator1Title">Indikator 1</string>
@@ -54,7 +54,7 @@
 	<string id="Steps">Schritte</string>
 	<string id="FloorsClimbed">Stockwerke</string>
 	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string>
-	<string id="CaloriesManualGoal">Kalorien (menuelles Ziel)</string>
+	<string id="CaloriesManualGoal">Kalorien (manuelles Ziel)</string>
 
 	<string id="HeartRate">Herzfrequenz</string>
 	<string id="HeartRateLive5s">Herzfrequenz (Live 5s)</string>
