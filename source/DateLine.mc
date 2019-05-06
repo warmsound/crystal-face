@@ -27,16 +27,11 @@ class DateLine extends Ui.Drawable {
 			"ZHT" => rezFonts.DateFontOverrideZHT,
 			"RUS" => rezFonts.DateFontOverrideRUS
 		};
-		var dateFont;
 
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified
 		// string, then override font in code.
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
-		if (resourceMap.hasKey(dateFontOverride)) {
-			dateFont = resourceMap[dateFontOverride];
-		} else {
-			dateFont = rezFonts.DateFont;
-		}
+		var dateFont = (resourceMap.hasKey(dateFontOverride)) ? resourceMap[dateFontOverride] : rezFonts.DateFont;
 		mFont = Ui.loadResource(dateFont);
 
 		mX = params[:x];

@@ -26,6 +26,7 @@
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -36,6 +37,7 @@
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 

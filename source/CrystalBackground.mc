@@ -5,11 +5,7 @@ using Toybox.Graphics as Gfx;
 class Background extends Ui.Drawable {
 
 	function initialize() {
-		var dictionary = {
-			:identifier => "Background"
-		};
-
-		Drawable.initialize(dictionary);
+		Drawable.initialize({ :identifier => "Background" });
 	}
 
 	function draw(dc) {
@@ -17,5 +13,4 @@ class Background extends Ui.Drawable {
 		dc.setColor(Gfx.COLOR_TRANSPARENT, gBackgroundColour);
 		dc.clear();
 	}
-
 }

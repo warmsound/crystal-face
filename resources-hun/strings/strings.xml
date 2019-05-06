@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Right Meter</string>
 	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Meter Style</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string>
 	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Hide Seconds</string>
@@ -29,11 +30,13 @@
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
-	<string id="MultiSegments">Multi Segments</string>
-	<string id="SingleSegment">Single Segment</string>
-	<string id="ShowAllSegments">Show All Segments</string>
-	<string id="ShowFilledSegments">Show Filled Segments</string>
+	<string id="AllSegmentsMerged">All Segments (Merged)</string>
+	<string id="FilledSegmentsMerged">Filled Segments (Merged)</string>
+	<string id="AllSegments">All Segments</string>
+	<string id="FilledSegments">Filled Segments</string>
 	<string id="Hidden">Hidden</string>
+	<string id="CurrentTarget">Current/Target</string>
+	<string id="Current">Current</string>
 
 	<string id="ThemeBlueDark">Blue (Dark)</string>
 	<string id="ThemePinkDark">Pink (Dark)</string>
@@ -55,6 +58,7 @@
 	<string id="FloorsClimbed">Floors Climbed</string>
 	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
 	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="Off">Off</string>
 
 	<string id="HeartRate">Heart Rate</string>
 	<string id="HeartRateLive5s">Heart Rate (Live 5s)</string>

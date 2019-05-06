@@ -41,11 +41,7 @@ class DataArea extends Ui.Drawable {
 
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			if (mLeftGoalType == GOAL_TYPE_BATTERY) {
-				mLeftGoalMax = "%";
-			} else {
-				mLeftGoalMax = leftValues[:max].format(INTEGER_FORMAT);
-			}
+			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
@@ -56,11 +52,7 @@ class DataArea extends Ui.Drawable {
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			if (mRightGoalType == GOAL_TYPE_BATTERY) {
-				mRightGoalMax = "%";
-			} else {
-				mRightGoalMax = rightValues[:max].format(INTEGER_FORMAT);
-			}
+			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
@@ -147,6 +139,10 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalIcon(dc, x, type, isValid, align) {
+		if (type == GOAL_TYPE_OFF) {
+			return;
+		}
+		
 		var icon = {
 			GOAL_TYPE_BATTERY => "9",
 			GOAL_TYPE_CALORIES => "6",
@@ -155,14 +151,7 @@ class DataArea extends Ui.Drawable {
 			GOAL_TYPE_ACTIVE_MINUTES => "2",
 		}[type];
 
-		var colour;
-		if (isValid) {
-			colour = gThemeColour;
-		} else {
-			colour = gMeterBackgroundColour;
-		}
-
-		dc.setColor(colour, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(isValid ? gThemeColour : gMeterBackgroundColour, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mGoalIconY,
@@ -173,26 +162,35 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
-		if (currentValue != null) {
-			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mRow1Y,
-				gNormalFont,
-				currentValue,
-				align | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-		}
+		var digitStyle = App.getApp().getProperty("GoalMeterDigitsStyle");
 
-		if (maxValue != null) {
-			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				x,
-				mRow2Y,
-				gNormalFont,
-				maxValue,
-				align | Graphics.TEXT_JUSTIFY_VCENTER
-			);
+		// #107 Only draw values if digit style is not Hidden.
+		if (digitStyle != 2 /* HIDDEN */) {
+			if (currentValue != null) {
+				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+
+					// #107 Draw current value vertically centred if digit style is Current (i.e. not drawing max/target).
+					(digitStyle == 1 /* CURRENT */) ? ((mRow1Y + mRow2Y) / 2) : mRow1Y,
+
+					gNormalFont,
+					currentValue,
+					align | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
+
+			// #107 Only draw max/target goal value if digit style is set to Current/Target.
+			if ((maxValue != null) && (digitStyle == 0) /* CURRENT_TARGET */) {
+				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					x,
+					mRow2Y,
+					gNormalFont,
+					maxValue,
+					align | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
 		}
 	}
 }

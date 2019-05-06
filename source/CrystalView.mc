@@ -26,8 +26,8 @@ const BATTERY_LINE_WIDTH = 2;
 const BATTERY_HEAD_HEIGHT = 4;
 const BATTERY_MARGIN = 1;
 
-const BATTERY_LEVEL_LOW = 20;
-const BATTERY_LEVEL_CRITICAL = 10;
+//const BATTERY_LEVEL_LOW = 20;
+//const BATTERY_LEVEL_CRITICAL = 10;
 
 // x, y are co-ordinates of centre point.
 // width and height are outer dimensions of battery "body".
@@ -59,9 +59,9 @@ function drawBatteryMeter(dc, x, y, width, height) {
 
 	// Fill colour based on battery level.
 	var fillColour;
-	if (batteryLevel <= BATTERY_LEVEL_CRITICAL) {
+	if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
 		fillColour = Graphics.COLOR_RED;
-	} else if (batteryLevel <= BATTERY_LEVEL_LOW) {
+	} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
 		fillColour = Graphics.COLOR_YELLOW;
 	} else {
 		fillColour = gThemeColour;
@@ -145,15 +145,8 @@ class CrystalView extends Ui.WatchFace {
 
 	function cacheDrawables() {
 		mDrawables[:LeftGoalMeter] = View.findDrawableById("LeftGoalMeter");
-		mDrawables[:LeftGoalIcon] = View.findDrawableById("LeftGoalIcon");
-
 		mDrawables[:RightGoalMeter] = View.findDrawableById("RightGoalMeter");
-		mDrawables[:RightGoalIcon] = View.findDrawableById("RightGoalIcon");
-
 		mDrawables[:DataArea] = View.findDrawableById("DataArea");
-
-		mDrawables[:Date] = View.findDrawableById("Date");
-
 		mDrawables[:Indicators] = View.findDrawableById("Indicators");
 
 		// Use mTime instead.
@@ -165,11 +158,13 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
 
+	/*
 	// Called when this View is brought to the foreground. Restore
 	// the state of this View and prepare it to be shown. This includes
 	// loading resources into memory.
 	function onShow() {
 	}
+	*/
 
 	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
 	// update the full screen immediately. This is true on real hardware, but not in the simulator, which calls onUpdate()
@@ -208,11 +203,8 @@ class CrystalView extends Ui.WatchFace {
 		var city = App.getApp().getProperty("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null) && (city.length() > 0)) {
-			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
-		} else {
-			gNormalFont = Ui.loadResource(Rez.Fonts.NormalFont);
-		}
+		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
+			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
 	}
 
 	function updateThemeColours() {
@@ -316,11 +308,11 @@ class CrystalView extends Ui.WatchFace {
 	function updateGoalMeters() {
 		var leftType = App.getApp().getProperty("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
-		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max]);
+		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
 		var rightType = App.getApp().getProperty("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
-		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max]);
+		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
 		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
@@ -369,6 +361,10 @@ class CrystalView extends Ui.WatchFace {
 				values[:current] = info.calories;
 				values[:max] = App.getApp().getProperty("CaloriesGoal");
 				break;
+
+			case GOAL_TYPE_OFF:
+				values[:isValid] = false;
+				break;
 		}
 
 		// #16: If user has set goal to zero, or negative (in simulator), show as invalid. Set max to 1 to avoid divide-by-zero
@@ -390,11 +386,13 @@ class CrystalView extends Ui.WatchFace {
 		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
 	}
 
+	/*
 	// Called when this View is removed from the screen. Save the
 	// state of this View here. This includes freeing resources from
 	// memory.
 	function onHide() {
 	}
+	*/
 
 	// The user has just looked at their watch. Timers and animations may be started here.
 	function onExitSleep() {
@@ -494,7 +492,7 @@ class CrystalView extends Ui.WatchFace {
 		var MFloor = Math.floor(M);
 		var MFrac = M - MFloor;
 		M = MFloor.toLong() % 360;
-		M = M + MFrac;
+		M += MFrac;
 		//Sys.println("M " + M);
 
 		// Equation of the centre.
@@ -508,7 +506,7 @@ class CrystalView extends Ui.WatchFace {
 		var lambdaFloor = Math.floor(lambda);
 		var lambdaFrac = lambda - lambdaFloor;
 		lambda = lambdaFloor.toLong() % 360;
-		lambda = lambda + lambdaFrac;
+		lambda += lambdaFrac;
 		//Sys.println("lambda " + lambda);
 
 		// Solar transit.
@@ -543,16 +541,11 @@ class CrystalView extends Ui.WatchFace {
 		var deltaJSet = jSet - jDate;
 		var deltaJRise = jRise - jDate;
 
-		var tzOffset;
-		if (tz == null) {
-			tzOffset = (Sys.getClockTime().timeZoneOffset / 3600);
-		} else {
-			tzOffset = tz;
-		}
-		
-		var localRise = (deltaJRise * 24) + tzOffset;
-		var localSet = (deltaJSet * 24) + tzOffset;
-		return [localRise, localSet];
+		var tzOffset = (tz == null) ? (Sys.getClockTime().timeZoneOffset / 3600) : tz;
+		return [
+			/* localRise */ (deltaJRise * 24) + tzOffset,
+			/* localSet */ (deltaJSet * 24) + tzOffset
+		];
 	}
 
 	// Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
@@ -582,15 +575,9 @@ class CrystalView extends Ui.WatchFace {
 			}
 		}
 
-		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero.
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero. Otherwise, show leading zero.
 		// #69 Setting now applies to both 12- and 24-hour modes.
-		if (App.getApp().getProperty("HideHoursLeadingZero")) {
-			hour = hour.format(INTEGER_FORMAT);
-
-		// Otherwise, show leading zero.
-		} else {
-			hour = hour.format("%02d");
-		}
+		hour = hour.format(App.getApp().getProperty("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
 
 		return {
 			:hour => hour,

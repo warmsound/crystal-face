@@ -31,6 +31,7 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -41,13 +42,24 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.GoalMeterStyle" title="@Strings.GoalMeterStyleTitle">
 		<settingConfig type="list">
-			<listEntry value="0">@Strings.MultiSegments</listEntry>
-			<listEntry value="1">@Strings.SingleSegment</listEntry>
+			<listEntry value="0">@Strings.AllSegments</listEntry>
+			<listEntry value="1">@Strings.AllSegmentsMerged</listEntry>
+			<listEntry value="3">@Strings.FilledSegments</listEntry>
+			<listEntry value="4">@Strings.FilledSegmentsMerged</listEntry>
+			<listEntry value="2">@Strings.Hidden</listEntry>
+		</settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.GoalMeterDigitsStyle" title="@Strings.MeterDigitsStyleTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.CurrentTarget</listEntry>
+			<listEntry value="1">@Strings.Current</listEntry>
 			<listEntry value="2">@Strings.Hidden</listEntry>
 		</settingConfig>
 	</setting>
@@ -181,8 +193,8 @@
 
 	<setting propertyKey="@Properties.MoveBarStyle" title="@Strings.MoveBarStyleTitle">
 		<settingConfig type="list">
-			<listEntry value="0">@Strings.ShowAllSegments</listEntry>
-			<listEntry value="1">@Strings.ShowFilledSegments</listEntry>
+			<listEntry value="0">@Strings.AllSegments</listEntry>
+			<listEntry value="1">@Strings.FilledSegments</listEntry>
 			<listEntry value="2">@Strings.Hidden</listEntry>
 		</settingConfig>
 	</setting>

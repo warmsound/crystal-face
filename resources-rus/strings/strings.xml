@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Правая шкала</string>
 	<string id="CaloriesGoalTitle">Цель по калориям (1-10,000ккал)</string>
 	<string id="GoalMeterStyleTitle">Вид шкалы</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string><!-- TODO_TRANSLATE -->
 	<string id="LocalTimeInCityTitle">Добавить местное время в городе (бета)</string>
 	<string id="MoveBarStyleTitle">Вид полосы подвижности</string>
 	<string id="HideSecondsTitle">Скрывать секунды</string>
@@ -29,11 +30,13 @@
 	<string id="MonoHighlight">Монохромный светлый</string>
 	<string id="Mono">Монохромный темный</string>
 
-	<string id="MultiSegments">Мультисегментный</string>
-	<string id="SingleSegment">Односегментный</string>
-	<string id="ShowAllSegments">Показывать все сегменты</string>
-	<string id="ShowFilledSegments">Показывать заполненные сегменты</string>
+	<string id="AllSegmentsMerged">Все сегменты (Merged)</string><!-- TODO_TRANSLATE -->
+	<string id="FilledSegmentsMerged">Заполненные сегменты (Merged)</string><!-- TODO_TRANSLATE -->
+	<string id="AllSegments">Все сегменты</string>
+	<string id="FilledSegments">Заполненные сегменты</string>
 	<string id="Hidden">Скрытый</string>
+	<string id="CurrentTarget">Current/Target</string><!-- TODO_TRANSLATE -->
+	<string id="Current">Current</string><!-- TODO_TRANSLATE -->
 
 	<string id="ThemeBlueDark">Синяя (тёмный фон)</string>
 	<string id="ThemePinkDark">Розовая (тёмный фон)</string>
@@ -55,6 +58,7 @@
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
+	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
 
 	<string id="HeartRate">Пульс</string>
 	<string id="HeartRateLive5s">Пульс (обновлять каждые 5сек)</string>

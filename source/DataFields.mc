@@ -78,7 +78,9 @@ class DataFields extends Ui.Drawable {
 				mMaxFieldLength = 8;
 				break;
 		} */
-		mMaxFieldLength = [8, 6, 4][mFieldCount - 1];
+
+		// #116 Handle FieldCount = 0 correctly.
+		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
 		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
 		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
@@ -120,8 +122,10 @@ class DataFields extends Ui.Drawable {
 			case 1:
 				drawDataField(dc, isPartialUpdate, mFieldTypes[0], (mRight + mLeft) / 2);
 				break;
+			/*
 			case 0:
 				break;
+			*/
 		}
 	}
 
@@ -196,12 +200,7 @@ class DataFields extends Ui.Drawable {
 
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
-		var colour;
-		if (value.length() == 0) {
-			colour = gMeterBackgroundColour;
-		} else {
-			colour = gThemeColour;
-		}
+		var colour = (value.length() == 0) ? gMeterBackgroundColour : gThemeColour;
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
@@ -281,11 +280,8 @@ class DataFields extends Ui.Drawable {
 				var weatherIconsSubset = result["weatherIcon"].substring(2, 3);
 				if (!weatherIconsSubset.equals(mWeatherIconsSubset)) {
 					mWeatherIconsSubset = weatherIconsSubset;
-					if (mWeatherIconsSubset.equals("d")) {
-						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontDay);
-					} else {
-						mWeatherIconsFont = Ui.loadResource(Rez.Fonts.WeatherIconsFontNight);
-					}
+					mWeatherIconsFont = Ui.loadResource((mWeatherIconsSubset.equals("d")) ?
+						Rez.Fonts.WeatherIconsFontDay : Rez.Fonts.WeatherIconsFontNight);
 				}
 				font = mWeatherIconsFont;
 
@@ -375,7 +371,7 @@ class DataFields extends Ui.Drawable {
 		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
 		var weather;
-		var humidity;
+		var weatherValue;
 		var sunTimes;
 		var unit;
 
@@ -553,37 +549,13 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_WEATHER:
-
-				// Default = sunshine!
-				result["weatherIcon"] = "01d";
-
-				weather = App.getApp().getProperty("OpenWeatherMapCurrent");
-
-				// Awaiting location.
-				if (gLocationLat == null) {
-					value = "gps?";
-
-				// Stored weather data available.
-				} else if ((weather != null) && (weather["temp"] != null)) {
-					temperature = weather["temp"]; // Celcius.
-
-					if (settings.temperatureUnits == System.UNIT_STATUTE) {
-						temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-					}
-
-					value = temperature.format(INTEGER_FORMAT) + "°";
-					result["weatherIcon"] = weather["icon"];
-
-				// Awaiting response.
-				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
-					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
-
-					value = "...";
-				}
-				break;
-
 			case FIELD_TYPE_HUMIDITY:
 
+				// Default = sunshine!
+				if (type == FIELD_TYPE_WEATHER) {
+					result["weatherIcon"] = "01d";
+				}
+
 				weather = App.getApp().getProperty("OpenWeatherMapCurrent");
 
 				// Awaiting location.
@@ -591,15 +563,29 @@ class DataFields extends Ui.Drawable {
 					value = "gps?";
 
 				// Stored weather data available.
-				} else if ((weather != null) && (weather["humidity"] != null)) {
-					humidity = weather["humidity"];
+				} else if (weather != null) {
 
-					value = humidity.format(INTEGER_FORMAT) + "%";
+					// FIELD_TYPE_WEATHER.
+					if (type == FIELD_TYPE_WEATHER) {
+						weatherValue = weather["temp"]; // Celcius.
+
+						if (settings.temperatureUnits == System.UNIT_STATUTE) {
+							weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+						}
+
+						value = weatherValue.format(INTEGER_FORMAT) + "°";
+						result["weatherIcon"] = weather["icon"];
+
+					// FIELD_TYPE_HUMIDITY.
+					} else {
+						weatherValue = weather["humidity"];
+						value = weatherValue.format(INTEGER_FORMAT) + "%";
+					}
 
 				// Awaiting response.
 				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
 					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
-						
+
 					value = "...";
 				}
 				break;

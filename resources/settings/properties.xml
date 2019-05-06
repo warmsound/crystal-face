@@ -10,6 +10,7 @@
 	<property id="LeftGoalType" type="number">0</property>
 	<property id="RightGoalType" type="number">1</property>
 	<property id="GoalMeterStyle" type="number">0</property>
+	<property id="GoalMeterDigitsStyle" type="number">0</property>
 	<property id="CaloriesGoal" type="number">2000</property>
 
 	<property id="FieldCount" type="number">3</property>

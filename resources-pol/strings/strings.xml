@@ -10,6 +10,7 @@
 	<string id="RightGoalMeterTitle">Prawy Wskaźnik</string>
 	<string id="CaloriesGoalTitle">Spalone Kalorie - Cel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Wygląd Wskaźnika</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string><!-- TODO_TRANSLATE -->
 	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string><!-- TODO_TRANSLATE -->
 	<string id="MoveBarStyleTitle">Wygląd Move Bar'a</string>
 	<string id="HideSecondsTitle">Ukryj Sekundy</string>
@@ -29,11 +30,13 @@
 	<string id="MonoHighlight">Pojedyncze Wyróżnienie</string>
 	<string id="Mono">Mono</string>
 
-	<string id="MultiSegments">Wiele Segmentów</string>
-	<string id="SingleSegment">Jeden Segment</string>
-	<string id="ShowAllSegments">Pokaż Wszystkie Segmenty</string>
-	<string id="ShowFilledSegments">Pokaż Wypełnione Segmenty</string>
+	<string id="AllSegmentsMerged">Wszystkie Segmenty (Merged)</string><!-- TODO_TRANSLATE -->
+	<string id="FilledSegmentsMerged">Wypełnione Segmenty (Merged)</string><!-- TODO_TRANSLATE -->
+	<string id="AllSegments">Wszystkie Segmenty</string>
+	<string id="FilledSegments">Wypełnione Segmenty</string>
 	<string id="Hidden">Ukryte</string>
+	<string id="CurrentTarget">Current/Target</string><!-- TODO_TRANSLATE -->
+	<string id="Current">Current</string><!-- TODO_TRANSLATE -->
 
 	<string id="ThemeBlueDark">Niebieski (Ciemny)</string>
 	<string id="ThemePinkDark">Różowy (Ciemny)</string>
@@ -55,6 +58,7 @@
 	<string id="FloorsClimbed">Pokonane Piętra</string>
 	<string id="ActiveMinutes">Aktywne Minuty (Tygodniowo)</string>
 	<string id="CaloriesManualGoal">Spalone Kalorie (Ręczny Cel)</string>
+	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
 
 	<string id="HeartRate">Tętno</string>
 	<string id="HeartRateLive5s">Tętno (Live 5s)</string>
