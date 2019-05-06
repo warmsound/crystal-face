@@ -360,6 +360,11 @@ class CrystalView extends Ui.WatchFace {
 			case GOAL_TYPE_CALORIES:
 				values[:current] = info.calories;
 				values[:max] = App.getApp().getProperty("CaloriesGoal");
+
+				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
+				if (values[:max] == null) {
+					values[:max] = 0;
+				}
 				break;
 
 			case GOAL_TYPE_OFF:
