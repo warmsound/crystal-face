@@ -13,9 +13,12 @@
 	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter="%-.0123456789!:?CFabfgikmpst°"/>
 	<font id="NormalFontCities" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="false" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 
-	<!-- Manually symlinked from resources-small-icons/fonts. -->
+	<!-- Manually symlinked from resources-small-icons/fonts. -->	
 	<font id="IconsFont" filename="../../resources-small-icons/fonts/crystal-icons-small.fnt" antialias="false"/>
-	<font id="WeatherIconsFont" filename="../../resources-small-icons/fonts/weather-icons-20.fnt" antialias="false"/>
+	<!-- Font size chosen such that height of sunshine icon is 20px -->
+	<!-- .fnt file modified such that day icons start from "A", night icons start from "a", "broken clouds" ("I") is shared -->
+	<font id="WeatherIconsFontDay" filename="../../resources-small-icons/fonts/weather-icons-20.fnt" antialias="false" filter="ABCDEFGHI"/>
+	<font id="WeatherIconsFontNight" filename="../../resources-small-icons/fonts/weather-icons-20.fnt" antialias="false" filter="abcdefghI"/>
 
 	<!-- Manually symlinked from resources-rectangle-205x148/fonts. -->
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
