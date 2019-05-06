@@ -2,8 +2,7 @@
 	<font id="IconsFont" filename="crystal-icons-small.fnt" antialias="true"/>
 
 	<!-- Font size chosen such that height of sunshine icon is 20px -->
-	<!-- JavaScript: String.fromCharCode(61453, 61452, 61442, 61459, 61449, 61448, 61445, 61450, 61441) -->
-	<font id="WeatherIconsFontDay" filename="weather-icons-20.fnt" antialias="true" filter=""/>
-	<!-- JavaScript: String.fromCharCode(61486, 61569, 61574, 61459, 61481, 61480, 61477, 61482, 61475) -->
-	<font id="WeatherIconsFontNight" filename="weather-icons-20.fnt" antialias="true" filter=""/>
+	<!-- .fnt file modified such that day icons start from "A", night icons start from "a", "broken clouds" ("I") is shared -->
+	<font id="WeatherIconsFontDay" filename="weather-icons-20.fnt" antialias="true" filter="ABCDEFGHI"/>
+	<font id="WeatherIconsFontNight" filename="weather-icons-20.fnt" antialias="true" filter="abcdefghI"/>
 </fonts>
