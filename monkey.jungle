@@ -1,5 +1,9 @@
 project.manifest = manifest.xml
 
+# #122: fr245/fr245m are CIQ 3.x, but do not support floors climbed.
+fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
+fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
+
 # Smaller round watches use small time font.
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 
