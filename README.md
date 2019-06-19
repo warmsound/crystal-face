@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.3.4
+- Fix crash when changing numeric settings (e.g. "Calories Goal") using Connect IQ Store app.
+
 ### 2.3.3
 - New Meter Style options, and new Meter Digits Style setting.
 - Fix issue when setting field or indicator count to 0.
