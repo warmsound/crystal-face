@@ -325,6 +325,7 @@ class CrystalView extends Ui.WatchFace {
 		};
 
 		var info = ActivityMonitor.getInfo();
+		var caloriesGoal;
 
 		switch(type) {
 			case GOAL_TYPE_STEPS:
@@ -359,12 +360,11 @@ class CrystalView extends Ui.WatchFace {
 
 			case GOAL_TYPE_CALORIES:
 				values[:current] = info.calories;
-				values[:max] = App.getApp().getProperty("CaloriesGoal");
 
 				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
-				if (values[:max] == null) {
-					values[:max] = 0;
-				}
+				// Protect against unexpected type e.g. String.
+				caloriesGoal = App.getApp().getProperty("CaloriesGoal");
+				values[:max] = (caloriesGoal == null) ? 0 : caloriesGoal.toNumber();
 				break;
 
 			case GOAL_TYPE_OFF:
