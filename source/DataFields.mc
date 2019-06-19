@@ -65,7 +65,10 @@ class DataFields extends Ui.Drawable {
 
 	// Cache FieldCount setting, and determine appropriate maximum field length.
 	function onSettingsChanged() {
+
+		// #123 Protect against null or unexpected type e.g. String.
 		mFieldCount = App.getApp().getProperty("FieldCount");
+		mFieldCount = (mFieldCount == null) ? 0 : mFieldCount.toNumber();
 
 		/* switch (mFieldCount) {
 			case 3:
