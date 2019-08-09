@@ -6,6 +6,7 @@ using Toybox.Application as App;
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
 	
+	(:background_method)
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
 	}
@@ -13,6 +14,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Read pending web requests, and call appropriate web request function.
 	// This function determines priority of web requests, if multiple are pending.
 	// Pending web request flag will be cleared only once the background data has been successfully received.
+	(:background_method)
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
@@ -73,6 +75,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 	}
 	*/
+	(:background_method)
 	function onReceiveCityLocalTime(responseCode, data) {
 
 		// HTTP failure: return responseCode.
@@ -141,6 +144,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		"cod":200
 	}
 	*/
+	(:background_method)
 	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
 		var result;
 		
@@ -170,6 +174,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		});
 	}
 
+	(:background_method)
 	function makeWebRequest(url, params, callback) {
 		var options = {
 			:method => Comms.HTTP_REQUEST_METHOD_GET,

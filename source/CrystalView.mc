@@ -136,7 +136,9 @@ class CrystalView extends Ui.WatchFace {
 		mTime = View.findDrawableById("Time");
 
 		mDataFields = View.findDrawableById("DataFields");
-		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
+		}
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 

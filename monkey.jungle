@@ -46,7 +46,7 @@ fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
 fr920xt.excludeAnnotations = buffered
 
 fr45.resourcePath = $(fr45.resourcePath);resources-round-208x208-ciq_1.x;resources-ciq_1.x
-fr45.excludeAnnotations = buffered
+fr45.excludeAnnotations = buffered;background_method
 
 # Reverse order of resources so that 64-colour themes are permitted.
 # #25: Repeat ciq_1.x-no_hr properties within resources-vivoactive, as properties were not correctly inherited.
