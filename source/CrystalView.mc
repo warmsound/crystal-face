@@ -255,7 +255,7 @@ class CrystalView extends Ui.WatchFace {
 
 		if (lightFlags[theme]) {
 			gMonoLightColour = Graphics.COLOR_BLACK;
-			gMonoDarkColour = isFr45 ? Graphics.COLOR_WHITE : Graphics.COLOR_DK_GRAY;			
+			gMonoDarkColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_DK_GRAY;			
 			
 			gMeterBackgroundColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_LT_GRAY;
 			gBackgroundColour = Graphics.COLOR_WHITE;
@@ -419,7 +419,9 @@ class CrystalView extends Ui.WatchFace {
 
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
-		App.getApp().checkPendingWebRequests();
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			App.getApp().checkPendingWebRequests();
+		}
 	}
 
 	// Terminate any active timers and prepare for slow updates.
