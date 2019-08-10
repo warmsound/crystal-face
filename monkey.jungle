@@ -45,7 +45,8 @@ fr630.excludeAnnotations = buffered
 fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
 fr920xt.excludeAnnotations = buffered
 
-fr45.resourcePath = $(fr45.resourcePath);resources-round-208x208-ciq_1.x;resources-ciq_1.x
+# #124: Reverse order of resources so that 8-colour themes override works.
+fr45.resourcePath = resources-ciq_1.x;$(fr45.resourcePath)
 fr45.excludeAnnotations = buffered;background_method
 
 # Reverse order of resources so that 64-colour themes are permitted.

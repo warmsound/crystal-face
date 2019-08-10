@@ -1,0 +1,22 @@
+<settings>
+    <!-- fr45 has 8 colours: black, white, red, green, blue, yellow, cyan, magenta -->
+	<setting propertyKey="@Properties.Theme" title="@Strings.ThemeTitle">
+		<settingConfig type="list">
+			<listEntry value="0">@Strings.ThemeBlueDark</listEntry><!-- Cyan is closest -->
+			<listEntry value="1">@Strings.ThemePinkDark</listEntry><!-- Magenta -->
+			<listEntry value="7">@Strings.ThemeRedDark</listEntry><!-- Red -->
+			<listEntry value="2">@Strings.ThemeGreenDark</listEntry><!-- Green -->
+			<!--listEntry value="4">@Strings.ThemeCornflowerBlueDark</listEntry-->
+			<!--listEntry value="5">@Strings.ThemeLemonCreamDark</listEntry-->
+			<!--listEntry value="12">@Strings.ThemeVividYellowDark</listEntry-->
+			<listEntry value="14">@Strings.ThemeCornYellowDark</listEntry>
+			<!--listEntry value="6">@Strings.ThemeDaygloOrangeDark</listEntry-->
+			<!--listEntry value="8">@Strings.ThemeMonoDark</listEntry-->
+			<!--listEntry value="3">@Strings.ThemeMonoLight</listEntry-->
+			<listEntry value="9">@Strings.ThemeBlueLight</listEntry>
+			<listEntry value="10">@Strings.ThemeGreenLight</listEntry>
+			<listEntry value="11">@Strings.ThemeRedLight</listEntry>
+			<!--listEntry value="13">@Strings.ThemeDaygloOrangeLight</listEntry-->
+		</settingConfig>
+	</setting>
+</settings>
