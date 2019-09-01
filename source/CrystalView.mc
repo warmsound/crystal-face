@@ -136,7 +136,9 @@ class CrystalView extends Ui.WatchFace {
 		mTime = View.findDrawableById("Time");
 
 		mDataFields = View.findDrawableById("DataFields");
-		App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
+		}
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds"));
 
@@ -247,17 +249,21 @@ class CrystalView extends Ui.WatchFace {
 			true,  // THEME_DAYGLO_ORANGE_LIGHT
 			false, // THEME_CORN_YELLOW_DARK
 		];
+
+		// #124: fr45 cannot show grey.
+		var isFr45 = (Sys.getDeviceSettings().screenWidth == 208);
+
 		if (lightFlags[theme]) {
 			gMonoLightColour = Graphics.COLOR_BLACK;
-			gMonoDarkColour = Graphics.COLOR_DK_GRAY;
+			gMonoDarkColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_DK_GRAY;			
 			
-			gMeterBackgroundColour = Graphics.COLOR_LT_GRAY;
+			gMeterBackgroundColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_LT_GRAY;
 			gBackgroundColour = Graphics.COLOR_WHITE;
 		} else {
 			gMonoLightColour = Graphics.COLOR_WHITE;
-			gMonoDarkColour = Graphics.COLOR_LT_GRAY;
+			gMonoDarkColour = isFr45 ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
 
-			gMeterBackgroundColour = Graphics.COLOR_DK_GRAY;
+			gMeterBackgroundColour = isFr45 ? Graphics.COLOR_WHITE : Graphics.COLOR_DK_GRAY;
 			gBackgroundColour = Graphics.COLOR_BLACK;
 		}
 	}
@@ -413,7 +419,9 @@ class CrystalView extends Ui.WatchFace {
 
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
-		App.getApp().checkPendingWebRequests();
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			App.getApp().checkPendingWebRequests();
+		}
 	}
 
 	// Terminate any active timers and prepare for slow updates.

@@ -44,7 +44,9 @@ class CrystalApp extends App.AppBase {
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
 		mView.onSettingsChanged();
-		checkPendingWebRequests();
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			checkPendingWebRequests();
+		}
 		Ui.requestUpdate();
 	}
 
@@ -52,6 +54,7 @@ class CrystalApp extends App.AppBase {
 	// If so, set approrpiate pendingWebRequests flag for use by BackgroundService, then register for
 	// temporal event.
 	// Currently called on layout initialisation, when settings change, and on exiting sleep.
+	(:background_method)
 	function checkPendingWebRequests() {
 
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
@@ -163,6 +166,7 @@ class CrystalApp extends App.AppBase {
 		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
 	}
 
+	(:background_method)
 	function getServiceDelegate() {
 		return [new BackgroundService()];
 	}
@@ -171,6 +175,7 @@ class CrystalApp extends App.AppBase {
 	// On success, clear appropriate pendingWebRequests flag.
 	// data is Dictionary with single key that indicates the data type received. This corresponds with Object Store and
 	// pendingWebRequests keys.
+	(:background_method)
 	function onBackgroundData(data) {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {

@@ -8,7 +8,9 @@ fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 
 # Flat tyre watches use small time font and small icons.
+# Ditto smallest round watches.
 semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
+round-208x208.resourcePath = $(round-208x208.resourcePath);resources-small-time;resources-small-icons
 
 # Rectangle watches generally same as flat tyre, but have some overrides.
 rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-small-icons
@@ -56,3 +58,8 @@ fr735xt.excludeAnnotations = buffered
 # Exclude unused date/indicator code from 60kB devices (extend to other devices as necessary).
 fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;horizontal_indicators
 vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;vertical_indicators
+
+# #124: fr45's settings.xml repeats whole of resources-ciq_1.x, then overrides, as settings were not correct inherited.
+#       Exclude background methods as memory is very limited (extend to other devices as necessary).
+#fr45.resourcePath = $(fr45.resourcePath);resources-ciq_1.x
+fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
