@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.3.5
+- Add support for Forerunner® 45.
+
 ### 2.3.4
 - Fix crash when changing numeric settings (e.g. "Calories Goal") using Connect IQ Store app.
 
