@@ -30,6 +30,7 @@
             <iq:product id="fr920xt"/>
             <iq:product id="fr935"/>
             <iq:product id="fr945"/>
+            <iq:product id="legacyherocaptainmarvel"/>
             <iq:product id="marqathlete"/>
             <iq:product id="marqaviator"/>
             <iq:product id="marqcaptain"/>
@@ -40,6 +41,7 @@
             <iq:product id="vivoactive3d"/>
             <iq:product id="vivoactive3m"/>
             <iq:product id="vivoactive3mlte"/>
+            <iq:product id="vivoactive4s"/>
             <iq:product id="vivoactive_hr"/>
             <iq:product id="vivolife"/>
         </iq:products>
