@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.3.6
+- Technical update to CIQ 3.1.4 SDK. Add support for fēnix® 6 series (except fēnix® 6X), Captain Marvel, First Avenger and vívoactive® 4 series.
+
 ### 2.3.5
 - Add support for Forerunner® 45.
 
