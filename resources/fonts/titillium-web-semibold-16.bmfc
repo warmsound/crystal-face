@@ -6,7 +6,7 @@ fontName=Titillium Web SemiBold
 fontFile=
 charSet=0
 fontSize=-16
-aa=1
+aa=2
 scaleH=100
 useSmoothing=1
 isBold=0
@@ -17,7 +17,7 @@ outputInvalidCharGlyph=0
 dontIncludeKerningPairs=0
 useHinting=1
 renderFromOutline=0
-useClearType=1
+useClearType=0
 
 # character alignment
 paddingDown=0
