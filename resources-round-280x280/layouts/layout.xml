@@ -1,0 +1,64 @@
+<layout id="WatchFace">
+	<drawable class="Background" />
+
+	<drawable id="LeftGoalMeter" class="GoalMeter">
+		<param name="side">:left</param>
+		<param name="shape">:arc</param>
+		<param name="stroke">10</param>
+		<param name="height">180</param>
+		<param name="separator">2</param>
+	</drawable>
+
+	<drawable id="RightGoalMeter" class="GoalMeter">
+		<param name="side">:right</param>
+		<param name="shape">:arc</param>
+		<param name="stroke">10</param>
+		<param name="height">180</param>
+		<param name="separator">2</param>
+	</drawable>
+
+	<drawable id="DataArea" class="DataArea">
+		<param name="locX">85</param>
+		<param name="width">90</param>
+		<param name="row1Y">212</param>
+		<param name="row2Y">228</param>
+		<param name="goalIconY">208</param>
+		<param name="goalIconLeftX">58</param>
+		<param name="goalIconRightX">202</param>
+	</drawable>
+
+	<drawable id="DataFields" class="DataFields">
+		<param name="left">85</param>
+		<param name="right">175</param>
+		<param name="top">24</param>
+		<param name="bottom">45</param>
+	</drawable>
+
+	<drawable id="Date" class="DateLine">
+		<param name="y">75</param>
+	</drawable>
+
+	<drawable id="Indicators" class="Indicators">
+		<param name="locX">33</param>
+		<param name="locY">130</param>
+		<param name="spacingY">32</param>
+	</drawable>
+
+	<drawable id="Time" class="ThickThinTime">
+        <param name="adjustY">-5</param>
+		<param name="secondsX">182</param>
+		<param name="secondsY">158</param>
+		<param name="secondsClipY">170</param>
+		<param name="secondsClipWidth">29</param>
+		<param name="secondsClipHeight">19</param>
+	</drawable>
+
+	<drawable id="MoveBar" class="MoveBar">
+		<param name="x">52</param>
+		<param name="y">179</param>
+		<param name="width">123</param>
+		<param name="height">11</param>
+		<param name="separator">3</param>
+	</drawable>
+	
+</layout>

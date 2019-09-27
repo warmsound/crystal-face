@@ -10,7 +10,6 @@ char id=53   x=146   y=0     width=28    height=24    xoffset=0     yoffset=0   
 char id=54   x=175   y=0     width=17    height=24    xoffset=5     yoffset=0    xadvance=17    page=0  chnl=15
 char id=55   x=193   y=0     width=25    height=24    xoffset=4     yoffset=0    xadvance=25    page=0  chnl=15
 char id=56   x=219   y=0     width=21    height=24    xoffset=6     yoffset=0    xadvance=21    page=0  chnl=15
-
 char id=57   x=0     y=29    width=32    height=24    xoffset=0     yoffset=0    xadvance=32    page=0  chnl=15
 char id=58   x=33    y=29    width=25    height=24    xoffset=4     yoffset=0    xadvance=25    page=0  chnl=15
 char id=59   x=59    y=29    width=28    height=24    xoffset=0     yoffset=0    xadvance=28    page=0  chnl=15

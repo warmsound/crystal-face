@@ -1,0 +1,30 @@
+info face="Noto Sans CJK TC Medium" size=-28 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=41 base=32 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="noto-sans-cjk-tc-medium-28_0.png"
+chars count=26
+char id=10   x=252   y=24    width=3     height=1     xoffset=-1    yoffset=40    xadvance=6     page=0  chnl=15
+char id=32   x=225   y=29    width=3     height=1     xoffset=-1    yoffset=40    xadvance=6     page=0  chnl=15
+char id=48   x=67    y=27    width=14    height=21    xoffset=1     yoffset=11    xadvance=16    page=0  chnl=15
+char id=49   x=186   y=25    width=12    height=21    xoffset=2     yoffset=11    xadvance=16    page=0  chnl=15
+char id=50   x=82    y=27    width=14    height=21    xoffset=0     yoffset=11    xadvance=16    page=0  chnl=15
+char id=51   x=97    y=27    width=14    height=21    xoffset=0     yoffset=11    xadvance=16    page=0  chnl=15
+char id=52   x=51    y=28    width=15    height=21    xoffset=0     yoffset=11    xadvance=16    page=0  chnl=15
+char id=53   x=112   y=27    width=14    height=21    xoffset=0     yoffset=11    xadvance=16    page=0  chnl=15
+char id=54   x=127   y=27    width=14    height=21    xoffset=1     yoffset=11    xadvance=16    page=0  chnl=15
+char id=55   x=142   y=26    width=14    height=21    xoffset=2     yoffset=11    xadvance=16    page=0  chnl=15
+char id=56   x=157   y=26    width=14    height=21    xoffset=1     yoffset=11    xadvance=16    page=0  chnl=15
+char id=57   x=172   y=26    width=13    height=21    xoffset=1     yoffset=11    xadvance=16    page=0  chnl=15
+char id=19968 x=225   y=25    width=26    height=3     xoffset=2     yoffset=20    xadvance=28    page=0  chnl=15
+char id=19971 x=184   y=0     width=26    height=24    xoffset=1     yoffset=9     xadvance=28    page=0  chnl=15
+char id=19977 x=26    y=28    width=24    height=21    xoffset=2     yoffset=11    xadvance=28    page=0  chnl=15
+char id=20061 x=53    y=0     width=26    height=26    xoffset=1     yoffset=8     xadvance=28    page=0  chnl=15
+char id=20108 x=199   y=25    width=25    height=20    xoffset=2     yoffset=12    xadvance=28    page=0  chnl=15
+char id=20116 x=0     y=28    width=25    height=22    xoffset=2     yoffset=11    xadvance=28    page=0  chnl=15
+char id=20843 x=130   y=0     width=26    height=25    xoffset=1     yoffset=10    xadvance=28    page=0  chnl=15
+char id=20845 x=80    y=0     width=26    height=26    xoffset=1     yoffset=9     xadvance=28    page=0  chnl=15
+char id=21313 x=0     y=0     width=26    height=27    xoffset=2     yoffset=8     xadvance=28    page=0  chnl=15
+char id=22235 x=231   y=0     width=23    height=23    xoffset=3     yoffset=10    xadvance=28    page=0  chnl=15
+char id=26085 x=211   y=0     width=19    height=24    xoffset=5     yoffset=10    xadvance=28    page=0  chnl=15
+char id=26143 x=157   y=0     width=26    height=25    xoffset=1     yoffset=9     xadvance=28    page=0  chnl=15
+char id=26376 x=107   y=0     width=22    height=26    xoffset=1     yoffset=9     xadvance=28    page=0  chnl=15
+char id=26399 x=27    y=0     width=25    height=27    xoffset=1     yoffset=8     xadvance=28    page=0  chnl=15
