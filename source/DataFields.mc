@@ -207,12 +207,17 @@ class DataFields extends Ui.Drawable {
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-
+			var batteryWidth;
 			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
-				drawBatteryMeter(dc, x, mTop, 28, 14);
+				if (dc.getWidth() == 280) {
+					batteryWidth = 32;
+				} else {
+					batteryWidth = 28;
+				}
 			} else {
-				drawBatteryMeter(dc, x, mTop, 24, 12);
+				batteryWidth = 24;
 			}
+			drawBatteryMeter(dc, x, mTop, batteryWidth, batteryWidth / 2);
 
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {
