@@ -90,7 +90,7 @@ class Indicators extends Ui.Drawable {
 			var batteryWidth;
 			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
 				if (dc.getWidth() == 280) {
-					batteryWidth = 28;
+					batteryWidth = 26;
 				} else {
 					batteryWidth = 24;
 				}
