@@ -87,11 +87,17 @@ class Indicators extends Ui.Drawable {
 
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
+			var batteryWidth;
 			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
-				drawBatteryMeter(dc, x, y, 24, 12);
+				if (dc.getWidth() == 280) {
+					batteryWidth = 26;
+				} else {
+					batteryWidth = 24;
+				}
 			} else {
-				drawBatteryMeter(dc, x, y, 20, 10);
+				batteryWidth = 20;
 			}
+			drawBatteryMeter(dc, x, y, batteryWidth, batteryWidth / 2);
 			return;
 		}
 
