@@ -27,6 +27,10 @@ Reviews:
 
 ## What's New
 
+### 2.3.7
+- Add bespoke fonts and layout for fēnix® 6X.
+- Improve readability of small font for all watches.
+
 ### 2.3.6
 - Technical update to CIQ 3.1.4 SDK. Add support for fēnix® 6 series (except fēnix® 6X), Captain Marvel, First Avenger and vívoactive® 4 series.
 
