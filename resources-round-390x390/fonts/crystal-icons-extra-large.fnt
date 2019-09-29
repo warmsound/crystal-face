@@ -1,0 +1,21 @@
+info face="Crystal Icons" size=-39 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=39 base=39 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=0 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="crystal-icons-extra-large.png"
+chars count=17
+char id=48   x=0     y=0     width=34    height=39    xoffset=0     yoffset=0    xadvance=34    page=0  chnl=15
+char id=49   x=34    y=0     width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=50   x=73    y=0     width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=51   x=112   y=0     width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=53   x=151   y=0     width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=54   x=190   y=0     width=23    height=39    xoffset=8     yoffset=0    xadvance=39    page=0  chnl=15
+char id=55   x=213   y=0     width=35    height=39    xoffset=0     yoffset=0    xadvance=35    page=0  chnl=15
+char id=56   x=0     y=39    width=29    height=39    xoffset=0     yoffset=0    xadvance=29    page=0  chnl=15
+char id=57   x=30    y=39    width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=58   x=69    y=39    width=35    height=39    xoffset=0     yoffset=0    xadvance=35    page=0  chnl=15
+char id=59   x=104   y=39    width=39    height=39    xoffset=0     yoffset=0    xadvance=39    page=0  chnl=15
+char id=60   x=143   y=39    width=20    height=39    xoffset=9     yoffset=0    xadvance=20    page=0  chnl=15
+char id=61   x=163   y=39    width=9     height=9     xoffset=0     yoffset=13   xadvance=9     page=0  chnl=15
+char id=62   x=0     y=78    width=45    height=39    xoffset=0     yoffset=0    xadvance=45    page=0  chnl=15
+char id=63   x=45    y=78    width=45    height=39    xoffset=0     yoffset=0    xadvance=45    page=0  chnl=15
+char id=64   x=90    y=78    width=33    height=39    xoffset=0     yoffset=0    xadvance=33    page=0  chnl=15
+char id=65   x=123   y=78    width=27    height=39    xoffset=0     yoffset=0    xadvance=27    page=0  chnl=15
