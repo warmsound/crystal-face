@@ -46,6 +46,7 @@ class DataFields extends Ui.Drawable {
 	private var mHasLiveHR = false; // Is a live HR field currently being shown?
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
+	private var mBatteryWidth; // Width of battery meter.
 
 	// private const CM_PER_KM = 100000;
 	// private const MI_PER_KM = 0.621371;
@@ -58,6 +59,8 @@ class DataFields extends Ui.Drawable {
 		mRight = params[:right];
 		mTop = params[:top];
 		mBottom = params[:bottom];
+
+		mBatteryWidth = params[:batteryWidth];
 
 		// Initialise mFieldCount and mMaxFieldLength.
 		onSettingsChanged();
@@ -207,17 +210,7 @@ class DataFields extends Ui.Drawable {
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			var batteryWidth;
-			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
-				if (dc.getWidth() == 280) {
-					batteryWidth = 32;
-				} else {
-					batteryWidth = 28;
-				}
-			} else {
-				batteryWidth = 24;
-			}
-			drawBatteryMeter(dc, x, mTop, batteryWidth, batteryWidth / 2);
+			drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryWidth / 2);
 
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {

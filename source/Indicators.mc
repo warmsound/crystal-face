@@ -7,6 +7,7 @@ class Indicators extends Ui.Drawable {
 
 	private var mSpacing;
 	private var mIsHorizontal = false;
+	private var mBatteryWidth;
 
 	private var mIndicator1Type;
 	private var mIndicator2Type;
@@ -28,7 +29,8 @@ class Indicators extends Ui.Drawable {
 			mIsHorizontal = true;
 		} else {
 			mSpacing = params[:spacingY];
-		}		
+		}
+		mBatteryWidth = params[:batteryWidth];
 
 		onSettingsChanged();
 	}
@@ -87,17 +89,7 @@ class Indicators extends Ui.Drawable {
 
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
-			var batteryWidth;
-			if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND) {
-				if (dc.getWidth() == 280) {
-					batteryWidth = 26;
-				} else {
-					batteryWidth = 24;
-				}
-			} else {
-				batteryWidth = 20;
-			}
-			drawBatteryMeter(dc, x, y, batteryWidth, batteryWidth / 2);
+			drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
 			return;
 		}
 
