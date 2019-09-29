@@ -2,12 +2,12 @@
 fileVersion=1
 
 # font settings
-fontName=Titillium Web SemiBold
+fontName=Titillium Web Light
 fontFile=
 charSet=0
-fontSize=-26
+fontSize=-110
 aa=2
-scaleH=100
+scaleH=105
 useSmoothing=1
 isBold=0
 isItalic=0
@@ -50,6 +50,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-126,160-172,174-305,308-311,313-318,321-328,330-382
+chars=48-57
 
 # imported icon images

@@ -2,10 +2,10 @@
 fileVersion=1
 
 # font settings
-fontName=Titillium Web SemiBold
+fontName=Weather Icons
 fontFile=
 charSet=0
-fontSize=-26
+fontSize=-34
 aa=2
 scaleH=100
 useSmoothing=1
@@ -50,6 +50,6 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-126,160-172,174-305,308-311,313-318,321-328,330-382
+chars=61441-61442,61445,61448-61450,61452-61453,61459,61475,61477,61480-61482,61486,61569,61574
 
 # imported icon images

@@ -2,10 +2,10 @@
 fileVersion=1
 
 # font settings
-fontName=Titillium Web SemiBold
+fontName=Noto Sans CJK TC Medium
 fontFile=
 charSet=0
-fontSize=-26
+fontSize=-39
 aa=2
 scaleH=100
 useSmoothing=1
@@ -50,6 +50,7 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-126,160-172,174-305,308-311,313-318,321-328,330-382
+chars=10,32,48-57,19968,19971,19977,20061,20108,20116,20843,20845,21313,22235,26085,26143,26376,26399
+
 
 # imported icon images
