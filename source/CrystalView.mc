@@ -79,7 +79,9 @@ function drawBatteryMeter(dc, x, y, width, height) {
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
-	private var mSettingsChangedSinceLastDraw = false; // Have settings changed since last full update?
+	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
+	private var mBurnInProtectionChangedSinceLastDraw = false; // Did burn-in protection change since last full update?
+	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
 
 	private var mTime;
 	var mDataFields;
@@ -128,14 +130,8 @@ class CrystalView extends Ui.WatchFace {
 		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
 
 		setLayout(Rez.Layouts.WatchFace(dc));
-
 		cacheDrawables();
-
-		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
-		// Slighly faster than mDrawables lookup.
-		mTime = View.findDrawableById("Time");
-
-		mDataFields = View.findDrawableById("DataFields");
+		
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
 			App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
 		}
@@ -152,10 +148,14 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:Indicators] = View.findDrawableById("Indicators");
 
 		// Use mTime instead.
+		// Cache reference to ThickThinTime, for use in low power mode. Saves nearly 5ms!
+		// Slighly faster than mDrawables lookup.
 		//mDrawables[:Time] = View.findDrawableById("Time");
+		mTime = View.findDrawableById("Time");
 
 		// Use mDataFields instead.
 		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
+		mDataFields = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 	}
@@ -186,6 +186,7 @@ class CrystalView extends Ui.WatchFace {
 		// DataFields recaches its field type settings, which may be requested immediately via hasField(), so this recaching
 		// must happen immediately.
 
+		// TODO: Prevent onSettingsChanged() calls if burn-in protection is active.
 		// Recreate background buffers for each meter, in case theme colour has changed.
 		mDrawables[:LeftGoalMeter].onSettingsChanged();
 		mDrawables[:RightGoalMeter].onSettingsChanged();
@@ -292,7 +293,16 @@ class CrystalView extends Ui.WatchFace {
 
 	// Update the view
 	function onUpdate(dc) {
-		//System.println("onUpdate()");
+		//Sys.println("onUpdate()");
+
+		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
+		// If turning off burn-in protection, recache regular watch face drawables.
+		if (mBurnInProtectionChangedSinceLastDraw) {
+			setLayout(mIsBurnInProtection ? Rez.Layouts.AlwaysOn(dc) : Rez.Layouts.WatchFace(dc));
+			if (!mIsBurnInProtection) {
+				cacheDrawables();
+			}
+		}
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
 		if (mSettingsChangedSinceLastDraw) {
@@ -304,6 +314,7 @@ class CrystalView extends Ui.WatchFace {
 			dc.clearClip();
 		}
 
+		// TODO: Prevent goal meter update if burn-in protection is active.
 		updateGoalMeters();
 
 		// Call the parent onUpdate function to redraw the layout
@@ -422,6 +433,10 @@ class CrystalView extends Ui.WatchFace {
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
 			App.getApp().checkPendingWebRequests();
 		}
+
+		// If watch requires burn-in protection, set flag to false when entering sleep.
+		mIsBurnInProtection = false;
+		mBurnInProtectionChangedSinceLastDraw = true;
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -437,10 +452,23 @@ class CrystalView extends Ui.WatchFace {
 		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
 			setHideSeconds(true);
 		}
+
+		// If watch requires burn-in protection, set flag to true when entering sleep.
+		var settings = Sys.getDeviceSettings();
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
+			mIsBurnInProtection = true;
+			mBurnInProtectionChangedSinceLastDraw = true;
+		}
+
+		Ui.requestUpdate();
 	}
 
 	function isSleeping() {
 		return mIsSleeping;
+	}
+
+	function isBurnInProtection() {
+		return mIsBurnInProtection;
 	}
 
 	function setHideSeconds(hideSeconds) {

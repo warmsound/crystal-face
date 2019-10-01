@@ -38,6 +38,9 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		mSecondsY = params[:secondsY];
+		if (mSecondsY == null) { // e.g. AlwaysOn layout.
+			setHideSeconds(true);
+		}
 
 		mSecondsClipRectX = params[:secondsX];
 		mSecondsClipRectY = params[:secondsClipY];
