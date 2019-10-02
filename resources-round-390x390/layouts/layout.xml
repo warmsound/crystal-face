@@ -68,6 +68,13 @@
 	<layout id="AlwaysOn">
 		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
 			<param name="adjustY">-4</param>
+			<param name="timeY">169</param>
+			<param name="lineY">217</param>
+			<!-- Allow room for Chinese date -->	
+			<param name="lineWidth">230</param>
+			<!-- param name="lineStroke">2</param -->	
+			<param name="dataY">241</param>
+			<param name="dataLeft">95</param>
 		</drawable>
 	</layout>
 </resources>

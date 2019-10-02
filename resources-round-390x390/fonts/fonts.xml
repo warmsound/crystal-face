@@ -25,4 +25,7 @@
 	<font id="AlwaysOnMinutesFont" filename="../../resources-round-280x280/fonts/titillium-web-light-80-tall.fnt" antialias="true"/>
 	<font id="AlwaysOnSecondsFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter="AP"/> <!-- AM/PM only -->
 	<font id="AlwaysOnDateFont" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter=" %0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/> <!-- Date and battery -->
+	<font id="AlwaysOnDateFontOverrideZHS" filename="../../resources/fonts/noto-sans-cjk-sc-medium-24.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideZHT" filename="../../resources/fonts/noto-sans-cjk-tc-medium-24.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideRUS" filename="../../resources/fonts/noto-sans-rus-bold-24.fnt" antialias="true"/>
 </fonts>
