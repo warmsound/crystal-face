@@ -53,7 +53,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		mHoursFont = Ui.loadResource(Rez.Fonts.AlwaysOnHoursFont);
 		mMinutesFont = Ui.loadResource(Rez.Fonts.AlwaysOnMinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.AlwaysOnSecondsFont);
-		mBatteryFont = Ui.loadResource(Rez.Fonts.AlwaysOnDateFont); // Not affected by language.
+		mBatteryFont = Ui.loadResource(Rez.Fonts.AlwaysOnBatteryFont);
 
 		var rezFonts = Rez.Fonts;
 		var resourceMap = {
