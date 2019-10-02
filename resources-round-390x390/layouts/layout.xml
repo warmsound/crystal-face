@@ -67,6 +67,7 @@
 	<!-- Shown in low power mode -->
 	<layout id="AlwaysOn">
 		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
+			<param name="burnInYOffsets">[-55, 0, 55]</param>
 			<param name="adjustY">-4</param>
 			<param name="timeY">169</param>
 			<param name="lineY">217</param>

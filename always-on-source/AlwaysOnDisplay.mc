@@ -4,8 +4,12 @@ using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+// Draw time, line, date, battery.
+// Combine stripped down versions of ThickThinTime and DateLine.
+// Change vertical offset every minute to comply with burn-in protection requirements.
 class AlwaysOnDisplay extends Ui.Drawable {
 
+	private var mBurnInYOffsets;
 	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont;
 
 	// Wide rectangle: time should be moved up slightly to centre within available space.
@@ -28,6 +32,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 	function initialize(params) {
 		Drawable.initialize(params);
+
+		mBurnInYOffsets = params[:burnInYOffsets];
 
 		if (params[:adjustY] != null) {
 			mAdjustY = params[:adjustY];
@@ -70,6 +76,9 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
+		// Change vertical offset every minute.
+		var burnInYOffset = mBurnInYOffsets[clockTime.min % mBurnInYOffsets.size()];
+
 		var hours = formattedTime[:hour];
 		var minutes = formattedTime[:min];
 		var amPmText = formattedTime[:amPm];
@@ -81,7 +90,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		// minutes font is used to calculate total width. 
 		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
 		var x = halfDCWidth - (totalWidth / 2);
-		var y = mTimeY + mAdjustY;
+		var y = mTimeY + mAdjustY + burnInYOffset;
 
         dc.setColor(Graphics.COLOR_WHITE, Graphics.COLOR_TRANSPARENT);
 
@@ -117,8 +126,9 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		}
 
 		// LINE.
-		dc.setPenWidth(/* mLineStroke */ 2);
-		dc.drawLine(halfDCWidth - (mLineWidth / 2), mLineY, halfDCWidth + (mLineWidth / 2), mLineY);
+		y = mLineY + burnInYOffset;
+		dc.setPenWidth(/* mLineStroke */ 2);		
+		dc.drawLine(halfDCWidth - (mLineWidth / 2), y, halfDCWidth + (mLineWidth / 2), y);
 
 		// DATA.
 		var rezStrings = Rez.Strings;
@@ -168,10 +178,11 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		var day = now.day.format(INTEGER_FORMAT);
 
-		// Date.		
+		// Date.
+		y = mDataY + burnInYOffset;	
 		dc.drawText(
 			mDataLeft,
-			mDataY,
+			y,
 			mDateFont,
 			Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -181,7 +192,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var battery = Math.floor(Sys.getSystemStats().battery);
 		dc.drawText(
 			dc.getWidth() - mDataLeft,
-			mDataY,
+			y,
 			mBatteryFont,
 			battery.format(INTEGER_FORMAT) + "%",
 			Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
