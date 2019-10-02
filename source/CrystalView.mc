@@ -186,16 +186,18 @@ class CrystalView extends Ui.WatchFace {
 		// DataFields recaches its field type settings, which may be requested immediately via hasField(), so this recaching
 		// must happen immediately.
 
-		// TODO: Prevent onSettingsChanged() calls if burn-in protection is active.
-		// Recreate background buffers for each meter, in case theme colour has changed.
-		mDrawables[:LeftGoalMeter].onSettingsChanged();
-		mDrawables[:RightGoalMeter].onSettingsChanged();
+		if (!mIsBurnInProtection) {
 
-		mDrawables[:MoveBar].onSettingsChanged();
+			// Recreate background buffers for each meter, in case theme colour has changed.
+			mDrawables[:LeftGoalMeter].onSettingsChanged();
+			mDrawables[:RightGoalMeter].onSettingsChanged();
 
-		mDataFields.onSettingsChanged();
+			mDrawables[:MoveBar].onSettingsChanged();
 
-		mDrawables[:Indicators].onSettingsChanged();
+			mDataFields.onSettingsChanged();
+
+			mDrawables[:Indicators].onSettingsChanged();
+		}
 	}
 
 	// Select normal font, based on whether time zone feature is being used.
@@ -296,12 +298,11 @@ class CrystalView extends Ui.WatchFace {
 		//Sys.println("onUpdate()");
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
+		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references.
 		// If turning off burn-in protection, recache regular watch face drawables.
 		if (mBurnInProtectionChangedSinceLastDraw) {
 			setLayout(mIsBurnInProtection ? Rez.Layouts.AlwaysOn(dc) : Rez.Layouts.WatchFace(dc));
-			if (!mIsBurnInProtection) {
-				cacheDrawables();
-			}
+			cacheDrawables();
 		}
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
@@ -314,7 +315,6 @@ class CrystalView extends Ui.WatchFace {
 			dc.clearClip();
 		}
 
-		// TODO: Prevent goal meter update if burn-in protection is active.
 		updateGoalMeters();
 
 		// Call the parent onUpdate function to redraw the layout
@@ -323,6 +323,10 @@ class CrystalView extends Ui.WatchFace {
 
 	// Update each goal meter separately, then also pass types and values to data area to draw goal icons.
 	function updateGoalMeters() {
+		if (mIsBurnInProtection) {
+			return;
+		}
+
 		var leftType = App.getApp().getProperty("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
 		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
@@ -472,6 +476,10 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function setHideSeconds(hideSeconds) {
+		if (mIsBurnInProtection) {
+			return;
+		}
+		
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}

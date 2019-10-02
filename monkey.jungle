@@ -63,3 +63,6 @@ vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_li
 #       Exclude background methods as memory is very limited (extend to other devices as necessary).
 #fr45.resourcePath = $(fr45.resourcePath);resources-ciq_1.x
 fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
+
+# #144: Always on display.
+venu.sourcePath = $(venu.sourcePath);always-on-source

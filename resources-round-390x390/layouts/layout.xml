@@ -66,7 +66,7 @@
 
 	<!-- Shown in low power mode -->
 	<layout id="AlwaysOn">
-		<drawable id="Time" class="ThickThinTime">
+		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
 			<param name="adjustY">-4</param>
 		</drawable>
 	</layout>
