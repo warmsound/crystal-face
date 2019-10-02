@@ -77,7 +77,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		// Change vertical offset every minute.
-		var burnInYOffset = mBurnInYOffsets[clockTime.min % mBurnInYOffsets.size()];
+		var burnInYOffset = mBurnInYOffsets[clockTime.min % mBurnInYOffsets.size()] + (clockTime.min - 30);
 
 		var hours = formattedTime[:hour];
 		var minutes = formattedTime[:min];
