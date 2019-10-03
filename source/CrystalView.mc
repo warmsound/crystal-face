@@ -23,7 +23,7 @@ var gNormalFont;
 var gIconsFont;
 
 const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 390) ? 1 : 2;
-const BATTERY_LINE_WIDTH = 2;
+//const BATTERY_LINE_WIDTH = 2;
 const BATTERY_HEAD_HEIGHT = 4 * SCREEN_MULTIPLIER;
 const BATTERY_MARGIN = SCREEN_MULTIPLIER;
 
@@ -34,16 +34,16 @@ const BATTERY_MARGIN = SCREEN_MULTIPLIER;
 // width and height are outer dimensions of battery "body".
 function drawBatteryMeter(dc, x, y, width, height) {
 	dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
-	dc.setPenWidth(BATTERY_LINE_WIDTH);
+	dc.setPenWidth(/* BATTERY_LINE_WIDTH */ 2);
 
 	// Body.
 	// drawRoundedRectangle's x and y are top-left corner of middle of stroke.
 	// Bottom-right corner of middle of stroke will be (x + width - 1, y + height - 1).
 	dc.drawRoundedRectangle(
-		x - (width / 2) + (BATTERY_LINE_WIDTH / 2),
-		y - (height / 2) + (BATTERY_LINE_WIDTH / 2),
-		width - BATTERY_LINE_WIDTH + 1,
-		height - BATTERY_LINE_WIDTH + 1,
+		x - (width / 2) + /* (BATTERY_LINE_WIDTH / 2) */ 1,
+		y - (height / 2) + /* (BATTERY_LINE_WIDTH / 2) */ 1,
+		width - /* BATTERY_LINE_WIDTH + 1 */ 1,
+		height - /* BATTERY_LINE_WIDTH + 1 */ 1,
 		/* BATTERY_CORNER_RADIUS */ 2 * SCREEN_MULTIPLIER);
 
 	// Head.
@@ -70,12 +70,13 @@ function drawBatteryMeter(dc, x, y, width, height) {
 
 	dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
 
-	var fillWidth = width - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN));
+	var lineWidthPlusMargin = (/* BATTERY_LINE_WIDTH */ 2 + BATTERY_MARGIN);
+	var fillWidth = width - (2 * lineWidthPlusMargin);
 	dc.fillRectangle(
-		x - (width / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
-		y - (height / 2) + BATTERY_LINE_WIDTH + BATTERY_MARGIN,
+		x - (width / 2) + lineWidthPlusMargin,
+		y - (height / 2) + lineWidthPlusMargin,
 		Math.ceil(fillWidth * (batteryLevel / 100)), 
-		height - (2 * (BATTERY_LINE_WIDTH + BATTERY_MARGIN)));
+		height - (2 * lineWidthPlusMargin));
 }
 
 class CrystalView extends Ui.WatchFace {
@@ -474,10 +475,6 @@ class CrystalView extends Ui.WatchFace {
 
 	function isSleeping() {
 		return mIsSleeping;
-	}
-
-	function isBurnInProtection() {
-		return mIsBurnInProtection;
 	}
 
 	function setHideSeconds(hideSeconds) {
