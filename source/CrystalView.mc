@@ -22,9 +22,10 @@ var gMinutesColour;
 var gNormalFont;
 var gIconsFont;
 
+const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 390) ? 1 : 2;
 const BATTERY_LINE_WIDTH = 2;
-const BATTERY_HEAD_HEIGHT = 4;
-const BATTERY_MARGIN = 1;
+const BATTERY_HEAD_HEIGHT = 4 * SCREEN_MULTIPLIER;
+const BATTERY_MARGIN = SCREEN_MULTIPLIER;
 
 //const BATTERY_LEVEL_LOW = 20;
 //const BATTERY_LEVEL_CRITICAL = 10;
@@ -43,7 +44,7 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		y - (height / 2) + (BATTERY_LINE_WIDTH / 2),
 		width - BATTERY_LINE_WIDTH + 1,
 		height - BATTERY_LINE_WIDTH + 1,
-		/* BATTERY_CORNER_RADIUS */ 2);
+		/* BATTERY_CORNER_RADIUS */ 2 * SCREEN_MULTIPLIER);
 
 	// Head.
 	// fillRectangle() works as expected.
