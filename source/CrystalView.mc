@@ -137,8 +137,6 @@ class CrystalView extends Ui.WatchFace {
 			App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
 		}
 
-		setHideSeconds(App.getApp().getProperty("HideSeconds"));
-
 		updateNormalFont(); // Requires mDrawables, mDataFields.
 	}
 
@@ -159,6 +157,8 @@ class CrystalView extends Ui.WatchFace {
 		mDataFields = View.findDrawableById("DataFields");
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
+
+		setHideSeconds(App.getApp().getProperty("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
 	}
 
 	/*
@@ -302,6 +302,7 @@ class CrystalView extends Ui.WatchFace {
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references.
 		// If turning off burn-in protection, recache regular watch face drawables.
 		if (mBurnInProtectionChangedSinceLastDraw) {
+			mBurnInProtectionChangedSinceLastDraw = false;
 			setLayout(mIsBurnInProtection ? Rez.Layouts.AlwaysOn(dc) : Rez.Layouts.WatchFace(dc));
 			cacheDrawables();
 		}
@@ -440,8 +441,11 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
-		mIsBurnInProtection = false;
-		mBurnInProtectionChangedSinceLastDraw = true;
+		var settings = Sys.getDeviceSettings();
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
+			mIsBurnInProtection = false;
+			mBurnInProtectionChangedSinceLastDraw = true;
+		}
 	}
 
 	// Terminate any active timers and prepare for slow updates.
@@ -480,7 +484,7 @@ class CrystalView extends Ui.WatchFace {
 		if (mIsBurnInProtection) {
 			return;
 		}
-		
+
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
