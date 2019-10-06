@@ -39,6 +39,10 @@ class CrystalApp extends App.AppBase {
 		return [mView];
 	}
 
+	function getView() {
+		return mView;
+	}
+
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
 		mFieldTypes[0] = getProperty("Field1Type");
