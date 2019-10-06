@@ -30,9 +30,6 @@ const BATTERY_MARGIN = SCREEN_MULTIPLIER;
 //const BATTERY_LEVEL_LOW = 20;
 //const BATTERY_LEVEL_CRITICAL = 10;
 
-// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
-const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
-
 // x, y are co-ordinates of centre point.
 // width and height are outer dimensions of battery "body".
 function drawBatteryMeter(dc, x, y, width, height) {
@@ -93,6 +90,9 @@ class CrystalView extends Ui.WatchFace {
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
+
+	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
+	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
 	// private enum /* THEMES */ {
 	// 	THEME_BLUE_DARK,
