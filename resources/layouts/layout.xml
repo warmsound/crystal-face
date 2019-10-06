@@ -1,63 +1,69 @@
-<layout id="WatchFace">
-	<drawable class="Background" />
+<resources>
+	<layout id="WatchFace">
+		<drawable class="Background" />
 
-	<drawable id="LeftGoalMeter" class="GoalMeter">
-		<param name="side">:left</param>
-		<param name="shape">:arc</param>
-		<param name="stroke">8</param>
-		<param name="height">160</param>
-		<param name="separator">2</param>
-	</drawable>
+		<drawable id="LeftGoalMeter" class="GoalMeter">
+			<param name="side">:left</param>
+			<param name="stroke">8</param>
+			<param name="height">160</param>
+			<param name="separator">2</param>
+		</drawable>
 
-	<drawable id="RightGoalMeter" class="GoalMeter">
-		<param name="side">:right</param>
-		<param name="shape">:arc</param>
-		<param name="stroke">8</param>
-		<param name="height">160</param>
-		<param name="separator">2</param>
-	</drawable>
+		<drawable id="RightGoalMeter" class="GoalMeter">
+			<param name="side">:right</param>
+			<param name="stroke">8</param>
+			<param name="height">160</param>
+			<param name="separator">2</param>
+		</drawable>
 
-	<drawable id="DataArea" class="DataArea">
-		<param name="locX">76</param>
-		<param name="width">88</param>
-		<param name="row1Y">192</param>
-		<param name="row2Y">208</param>
-		<param name="goalIconY">188</param>
-		<param name="goalIconLeftX">49</param>
-		<param name="goalIconRightX">191</param>
-	</drawable>
+		<drawable id="DataArea" class="DataArea">
+			<param name="locX">76</param>
+			<param name="width">88</param>
+			<param name="row1Y">192</param>
+			<param name="row2Y">208</param>
+			<param name="goalIconY">188</param>
+			<param name="goalIconLeftX">49</param>
+			<param name="goalIconRightX">191</param>
+		</drawable>
 
-	<drawable id="DataFields" class="DataFields">
-		<param name="left">80</param>
-		<param name="right">160</param>
-		<param name="top">24</param>
-		<param name="bottom">45</param>
-	</drawable>
+		<drawable id="DataFields" class="DataFields">
+			<param name="left">80</param>
+			<param name="right">160</param>
+			<param name="top">24</param>
+			<param name="bottom">45</param>
+			<param name="batteryWidth">28</param>
+		</drawable>
 
-	<drawable id="Date" class="DateLine">
-		<param name="y">73</param>
-	</drawable>
+		<drawable id="Date" class="DateLine">
+			<param name="y">73</param>
+		</drawable>
 
-	<drawable id="Indicators" class="Indicators">
-		<param name="locX">30</param>
-		<param name="locY">120</param>
-		<param name="spacingY">30</param>
-	</drawable>
+		<drawable id="Indicators" class="Indicators">
+			<param name="locX">29</param>
+			<param name="locY">120</param>
+			<param name="spacingY">30</param>
+			<param name="batteryWidth">24</param>
+		</drawable>
 
-	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">167</param>
-		<param name="secondsY">145</param>
-		<param name="secondsClipY">157</param>
-		<param name="secondsClipWidth">26</param>
-		<param name="secondsClipHeight">17</param>
-	</drawable>
+		<drawable id="Time" class="ThickThinTime">
+			<param name="secondsX">167</param>
+			<param name="secondsY">145</param>
+			<param name="secondsClipY">157</param>
+			<param name="secondsClipWidth">26</param>
+			<param name="secondsClipHeight">17</param>
+		</drawable>
 
-	<drawable id="MoveBar" class="MoveBar">
-		<param name="x">48</param>
-		<param name="y">164</param>
-		<param name="width">110</param>
-		<param name="height">9</param>
-		<param name="separator">3</param>
-	</drawable>
+		<drawable id="MoveBar" class="MoveBar">
+			<param name="x">48</param>
+			<param name="y">164</param>
+			<param name="width">110</param>
+			<param name="height">9</param>
+			<param name="separator">3</param>
+		</drawable>
+		
+	</layout>
 	
-</layout>
+	<!-- Only used for OLED watches, but Rez.Layouts.AlwaysOn symbol must always exist to prevent compiler errors -->
+	<layout id="AlwaysOn">
+	</layout>
+</resources>

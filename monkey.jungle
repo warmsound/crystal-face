@@ -1,5 +1,8 @@
 project.manifest = manifest.xml
 
+# Exclude other source directories (default behaviour is to include).
+base.sourcePath = source
+
 # #122: fr245/fr245m are CIQ 3.x, but do not support floors climbed.
 fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
 fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
@@ -63,3 +66,6 @@ vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_li
 #       Exclude background methods as memory is very limited (extend to other devices as necessary).
 #fr45.resourcePath = $(fr45.resourcePath);resources-ciq_1.x
 fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
+
+# #144: Always on display.
+venu.sourcePath = $(venu.sourcePath);always-on-source

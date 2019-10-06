@@ -1,0 +1,81 @@
+<resources>
+	<layout id="WatchFace">
+		<drawable class="Background" />
+
+		<drawable id="LeftGoalMeter" class="GoalMeter">
+			<param name="side">:left</param>
+			<param name="stroke">12</param>
+			<param name="height">260</param>
+			<param name="separator">3</param>
+		</drawable>
+
+		<drawable id="RightGoalMeter" class="GoalMeter">
+			<param name="side">:right</param>
+			<param name="stroke">12</param>
+			<param name="height">260</param>
+			<param name="separator">3</param>
+		</drawable>
+
+		<drawable id="DataArea" class="DataArea">
+			<param name="locX">123</param>
+			<param name="width">144</param>
+			<param name="row1Y">312</param>
+			<param name="row2Y">338</param>
+			<param name="goalIconY">307</param>
+			<param name="goalIconLeftX">79</param>
+			<param name="goalIconRightX">311</param>
+		</drawable>
+
+		<drawable id="DataFields" class="DataFields">
+			<param name="left">130</param>
+			<param name="right">260</param>
+			<param name="top">39</param>
+			<param name="bottom">74</param>
+			<param name="batteryWidth">46</param>
+		</drawable>
+
+		<drawable id="Date" class="DateLine">
+			<param name="y">118</param>
+		</drawable>
+
+		<drawable id="Indicators" class="Indicators">
+			<param name="locX">48</param>
+			<param name="locY">195</param>
+			<param name="spacingY">48</param>
+			<param name="batteryWidth">38</param>
+		</drawable>
+
+		<drawable id="Time" class="ThickThinTime">
+			<param name="adjustY">-4</param>
+			<param name="secondsX">272</param>
+			<param name="secondsY">234</param>
+			<param name="secondsClipY">185</param>
+			<param name="secondsClipWidth">31</param>
+			<param name="secondsClipHeight">20</param>
+		</drawable>
+
+		<drawable id="MoveBar" class="MoveBar">
+			<param name="x">77</param>
+			<param name="y">265</param>
+			<param name="width">180</param>
+			<param name="height">13</param>
+			<param name="separator">4</param>
+		</drawable>
+		
+	</layout>
+
+	<!-- Shown in low power mode -->
+	<layout id="AlwaysOn">
+		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
+			<param name="burnInYOffsets">[-56, -28, 28, 56]</param>
+			<param name="adjustY">-4</param>
+			<param name="timeY">169</param>
+			<param name="lineY">217</param>
+			<!-- Allow room for Chinese date -->	
+			<param name="lineWidth">230</param>
+			<!-- param name="lineStroke">2</param -->	
+			<param name="dataY">241</param>
+			<param name="dataLeft">95</param>
+		</drawable>
+	</layout>
+</resources>

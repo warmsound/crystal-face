@@ -16,6 +16,7 @@ var gLocationLng = null;
 class CrystalApp extends App.AppBase {
 
 	var mView;
+	var mFieldTypes = new [3];
 
 	function initialize() {
 		AppBase.initialize();
@@ -34,6 +35,7 @@ class CrystalApp extends App.AppBase {
 	// Return the initial view of your application here
 	function getInitialView() {
 		mView = new CrystalView();
+		onSettingsChanged(); // After creating view.
 		return [mView];
 	}
 
@@ -43,11 +45,19 @@ class CrystalApp extends App.AppBase {
 
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
-		mView.onSettingsChanged();
-		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-			checkPendingWebRequests();
-		}
+		mFieldTypes[0] = getProperty("Field1Type");
+		mFieldTypes[1] = getProperty("Field2Type");
+		mFieldTypes[2] = getProperty("Field3Type");
+
+		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
+
 		Ui.requestUpdate();
+	}
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0] == fieldType) ||
+			(mFieldTypes[1] == fieldType) ||
+			(mFieldTypes[2] == fieldType));
 	}
 
 	// Determine if any web requests are needed.
@@ -66,18 +76,18 @@ class CrystalApp extends App.AppBase {
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();
 
-			App.getApp().setProperty("LastLocationLat", gLocationLat);
-			App.getApp().setProperty("LastLocationLng", gLocationLng);
+			setProperty("LastLocationLat", gLocationLat);
+			setProperty("LastLocationLng", gLocationLng);
 
 		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
 		// in-memory value with an invalid stored one.
 		} else {
-			var lat = App.getApp().getProperty("LastLocationLat");
+			var lat = getProperty("LastLocationLat");
 			if (lat != null) {
 				gLocationLat = lat;
 			}
 
-			var lng = App.getApp().getProperty("LastLocationLng");
+			var lng = getProperty("LastLocationLng");
 			if (lng != null) {
 				gLocationLng = lng;
 			}
@@ -88,19 +98,19 @@ class CrystalApp extends App.AppBase {
 			return;
 		}
 
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+		var pendingWebRequests = getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
 
 		// 1. City local time:
 		// City has been specified.
-		var city = App.getApp().getProperty("LocalTimeInCity");
+		var city = getProperty("LocalTimeInCity");
 		
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
+			var cityLocalTime = getProperty("CityLocalTime");
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
@@ -115,7 +125,7 @@ class CrystalApp extends App.AppBase {
 			// city again.
 			} else if (!cityLocalTime["requestCity"].equals(city)) {
 
-				App.getApp().deleteProperty("CityLocalTime");
+				deleteProperty("CityLocalTime");
 				pendingWebRequests["CityLocalTime"] = true;
 			}
 		}
@@ -123,9 +133,9 @@ class CrystalApp extends App.AppBase {
 		// 2. Weather:
 		// Location must be available, weather or humidity (#113) data field must be shown.
 		if ((gLocationLat != null) &&
-			(mView.mDataFields.hasField(FIELD_TYPE_WEATHER) || mView.mDataFields.hasField(FIELD_TYPE_HUMIDITY))) {
+			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmCurrent = App.getApp().getProperty("OpenWeatherMapCurrent");
+			var owmCurrent = getProperty("OpenWeatherMapCurrent");
 
 			// No existing data.
 			if (owmCurrent == null) {
@@ -163,7 +173,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
-		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
+		setProperty("PendingWebRequests", pendingWebRequests);
 	}
 
 	(:background_method)
@@ -177,14 +187,14 @@ class CrystalApp extends App.AppBase {
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+		var pendingWebRequests = getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			//Sys.println("onBackgroundData() called with no pending web requests!");
 			pendingWebRequests = {};
 		}
 
 		var type = data.keys()[0]; // Type of received data.
-		var storedData = App.getApp().getProperty(type);
+		var storedData = getProperty(type);
 		var receivedData = data[type]; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
@@ -196,9 +206,47 @@ class CrystalApp extends App.AppBase {
 		// New data received: clear pendingWebRequests flag and overwrite stored data.
 		storedData = receivedData;
 		pendingWebRequests.remove(type);
-		App.getApp().setProperty("PendingWebRequests", pendingWebRequests);
-		App.getApp().setProperty(type, storedData);
+		setProperty("PendingWebRequests", pendingWebRequests);
+		setProperty(type, storedData);
 
 		Ui.requestUpdate();
+	}
+
+	// Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
+	// - hour: 0-23.
+	// - min:  0-59.
+	function getFormattedTime(hour, min) {
+		var amPm = "";
+
+		if (!Sys.getDeviceSettings().is24Hour) {
+
+			// #6 Ensure noon is shown as PM.
+			var isPm = (hour >= 12);
+			if (isPm) {
+				
+				// But ensure noon is shown as 12, not 00.
+				if (hour > 12) {
+					hour = hour - 12;
+				}
+				amPm = "p";
+			} else {
+				
+				// #27 Ensure midnight is shown as 12, not 00.
+				if (hour == 0) {
+					hour = 12;
+				}
+				amPm = "a";
+			}
+		}
+
+		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero. Otherwise, show leading zero.
+		// #69 Setting now applies to both 12- and 24-hour modes.
+		hour = hour.format(getProperty("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
+
+		return {
+			:hour => hour,
+			:min => min.format("%02d"),
+			:amPm => amPm
+		};
 	}
 }

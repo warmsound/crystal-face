@@ -24,7 +24,6 @@ enum /* GOAL_TYPES */ {
 class GoalMeter extends Ui.Drawable {
 
 	private var mSide; // :left, :right.
-	private var mShape; // :arc, :line.
 	private var mStroke; // Stroke width.
 	private var mWidth; // Clip width of meter.
 	private var mHeight; // Clip height of meter.
@@ -56,7 +55,6 @@ class GoalMeter extends Ui.Drawable {
 		Drawable.initialize(params);
 
 		mSide = params[:side];
-		mShape = params[:shape];
 		mStroke = params[:stroke];
 		mHeight = params[:height];
 		mLayoutSeparator = params[:separator];
@@ -73,13 +71,13 @@ class GoalMeter extends Ui.Drawable {
 		var halfScreenWidth;
 		var innerRadius;
 
-		if (mShape == :arc) {
+		if (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_RECTANGLE) {
+			width = mStroke;
+		} else {
 			halfScreenWidth = Sys.getDeviceSettings().screenWidth / 2; // DC not available; OK to use screenWidth from settings?
 			innerRadius = halfScreenWidth - mStroke; 
 			width = halfScreenWidth - Math.sqrt(Math.pow(innerRadius, 2) - Math.pow(mHeight / 2, 2));
 			width = Math.ceil(width).toNumber(); // Round up to cover partial pixels.
-		} else {
-			width = mStroke;
 		}
 
 		return width;
@@ -215,7 +213,7 @@ class GoalMeter extends Ui.Drawable {
 			drawSegments(filledBufferDc, 0, 0, gThemeColour, mSegments, 0, mHeight);
 
 			// For arc meters, draw circular mask for each buffer.
-			if (mShape == :arc) {
+			if (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_RECTANGLE) {
 
 				// Beyond right edge of bufferDc : Beyond left edge of bufferDc.
 				x = (mSide == :left) ? halfScreenDcWidth : (mWidth - halfScreenDcWidth - 1);

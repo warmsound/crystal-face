@@ -60,14 +60,13 @@ class ThickThinTime extends Ui.Drawable {
 
 	function drawHoursMinutes(dc) {
 		var clockTime = Sys.getClockTime();
-		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		var hours = formattedTime[:hour];
 		var minutes = formattedTime[:min];
 		var amPmText = formattedTime[:amPm];
 
-		var x;
 		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
 
@@ -75,7 +74,7 @@ class ThickThinTime extends Ui.Drawable {
 		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
 		// minutes font is used to calculate total width. 
 		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
-		x = halfDCWidth - (totalWidth / 2);
+		var x = halfDCWidth - (totalWidth / 2);
 
 		// Draw hours.
 		dc.setColor(gHoursColour, Graphics.COLOR_TRANSPARENT);

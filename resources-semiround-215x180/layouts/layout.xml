@@ -3,7 +3,6 @@
 
 	<drawable id="LeftGoalMeter" class="GoalMeter">
 		<param name="side">:left</param>
-		<param name="shape">:arc</param>
 		<param name="stroke">6</param>
 		<param name="height">180</param>
 		<param name="separator">2</param>
@@ -11,7 +10,6 @@
 
 	<drawable id="RightGoalMeter" class="GoalMeter">
 		<param name="side">:right</param>
-		<param name="shape">:arc</param>
 		<param name="stroke">6</param>
 		<param name="height">180</param>
 		<param name="separator">2</param>
@@ -32,6 +30,7 @@
 		<param name="right">147</param>
 		<param name="top">12</param>
 		<param name="bottom">31</param>
+		<param name="batteryWidth">24</param>
 	</drawable>
 
 	<drawable id="Date" class="DateLine">
@@ -42,6 +41,7 @@
 		<param name="locX">28</param>
 		<param name="locY">90</param>
 		<param name="spacingY">28</param>
+		<param name="batteryWidth">20</param>
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
