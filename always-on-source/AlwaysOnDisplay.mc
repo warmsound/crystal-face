@@ -73,7 +73,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// TIME.
 		var clockTime = Sys.getClockTime();
-		var formattedTime = App.getApp().getView().getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		// Change vertical offset every minute.
