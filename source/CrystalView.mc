@@ -120,11 +120,6 @@ class CrystalView extends Ui.WatchFace {
 
 	function initialize() {
 		WatchFace.initialize();
-
-		updateThemeColours();
-		updateHoursMinutesColours();
-
-		//Sys.println(getSunTimes(51.748124, -0.461689, null));
 	}
 
 	// Load your resources here
@@ -133,12 +128,6 @@ class CrystalView extends Ui.WatchFace {
 
 		setLayout(Rez.Layouts.WatchFace(dc));
 		cacheDrawables();
-		
-		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-			App.getApp().checkPendingWebRequests(); // Depends on mDataFields.hasField().
-		}
-
-		updateNormalFont(); // Requires mDrawables, mDataFields.
 	}
 
 	function cacheDrawables() {
@@ -184,21 +173,8 @@ class CrystalView extends Ui.WatchFace {
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
 
-		// #113 Propagate onSettingsChanged() to each drawable ASAP, rather than waiting for next onUpdate().
-		// DataFields recaches its field type settings, which may be requested immediately via hasField(), so this recaching
-		// must happen immediately.
-
-		if (!mIsBurnInProtection) {
-
-			// Recreate background buffers for each meter, in case theme colour has changed.
-			mDrawables[:LeftGoalMeter].onSettingsChanged();
-			mDrawables[:RightGoalMeter].onSettingsChanged();
-
-			mDrawables[:MoveBar].onSettingsChanged();
-
-			mDataFields.onSettingsChanged();
-
-			mDrawables[:Indicators].onSettingsChanged();
+		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+			App.getApp().checkPendingWebRequests();
 		}
 	}
 
@@ -285,6 +261,18 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function onSettingsChangedSinceLastDraw() {
+		if (!mIsBurnInProtection) {
+
+			// Recreate background buffers for each meter, in case theme colour has changed.	
+			mDrawables[:LeftGoalMeter].onSettingsChanged();	
+			mDrawables[:RightGoalMeter].onSettingsChanged();	
+
+			mDrawables[:MoveBar].onSettingsChanged();	
+
+			mDataFields.onSettingsChanged();	
+
+			mDrawables[:Indicators].onSettingsChanged();
+		}
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 

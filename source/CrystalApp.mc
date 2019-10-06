@@ -15,7 +15,8 @@ var gLocationLng = null;
 (:background)
 class CrystalApp extends App.AppBase {
 
-	var mView;
+	private var mView;
+	var mFieldTypes = new [3];
 
 	function initialize() {
 		AppBase.initialize();
@@ -34,6 +35,7 @@ class CrystalApp extends App.AppBase {
 	// Return the initial view of your application here
 	function getInitialView() {
 		mView = new CrystalView();
+		onSettingsChanged(); // After creating view.
 		return [mView];
 	}
 
@@ -43,11 +45,19 @@ class CrystalApp extends App.AppBase {
 
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
-		mView.onSettingsChanged();
-		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-			checkPendingWebRequests();
-		}
+		mFieldTypes[0] = getProperty("Field1Type");
+		mFieldTypes[1] = getProperty("Field2Type");
+		mFieldTypes[2] = getProperty("Field3Type");
+
+		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
+
 		Ui.requestUpdate();
+	}
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0] == fieldType) ||
+			(mFieldTypes[1] == fieldType) ||
+			(mFieldTypes[2] == fieldType));
 	}
 
 	// Determine if any web requests are needed.
@@ -123,7 +133,7 @@ class CrystalApp extends App.AppBase {
 		// 2. Weather:
 		// Location must be available, weather or humidity (#113) data field must be shown.
 		if ((gLocationLat != null) &&
-			(mView.mDataFields.hasField(FIELD_TYPE_WEATHER) || mView.mDataFields.hasField(FIELD_TYPE_HUMIDITY))) {
+			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
 			var owmCurrent = App.getApp().getProperty("OpenWeatherMapCurrent");
 

@@ -42,7 +42,6 @@ class DataFields extends Ui.Drawable {
 	private var mWeatherIconsSubset = null; // null, "d" for day subset, "n" for night subset.
 
 	private var mFieldCount;
-	private var mFieldTypes = new [3]; // Cache values to optimise partial update path.
 	private var mHasLiveHR = false; // Is a live HR field currently being shown?
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
@@ -88,22 +87,12 @@ class DataFields extends Ui.Drawable {
 		// #116 Handle FieldCount = 0 correctly.
 		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
-		mFieldTypes[0] = App.getApp().getProperty("Field1Type");
-		mFieldTypes[1] = App.getApp().getProperty("Field2Type");
-		mFieldTypes[2] = App.getApp().getProperty("Field3Type");
+		mHasLiveHR = App.getApp().hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		mHasLiveHR = hasField(FIELD_TYPE_HR_LIVE_5S);
-
-		if (!hasField(FIELD_TYPE_WEATHER)) {
+		if (!App.getApp().hasField(FIELD_TYPE_WEATHER)) {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
-	}
-
-	function hasField(fieldType) {
-		return ((mFieldTypes[0] == fieldType) ||
-			(mFieldTypes[1] == fieldType) ||
-			(mFieldTypes[2] == fieldType));
 	}
 
 	function draw(dc) {
@@ -115,18 +104,20 @@ class DataFields extends Ui.Drawable {
 			return;
 		}
 
+		var fieldTypes = App.getApp().mFieldTypes;
+
 		switch (mFieldCount) {
 			case 3:
-				drawDataField(dc, isPartialUpdate, mFieldTypes[0], mLeft);
-				drawDataField(dc, isPartialUpdate, mFieldTypes[1], (mRight + mLeft) / 2);
-				drawDataField(dc, isPartialUpdate, mFieldTypes[2], mRight);
+				drawDataField(dc, isPartialUpdate, fieldTypes[0], mLeft);
+				drawDataField(dc, isPartialUpdate, fieldTypes[1], (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, fieldTypes[2], mRight);
 				break;
 			case 2:
-				drawDataField(dc, isPartialUpdate, mFieldTypes[0], mLeft + ((mRight - mLeft) * 0.15));
-				drawDataField(dc, isPartialUpdate, mFieldTypes[1], mLeft + ((mRight - mLeft) * 0.85));
+				drawDataField(dc, isPartialUpdate, fieldTypes[0], mLeft + ((mRight - mLeft) * 0.15));
+				drawDataField(dc, isPartialUpdate, fieldTypes[1], mLeft + ((mRight - mLeft) * 0.85));
 				break;
 			case 1:
-				drawDataField(dc, isPartialUpdate, mFieldTypes[0], (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, fieldTypes[0], (mRight + mLeft) / 2);
 				break;
 			/*
 			case 0:
