@@ -27,6 +27,11 @@ Reviews:
 
 ## What's New
 
+### 2.4.0
+- Add support for Venu™, with new always-on layout.
+- Add support for MARQ™ Adventurer and Commander.
+- Technical update to CIQ 3.1.5 SDK.
+
 ### 2.3.7
 - Add bespoke fonts and layout for fēnix® 6X.
 - Improve readability of small font for all watches.
