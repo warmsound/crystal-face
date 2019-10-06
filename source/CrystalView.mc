@@ -300,7 +300,8 @@ class CrystalView extends Ui.WatchFace {
 		//Sys.println("onUpdate()");
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
-		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references.
+		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
+		// any use of mDrawables cache must only occur when burn in protection is NOT active.
 		// If turning off burn-in protection, recache regular watch face drawables.
 		if (mBurnInProtectionChangedSinceLastDraw) {
 			mBurnInProtectionChangedSinceLastDraw = false;
