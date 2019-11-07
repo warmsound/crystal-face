@@ -25,7 +25,8 @@ class DateLine extends Ui.Drawable {
 		var resourceMap = {
 			"ZHS" => rezFonts.DateFontOverrideZHS,
 			"ZHT" => rezFonts.DateFontOverrideZHT,
-			"RUS" => rezFonts.DateFontOverrideRUS
+			"RUS" => rezFonts.DateFontOverrideRUS,
+			"KOR" => rezFonts.DateFontOverrideKOR
 		};
 
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified

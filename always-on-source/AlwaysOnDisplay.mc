@@ -59,7 +59,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var resourceMap = {
 			"ZHS" => rezFonts.AlwaysOnDateFontOverrideZHS,
 			"ZHT" => rezFonts.AlwaysOnDateFontOverrideZHT,
-			"RUS" => rezFonts.AlwaysOnDateFontOverrideRUS
+			"RUS" => rezFonts.AlwaysOnDateFontOverrideRUS,
+			"KOR" => rezFonts.AlwaysOnDateFontOverrideKOR
 		};
 
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified

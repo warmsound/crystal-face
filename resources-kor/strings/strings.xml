@@ -1,0 +1,104 @@
+<strings>
+
+	<string id="AppName">Crystal</string>
+	<string id="AppVersionTitle">App Version</string>
+
+	<string id="ThemeTitle">Theme</string>
+	<string id="HoursColourTitle">Hours Colour</string>
+	<string id="MinutesColourTitle">Minutes Colour</string>
+	<string id="LeftGoalMeterTitle">Left Meter</string>
+	<string id="RightGoalMeterTitle">Right Meter</string>
+	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
+	<string id="GoalMeterStyleTitle">Meter Style</string>
+	<string id="MeterDigitsStyleTitle">Meter Digits Style</string>
+	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
+	<string id="MoveBarStyleTitle">Move Bar Style</string>
+	<string id="HideSecondsTitle">Hide Seconds</string>
+	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero</string>
+
+	<string id="FieldCountTitle">Number Of Data Fields</string>
+	<string id="DataField1Title">Data Field 1</string>
+	<string id="DataField2Title">Data Field 2</string>
+	<string id="DataField3Title">Data Field 3</string>
+
+	<string id="IndicatorCountTitle">Number Of Indicators</string>
+	<string id="Indicator1Title">Indicator 1</string>
+	<string id="Indicator2Title">Indicator 2</string>
+	<string id="Indicator3Title">Indicator 3</string>
+
+	<string id="FromTheme">(From Theme)</string>
+	<string id="MonoHighlight">Mono Highlight</string>
+	<string id="Mono">Mono</string>
+
+	<string id="AllSegmentsMerged">All Segments (Merged)</string>
+	<string id="FilledSegmentsMerged">Filled Segments (Merged)</string>
+	<string id="AllSegments">All Segments</string>
+	<string id="FilledSegments">Filled Segments</string>
+	<string id="Hidden">Hidden</string>
+	<string id="CurrentTarget">Current/Target</string>
+	<string id="Current">Current</string>
+
+	<string id="ThemeBlueDark">Blue (Dark)</string>
+	<string id="ThemePinkDark">Pink (Dark)</string>
+	<string id="ThemeRedDark">Red (Dark)</string>
+	<string id="ThemeGreenDark">Green (Dark)</string>
+	<string id="ThemeCornflowerBlueDark">Cornflower Blue (Dark)</string>
+	<string id="ThemeLemonCreamDark">Lemon Cream (Dark)</string>
+	<string id="ThemeVividYellowDark">Vivid Yellow (Dark)</string>
+	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
+	<string id="ThemeMonoDark">Mono (Dark)</string>
+	<string id="ThemeMonoLight">Mono (Light)</string>
+	<string id="ThemeBlueLight">Blue (Light)</string>
+	<string id="ThemeRedLight">Red (Light)</string>
+	<string id="ThemeGreenLight">Green (Light)</string>
+	<string id="ThemeDaygloOrangeLight">Dayglo Orange (Light)</string>
+	<string id="ThemeCornYellowDark">Corn Yellow (Dark)</string>
+
+	<string id="Steps">Steps</string>
+	<string id="FloorsClimbed">Floors Climbed</string>
+	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
+	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="Off">Off</string>
+
+	<string id="HeartRate">Heart Rate</string>
+	<string id="HeartRateLive5s">Heart Rate (Live 5s)</string>
+	<string id="Battery">Battery</string>
+	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
+	<string id="Notifications">Notifications</string>
+	<string id="Calories">Calories</string>
+	<string id="Distance">Distance</string>
+	<string id="Alarms">Alarms</string>
+	<string id="Altitude">Altitude</string>
+	<string id="Temperature">Thermometer</string>
+	<string id="Bluetooth">Bluetooth</string>
+	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
+	<string id="SunriseSunset">Sunrise/Sunset</string>
+	<string id="Weather">Weather</string>
+	<string id="Humidity">Humidity</string>
+	<string id="Pressure">Pressure</string>
+
+	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
+	<string id="DATE_FONT_OVERRIDE">KOR</string>
+
+	<string id="Sun">일</string>
+	<string id="Mon">월</string>
+	<string id="Tue">화</string>
+	<string id="Wed">수</string>
+	<string id="Thu">목</string>
+	<string id="Fri">금</string>
+	<string id="Sat">토</string>
+
+	<string id="Jan">1월</string>
+	<string id="Feb">2월</string>
+	<string id="Mar">3월</string>
+	<string id="Apr">4월</string>
+	<string id="May">5월</string>
+	<string id="Jun">6월</string>
+	<string id="Jul">7월</string>
+	<string id="Aug">8월</string>
+	<string id="Sep">9월</string>
+	<string id="Oct">10월</string>
+	<string id="Nov">11월</string>
+	<string id="Dec">12월</string>
+
+</strings>
