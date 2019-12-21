@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.4.1
+- Putative fix for fēnix® 5X series crash. Thank you everyone for your patience.
+
 ### 2.4.0
 - Add support for Venu™, with new always-on layout.
 - Add support for MARQ™ Adventurer and Commander.
