@@ -428,8 +428,10 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
+		// #157 Add screen width test, as Fenix 5X firmware 15.10 incorrectly sets requiresBurnInProtection to true.
+		// TODO: Remove this workaround before OLED screens with different width are introduced.
 		var settings = Sys.getDeviceSettings();
-		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection && (/* Venu */ settings.screenWidth == 390)) {
 			mIsBurnInProtection = false;
 			mBurnInProtectionChangedSinceLastDraw = true;
 		}
@@ -450,8 +452,10 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// If watch requires burn-in protection, set flag to true when entering sleep.
+		// #157 Add screen width test, as Fenix 5X firmware 15.10 incorrectly sets requiresBurnInProtection to true.
+		// TODO: Remove this workaround before OLED screens with different width are introduced.
 		var settings = Sys.getDeviceSettings();
-		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection && (/* Venu */ settings.screenWidth == 390)) {
 			mIsBurnInProtection = true;
 			mBurnInProtectionChangedSinceLastDraw = true;
 		}
