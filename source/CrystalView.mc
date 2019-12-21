@@ -143,6 +143,12 @@ class CrystalView extends Ui.WatchFace {
 		//mDrawables[:DataFields] = View.findDrawableById("DataFields");
 		mDataFields = View.findDrawableById("DataFields");
 
+		// #157 Add debug output to catch failures to retrieve drawable reference. Any drawable would suffice, but mDataFields is
+		// the first to be used, in onPartialUpdate().
+		if (mDataFields == null) {
+			Sys.println("cacheDrawables(): mDataFields is null");
+		}
+
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 
 		setHideSeconds(App.getApp().getProperty("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
@@ -284,6 +290,11 @@ class CrystalView extends Ui.WatchFace {
 	function onUpdate(dc) {
 		//Sys.println("onUpdate()");
 
+		// #157 If we've failed to cache drawable references, try again now before drawing. Can test any drawable reference.
+		if (mDataFields == null) {
+			cacheDrawables();
+		}
+
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
 		// any use of mDrawables cache must only occur when burn in protection is NOT active.
@@ -396,9 +407,13 @@ class CrystalView extends Ui.WatchFace {
 	// Clear background, clear clipping region, then draw new seconds.
 	function onPartialUpdate(dc) {
 		//Sys.println("onPartialUpdate()");
-	
-		mDataFields.update(dc, /* isPartialUpdate */ true);
-		mTime.drawSeconds(dc, /* isPartialUpdate */ true);
+
+		// #157 Check in case onPartialUpdate() is called before drawable references have been (successfully) cached by
+		// cacheDrawables().
+		if (mDataFields != null /* && mTime != null */) {
+			mDataFields.update(dc, /* isPartialUpdate */ true);
+			mTime.drawSeconds(dc, /* isPartialUpdate */ true);
+		}
 	}
 
 	/*
