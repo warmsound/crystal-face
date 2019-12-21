@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.4.2
+- 2nd attempt at fēnix® 5X crash. Bug in 15.10 firmware (requiresBurnInProtection incorrectly set to true) identified with invaluable help from jeriveraf.
+
 ### 2.4.1
 - Putative fix for fēnix® 5X series crash. Thank you everyone for your patience.
 
