@@ -468,7 +468,13 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function setHideSeconds(hideSeconds) {
-		if (mIsBurnInProtection) {
+
+		// #158 Venu 2.80 firmware crash: mIsBurnInProtection fails to be set in onEnterSleep(), hopefully because that function
+		// is now not called at startup before entering sleep, rather than because requiresBurnInProtection is not set. mTime will
+		// be null in always-on mode, so add additional safety check here.
+		// TODO: If Venu is guaranteed to start in always-on mode, we could initialise mIsBurnInProtection to true if
+		// requiresBurnInProtection is true.
+		if (mIsBurnInProtection || (mTime == null)) {
 			return;
 		}
 
