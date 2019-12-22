@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.4.3
+- Putative fix for Venu™ crash on 2.80 firmware.
+
 ### 2.4.2
 - 2nd attempt at fēnix® 5X crash. Bug in 15.10 firmware (requiresBurnInProtection incorrectly set to true) identified with invaluable help from jeriveraf.
 
