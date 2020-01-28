@@ -30,13 +30,13 @@
 	<string id="MonoHighlight">Монохромный светлый</string>
 	<string id="Mono">Монохромный темный</string>
 
-	<string id="AllSegmentsMerged">Все сегменты (объединены)</string>
-	<string id="FilledSegmentsMerged">Заполненные сегменты (объединены)</string>
+	<string id="AllSegmentsMerged">Все сегменты (без разделителей)</string>
+	<string id="FilledSegmentsMerged">Заполненные сегменты (без разделителей)</string>
 	<string id="AllSegments">Все сегменты</string>
 	<string id="FilledSegments">Заполненные сегменты</string>
 	<string id="Hidden">Скрытый</string>
-	<string id="CurrentTarget">Текущий/Цель</string>
-	<string id="Current">Текущий</string>
+	<string id="CurrentTarget">Текущее значение/Цель</string>
+	<string id="Current">Текущее значение</string>
 
 	<string id="ThemeBlueDark">Синяя (тёмный фон)</string>
 	<string id="ThemePinkDark">Розовая (тёмный фон)</string>
@@ -58,7 +58,7 @@
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
-	<string id="Off">Скрытый</string>
+	<string id="Off">Выключено</string>
 
 	<string id="HeartRate">Пульс</string>
 	<string id="HeartRateLive5s">Пульс (обновлять каждые 5сек)</string>
