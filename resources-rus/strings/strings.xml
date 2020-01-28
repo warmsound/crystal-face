@@ -80,13 +80,13 @@
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE">RUS</string>
 
-	<string id="Sun">ВС</string>
-	<string id="Mon">ПН</string>
-	<string id="Tue">ВТ</string>
-	<string id="Wed">СР</string>
-	<string id="Thu">ЧТ</string>
-	<string id="Fri">ПТ</string>
-	<string id="Sat">СБ</string>
+	<string id="Sun">Вск</string>
+	<string id="Mon">Пнд</string>
+	<string id="Tue">Втр</string>
+	<string id="Wed">Срд</string>
+	<string id="Thu">Чтв</string>
+	<string id="Fri">Пят</string>
+	<string id="Sat">Сбт</string>
 
 	<string id="Jan">Янв</string>
 	<string id="Feb">Фев</string>
