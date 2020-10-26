@@ -186,6 +186,10 @@
 	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
 		<settingConfig type="boolean"/>
 	</setting>
+	
+	<setting propertyKey="@Properties.HideWeekNumber" title="@Strings.HideWeekNumberTitle">
+		<settingConfig type="boolean"/>
+	</setting>
 
 	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
 		<settingConfig type="alphaNumeric"/>

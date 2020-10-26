@@ -15,6 +15,10 @@ class DateLine extends Ui.Drawable {
 
 	private var mMonth;
 	private var mMonthString;
+	
+	private var mWeekOfYear;
+	private var mWeekOfYearLetter;
+	private var mWeekOfYearString;
 
 	private var mFont;
 
@@ -37,6 +41,9 @@ class DateLine extends Ui.Drawable {
 		mX = params[:x];
 		mY = params[:y];
 		mYLine2 = params[:yLine2];
+		
+		// Localized letter for week number
+		mWeekOfYearLetter = "W";
 	}
 	
 	// Centre date string horizontally, then alternate between dark and light mono colours.
@@ -63,6 +70,10 @@ class DateLine extends Ui.Drawable {
 				rezStrings.Sat
 				];
 			mDayOfWeekString = Ui.loadResource(resourceArray[mDayOfWeek - 1]).toUpper();
+			
+			// Recalculate week number when dayOfWeek is reloaded
+			mWeekOfYear = isoWeekNumber(now.year, now.month, now.day);
+			mWeekOfYearString = Lang.format("$1$$2$", [mWeekOfYearLetter, mWeekOfYear]);
 		}
 
 		var month = now.month;
@@ -85,7 +96,7 @@ class DateLine extends Ui.Drawable {
 				];
 			mMonthString = Ui.loadResource(resourceArray[mMonth - 1]).toUpper();
 		}
-
+		
 		var day = now.day.format(INTEGER_FORMAT);
 		if (mYLine2 != null) {
 			drawDoubleLine(dc, day);
@@ -124,10 +135,35 @@ class DateLine extends Ui.Drawable {
 			day,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
+		
+		if (!App.getApp().getProperty("HideWeekNumber")) {
+			// Draw week letter.
+			var x = mX + dc.getTextWidthInPixels(mMonthString + " ", mFont);
+			dc.setColor(gMonoLightColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mYLine2,
+				mFont,
+				mWeekOfYearLetter,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			// Draw week number
+			dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x + dc.getTextWidthInPixels(mWeekOfYearLetter, mFont),
+				mYLine2,
+				mFont,
+				mWeekOfYear,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 	}
 
 	function drawSingleLine(dc, day) {
 		var dateString = Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]);
+		if (!App.getApp().getProperty("HideWeekNumber")) {
+			dateString = Lang.format("$1$ $2$", [dateString, mWeekOfYearString]);	
+		}
 		var length = dc.getTextWidthInPixels(dateString, mFont);
 		var x = (dc.getWidth() / 2) - (length / 2);
 		
@@ -162,5 +198,83 @@ class DateLine extends Ui.Drawable {
 			mMonthString,
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
+			
+		if (!App.getApp().getProperty("HideWeekNumber")) {
+			// Draw week letter.
+			x += dc.getTextWidthInPixels(mMonthString + " ", mFont);
+			dc.setColor(gMonoLightColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mY,
+				mFont,
+				mWeekOfYearLetter,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			// Draw week number
+			x += dc.getTextWidthInPixels(mWeekOfYearLetter, mFont);
+			dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(
+				x,
+				mY,
+				mFont,
+				mWeekOfYear,
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 	}
+	
+	
+	function julianDay(year, month, day) {
+	    var a = (14 - month) / 12;
+	    var y = (year + 4800 - a);
+	    var m = (month + 12 * a - 3);
+	    return day + ((153 * m + 2) / 5) + (365 * y) + (y / 4) - (y / 100) + (y / 400) - 32045;
+	}
+
+	function isLeapYear(year) {
+	    if (year % 4 != 0) {
+	        return false;
+	    } else if (year % 100 != 0) {
+	        return true;
+	    } else if (year % 400 == 0) {
+	        return true;
+	    }
+	
+	    return false;
+	}
+	
+	function isoWeekNumber(year, month, day) {
+	    var firstDayOfYear = julianDay(year, 1, 1);
+	    var givenDayOfYear = julianDay(year, month, day);
+	
+	    var dayOfWeek = (firstDayOfYear + 3) % 7; // days past thursday
+	    var weekOfYear = (givenDayOfYear - firstDayOfYear + dayOfWeek + 4) / 7;
+	
+		// week is at end of this year or the beginning of next year
+	    if (weekOfYear == 53) {
+	
+	        if (dayOfWeek == 6) {
+	            return weekOfYear;
+	        } else if (dayOfWeek == 5 && isLeapYear(year)) {
+	            return weekOfYear;
+	        } else {
+	            return 1;
+	        }
+	    }
+	
+		// week is in previous year, try again under that year
+	    else if (weekOfYear == 0) {
+	        firstDayOfYear = julianDay(year - 1, 1, 1);
+	
+	        dayOfWeek = (firstDayOfYear + 3) % 7;
+	
+	        return (givenDayOfYear - firstDayOfYear + dayOfWeek + 4) / 7;
+	    }
+	
+		// any old week of the year
+	    else {
+	        return weekOfYear;
+	    }
+	}
+	
 }

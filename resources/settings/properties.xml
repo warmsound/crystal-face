@@ -29,5 +29,6 @@
 	
 	<property id="HideSeconds" type="boolean">false</property>
 	<property id="HideHoursLeadingZero" type="boolean">true</property>
+	<property id="HideWeekNumber" type="boolean">false</property>
 
 </properties>
