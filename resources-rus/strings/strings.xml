@@ -63,6 +63,7 @@
 	<string id="HeartRate">Пульс</string>
 	<string id="HeartRateLive5s">Пульс (обновлять каждые 5сек)</string>
 	<string id="Battery">Заряд аккумулятора</string>
+	<string id="BatteryNumeric">Заряд аккумулятора Цифровой дисплей</string>
 	<string id="BatteryHidePercentage">Заряд аккумулятора (скрывать проценты)</string>
 	<string id="Notifications">Уведомления</string>
 	<string id="Calories">Калории</string>
