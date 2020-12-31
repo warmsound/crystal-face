@@ -67,6 +67,10 @@ vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_li
 #fr45.resourcePath = $(fr45.resourcePath);resources-ciq_1.x
 fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
 
+# garminswim2 has same limitations as fr45 (CIQ 1.x, low memory, low colours).
+garminswim2.resourcePath = $(fr45.resourcePath)
+garminswim2.excludeAnnotations = $(garminswim2.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
+
 # #144: Always on display.
 venu.sourcePath = $(venu.sourcePath);always-on-source
 d2air.sourcePath = $(d2air.sourcePath);always-on-source
