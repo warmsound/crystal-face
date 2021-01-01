@@ -27,6 +27,13 @@ Reviews:
 
 ## What's New
 
+### 2.4.4
+- Add support for Approach® S62, D2 Air, Descent™ Mk2, Garmin Swim™ 2, Rey™, MARQ® Golfer, Venu® Mercedes-Benz Collection, Venu® Sq, Venu® Sq – Music Edition.
+- Fix several settings-related crashes.
+- Update Russian translation (thanks to ya_kazachkov).
+- Correct German translation (thanks to axcro7).
+- Technical update to CIQ 3.2.2 SDK.
+
 ### 2.4.3
 - Putative fix for Venu™ crash on 2.80 firmware.
 
