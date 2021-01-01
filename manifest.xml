@@ -2,6 +2,8 @@
     <iq:application entry="CrystalApp" id="bde5c058244911e8b4670ed5f89f718b" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="1.4.0" name="@Strings.AppName" type="watchface" version="2.4.3">
         <iq:products>
             <iq:product id="approachs60"/>
+            <iq:product id="approachs62"/>
+            <iq:product id="d2air"/>
             <iq:product id="d2bravo"/>
             <iq:product id="d2bravo_titanium"/>
             <iq:product id="d2charlie"/>
@@ -9,6 +11,7 @@
             <iq:product id="d2deltapx"/>
             <iq:product id="d2deltas"/>
             <iq:product id="descentmk1"/>
+            <iq:product id="descentmk2"/>
             <iq:product id="fenix3"/>
             <iq:product id="fenix3_hr"/>
             <iq:product id="fenix5"/>
@@ -32,11 +35,15 @@
             <iq:product id="fr645"/>
             <iq:product id="fr645m"/>
             <iq:product id="fr735xt"/>
+            <iq:product id="fr745"/>
             <iq:product id="fr920xt"/>
             <iq:product id="fr935"/>
             <iq:product id="fr945"/>
+            <iq:product id="garminswim2"/>
             <iq:product id="legacyherocaptainmarvel"/>
             <iq:product id="legacyherofirstavenger"/>
+            <iq:product id="legacysagadarthvader"/>
+            <iq:product id="legacysagarey"/>
             <iq:product id="marqadventurer"/>
             <iq:product id="marqathlete"/>
             <iq:product id="marqaviator"/>
@@ -44,7 +51,11 @@
             <iq:product id="marqcommander"/>
             <iq:product id="marqdriver"/>
             <iq:product id="marqexpedition"/>
+            <iq:product id="marqgolfer"/>
             <iq:product id="venu"/>
+            <iq:product id="venud"/>
+            <iq:product id="venusq"/>
+            <iq:product id="venusqm"/>
             <iq:product id="vivoactive"/>
             <iq:product id="vivoactive3"/>
             <iq:product id="vivoactive3d"/>

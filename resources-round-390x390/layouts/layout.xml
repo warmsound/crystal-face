@@ -49,9 +49,6 @@
 			<param name="adjustY">-4</param>
 			<param name="secondsX">272</param>
 			<param name="secondsY">234</param>
-			<param name="secondsClipY">185</param>
-			<param name="secondsClipWidth">31</param>
-			<param name="secondsClipHeight">20</param>
 		</drawable>
 
 		<drawable id="MoveBar" class="MoveBar">

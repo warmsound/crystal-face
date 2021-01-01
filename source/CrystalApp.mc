@@ -43,11 +43,21 @@ class CrystalApp extends App.AppBase {
 		return mView;
 	}
 
+	function getIntProperty(key, defaultValue) {
+		var value = getProperty(key);
+		if (value == null) {
+			value = defaultValue;
+		} else if (!(value instanceof Number)) {
+			value = value.toNumber();
+		}
+		return value;
+	}
+
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
-		mFieldTypes[0] = getProperty("Field1Type");
-		mFieldTypes[1] = getProperty("Field2Type");
-		mFieldTypes[2] = getProperty("Field3Type");
+		mFieldTypes[0] = getIntProperty("Field1Type", 0);
+		mFieldTypes[1] = getIntProperty("Field2Type", 1);
+		mFieldTypes[2] = getIntProperty("Field3Type", 2);
 
 		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
 

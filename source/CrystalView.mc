@@ -188,7 +188,9 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	function updateThemeColours() {
-		var theme = App.getApp().getProperty("Theme");
+
+		// #182 Protect against null or unexpected type e.g. String.
+		var theme = App.getApp().getIntProperty("Theme", 0);
 
 		// Theme-specific colours.
 		gThemeColour = [
@@ -253,8 +255,9 @@ class CrystalView extends Ui.WatchFace {
 			gMonoDarkColour   // MONO
 		];
 
-		gHoursColour = overrideColours[App.getApp().getProperty("HoursColourOverride")];
-		gMinutesColour = overrideColours[App.getApp().getProperty("MinutesColourOverride")];
+		// #182 Protect against null or unexpected type e.g. String.
+		gHoursColour = overrideColours[App.getApp().getIntProperty("HoursColourOverride", 0)];
+		gMinutesColour = overrideColours[App.getApp().getIntProperty("MinutesColourOverride", 0)];
 	}
 
 	function onSettingsChangedSinceLastDraw() {
@@ -335,7 +338,6 @@ class CrystalView extends Ui.WatchFace {
 		};
 
 		var info = ActivityMonitor.getInfo();
-		var caloriesGoal;
 
 		switch(type) {
 			case GOAL_TYPE_STEPS:
@@ -373,8 +375,7 @@ class CrystalView extends Ui.WatchFace {
 
 				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
 				// Protect against unexpected type e.g. String.
-				caloriesGoal = App.getApp().getProperty("CaloriesGoal");
-				values[:max] = (caloriesGoal == null) ? 0 : caloriesGoal.toNumber();
+				values[:max] = App.getApp().getIntProperty("CaloriesGoal", 2000);
 				break;
 
 			case GOAL_TYPE_OFF:
@@ -428,10 +429,8 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
-		// #157 Add screen width test, as Fenix 5X firmware 15.10 incorrectly sets requiresBurnInProtection to true.
-		// TODO: Remove this workaround before OLED screens with different width are introduced.
 		var settings = Sys.getDeviceSettings();
-		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection && (/* Venu */ settings.screenWidth == 390)) {
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
 			mIsBurnInProtection = false;
 			mBurnInProtectionChangedSinceLastDraw = true;
 		}
@@ -452,10 +451,8 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// If watch requires burn-in protection, set flag to true when entering sleep.
-		// #157 Add screen width test, as Fenix 5X firmware 15.10 incorrectly sets requiresBurnInProtection to true.
-		// TODO: Remove this workaround before OLED screens with different width are introduced.
 		var settings = Sys.getDeviceSettings();
-		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection && (/* Venu */ settings.screenWidth == 390)) {
+		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
 			mIsBurnInProtection = true;
 			mBurnInProtectionChangedSinceLastDraw = true;
 		}
