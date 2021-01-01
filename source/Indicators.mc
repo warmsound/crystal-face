@@ -44,8 +44,7 @@ class Indicators extends Ui.Drawable {
 	function draw(dc) {
 
 		// #123 Protect against null or unexpected type e.g. String.
-		var indicatorCount = App.getApp().getProperty("IndicatorCount");
-		indicatorCount = (indicatorCount == null) ? 0 : indicatorCount.toNumber();
+		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
 
 		// Horizontal layout for rectangle-148x205.
 		if (mIsHorizontal) {

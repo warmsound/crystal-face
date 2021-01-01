@@ -69,8 +69,7 @@ class DataFields extends Ui.Drawable {
 	function onSettingsChanged() {
 
 		// #123 Protect against null or unexpected type e.g. String.
-		mFieldCount = App.getApp().getProperty("FieldCount");
-		mFieldCount = (mFieldCount == null) ? 0 : mFieldCount.toNumber();
+		mFieldCount = App.getApp().getIntProperty("FieldCount", 3);
 
 		/* switch (mFieldCount) {
 			case 3:
