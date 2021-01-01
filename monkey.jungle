@@ -64,11 +64,9 @@ vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_li
 
 # #124: fr45's settings.xml repeats whole of resources-ciq_1.x, then overrides, as settings were not correct inherited.
 #       Exclude background methods as memory is very limited (extend to other devices as necessary).
-#fr45.resourcePath = $(fr45.resourcePath);resources-ciq_1.x
 fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
 
 # garminswim2 has same limitations as fr45 (CIQ 1.x, low memory, low colours).
-garminswim2.resourcePath = $(fr45.resourcePath)
 garminswim2.excludeAnnotations = $(garminswim2.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
 
 # #144: Always on display.
