@@ -1,81 +1,81 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Version</string>
+	<string id="AppVersionTitle">Version de l'appli</string>
 
-	<string id="ThemeTitle">Theme</string>
-	<string id="HoursColourTitle">Hours Colour</string>
-	<string id="MinutesColourTitle">Minutes Colour</string>
-	<string id="LeftGoalMeterTitle">Left Meter</string>
-	<string id="RightGoalMeterTitle">Right Meter</string>
-	<string id="CaloriesGoalTitle">Calories Goal (1-10,000kCal)</string>
-	<string id="GoalMeterStyleTitle">Meter Style</string>
-	<string id="MeterDigitsStyleTitle">Meter Digits Style</string>
-	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string>
-	<string id="MoveBarStyleTitle">Move Bar Style</string>
-	<string id="HideSecondsTitle">Hide Seconds</string>
-	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero</string>
+	<string id="ThemeTitle">Thème</string>
+	<string id="HoursColourTitle">Couleur des heures</string>
+	<string id="MinutesColourTitle">Couleur des minutes</string>
+	<string id="LeftGoalMeterTitle">Compteur de gauche</string>
+	<string id="RightGoalMeterTitle">Compteur de droite</string>
+	<string id="CaloriesGoalTitle">Objectif de calories (1-10,000kCal)</string>
+	<string id="GoalMeterStyleTitle">Apparence des compteurs</string>
+	<string id="MeterDigitsStyleTitle">Apparence des champs numériques</string>
+	<string id="LocalTimeInCityTitle">Ajout de l'heure d'une ville (Beta)</string>
+	<string id="MoveBarStyleTitle">Apparence de la barre d'activité</string>
+	<string id="HideSecondsTitle">Masquer les secondes</string>
+	<string id="HideHoursLeadingZeroTitle">Masquer le zéro avant l'heure</string>
 
-	<string id="FieldCountTitle">Number Of Data Fields</string>
-	<string id="DataField1Title">Data Field 1</string>
-	<string id="DataField2Title">Data Field 2</string>
-	<string id="DataField3Title">Data Field 3</string>
+	<string id="FieldCountTitle">Nombre de champs de données</string>
+	<string id="DataField1Title">Champs de données 1</string>
+	<string id="DataField2Title">Champs de données 2</string>
+	<string id="DataField3Title">Champs de données 3</string>
 
-	<string id="IndicatorCountTitle">Number Of Indicators</string>
-	<string id="Indicator1Title">Indicator 1</string>
-	<string id="Indicator2Title">Indicator 2</string>
-	<string id="Indicator3Title">Indicator 3</string>
+	<string id="IndicatorCountTitle">Nombre d'indicateurs</string>
+	<string id="Indicator1Title">Indicateur 1</string>
+	<string id="Indicator2Title">Indicateur 2</string>
+	<string id="Indicator3Title">Indicateur 3</string>
 
-	<string id="FromTheme">(From Theme)</string>
-	<string id="MonoHighlight">Mono Highlight</string>
-	<string id="Mono">Mono</string>
+	<string id="FromTheme">(À partir du thème)</string>
+	<string id="MonoHighlight">Monochrome brillant</string>
+	<string id="Mono">Monochrome</string>
 
-	<string id="AllSegmentsMerged">All Segments (Merged)</string>
-	<string id="FilledSegmentsMerged">Filled Segments (Merged)</string>
-	<string id="AllSegments">All Segments</string>
-	<string id="FilledSegments">Filled Segments</string>
-	<string id="Hidden">Hidden</string>
-	<string id="CurrentTarget">Current/Target</string>
-	<string id="Current">Current</string>
+	<string id="AllSegmentsMerged">Tous les segments (fusionnés)</string>
+	<string id="FilledSegmentsMerged">Segments remplis seulement (fusionnés)</string>
+	<string id="AllSegments">Tous les segments</string>
+	<string id="FilledSegments">Segments remplis seulement</string>
+	<string id="Hidden">Masqué</string>
+	<string id="CurrentTarget">Actuel/Objectif</string>
+	<string id="Current">Actuel</string>
 
-	<string id="ThemeBlueDark">Blue (Dark)</string>
-	<string id="ThemePinkDark">Pink (Dark)</string>
-	<string id="ThemeRedDark">Red (Dark)</string>
-	<string id="ThemeGreenDark">Green (Dark)</string>
-	<string id="ThemeCornflowerBlueDark">Cornflower Blue (Dark)</string>
-	<string id="ThemeLemonCreamDark">Lemon Cream (Dark)</string>
-	<string id="ThemeVividYellowDark">Vivid Yellow (Dark)</string>
-	<string id="ThemeDaygloOrangeDark">Dayglo Orange (Dark)</string>
-	<string id="ThemeMonoDark">Mono (Dark)</string>
-	<string id="ThemeMonoLight">Mono (Light)</string>
-	<string id="ThemeBlueLight">Blue (Light)</string>
-	<string id="ThemeRedLight">Red (Light)</string>
-	<string id="ThemeGreenLight">Green (Light)</string>
-	<string id="ThemeDaygloOrangeLight">Dayglo Orange (Light)</string>
-	<string id="ThemeCornYellowDark">Corn Yellow (Dark)</string>
+	<string id="ThemeBlueDark">Bleu (sur fond noir)</string>
+	<string id="ThemePinkDark">Rose (sur fond noir)</string>
+	<string id="ThemeRedDark">Rouge (sur fond noir)</string>
+	<string id="ThemeGreenDark">Vert(sur fond noir)</string>
+	<string id="ThemeCornflowerBlueDark">Bleu pale (sur fond noir)</string>
+	<string id="ThemeLemonCreamDark">Crème (sur fond noir)</string>
+	<string id="ThemeVividYellowDark">Jaune vif (sur fond noir)</string>
+	<string id="ThemeDaygloOrangeDark">Orange (sur fond noir)</string>
+	<string id="ThemeMonoDark">Monochrome (sur fond noir)</string>
+	<string id="ThemeMonoLight">Monochrome (sur fond blanc)</string>
+	<string id="ThemeBlueLight">Bleu (sur fond blanc)</string>
+	<string id="ThemeRedLight">Rouge (sur fond blanc)</string>
+	<string id="ThemeGreenLight">Vert (sur fond blanc)</string>
+	<string id="ThemeDaygloOrangeLight">Orange (sur fond blanc)</string>
+	<string id="ThemeCornYellowDark">Jaune foncé (sur fond noir)</string>
 
-	<string id="Steps">Steps</string>
-	<string id="FloorsClimbed">Floors Climbed</string>
-	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
-	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
-	<string id="Off">Off</string>
+	<string id="Steps">Pas</string>
+	<string id="FloorsClimbed">Étages montées</string>
+	<string id="ActiveMinutes">Minutes actives (hebdo)</string>
+	<string id="CaloriesManualGoal">Calories (objectif manuel)</string>
+	<string id="Off">Masqué</string>
 
-	<string id="HeartRate">Heart Rate</string>
-	<string id="HeartRateLive5s">Heart Rate (Live 5s)</string>
-	<string id="Battery">Battery</string>
-	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
+	<string id="HeartRate">Rythme cardiaque</string>
+	<string id="HeartRateLive5s">Rythme cardiaque (actif 5s)</string>
+	<string id="Battery">Pile</string>
+	<string id="BatteryHidePercentage">Pile (Pourcentage masqué)</string>
 	<string id="Notifications">Notifications</string>
 	<string id="Calories">Calories</string>
 	<string id="Distance">Distance</string>
-	<string id="Alarms">Alarms</string>
+	<string id="Alarms">Alarmes</string>
 	<string id="Altitude">Altitude</string>
-	<string id="Temperature">Thermometer</string>
+	<string id="Temperature">Thermomètre</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
-	<string id="SunriseSunset">Sunrise/Sunset</string>
-	<string id="Weather">Weather</string>
-	<string id="Humidity">Humidity</string>
-	<string id="Pressure">Pressure</string>
+	<string id="SunriseSunset">Lever/Coucher du soleil</string>
+	<string id="Weather">Météo</string>
+	<string id="Humidity">Humidité</string>
+	<string id="Pressure">Pression</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
@@ -89,16 +89,16 @@
 	<string id="Sat">Sam</string>
 
 	<string id="Jan">Jan</string>
-	<string id="Feb">Fev</string>
+	<string id="Feb">Fév</string>
 	<string id="Mar">Mar</string>
 	<string id="Apr">Avr</string>
 	<string id="May">Mai</string>
 	<string id="Jun">Juin</string>
 	<string id="Jul">Juil</string>
-	<string id="Aug">Aout</string>
+	<string id="Aug">Août</string>
 	<string id="Sep">Sep</string>
 	<string id="Oct">Oct</string>
 	<string id="Nov">Nov</string>
-	<string id="Dec">Dec</string>
+	<string id="Dec">Déc</string>
 
 </strings>
