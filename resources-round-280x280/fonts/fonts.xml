@@ -16,4 +16,5 @@
 	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-28.fnt" antialias="true"/>
 	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-28.fnt" antialias="true"/>
 	<font id="DateFontOverrideRUS" filename="noto-sans-rus-bold-28.fnt" antialias="true"/>
+	<font id="DateFontOverrideKOR" filename="namum-gothic-kor-28.fnt" antialias="true"/>
 </fonts>

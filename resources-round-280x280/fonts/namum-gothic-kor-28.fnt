@@ -1,0 +1,23 @@
+info face="³ª´®°íµñ ExtraBold" size=28 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=2 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=28 base=23 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="namum-gothic-kor-28_0.png"
+chars count=19
+char id=40   x=0     y=0     width=8     height=24    xoffset=1     yoffset=3     xadvance=9     page=0  chnl=15
+char id=41   x=9     y=0     width=8     height=24    xoffset=0     yoffset=3     xadvance=9     page=0  chnl=15
+char id=48   x=211   y=0     width=13    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=49   x=54    y=24    width=8     height=19    xoffset=2     yoffset=5     xadvance=15    page=0  chnl=15
+char id=50   x=28    y=24    width=12    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=51   x=225   y=0     width=13    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=52   x=181   y=0     width=14    height=19    xoffset=0     yoffset=5     xadvance=15    page=0  chnl=15
+char id=53   x=41    y=24    width=12    height=19    xoffset=2     yoffset=5     xadvance=15    page=0  chnl=15
+char id=54   x=239   y=0     width=13    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=55   x=0     y=25    width=13    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=56   x=196   y=0     width=14    height=19    xoffset=0     yoffset=5     xadvance=15    page=0  chnl=15
+char id=57   x=14    y=25    width=13    height=19    xoffset=1     yoffset=5     xadvance=15    page=0  chnl=15
+char id=44552 x=18    y=0     width=23    height=23    xoffset=0     yoffset=3     xadvance=23    page=0  chnl=15
+char id=47785 x=42    y=0     width=23    height=23    xoffset=0     yoffset=3     xadvance=23    page=0  chnl=15
+char id=49688 x=66    y=0     width=23    height=23    xoffset=0     yoffset=3     xadvance=23    page=0  chnl=15
+char id=50900 x=114   y=0     width=21    height=23    xoffset=0     yoffset=3     xadvance=23    page=0  chnl=15
+char id=51068 x=136   y=0     width=20    height=23    xoffset=1     yoffset=3     xadvance=23    page=0  chnl=15
+char id=53664 x=157   y=0     width=23    height=19    xoffset=0     yoffset=4     xadvance=23    page=0  chnl=15
+char id=54868 x=90    y=0     width=23    height=23    xoffset=0     yoffset=3     xadvance=23    page=0  chnl=15
