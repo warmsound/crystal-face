@@ -63,6 +63,7 @@
 	<string id="HeartRate">Herzfrequenz</string>
 	<string id="HeartRateLive5s">Herzfrequenz (Live 5s)</string>
 	<string id="Battery">Batterie</string>
+	<string id="BatteryNumeric">Batterie Numerisch</string>
 	<string id="BatteryHidePercentage">Batterie (Prozente ausgeblendet)</string>
 	<string id="Notifications">Hinweise</string>
 	<string id="Calories">Kalorien</string>
