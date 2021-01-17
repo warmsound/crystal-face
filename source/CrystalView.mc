@@ -256,8 +256,12 @@ class CrystalView extends Ui.WatchFace {
 		];
 
 		// #182 Protect against null or unexpected type e.g. String.
-		gHoursColour = overrideColours[App.getApp().getIntProperty("HoursColourOverride", 0)];
-		gMinutesColour = overrideColours[App.getApp().getIntProperty("MinutesColourOverride", 0)];
+		// #182 Protect against invalid integer values (still crashing with getIntProperty()).
+		var hco = App.getApp().getIntProperty("HoursColourOverride", 0);
+		gHoursColour = overrideColours[(hco < 0 || hco > 2) ? 0 : hco];
+
+		var mco = App.getApp().getIntProperty("MinutesColourOverride", 0);
+		gMinutesColour = overrideColours[(mco < 0 || mco > 2) ? 0 : mco];
 	}
 
 	function onSettingsChangedSinceLastDraw() {
