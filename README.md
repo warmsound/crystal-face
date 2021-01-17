@@ -29,6 +29,7 @@ Reviews:
 
 ### 2.4.5
 - Add support for Korean language (thanks to nanbean).
+- 2nd attempt at settings-related crash fix.
 
 ### 2.4.4
 - Add support for Approach® S62, D2 Air, Descent™ Mk2, Garmin Swim™ 2, Rey™, MARQ® Golfer, Venu® Mercedes-Benz Collection, Venu® Sq, Venu® Sq – Music Edition.
