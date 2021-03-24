@@ -37,7 +37,22 @@ class BackgroundService extends Sys.ServiceDelegate {
 					{
 						"lat" => App.getApp().getProperty("LastLocationLat"),
 						"lon" => App.getApp().getProperty("LastLocationLng"),
-						"appid" => "d72271af214d870eb94fe8f9af450db4",
+
+						// Polite request from Vince, developer of the Crystal Watch Face:
+						//
+						// Please do not abuse this API key, or else I will be forced to make thousands of users of Crystal
+						// sign up for their own Open Weather Map free account, and enter their key in settings - a much worse
+						// user experience for everyone.
+						//
+						// Crystal has been registered with OWM on the Open Source Plan, which lifts usage limits for free, so
+						// that everyone benefits. However, these lifted limits only apply to the Current Weather API, and *not*
+						// the One Call API. Usage of this key for the One Call API risks blocking the key for everyone.
+						//
+						// If you intend to use this key in your own app, especially for the One Call API, please create your own
+						// OWM account, and own key. You should be able to apply for the Open Source Plan to benefit from the same
+						// lifted limits as Crystal. Thank you.
+						"appid" => "2651f49cb20de925fc57590709b86ce6",
+
 						"units" => "metric" // Celcius.
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
