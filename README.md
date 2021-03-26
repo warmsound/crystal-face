@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.4.6
+- Cycle OpenWeatherMap key to circumvent key abuse that led to blocked account.
+
 ### 2.4.5
 - Add support for Korean language (thanks to nanbean).
 - 2nd attempt at settings-related crash fix.
