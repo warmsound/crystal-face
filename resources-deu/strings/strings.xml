@@ -15,6 +15,7 @@
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Sekunden ausblenden</string>
 	<string id="HideHoursLeadingZeroTitle">Führende Nullen ausblenden</string>
+	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Anzahl der Datenfelder</string>
 	<string id="DataField1Title">Datenfeld 1</string>

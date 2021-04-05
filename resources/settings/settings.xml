@@ -199,4 +199,8 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.OWMKeyOverride" title="@Strings.OWMKeyOverride">
+		<settingConfig type="alphaNumeric" maxLength="32"/>
+	</setting>
+
 </settings>
