@@ -8,13 +8,13 @@
 	<string id="MinutesColourTitle">Minuten Farbe</string>
 	<string id="LeftGoalMeterTitle">Linker Zähler</string>
 	<string id="RightGoalMeterTitle">Rechter Zähler</string>
-	<string id="CaloriesGoalTitle">Kalorienziel (1-10,000kCal)</string>
+	<string id="CaloriesGoalTitle">Kalorienziel (1-10.000kCal)</string>
 	<string id="GoalMeterStyleTitle">Zähler Style</string>
-	<string id="MeterDigitsStyleTitle">Zähler Ziffern Style</string><!-- TODO_TRANSLATE: Is this correct? -->
+	<string id="MeterDigitsStyleTitle">Zähler Ziffern Style</string>
 	<string id="LocalTimeInCityTitle">Städtische Lokalzeit hinzufügen (Beta)</string>
 	<string id="MoveBarStyleTitle">Move Bar Style</string>
 	<string id="HideSecondsTitle">Sekunden ausblenden</string>
-	<string id="HideHoursLeadingZeroTitle">Blende führende Nullen aus</string>
+	<string id="HideHoursLeadingZeroTitle">Führende Nullen ausblenden</string>
 
 	<string id="FieldCountTitle">Anzahl der Datenfelder</string>
 	<string id="DataField1Title">Datenfeld 1</string>
@@ -30,13 +30,13 @@
 	<string id="MonoHighlight">Mono Highlight</string>
 	<string id="Mono">Mono</string>
 
-	<string id="AllSegmentsMerged">Alle Segmente (Merged)</string><!-- TODO_TRANSLATE -->
-	<string id="FilledSegmentsMerged">Gefüllte Segmente (Merged)</string><!-- TODO_TRANSLATE -->
+	<string id="AllSegmentsMerged">Alle Segmente (Verschmolzen)</string>
+	<string id="FilledSegmentsMerged">Gefüllte Segmente (Verschmolzen)</string>
 	<string id="AllSegments">Alle Segmente</string>
 	<string id="FilledSegments">Gefüllte Segmente</string>
 	<string id="Hidden">Ausgeblendet</string>
-	<string id="CurrentTarget">Current/Target</string><!-- TODO_TRANSLATE -->
-	<string id="Current">Current</string><!-- TODO_TRANSLATE -->
+	<string id="CurrentTarget">Aktuell/Ziel</string>
+	<string id="Current">Aktuell</string>
 
 	<string id="ThemeBlueDark">Blau (Dunkel)</string>
 	<string id="ThemePinkDark">Pink (Dunkel)</string>
