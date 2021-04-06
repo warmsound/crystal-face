@@ -5,12 +5,12 @@
 
 	<string id="ThemeTitle">Thema</string>
 	<string id="HoursColourTitle">Uren Kleur</string>
-	<string id="MinutesColourTitle">Minuten kleur</string>
+	<string id="MinutesColourTitle">Minuten Kleur</string>
 	<string id="LeftGoalMeterTitle">Linker Meter</string>
 	<string id="RightGoalMeterTitle">Rechter Meter</string>
 	<string id="CaloriesGoalTitle">Calorien Doel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Meter Stijl</string>
-	<string id="MeterDigitsStyleTitle">Meter getallen Stijl</string>
+	<string id="MeterDigitsStyleTitle">Meter Getallen Stijl</string>
 	<string id="LocalTimeInCityTitle">Voeg Lokale Tijd In Stad Toe (Beta)</string>
 	<string id="MoveBarStyleTitle">Beweeg Balk Stijl</string>
 	<string id="HideSecondsTitle">Verberg Seconden</string>
@@ -31,9 +31,9 @@
 	<string id="Mono">Mono</string>
 
 	<string id="AllSegmentsMerged">Alle Segmenten (Samen)</string>
-	<string id="FilledSegmentsMerged">Gevulde Segments (Samen)</string>
-	<string id="AllSegments">Alle Segments</string>
-	<string id="FilledSegments">Gevulde Segments</string>
+	<string id="FilledSegmentsMerged">Gevulde Segmenten (Samen)</string>
+	<string id="AllSegments">Alle Segmenten</string>
+	<string id="FilledSegments">Gevulde Segmenten</string>
 	<string id="Hidden">Verborgen</string>
 	<string id="CurrentTarget">Huidig/Doel</string>
 	<string id="Current">Huidig</string>
@@ -47,11 +47,11 @@
 	<string id="ThemeVividYellowDark">Levendig Geel (Donker)</string>
 	<string id="ThemeDaygloOrangeDark">Dayglo Oraje (Donker)</string>
 	<string id="ThemeMonoDark">Monotoon (Donker)</string>
-	<string id="ThemeMonoLight">Monotoon (licht)</string>
-	<string id="ThemeBlueLight">Blauw (licht)</string>
-	<string id="ThemeRedLight">Rood (licht)</string>
-	<string id="ThemeGreenLight">Groen (licht)</string>
-	<string id="ThemeDaygloOrangeLight">Dayglo Oranje (licht)</string>
+	<string id="ThemeMonoLight">Monotoon (Licht)</string>
+	<string id="ThemeBlueLight">Blauw (Licht)</string>
+	<string id="ThemeRedLight">Rood (Licht)</string>
+	<string id="ThemeGreenLight">Groen (Licht)</string>
+	<string id="ThemeDaygloOrangeLight">Dayglo Oranje (Licht)</string>
 	<string id="ThemeCornYellowDark">Mais Geel (Donker)</string>
 
 	<string id="Steps">Stappen</string>
