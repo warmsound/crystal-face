@@ -32,6 +32,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 			// 2. Weather.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
@@ -51,7 +52,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 						// If you intend to use this key in your own app, especially for the One Call API, please create your own
 						// OWM account, and own key. You should be able to apply for the Open Source Plan to benefit from the same
 						// lifted limits as Crystal. Thank you.
-						"appid" => "2651f49cb20de925fc57590709b86ce6",
+						"appid" => ((owmKeyOverride != null) && (owmKeyOverride.length() == 0)) ? "2651f49cb20de925fc57590709b86ce6" : owmKeyOverride,
 
 						"units" => "metric" // Celcius.
 					},
