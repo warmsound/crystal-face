@@ -30,4 +30,6 @@
 	<property id="HideSeconds" type="boolean">false</property>
 	<property id="HideHoursLeadingZero" type="boolean">true</property>
 
+	<property id="OWMKeyOverride" type="string"></property>
+
 </properties>
