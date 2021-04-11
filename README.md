@@ -27,6 +27,12 @@ Reviews:
 
 ## What's New
 
+### 2.4.7
+- Improve German translation (thanks to 2b2bff).
+- Translate Dutch settings (thanks to DRG-developer).
+- Allow override of built-in OpenWeatherMap key, in case that key is blocked.
+- Technical update to CIQ 3.2.5 SDK.
+
 ### 2.4.6
 - Cycle OpenWeatherMap key to circumvent key abuse that led to blocked account.
 
