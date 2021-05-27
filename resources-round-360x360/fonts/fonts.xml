@@ -5,8 +5,8 @@
 	<font id="DateFont" filename="titillium-web-semibold-36.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
 
 	<!-- Manually symlinked from /fonts. -->
-	<font id="NormalFont" filename="../../fonts/titillium-web-semibold-24.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°"/>
-	<font id="NormalFontCities" filename="../../fonts/titillium-web-semibold-24.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
+	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°"/>
+	<font id="NormalFontCities" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
 
 	<!-- Manually symlinked from resources-round-390x390/fonts. -->
 	<font id="IconsFont" filename="../../resources-round-390x390/fonts/crystal-icons-extra-large.fnt" antialias="true"/>

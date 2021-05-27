@@ -1,0 +1,78 @@
+<resources>
+	<layout id="WatchFace">
+		<drawable class="Background" />
+
+		<drawable id="LeftGoalMeter" class="GoalMeter">
+			<param name="side">:left</param>
+			<param name="stroke">12</param>
+			<param name="height">240</param>
+			<param name="separator">3</param>
+		</drawable>
+
+		<drawable id="RightGoalMeter" class="GoalMeter">
+			<param name="side">:right</param>
+			<param name="stroke">12</param>
+			<param name="height">240</param>
+			<param name="separator">3</param>
+		</drawable>
+
+		<drawable id="DataArea" class="DataArea">
+			<param name="locX">116</param>
+			<param name="width">128</param>
+			<param name="row1Y">286</param>
+			<param name="row2Y">312</param>
+			<param name="goalIconY">280</param>
+			<param name="goalIconLeftX">72</param>
+			<param name="goalIconRightX">289</param>
+		</drawable>
+
+		<drawable id="DataFields" class="DataFields">
+			<param name="left">112</param>
+			<param name="right">248</param>
+			<param name="top">40</param>
+			<param name="bottom">73</param>
+			<param name="batteryWidth">42</param>
+		</drawable>
+
+		<drawable id="Date" class="DateLine">
+			<param name="y">112</param>
+		</drawable>
+
+		<drawable id="Indicators" class="Indicators">
+			<param name="locX">43</param>
+			<param name="locY">180</param>
+			<param name="spacingY">44</param>
+			<param name="batteryWidth">38</param>
+		</drawable>
+
+		<drawable id="Time" class="ThickThinTime">
+			<param name="adjustY">-4</param>
+			<param name="secondsX">256</param>
+			<param name="secondsY">218</param>
+		</drawable>
+
+		<drawable id="MoveBar" class="MoveBar">
+			<param name="x">68</param>
+			<param name="y">248</param>
+			<param name="width">181</param>
+			<param name="height">13</param>
+			<param name="separator">4</param>
+		</drawable>
+		
+	</layout>
+
+	<!-- Shown in low power mode -->
+	<layout id="AlwaysOn">
+		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
+			<param name="burnInYOffsets">[-54, -27, 27, 54]</param>
+			<param name="adjustY">-4</param>
+			<param name="timeY">153</param>
+			<param name="lineY">198</param>
+			<!-- Allow room for Chinese date -->	
+			<param name="lineWidth">230</param>
+			<!-- param name="lineStroke">2</param -->	
+			<param name="dataY">223</param>
+			<param name="dataLeft">80</param>
+		</drawable>
+	</layout>
+</resources>

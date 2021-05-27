@@ -71,6 +71,8 @@ garminswim2.excludeAnnotations = $(garminswim2.excludeAnnotations);buffered;back
 
 # #144: Always on display.
 venu.sourcePath = $(venu.sourcePath);always-on-source
+venu2.sourcePath = $(venu2.sourcePath);always-on-source
+venu2s.sourcePath = $(venu2s.sourcePath);always-on-source
 venud.sourcePath = $(venud.sourcePath);always-on-source
 venusq.sourcePath = $(venusq.sourcePath);always-on-source
 venusqm.sourcePath = $(venusqm.sourcePath);always-on-source

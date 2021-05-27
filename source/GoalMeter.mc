@@ -258,13 +258,19 @@ class GoalMeter extends Ui.Drawable {
 	// Use restricted palette, to conserve memory (four buffers per watchface).
 	(:buffered)
 	function createSegmentBuffer(fillColour) {
-		return new Graphics.BufferedBitmap({
+		var options = {
 			:width => mWidth,
 			:height => mHeight,
 
 			// First palette colour appears to determine initial colour of buffer.
 			:palette => [gBackgroundColour, fillColour]
-		});
+		};
+
+		if ((Graphics has :createBufferedBitmap)) {
+			return Graphics.createBufferedBitmap(options).get();
+		}
+
+		return new Graphics.BufferedBitmap(options);
 	}
 
 	// dc can be screen or buffer DC, depending on drawing mode.

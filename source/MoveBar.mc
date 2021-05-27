@@ -110,13 +110,20 @@ class MoveBar extends Ui.Drawable {
 
 	(:buffered)
 	function recreateBuffer() {
-		mBuffer = new Graphics.BufferedBitmap({
+		var options = {
 			:width => mCurrentWidth,
 			:height => mHeight,
 
 			// First palette colour appears to determine initial colour of buffer.
 			:palette => [gBackgroundColour, gMeterBackgroundColour, gThemeColour]
-		});
+		};
+
+		if ((Graphics has :createBufferedBitmap)) {
+			mBuffer = Graphics.createBufferedBitmap(options).get();
+		} else {
+			mBuffer = new Graphics.BufferedBitmap(options);
+		}
+		
 		mBufferNeedsRecreate = false;
 		mBufferNeedsRedraw = true; // Ensure newly-created buffer is drawn next.
 	}

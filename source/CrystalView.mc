@@ -19,7 +19,7 @@ var gMinutesColour;
 var gNormalFont;
 var gIconsFont;
 
-const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 390) ? 1 : 2;
+const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 360) ? 1 : 2;
 //const BATTERY_LINE_WIDTH = 2;
 const BATTERY_HEAD_HEIGHT = 4 * SCREEN_MULTIPLIER;
 const BATTERY_MARGIN = SCREEN_MULTIPLIER;
