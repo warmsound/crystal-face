@@ -1,0 +1,36 @@
+<fonts>
+	<font id="HoursFont" filename="titillium-web-bold-102-tall.fnt" antialias="true"/>
+	<font id="MinutesFont" filename="titillium-web-light-102-tall.fnt" antialias="true"/>
+	<font id="SecondsFont" filename="titillium-web-semibold-36.fnt" antialias="true" filter="0123456789AP"/>
+	<font id="DateFont" filename="titillium-web-semibold-36.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
+
+	<!-- Manually symlinked from /fonts. -->
+	<font id="NormalFont" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°"/>
+	<font id="NormalFontCities" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
+
+	<!-- Manually symlinked from resources-round-390x390/fonts. -->
+	<font id="IconsFont" filename="../../resources-round-390x390/fonts/crystal-icons-extra-large.fnt" antialias="true"/>
+
+	<!-- Font size chosen such that height of sunshine icon is close to 39px (38px) -->
+	<!-- .fnt file modified such that day icons start from "A", night icons start from "a", "broken clouds" ("I") is shared -->
+	<font id="WeatherIconsFontDay" filename="../../resources-round-390x390/fonts/weather-icons-39.fnt" antialias="true" filter="ABCDEFGHI"/>
+	<font id="WeatherIconsFontNight" filename="../../resources-round-390x390/fonts/weather-icons-39.fnt" antialias="true" filter="abcdefghI"/>
+
+	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
+	<font id="DateFontOverrideZHS" filename="noto-sans-cjk-sc-medium-36.fnt" antialias="true"/>
+	<font id="DateFontOverrideZHT" filename="noto-sans-cjk-tc-medium-36.fnt" antialias="true"/>
+	<font id="DateFontOverrideRUS" filename="noto-sans-rus-bold-36.fnt" antialias="true"/>
+	<font id="DateFontOverrideKOR" filename="namum-gothic-kor-36.fnt" antialias="true"/>
+
+	<!-- Always on fonts -->
+	<!-- Date/battery fonts should strictly be 22px, but keep number of fonts to a sensible minimum -->
+	<font id="AlwaysOnHoursFont" filename="../../resources-round-260x260/fonts/titillium-web-bold-74-tall.fnt" antialias="true"/>
+	<font id="AlwaysOnMinutesFont" filename="../../resources-round-260x260/fonts/titillium-web-light-74-tall.fnt" antialias="true"/>
+	<font id="AlwaysOnSecondsFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter="AP"/> <!-- AM/PM only -->
+	<font id="AlwaysOnDateFont" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
+	<font id="AlwaysOnDateFontOverrideZHS" filename="../../resources/fonts/noto-sans-cjk-sc-medium-24.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideZHT" filename="../../resources/fonts/noto-sans-cjk-tc-medium-24.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideRUS" filename="../../resources/fonts/noto-sans-rus-bold-24.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideKOR" filename="../../resources/fonts/namum-gothic-kor-24.fnt" antialias="true"/>
+	<font id="AlwaysOnBatteryFont" filename="../../resources/fonts/titillium-web-semibold-24.fnt" antialias="true" filter="%0123456789"/>
+</fonts>

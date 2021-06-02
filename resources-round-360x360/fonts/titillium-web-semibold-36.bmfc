@@ -1,0 +1,57 @@
+# AngelCode Bitmap Font Generator configuration file
+fileVersion=1
+
+# font settings
+fontName=Titillium Web SemiBold
+fontFile=
+charSet=0
+fontSize=-36
+aa=2
+scaleH=100
+useSmoothing=1
+isBold=0
+isItalic=0
+useUnicode=1
+disableBoxChars=1
+outputInvalidCharGlyph=0
+dontIncludeKerningPairs=0
+useHinting=1
+renderFromOutline=0
+useClearType=0
+
+# character alignment
+paddingDown=0
+paddingUp=0
+paddingRight=0
+paddingLeft=0
+spacingHoriz=1
+spacingVert=1
+useFixedHeight=0
+forceZero=0
+
+# output file
+outWidth=256
+outHeight=256
+outBitDepth=8
+fontDescFormat=0
+fourChnlPacked=0
+textureFormat=png
+textureCompression=0
+alphaChnl=1
+redChnl=0
+greenChnl=0
+blueChnl=0
+invA=0
+invR=0
+invG=0
+invB=0
+
+# outline
+outlineThickness=0
+
+# selected chars
+chars=32,48-57,65-90,192-223,256,258,260,262,264,266,268,270,272,274,276,278,280,282,284,286,288,290,292
+chars=294,296,298,300,302,304,308,310,313,315,317,321,323,325,327,330,332,334,336,338,340,342,344,346
+chars=348,350,352,356,358,360,362,364,366,368,370,372,374,376-377,379,381
+
+# imported icon images

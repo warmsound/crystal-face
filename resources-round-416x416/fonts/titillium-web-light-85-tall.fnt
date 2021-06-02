@@ -1,0 +1,14 @@
+info face="Titillium Web Light" size=-85 bold=0 italic=0 charset="" unicode=1 stretchH=105 smooth=1 aa=1 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=136 base=101 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="titillium-web-light-85-tall_0.png"
+chars count=10
+char id=48   x=44    y=0     width=41    height=61    xoffset=3     yoffset=41    xadvance=48    page=0  chnl=15
+char id=49   x=117   y=62    width=23    height=59    xoffset=10    yoffset=42    xadvance=48    page=0  chnl=15
+char id=50   x=0     y=62    width=36    height=60    xoffset=6     yoffset=41    xadvance=48    page=0  chnl=15
+char id=51   x=168   y=0     width=37    height=61    xoffset=5     yoffset=41    xadvance=48    page=0  chnl=15
+char id=52   x=74    y=62    width=42    height=59    xoffset=3     yoffset=42    xadvance=48    page=0  chnl=15
+char id=53   x=206   y=0     width=38    height=60    xoffset=5     yoffset=42    xadvance=48    page=0  chnl=15
+char id=54   x=86    y=0     width=40    height=61    xoffset=4     yoffset=41    xadvance=48    page=0  chnl=15
+char id=55   x=37    y=62    width=36    height=60    xoffset=6     yoffset=42    xadvance=48    page=0  chnl=15
+char id=56   x=0     y=0     width=43    height=61    xoffset=2     yoffset=41    xadvance=48    page=0  chnl=15
+char id=57   x=127   y=0     width=40    height=61    xoffset=3     yoffset=41    xadvance=48    page=0  chnl=15
