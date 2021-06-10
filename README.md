@@ -28,7 +28,7 @@ Reviews:
 ## What's New
 
 ### 2.5.0
-- Add support for Venu® 2 and Venu® 2S. Thank you for your patience!
+- Add support for Venu® 2 and Venu® 2S (thanks to fallingrock for testing help). Thank you for your patience!
 - Technical update to CIQ 4.0.3.
 
 ### 2.4.7
