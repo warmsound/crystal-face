@@ -238,14 +238,14 @@ class CrystalApp extends App.AppBase {
 				if (hour > 12) {
 					hour = hour - 12;
 				}
-				amPm = "p";
+				amPm = "pm";
 			} else {
 				
 				// #27 Ensure midnight is shown as 12, not 00.
 				if (hour == 0) {
 					hour = 12;
 				}
-				amPm = "a";
+				amPm = "am";
 			}
 		}
 
