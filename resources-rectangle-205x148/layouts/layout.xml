@@ -47,8 +47,8 @@
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">137</param>
-		<param name="secondsY">85</param>
+		<param name="secondsX">166</param>
+		<param name="secondsY">64</param>
 
 		<!-- Partial updates not supported -->	
 		<!-- param name="secondsClipY">124</param-->
@@ -59,13 +59,14 @@
 		<param name="adjustY">-5</param>
 
 		<!-- Ample horizontal space, so increase AM/PM offset -->
-		<param name="amPmOffset">4</param>
+		<param name="amPmOffsetX">4</param>
+		<param name="amPmOffsetY">4</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">45</param>
 		<param name="y">102</param>
-		<param name="width">87</param>
+		<param name="width">120</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>

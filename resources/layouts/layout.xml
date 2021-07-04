@@ -46,17 +46,19 @@
 		</drawable>
 
 		<drawable id="Time" class="ThickThinTime">
-			<param name="secondsX">167</param>
-			<param name="secondsY">145</param>
-			<param name="secondsClipY">157</param>
+			<param name="secondsX">198</param>
+			<param name="secondsY">117</param>
+			<param name="secondsClipY">129</param>
 			<param name="secondsClipWidth">26</param>
 			<param name="secondsClipHeight">17</param>
+			<param name="amPmOffsetX">-2</param>
+			<param name="amPmOffsetY">2</param>
 		</drawable>
 
 		<drawable id="MoveBar" class="MoveBar">
 			<param name="x">48</param>
 			<param name="y">164</param>
-			<param name="width">110</param>
+			<param name="width">148</param>
 			<param name="height">9</param>
 			<param name="separator">3</param>
 		</drawable>
