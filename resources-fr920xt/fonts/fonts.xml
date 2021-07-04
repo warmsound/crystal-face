@@ -26,4 +26,5 @@
 	<font id="DateFontOverrideZHT" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="false"/>
 	<font id="DateFontOverrideRUS" filename="../../resources-rectangle-205x148/fonts/noto-sans-rus-bold-16.fnt" antialias="false"/>
 	<font id="DateFontOverrideKOR" filename="../../resources-rectangle-205x148/fonts/namum-gothic-kor-16.fnt" antialias="false"/>
+	<font id="DateFontOverrideHEB" filename="../../resources-rectangle-205x148/fonts/namum-gothic-heb-16.fnt" antialias="false"/>
 </fonts>
