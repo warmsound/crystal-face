@@ -643,7 +643,7 @@ class DataFields extends Ui.Drawable {
 		if (tomorrow) {
 			now = now.add(new Time.Duration(24 * 60 * 60));
 		}
-		var d = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+		var d = Gregorian.info(now, Time.FORMAT_SHORT);
 		var rad = Math.PI / 180.0d;
 		var deg = 180.0d / Math.PI;
 		

@@ -22,7 +22,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 	private var mDataY;
 	private var mDataLeft;
 
-	private var AM_PM_X_OFFSET = 2;
+	private var mAmPmOffsetX = 2;
 
 	private var mDayOfWeek;
 	private var mDayOfWeekString;
@@ -39,8 +39,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 			mAdjustY = params[:adjustY];
 		}
 
-		if (params[:amPmOffset] != null) {
-			AM_PM_X_OFFSET = params[:amPmOffset];
+		if (params[:amPmOffsetX] != null) {
+			mAmPmOffsetX = params[:amPmOffsetX];
 		}
 
 		mTimeY = params[:timeY];
@@ -118,7 +118,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		if (amPmText.length() > 0) {
 			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
 			dc.drawText(
-				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
+				x + mAmPmOffsetX, // Breathing space between minutes and AM/PM.
 				y,
 				mSecondsFont,
 				amPmText,

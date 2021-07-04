@@ -6,6 +6,7 @@ using Toybox.Graphics;
 
 class MoveBar extends Ui.Drawable {
 
+	private var mAdjustX = 0;
 	private var mX, mY, mBaseWidth, mHeight, mSeparator;
 	private var mTailWidth;	
 
@@ -31,7 +32,10 @@ class MoveBar extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 		
-		mX = params[:x];
+		if (params[:adjustX] != null) {
+			mAdjustX = params[:adjustX];
+		}
+		mX = params[:x] + mAdjustX;
 		mY = params[:y];
 		mBaseWidth = params[:width]; // mCurrentWidth calculated at start of draw(), when DC is available.
 		mHeight = params[:height];
@@ -61,7 +65,7 @@ class MoveBar extends Ui.Drawable {
 
 		// Calculate current width here, now that DC is accessible.
 		// Balance head/tail positions in full width mode.
-		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
+		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth - mAdjustX) : mBaseWidth;
 
 		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
 		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
@@ -168,7 +172,7 @@ class MoveBar extends Ui.Drawable {
 		var numBars = ActivityMonitor.MOVE_BAR_LEVEL_MAX - ActivityMonitor.MOVE_BAR_LEVEL_MIN;
 
 		// Subtract tail width, and total separator width.
-		var availableWidth = mCurrentWidth - mTailWidth - ((numBars - 1) * mSeparator);
+		var availableWidth = mCurrentWidth - mTailWidth - ((numBars - 1) * mSeparator) - mAdjustX;
 
 		var barWidth = availableWidth / (numBars + /* First bar is double width */ 1);
 
