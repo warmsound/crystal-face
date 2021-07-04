@@ -2,7 +2,7 @@
 <fonts>
 	<font id="HoursFont" filename="../../resources-round-260x260/fonts/titillium-web-bold-74-tall.fnt" antialias="true"/>
 	<font id="MinutesFont" filename="../../resources-round-260x260/fonts/titillium-web-light-74-tall.fnt" antialias="true"/>
-	<font id="SecondsFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter="0123456789AP"/>
+	<font id="SecondsFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter="0123456789APM"/>
 	<font id="DateFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
 
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
@@ -14,7 +14,7 @@
 	<!-- Always on fonts -->
 	<font id="AlwaysOnHoursFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-bold-54.fnt" antialias="true"/>
 	<font id="AlwaysOnMinutesFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-light-54.fnt" antialias="true"/>
-	<font id="AlwaysOnSecondsFont" filename="../../resources-small-time/fonts/titillium-web-semibold-20.fnt" antialias="true" filter="AP"/> <!-- AM/PM only -->
+	<font id="AlwaysOnSecondsFont" filename="../../resources-small-time/fonts/titillium-web-semibold-20.fnt" antialias="true" filter="APM"/> <!-- AM/PM only -->
 	<font id="AlwaysOnDateFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
 	<font id="AlwaysOnDateFontOverrideZHS" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-sc-medium-16.fnt" antialias="true"/>
 	<font id="AlwaysOnDateFontOverrideZHT" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="true"/>
