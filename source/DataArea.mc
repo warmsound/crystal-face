@@ -88,8 +88,13 @@ class DataArea extends Ui.Drawable {
 			);
 
 			// Time zone 1 time.
-			var time;
-			if (cityLocalTime) {
+			var timeZoneGmtOffset = null;
+			var time = "...";
+			if (city.equals("UTC") || city.equals("GMT")) {
+
+				timeZoneGmtOffset = 0;
+
+			} else if (cityLocalTime) {
 
 				// Web request responded with server error e.g. unknown city.
 				if (cityLocalTime["error"] != null) {
@@ -98,7 +103,6 @@ class DataArea extends Ui.Drawable {
 
 				// Web request responded with time zone data for city.
 				} else {
-					var timeZoneGmtOffset;
 
 					// Use next GMT offset if it's now applicable (new data will be requested shortly).
 					if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
@@ -106,21 +110,20 @@ class DataArea extends Ui.Drawable {
 					} else {
 						timeZoneGmtOffset = cityLocalTime["current"]["gmtOffset"];
 					}
-					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
-					
-					var localGmtOffset = Sys.getClockTime().timeZoneOffset;
-					localGmtOffset = new Time.Duration(localGmtOffset);
-
-					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-					time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-					time = Gregorian.info(time, Time.FORMAT_SHORT);
-					time = App.getApp().getFormattedTime(time.hour, time.min);
-					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 				}
+			}
 
-			// Awaiting response to web request sent by BackgroundService.
-			} else {
-				time = "...";
+			if (timeZoneGmtOffset != null) {
+				timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
+				
+				var localGmtOffset = Sys.getClockTime().timeZoneOffset;
+				localGmtOffset = new Time.Duration(localGmtOffset);
+
+				// (Local time) - (Local GMT offset) + (Time zone GMT offset)
+				time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+				time = Gregorian.info(time, Time.FORMAT_SHORT);
+				time = App.getApp().getFormattedTime(time.hour, time.min);
+				time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 			}
 
 			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
