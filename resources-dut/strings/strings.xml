@@ -15,7 +15,7 @@
 	<string id="LocalTimeInCityTitle">Voeg Lokale Tijd In Stad Toe (Beta)</string>
 	<string id="MoveBarStyleTitle">Beweeg Balk Stijl</string>
 	<string id="HideSecondsTitle">Verberg Seconden</string>
-	<string id="HideHoursLeadingZeroTitle">Verberg Eerste Nul Bij Uuren</string>
+	<string id="HideHoursLeadingZeroTitle">Verberg Eerste Nul Bij Uren</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Hoeveelheid Datavelden</string>
@@ -66,7 +66,7 @@
 	<string id="HeartRateLive5s">Hartslag (Live 5s)</string>
 	<string id="Battery">Batterij</string>
 	<string id="BatteryHidePercentage">Batterij (Verberg Percentage)</string>
-	<string id="Notifications">Notificaties</string>
+	<string id="Notifications">Meldingen</string>
 	<string id="Calories">Calorien</string>
 	<string id="Distance">Afstand</string>
 	<string id="Alarms">Alarmen</string>
@@ -75,7 +75,7 @@
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notificaties</string>
 	<string id="SunriseSunset">Zonopkomst / -Ondergang</string>
-	<string id="Weather">Weeer</string>
+	<string id="Weather">Weer</string>
 	<string id="Humidity">Vochtigheid</string>
 	<string id="Pressure">Luchtdruk</string>
 
