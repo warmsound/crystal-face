@@ -28,7 +28,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_SUNRISE_SUNSET,
 	FIELD_TYPE_WEATHER,
 	FIELD_TYPE_PRESSURE,
-	FIELD_TYPE_HUMIDITY
+	FIELD_TYPE_HUMIDITY,
+	FIELD_TYPE_PULSE_OX
 }
 
 class DataFields extends Ui.Drawable {
@@ -316,6 +317,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_TYPE_SUNRISE_SUNSET => "?",
 					FIELD_TYPE_PRESSURE => "@",
 					FIELD_TYPE_HUMIDITY => "A",
+					FIELD_TYPE_PULSE_OX => "B", // SG Addition
 				}[fieldType];
 			}
 
@@ -368,6 +370,14 @@ class DataFields extends Ui.Drawable {
 		var unit;
 
 		switch (type) {
+			// SG Addition
+			case FIELD_TYPE_PULSE_OX:
+				activityInfo = Activity.getActivityInfo();
+				sample = activityInfo != null and activityInfo has :currentOxygenSaturation ? activityInfo.currentOxygenSaturation : null;
+				if (sample != null) {
+					value = sample.format(INTEGER_FORMAT) + "%";
+				}
+				break;
 			case FIELD_TYPE_HEART_RATE:
 			case FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.

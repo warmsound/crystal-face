@@ -83,13 +83,14 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var hours = formattedTime[:hour];
 		var minutes = formattedTime[:min];
 		var amPmText = formattedTime[:amPm];
+		var colon = ":"; // SG Addition
 
 		var halfDCWidth = dc.getWidth() / 2;		
 
 		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
 		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
 		// minutes font is used to calculate total width. 
-		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
+		var totalWidth = dc.getTextWidthInPixels(hours + colon + minutes, mHoursFont); // SG Added colon
 		var x = halfDCWidth - (totalWidth / 2);
 		var y = mTimeY + mAdjustY + burnInYOffset;
 
@@ -104,6 +105,16 @@ class AlwaysOnDisplay extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
+
+		// SG Addition - Colon.
+		dc.drawText(
+			x,
+			y,
+			mHoursFont,
+			colon,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+		x += dc.getTextWidthInPixels(colon, mHoursFont);
 
 		// Minutes.
 		dc.drawText(
@@ -128,7 +139,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// LINE.
 		y = mLineY + burnInYOffset;
-		dc.setPenWidth(/* mLineStroke */ 2);		
+		dc.setPenWidth(/* mLineStroke */ 1); // SG From 2 to 1
 		dc.drawLine(halfDCWidth - (mLineWidth / 2), y, halfDCWidth + (mLineWidth / 2), y);
 
 		// DATA.

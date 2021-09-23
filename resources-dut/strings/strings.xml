@@ -78,6 +78,7 @@
 	<string id="Weather">Weeer</string>
 	<string id="Humidity">Vochtigheid</string>
 	<string id="Pressure">Luchtdruk</string>
+	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

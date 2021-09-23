@@ -15,13 +15,13 @@
 
 	<property id="FieldCount" type="number">3</property>
 	<property id="Field1Type" type="number">0</property>
-	<property id="Field2Type" type="number">1</property>
-	<property id="Field3Type" type="number">2</property>
+	<property id="Field2Type" type="number">14</property>
+	<property id="Field3Type" type="number">11</property>
 
-	<property id="IndicatorCount" type="number">1</property>
-	<property id="Indicator1Type" type="number">0</property>
-	<property id="Indicator2Type" type="number">1</property>
-	<property id="Indicator3Type" type="number">2</property>
+	<property id="IndicatorCount" type="number">2</property>
+	<property id="Indicator1Type" type="number">5</property>
+	<property id="Indicator2Type" type="number">3</property>
+	<property id="Indicator3Type" type="number">0</property>
 
 	<property id="LocalTimeInCity" type="string"></property>
 
@@ -30,6 +30,6 @@
 	<property id="HideSeconds" type="boolean">false</property>
 	<property id="HideHoursLeadingZero" type="boolean">true</property>
 
-	<property id="OWMKeyOverride" type="string"></property>
+	<property id="OWMKeyOverride" type="string">3268578d0f3633073e62b3d8a560a09a</property>
 
 </properties>

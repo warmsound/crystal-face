@@ -77,6 +77,7 @@
 	<string id="Weather">Pogoda</string>
 	<string id="Humidity">Humidity</string><!-- TODO_TRANSLATE possibly Wilgotność -->
 	<string id="Pressure">Ciśnienie</string>
+	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

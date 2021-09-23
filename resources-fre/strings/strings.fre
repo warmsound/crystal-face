@@ -4,39 +4,39 @@
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">Version de l'appli</string>
 
-	<string id="ThemeTitle">ThÃ¨me</string>
+	<string id="ThemeTitle">Thème</string>
 	<string id="HoursColourTitle">Couleur des heures</string>
 	<string id="MinutesColourTitle">Couleur des minutes</string>
 	<string id="LeftGoalMeterTitle">Compteur de gauche</string>
 	<string id="RightGoalMeterTitle">Compteur de droite</string>
 	<string id="CaloriesGoalTitle">Objectif de calories (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Apparence des compteurs</string>
-	<string id="MeterDigitsStyleTitle">Apparence des champs numÃ©riques</string>
+	<string id="MeterDigitsStyleTitle">Apparence des champs numériques</string>
 	<string id="LocalTimeInCityTitle">Ajout de l'heure d'une ville (Beta)</string>
-	<string id="MoveBarStyleTitle">Apparence de la barre d'activitÃ©</string>
+	<string id="MoveBarStyleTitle">Apparence de la barre d'activité</string>
 	<string id="HideSecondsTitle">Masquer les secondes</string>
-	<string id="HideHoursLeadingZeroTitle">Masquer le zÃ©ro avant l'heure</string>
+	<string id="HideHoursLeadingZeroTitle">Masquer le zéro avant l'heure</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 
-	<string id="FieldCountTitle">Nombre de champs de donnÃ©es</string>
-	<string id="DataField1Title">Champs de donnÃ©es 1</string>
-	<string id="DataField2Title">Champs de donnÃ©es 2</string>
-	<string id="DataField3Title">Champs de donnÃ©es 3</string>
+	<string id="FieldCountTitle">Nombre de champs de données</string>
+	<string id="DataField1Title">Champs de données 1</string>
+	<string id="DataField2Title">Champs de données 2</string>
+	<string id="DataField3Title">Champs de données 3</string>
 
 	<string id="IndicatorCountTitle">Nombre d'indicateurs</string>
 	<string id="Indicator1Title">Indicateur 1</string>
 	<string id="Indicator2Title">Indicateur 2</string>
 	<string id="Indicator3Title">Indicateur 3</string>
 
-	<string id="FromTheme">(Ã€ partir du thÃ¨me)</string>
+	<string id="FromTheme">(À partir du thème)</string>
 	<string id="MonoHighlight">Monochrome brillant</string>
 	<string id="Mono">Monochrome</string>
 
-	<string id="AllSegmentsMerged">Tous les segments (fusionnÃ©s)</string>
-	<string id="FilledSegmentsMerged">Segments remplis seulement (fusionnÃ©s)</string>
+	<string id="AllSegmentsMerged">Tous les segments (fusionnés)</string>
+	<string id="FilledSegmentsMerged">Segments remplis seulement (fusionnés)</string>
 	<string id="AllSegments">Tous les segments</string>
 	<string id="FilledSegments">Segments remplis seulement</string>
-	<string id="Hidden">MasquÃ©</string>
+	<string id="Hidden">Masqué</string>
 	<string id="CurrentTarget">Actuel/Objectif</string>
 	<string id="Current">Actuel</string>
 
@@ -45,7 +45,7 @@
 	<string id="ThemeRedDark">Rouge (sur fond noir)</string>
 	<string id="ThemeGreenDark">Vert(sur fond noir)</string>
 	<string id="ThemeCornflowerBlueDark">Bleu pale (sur fond noir)</string>
-	<string id="ThemeLemonCreamDark">CrÃ¨me (sur fond noir)</string>
+	<string id="ThemeLemonCreamDark">Crème (sur fond noir)</string>
 	<string id="ThemeVividYellowDark">Jaune vif (sur fond noir)</string>
 	<string id="ThemeDaygloOrangeDark">Orange (sur fond noir)</string>
 	<string id="ThemeMonoDark">Monochrome (sur fond noir)</string>
@@ -54,31 +54,30 @@
 	<string id="ThemeRedLight">Rouge (sur fond blanc)</string>
 	<string id="ThemeGreenLight">Vert (sur fond blanc)</string>
 	<string id="ThemeDaygloOrangeLight">Orange (sur fond blanc)</string>
-	<string id="ThemeCornYellowDark">Jaune foncÃ© (sur fond noir)</string>
+	<string id="ThemeCornYellowDark">Jaune foncé (sur fond noir)</string>
 
 	<string id="Steps">Pas</string>
-	<string id="FloorsClimbed">Ã‰tages montÃ©es</string>
+	<string id="FloorsClimbed">Étages montées</string>
 	<string id="ActiveMinutes">Minutes actives (hebdo)</string>
 	<string id="CaloriesManualGoal">Calories (objectif manuel)</string>
-	<string id="Off">MasquÃ©</string>
+	<string id="Off">Masqué</string>
 
 	<string id="HeartRate">Rythme cardiaque</string>
 	<string id="HeartRateLive5s">Rythme cardiaque (actif 5s)</string>
 	<string id="Battery">Pile</string>
-	<string id="BatteryHidePercentage">Pile (Pourcentage masquÃ©)</string>
+	<string id="BatteryHidePercentage">Pile (Pourcentage masqué)</string>
 	<string id="Notifications">Notifications</string>
 	<string id="Calories">Calories</string>
 	<string id="Distance">Distance</string>
 	<string id="Alarms">Alarmes</string>
 	<string id="Altitude">Altitude</string>
-	<string id="Temperature">ThermomÃ¨tre</string>
+	<string id="Temperature">Thermomètre</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notifications</string>
 	<string id="SunriseSunset">Lever/Coucher du soleil</string>
-	<string id="Weather">MÃ©tÃ©o</string>
-	<string id="Humidity">HumiditÃ©</string>
+	<string id="Weather">Météo</string>
+	<string id="Humidity">Humidité</string>
 	<string id="Pressure">Pression</string>
-	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
@@ -92,16 +91,16 @@
 	<string id="Sat">Sam</string>
 
 	<string id="Jan">Jan</string>
-	<string id="Feb">FÃ©v</string>
+	<string id="Feb">Fév</string>
 	<string id="Mar">Mar</string>
 	<string id="Apr">Avr</string>
 	<string id="May">Mai</string>
 	<string id="Jun">Juin</string>
 	<string id="Jul">Juil</string>
-	<string id="Aug">AoÃ»t</string>
+	<string id="Aug">Août</string>
 	<string id="Sep">Sep</string>
 	<string id="Oct">Oct</string>
 	<string id="Nov">Nov</string>
-	<string id="Dec">DÃ©c</string>
+	<string id="Dec">Déc</string>
 
 </strings>

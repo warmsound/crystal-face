@@ -76,6 +76,22 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		height - (2 * lineWidthPlusMargin));
 }
 
+function writeBatteryLevel(dc, x, y, width, height) {
+	var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
+
+	var textColour;
+	if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
+		textColour = Graphics.COLOR_RED;
+	} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
+		textColour = Graphics.COLOR_YELLOW;
+	} else {
+		textColour = gThemeColour;
+	}
+
+	dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+	dc.drawText(x - (width / 2), y - height, gNormalFont, Math.floor(Sys.getSystemStats().battery).format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+}
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?

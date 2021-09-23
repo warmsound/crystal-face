@@ -92,6 +92,11 @@ class Indicators extends Ui.Drawable {
 			return;
 		}
 
+		if (indicatorType == 5 /* INDICATOR_TYPE_BATTERY_NUMERIC */) {
+			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
+			return;
+		}
+
 		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
 		var settings = Sys.getDeviceSettings();
 		if (indicatorType == 3 /* INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS */) {
