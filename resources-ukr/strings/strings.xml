@@ -5,15 +5,15 @@
 
 	<string id="ThemeTitle">Тема</string>
 	<string id="HoursColourTitle">Колір годин</string>
-	<string id="MinutesColourTitle">Колід хвилин</string>
+	<string id="MinutesColourTitle">Колір хвилин</string>
 	<string id="LeftGoalMeterTitle">Ліва шкала</string>
 	<string id="RightGoalMeterTitle">Права шкала</string>
 	<string id="CaloriesGoalTitle">Ціль в калоріях (1-10,000ккал)</string>
 	<string id="GoalMeterStyleTitle">Стиль шкали</string>
 	<string id="MeterDigitsStyleTitle">Стиль цифрових значень шкал</string>
 	<string id="LocalTimeInCityTitle">Додати локальний час в місті (Beta)</string>
-	<string id="MoveBarStyleTitle">Стиль полоси рухливості</string>
-	<string id="HideSecondsTitle">Приховати сенкуди</string>
+	<string id="MoveBarStyleTitle">Стиль смужки рухливості</string>
+	<string id="HideSecondsTitle">Приховати секунди</string>
 	<string id="HideHoursLeadingZeroTitle">Не показувати нулі перед годинами</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 
