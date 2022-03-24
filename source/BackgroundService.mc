@@ -2,13 +2,34 @@ using Toybox.Background as Bg;
 using Toybox.System as Sys;
 using Toybox.Communications as Comms;
 using Toybox.Application as App;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
-	
+
+    var _token;
+    var _vehicle_id;
+
 	(:background_method)
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
+		
+		// Need to get a token since we can't OAUTH from a watch face :-(
+		// If someone can it, be my guest. I spent too much time on this already
+		_token = App.getApp().getProperty("TeslaToken");
+		if (_token != null) {
+			_token = "Bearer " + _token;
+		}
+
+        _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
+		if (_vehicle_id == null) {
+logMessage("Getting vehicle_id for token '" + _token + "'");
+			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
+		} else {
+logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
+			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+		}
 	}
 
 	// Read pending web requests, and call appropriate web request function.
@@ -16,8 +37,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	(:background_method)
 	function onTemporalEvent() {
-		//Sys.println("onTemporalEvent");
+		Sys.println("onTemporalEvent");
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -58,6 +80,18 @@ class BackgroundService extends Sys.ServiceDelegate {
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
 				);
+
+			// 3. Tesla
+			} else if (pendingWebRequests["TeslaBatterieLevel"] != null) {
+logMessage("TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
+
+				if (_vehicle_id) {
+logMessage("Calling makeTeslaWebRequest to get vehicle data");
+					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+				} else {
+logMessage("NOT calling makeTeslaWebRequest because of null vehicle_id");
+					pendingWebRequests["TeslaBatterieLevel"] = null;
+				}
 			}
 		} /* else {
 			Sys.println("onTemporalEvent() called with no pending web requests!");
@@ -191,6 +225,58 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 
 	(:background_method)
+    function onReceiveVehicles(responseCode, data) {
+		var result;
+
+logMessage("onReceiveVehicles responseCode is " + responseCode);
+        if (responseCode == 200) {
+            var vehicles = data.get("response");
+            if (vehicles.size() > 0) {
+                _vehicle_id = vehicles[0].get("id");
+logMessage("vehicle_id is " + _vehicle_id);
+	        } else {
+logMessage("No vehicle in account");
+	            _vehicle_id = 0;
+		    }
+			result = { "vehicle_id" => _vehicle_id};
+
+        } else {
+			result = { "httpError" => responseCode };
+	    }
+
+		Bg.exit({ "TeslaBatterieLevel" => result });
+    }
+
+	(:background_method)
+    function onReceiveVehicleData(responseCode, data) {
+		var result;
+
+logMessage("onReceiveVehicleData responseCode is " + responseCode);
+        if (responseCode == 200) {
+        	result = data.get("response");
+        	if (result != null) {
+	        	result = result.get("charge_state");
+	        	if (result != null) {
+		        	result = result.get("battery_level");
+		        	if (result == null) {
+		        		result = "N/A";
+		        	}
+	        	} else {
+	        		result = "N/A";
+	        	}
+        	} else {
+        		result = "N/A";
+        	}
+logMessage("onReceiveVehicleData received " + result);
+			result = { "battery_level" => result, "vehicle_id" => _vehicle_id };
+        } else {
+			result = { "httpError" => responseCode };
+	    }
+		Bg.exit({ "TeslaBatterieLevel" => result });
+    }
+
+
+	(:background_method)
 	function makeWebRequest(url, params, callback) {
 		var options = {
 			:method => Comms.HTTP_REQUEST_METHOD_GET,
@@ -201,4 +287,27 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		Comms.makeWebRequest(url, params, options, callback);
 	}
+
+	(:background_method)
+    function makeTeslaWebRequest(url, params, callback) {
+		var options = {
+            :method => Comms.HTTP_REQUEST_METHOD_GET,
+            :headers => {
+              		"Authorization" => _token},
+            :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
+        };
+logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
+		Comms.makeWebRequest(url, params, options, callback);
+    }
+
+(:debug)
+function logMessage(message) {
+	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+	var dateStr = clockTime.hour + ":" + clockTime.min + ":" + clockTime.sec;
+	Sys.println(dateStr + " : " + message);
+}
+
+(:release)
+function logMessage(output) {
+}
 }

@@ -78,7 +78,6 @@
 	<string id="Weather">Météo</string>
 	<string id="Humidity">Humidité</string>
 	<string id="Pressure">Pression</string>
-	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
@@ -104,4 +103,8 @@
 	<string id="Nov">Nov</string>
 	<string id="Dec">Déc</string>
 
+	<string id="BatteryNumeric">Battery Numeric</string>
+	<string id="PulseOx">Pulse Ox</string>
+	<string id="Tesla">Tesla battery level</string>
+	<string id="TeslaToken">Tesla Token</string>
 </strings>

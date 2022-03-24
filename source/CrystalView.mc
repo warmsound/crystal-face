@@ -3,6 +3,7 @@ using Toybox.Graphics as Graphics;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
+using Toybox.Communications as Comms;
 
 using Toybox.Math;
 
@@ -76,20 +77,41 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		height - (2 * lineWidthPlusMargin));
 }
 
-function writeBatteryLevel(dc, x, y, width, height) {
-	var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
+function writeBatteryLevel(dc, x, y, width, height, type) {
+	var batteryLevel;		
 
 	var textColour;
-	if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
-		textColour = Graphics.COLOR_RED;
-	} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
-		textColour = Graphics.COLOR_YELLOW;
+	
+	if (type == 0) {
+		batteryLevel = Math.floor(Sys.getSystemStats().battery);
 	} else {
-		textColour = gThemeColour;
+		batteryLevel = App.getApp().getProperty("TeslaBatterieLevelValue");
+	}
+//logMessage(batteryLevel + " is of type " + type_name(batteryLevel));
+
+	var inText = false;
+	if (batteryLevel == null || (batteryLevel instanceof Toybox.Lang.String && batteryLevel.equals("N/A"))) {
+		textColour = Graphics.COLOR_LT_GRAY;
+		inText = true;
+		batteryLevel = "???";
+	} else {
+		batteryLevel = batteryLevel.toFloat();
+		
+		if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
+			textColour = Graphics.COLOR_RED;
+		} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
+			textColour = Graphics.COLOR_YELLOW;
+		} else {
+			textColour = gThemeColour;
+		}
 	}
 
 	dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-	dc.drawText(x - (width / 2), y - height, gNormalFont, Math.floor(Sys.getSystemStats().battery).format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+	if (inText) {
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
+	} else {
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+	}
 }
 
 class CrystalView extends Ui.WatchFace {
@@ -445,6 +467,7 @@ class CrystalView extends Ui.WatchFace {
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+logMessage("Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 
@@ -498,4 +521,44 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
+}
+
+function type_name(obj) {
+    if (obj instanceof Toybox.Lang.Number) {
+        return "Number";
+    } else if (obj instanceof Toybox.Lang.Long) {
+        return "Long";
+    } else if (obj instanceof Toybox.Lang.Float) {
+        return "Float";
+    } else if (obj instanceof Toybox.Lang.Double) {
+        return "Double";
+    } else if (obj instanceof Toybox.Lang.Boolean) {
+        return "Boolean";
+    } else if (obj instanceof Toybox.Lang.String) {
+        return "String";
+    } else if (obj instanceof Toybox.Lang.Array) {
+        var s = "Array [";
+        for (var i = 0; i < obj.size(); ++i) {
+            s += type_name(obj);
+            s += ", ";
+        }
+        s += "]";
+        return s;
+    } else if (obj instanceof Toybox.Lang.Dictionary) {
+        var s = "Dictionary{";
+        var keys = obj.keys();
+        var vals = obj.values();
+        for (var i = 0; i < keys.size(); ++i) {
+            s += keys;
+            s += ": ";
+            s += vals;
+            s += ", ";
+        }
+        s += "}";
+        return s;
+    } else if (obj instanceof Toybox.Time.Gregorian.Info) {
+        return "Gregorian.Info";
+    } else {
+        return "???";
+    }
 }

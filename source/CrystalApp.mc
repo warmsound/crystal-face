@@ -3,6 +3,7 @@ using Toybox.Background as Bg;
 using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Time;
+using Toybox.Time.Gregorian;
 
 // In-memory current location.
 // Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
@@ -76,12 +77,12 @@ class CrystalApp extends App.AppBase {
 	// Currently called on layout initialisation, when settings change, and on exiting sleep.
 	(:background_method)
 	function checkPendingWebRequests() {
-
+logMessage("In checkPendingWebRequests");
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
-			// Sys.println("Saving location");
+			// logMessage("Saving location");
 			location = location.toDegrees(); // Array of Doubles.
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();
@@ -102,13 +103,14 @@ class CrystalApp extends App.AppBase {
 				gLocationLng = lng;
 			}
 		}
-		// Sys.println(gLocationLat + ", " + gLocationLng);
+		// logMessage(gLocationLat + ", " + gLocationLng);
 
 		if (!(Sys has :ServiceDelegate)) {
 			return;
 		}
 
 		var pendingWebRequests = getProperty("PendingWebRequests");
+logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -169,6 +171,47 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
+		// 3. Tesla:
+		if (getProperty("Tesla")) {
+logMessage("Tesla!");
+			var teslaBatterieLevel = getProperty("TeslaBatterieLevel");
+logMessage("TeslaBatterieLevel=" + teslaBatterieLevel); 
+
+			// No existing data.
+			if (teslaBatterieLevel == null) {
+logMessage("Asking first read");
+
+				pendingWebRequests["TeslaBatterieLevel"] = true;
+
+			// We got something, check what it is
+			} else {
+				var batterie_level = teslaBatterieLevel["battery_level"]; 
+
+				var result = teslaBatterieLevel["httpError"];
+				if (result != null && result != 408) { // We got an error is it's not because the vehicle is asleep
+logMessage("Got http error '" + result + "'");
+					setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
+					batterie_level = "N/A";
+				}
+
+				var vehicle_id = teslaBatterieLevel["vehicle_id"];
+				if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
+					if (vehicle_id != 0) {
+logMessage("Saving '" + vehicle_id +"' as vehicle_id");
+						setProperty("TeslaVehicleID", vehicle_id.toString());
+					} else {
+						setProperty("TeslaVehicleID", null);
+						batterie_level = "N/A";
+					}
+				}
+
+				if (batterie_level  != null) {
+					setProperty("TeslaBatterieLevelValue", batterie_level);
+				}
+
+				pendingWebRequests["TeslaBatterieLevel"] = true;
+			}
+		}
 		// If there are any pending requests:
 		if (pendingWebRequests.keys().size() > 0) {
 
@@ -199,7 +242,7 @@ class CrystalApp extends App.AppBase {
 	function onBackgroundData(data) {
 		var pendingWebRequests = getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
-			//Sys.println("onBackgroundData() called with no pending web requests!");
+			//logMessage("onBackgroundData() called with no pending web requests!");
 			pendingWebRequests = {};
 		}
 
@@ -259,4 +302,15 @@ class CrystalApp extends App.AppBase {
 			:amPm => amPm
 		};
 	}
+}
+
+(:debug)
+function logMessage(message) {
+	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+	var dateStr = clockTime.hour + ":" + clockTime.min + ":" + clockTime.sec;
+	Sys.println(dateStr + " : " + message);
+}
+
+(:release)
+function logMessage(output) {
 }
