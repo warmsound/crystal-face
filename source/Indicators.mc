@@ -42,7 +42,7 @@ class Indicators extends Ui.Drawable {
 		
 		if (mIndicator1Type == 6 || mIndicator2Type == 6 || mIndicator3Type == 6) {
 			App.getApp().setProperty("Tesla", true);
-logMessage("Doing Tesla!");
+logMessage("onSettingsChanged:Doing Tesla!");
 		} else {
 			App.getApp().setProperty("Tesla", false);
 		}  

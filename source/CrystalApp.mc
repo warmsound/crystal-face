@@ -77,7 +77,7 @@ class CrystalApp extends App.AppBase {
 	// Currently called on layout initialisation, when settings change, and on exiting sleep.
 	(:background_method)
 	function checkPendingWebRequests() {
-logMessage("In checkPendingWebRequests");
+logMessage("checkPendingWebRequests:Begining");
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 		var location = Activity.getActivityInfo().currentLocation;
@@ -110,7 +110,7 @@ logMessage("In checkPendingWebRequests");
 		}
 
 		var pendingWebRequests = getProperty("PendingWebRequests");
-logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
+logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -172,14 +172,14 @@ logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
 		}
 
 		// 3. Tesla:
-		if (getProperty("Tesla")) {
-logMessage("Tesla!");
+		if (getProperty("Tesla") != null) {
+logMessage("checkPendingWebRequests:Tesla!");
 			var teslaBatterieLevel = getProperty("TeslaBatterieLevel");
-logMessage("TeslaBatterieLevel=" + teslaBatterieLevel); 
+logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel); 
 
 			// No existing data.
 			if (teslaBatterieLevel == null) {
-logMessage("Asking first read");
+logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read");
 
 				pendingWebRequests["TeslaBatterieLevel"] = true;
 
@@ -187,26 +187,63 @@ logMessage("Asking first read");
 			} else {
 				var batterie_level = teslaBatterieLevel["battery_level"]; 
 
-				var result = teslaBatterieLevel["httpError"];
-				if (result != null && result != 408) { // We got an error is it's not because the vehicle is asleep
-logMessage("Got http error '" + result + "'");
-					setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
-					batterie_level = "N/A";
-				}
-
-				var vehicle_id = teslaBatterieLevel["vehicle_id"];
-				if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
-					if (vehicle_id != 0) {
-logMessage("Saving '" + vehicle_id +"' as vehicle_id");
-						setProperty("TeslaVehicleID", vehicle_id.toString());
-					} else {
-						setProperty("TeslaVehicleID", null);
+				// First handle errors, setting batterie_level to "N/A" if the query returned a vehicle not found.
+				// If we failed to get access, maybe our token has expired, clear it so next time the background process runs, it will refresh it
+				// Other errors are silent for now
+				var result = teslaBatterieLevel["httpErrorTesla"];
+				if (result != null) {
+logMessage("checkPendingWebRequests:Got http error '" + result + "'");
+					if (result == 400 || result == 401) { // Our token has expired, refresh it
+logMessage("checkPendingWebRequests:Clearing TeslaAccessToken");
+						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
+					}
+					
+					if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
+logMessage("checkPendingWebRequests:Clearing TeslaVehicleID");
+						setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
 						batterie_level = "N/A";
 					}
 				}
+				
+				// Check if our access token was refreshed. If so, store the new access and refresh tokens
+				result = teslaBatterieLevel["Token"];
+				if (result != null) {
+logMessage("checkPendingWebRequests:Got token data '" + result + "'");
+					var accessToken = result["access_token"];
+					var refreshToken = result["refresh_token"];
+					var expires_in = result["refresh_token"];
+					setProperty("TeslaAccessToken", accessToken);
+					if (refreshToken != null && refreshToken.equals("") != false) { // Only if we received a refresh tokem
+logMessage("checkPendingWebRequests:But missing the refresh token");
+						setProperty("TeslaRefreshToken", refreshToken);
+					}
+					setProperty("TeslaExpiresIn", expires_in);
+				}
 
+				// Read our vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
+				// If we have no vehicle, set the batterie level to N/A
+				var vehicle_id = teslaBatterieLevel["vehicle_id"];
+				if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
+					if (vehicle_id != 0) {
+logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id");
+						setProperty("TeslaVehicleID", vehicle_id.toString());
+					} else {
+logMessage("checkPendingWebRequests: vehicle_id we got was 0");
+						setProperty("TeslaVehicleID", null);
+						batterie_level = "N/A";
+					}
+				} else {
+logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null");
+					setProperty("TeslaVehicleID", null);
+					batterie_level = "N/A";
+				}
+
+				// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
 				if (batterie_level  != null) {
 					setProperty("TeslaBatterieLevelValue", batterie_level);
+				} else {
+logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/);
+//					setProperty("TeslaBatterieLevelValue", null);
 				}
 
 				pendingWebRequests["TeslaBatterieLevel"] = true;
@@ -240,9 +277,11 @@ logMessage("Saving '" + vehicle_id +"' as vehicle_id");
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
+logMessage("onBackgroundData:received '" + data + "'");
 		var pendingWebRequests = getProperty("PendingWebRequests");
+logMessage("onBackgroundData:pendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests == null) {
-			//logMessage("onBackgroundData() called with no pending web requests!");
+logMessage("onBackgroundData: called with no pending web requests!");
 			pendingWebRequests = {};
 		}
 

@@ -103,8 +103,9 @@
 	<string id="Nov">Nov</string>
 	<string id="Dec">Déc</string>
 
-	<string id="BatteryNumeric">Battery Numeric</string>
+	<string id="BatteryNumeric">Batterie Numérique</string>
 	<string id="PulseOx">Pulse Ox</string>
 	<string id="Tesla">Tesla battery level</string>
-	<string id="TeslaToken">Tesla Token</string>
+	<string id="TeslaAccessToken">Tesla Access Token</string>
+	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
 </strings>

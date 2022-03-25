@@ -212,8 +212,12 @@
 		<settingConfig type="alphaNumeric" maxLength="32"/>
 	</setting>
 
-	<setting propertyKey="@Properties.TeslaToken" title="@Strings.TeslaToken">
-		<settingConfig type="alphaNumeric" maxLength="1024"/>
+	<setting propertyKey="@Properties.TeslaAccessToken" title="@Strings.TeslaAccessToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaRefreshToken" title="@Strings.TeslaRefreshToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
 	</setting>
 
 </settings>

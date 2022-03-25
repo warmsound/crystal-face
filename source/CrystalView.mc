@@ -199,6 +199,7 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
+logMessage("onSettingsChanged called");
 
 		updateNormalFont();
 
@@ -209,6 +210,7 @@ class CrystalView extends Ui.WatchFace {
 		updateHoursMinutesColours();
 
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 	}
@@ -456,7 +458,7 @@ class CrystalView extends Ui.WatchFace {
 	function onExitSleep() {
 		mIsSleeping = false;
 
-		//Sys.println("onExitSleep()");
+		logMessage("onExitSleep:onExitSleep()");
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
@@ -467,7 +469,7 @@ class CrystalView extends Ui.WatchFace {
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-logMessage("Wakeup and checkPendingWebRequests");
+logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 

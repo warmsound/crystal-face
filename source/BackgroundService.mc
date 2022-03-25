@@ -14,17 +14,39 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
-		
+
+		// If we don't have a phone connected, don't go any further.
+		if (!Sys.getDeviceSettings().phoneConnected) {
+logMessage("initialize: No phone connected");
+			return;
+		}
+			
+		if (App.getApp().getProperty("Tesla") == null) {
+logMessage("initialize: Not requesting Tesla stuff, bailing out");
+			return;
+		}
+
 		// Need to get a token since we can't OAUTH from a watch face :-(
 		// If someone can it, be my guest. I spent too much time on this already
-		_token = App.getApp().getProperty("TeslaToken");
-		if (_token != null) {
+		_token = App.getApp().getProperty("TeslaAccessToken");
+		if (_token != null && _token.equals("") == false) {
+logMessage("initialize:Using token '" + _token + "'");
 			_token = "Bearer " + _token;
+		}
+		else {
+logMessage("initialize:Generating Access Token");
+			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
+			if (refreshToken != null) {
+				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
+			} else {
+logMessage("initialize:No refresh token!");
+			}
+			return;
 		}
 
         _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
 		if (_vehicle_id == null) {
-logMessage("Getting vehicle_id for token '" + _token + "'");
+logMessage("initialize:Getting vehicle_id");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
 logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
@@ -37,9 +59,8 @@ logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	(:background_method)
 	function onTemporalEvent() {
-		Sys.println("onTemporalEvent");
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
-logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
+logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -82,15 +103,21 @@ logMessage("PendingWebRequests is '" + pendingWebRequests + "'");
 				);
 
 			// 3. Tesla
-			} else if (pendingWebRequests["TeslaBatterieLevel"] != null) {
-logMessage("TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
+			} else if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
+				if (!Sys.getDeviceSettings().phoneConnected) {
+logMessage("onTemporalEvent: No phone connected");
+//					pendingWebRequests["TeslaBatterieLevel"] = null;
+					return;
+				}
+					
+logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
 
 				if (_vehicle_id) {
-logMessage("Calling makeTeslaWebRequest to get vehicle data");
+logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
 					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				} else {
-logMessage("NOT calling makeTeslaWebRequest because of null vehicle_id");
-					pendingWebRequests["TeslaBatterieLevel"] = null;
+logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data because of null vehicle_id");
+//					pendingWebRequests["TeslaBatterieLevel"] = null;
 				}
 			}
 		} /* else {
@@ -225,6 +252,20 @@ logMessage("NOT calling makeTeslaWebRequest because of null vehicle_id");
 	}
 
 	(:background_method)
+    function onReceiveToken(responseCode, data) {
+		var result;
+
+logMessage("onReceiveToken responseCode is " + responseCode);
+logMessage("onReceiveToken data  is " + data);
+        if (responseCode == 200) {
+        	result = { "Token" => data };
+        } else {
+			result = { "httpErrorTesla" => responseCode };
+	    }
+		Bg.exit({ "TeslaBatterieLevel" => result });
+    }
+
+	(:background_method)
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
@@ -233,15 +274,15 @@ logMessage("onReceiveVehicles responseCode is " + responseCode);
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
                 _vehicle_id = vehicles[0].get("id");
-logMessage("vehicle_id is " + _vehicle_id);
+logMessage("onReceiveVehicles:vehicle_id is " + _vehicle_id);
 	        } else {
-logMessage("No vehicle in account");
+logMessage("onReceiveVehicles:No vehicle in account");
 	            _vehicle_id = 0;
 		    }
 			result = { "vehicle_id" => _vehicle_id};
 
         } else {
-			result = { "httpError" => responseCode };
+			result = { "httpErrorTesla" => responseCode };
 	    }
 
 		Bg.exit({ "TeslaBatterieLevel" => result });
@@ -270,7 +311,7 @@ logMessage("onReceiveVehicleData responseCode is " + responseCode);
 logMessage("onReceiveVehicleData received " + result);
 			result = { "battery_level" => result, "vehicle_id" => _vehicle_id };
         } else {
-			result = { "httpError" => responseCode };
+			result = { "httpErrorTesla" => responseCode };
 	    }
 		Bg.exit({ "TeslaBatterieLevel" => result });
     }
@@ -298,6 +339,25 @@ logMessage("onReceiveVehicleData received " + result);
         };
 logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
 		Comms.makeWebRequest(url, params, options, callback);
+    }
+
+	(:background_method)
+    function makeTeslaWebPost(token, notify) {
+        var url = "https://auth.tesla.com/oauth2/v3/token";
+        Communications.makeWebRequest(
+            url,
+            {
+				"grant_type" => "refresh_token",
+				"client_id" => "ownerapi",
+				"refresh_token" => token,
+				"scope" => "openid email offline_access"
+            },
+            {
+                :method => Communications.HTTP_REQUEST_METHOD_POST,
+                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            },
+            notify
+        );
     }
 
 (:debug)
