@@ -188,7 +188,8 @@ logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read");
 				var batterie_level = null; 
 				var charging_state = null;
 				var batterie_stale = false;
-
+				var carAsleep = false;
+				
 				if (batterie_state) {
 					batterie_level = batterie_state["battery_level"]; 
 					charging_state = batterie_state["charging_state"];
@@ -203,11 +204,11 @@ logMessage("checkPendingWebRequests:Got http error '" + result + "'");
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
 						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
 						batterie_stale = true;
-					}
-					
-					if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
+					} else if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
 						setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
 						batterie_stale = true;
+					} else if (result == 408) { // Car is aslepep keep the old data but stop charging if it still was before going to sleep
+						carAsleep = true;
 					}
 				}
 				
@@ -231,37 +232,45 @@ logMessage("checkPendingWebRequests:But missing the refresh token '" + result + 
 //					setProperty("TeslaTokenCreatedAt", created_at);
 				}
 
-				// Read our vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
+				// If the car isn't asleep, keep the current charge and clear the charging_state
+				if (!carAsleep) {
+					// Rad its vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
 				// If we have no vehicle, set the batterie level to N/A
-				var vehicle_id = teslaBatterieLevel["vehicle_id"];
-				if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
-					if (vehicle_id != 0) {
+					var vehicle_id = teslaBatterieLevel["vehicle_id"];
+					if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
+						if (vehicle_id != 0) {
 logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id");
-						setProperty("TeslaVehicleID", vehicle_id.toString());
-					} else {
+							setProperty("TeslaVehicleID", vehicle_id.toString());
+						} else {
 logMessage("checkPendingWebRequests: vehicle_id we got was 0");
+							setProperty("TeslaVehicleID", null);
+							batterie_stale = true;
+							batterie_level = "N/A";
+						}
+					} else {
+logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null");
 						setProperty("TeslaVehicleID", null);
 						batterie_stale = true;
-						batterie_level = "N/A";
+					}
+
+					// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
+					if (batterie_level  != null) {
+						setProperty("TeslaBatterieLevelValue", batterie_level);
+						setProperty("TeslaBatterieStale", batterie_stale);
+						setProperty("TeslaChargingState", charging_state);
+						
+					} else {
+logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/);
+//						setProperty("TeslaBatterieLevelValue", null);
+						setProperty("TeslaBatterieStale", true);
 					}
 				} else {
-logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null");
-					setProperty("TeslaVehicleID", null);
-					batterie_stale = true;
+					if (charging_state != null && charging_state.equals("Charging") == true) {
+						setProperty("TeslaChargingState", "");
+					}
+					setProperty("TeslaBatterieStale", false);
 				}
-
-				// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
-				if (batterie_level  != null) {
-					setProperty("TeslaBatterieLevelValue", batterie_level);
-					setProperty("TeslaBatterieStale", batterie_stale);
-					setProperty("TeslaChargingState", charging_state);
-					
-				} else {
-logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/);
-//					setProperty("TeslaBatterieLevelValue", null);
-					setProperty("TeslaBatterieStale", true);
-				}
-
+				
 				pendingWebRequests["TeslaBatterieLevel"] = true;
 			}
 		}
