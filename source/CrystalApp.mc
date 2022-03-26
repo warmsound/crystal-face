@@ -77,7 +77,7 @@ class CrystalApp extends App.AppBase {
 	// Currently called on layout initialisation, when settings change, and on exiting sleep.
 	(:background_method)
 	function checkPendingWebRequests() {
-logMessage("checkPendingWebRequests:Begining");
+//logMessage("checkPendingWebRequests:Begining");
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 		var location = Activity.getActivityInfo().currentLocation;
@@ -173,7 +173,6 @@ logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequest
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-logMessage("checkPendingWebRequests:Tesla!");
 			var teslaBatterieLevel = getProperty("TeslaBatterieLevel");
 logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel); 
 
@@ -185,8 +184,16 @@ logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read");
 
 			// We got something, check what it is
 			} else {
-				var batterie_level = teslaBatterieLevel["battery_level"]; 
+				var batterie_state = teslaBatterieLevel["battery_state"];
+				var batterie_level = null; 
+				var charging_state = null;
+				var batterie_stale = false;
 
+				if (batterie_state) {
+					batterie_level = batterie_state["battery_level"]; 
+					charging_state = batterie_state["charging_state"];
+				}
+				
 				// First handle errors, setting batterie_level to "N/A" if the query returned a vehicle not found.
 				// If we failed to get access, maybe our token has expired, clear it so next time the background process runs, it will refresh it
 				// Other errors are silent for now
@@ -194,30 +201,34 @@ logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read");
 				if (result != null) {
 logMessage("checkPendingWebRequests:Got http error '" + result + "'");
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
-logMessage("checkPendingWebRequests:Clearing TeslaAccessToken");
 						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
+						batterie_stale = true;
 					}
 					
 					if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
-logMessage("checkPendingWebRequests:Clearing TeslaVehicleID");
 						setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
-						batterie_level = "N/A";
+						batterie_stale = true;
 					}
 				}
 				
 				// Check if our access token was refreshed. If so, store the new access and refresh tokens
 				result = teslaBatterieLevel["Token"];
 				if (result != null) {
-logMessage("checkPendingWebRequests:Got token data '" + result + "'");
+//logMessage("checkPendingWebRequests:Got token data '" + result + "'");
+logMessage("checkPendingWebRequests:Got token data");
 					var accessToken = result["access_token"];
 					var refreshToken = result["refresh_token"];
 					var expires_in = result["refresh_token"];
+//					var created_at = teslaBatterieLevel["CreatedAt"]; 
 					setProperty("TeslaAccessToken", accessToken);
 					if (refreshToken != null && refreshToken.equals("") != false) { // Only if we received a refresh tokem
-logMessage("checkPendingWebRequests:But missing the refresh token");
 						setProperty("TeslaRefreshToken", refreshToken);
 					}
-					setProperty("TeslaExpiresIn", expires_in);
+					else {
+logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'");
+					}
+					setProperty("TeslaTokenExpiresIn", expires_in);
+//					setProperty("TeslaTokenCreatedAt", created_at);
 				}
 
 				// Read our vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
@@ -230,20 +241,25 @@ logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id");
 					} else {
 logMessage("checkPendingWebRequests: vehicle_id we got was 0");
 						setProperty("TeslaVehicleID", null);
+						batterie_stale = true;
 						batterie_level = "N/A";
 					}
 				} else {
 logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null");
 					setProperty("TeslaVehicleID", null);
-					batterie_level = "N/A";
+					batterie_stale = true;
 				}
 
 				// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
 				if (batterie_level  != null) {
 					setProperty("TeslaBatterieLevelValue", batterie_level);
+					setProperty("TeslaBatterieStale", batterie_stale);
+					setProperty("TeslaChargingState", charging_state);
+					
 				} else {
 logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/);
 //					setProperty("TeslaBatterieLevelValue", null);
+					setProperty("TeslaBatterieStale", true);
 				}
 
 				pendingWebRequests["TeslaBatterieLevel"] = true;
@@ -257,8 +273,11 @@ logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our Tesla
 			if (lastTime) {
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+var clockTime = Gregorian.info(nextTime, Time.FORMAT_MEDIUM);
+logMessage("checkPendingWebRequests:Scheduling for " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d"));
 				Bg.registerForTemporalEvent(nextTime);
 			} else {
+logMessage("checkPendingWebRequests:Scheduling now");
 				Bg.registerForTemporalEvent(Time.now());
 			}
 		}
@@ -301,6 +320,8 @@ logMessage("onBackgroundData: called with no pending web requests!");
 		setProperty("PendingWebRequests", pendingWebRequests);
 		setProperty(type, storedData);
 
+		checkPendingWebRequests(); // We just got new data, process them right away before displaying
+		
 		Ui.requestUpdate();
 	}
 
@@ -346,7 +367,7 @@ logMessage("onBackgroundData: called with no pending web requests!");
 (:debug)
 function logMessage(message) {
 	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-	var dateStr = clockTime.hour + ":" + clockTime.min + ":" + clockTime.sec;
+	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 	Sys.println(dateStr + " : " + message);
 }
 

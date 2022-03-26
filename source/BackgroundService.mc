@@ -30,7 +30,7 @@ logMessage("initialize: Not requesting Tesla stuff, bailing out");
 		// If someone can it, be my guest. I spent too much time on this already
 		_token = App.getApp().getProperty("TeslaAccessToken");
 		if (_token != null && _token.equals("") == false) {
-logMessage("initialize:Using token '" + _token + "'");
+logMessage("initialize:Using token '" + _token.substring(0,10) + "...'");
 			_token = "Bearer " + _token;
 		}
 		else {
@@ -291,6 +291,8 @@ logMessage("onReceiveVehicles:No vehicle in account");
 	(:background_method)
     function onReceiveVehicleData(responseCode, data) {
 		var result;
+		var batterieLevel = "N/A";
+		var chargingState = "Disconnected";
 
 logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
@@ -298,24 +300,30 @@ logMessage("onReceiveVehicleData responseCode is " + responseCode);
         	if (result != null) {
 	        	result = result.get("charge_state");
 	        	if (result != null) {
-		        	result = result.get("battery_level");
-		        	if (result == null) {
-		        		result = "N/A";
+		        	batterieLevel = result.get("battery_level");
+		        	chargingState = result.get("charging_state");
+		        	
+//batterieLevel = Math.rand() % 100;
+		        	if (batterieLevel == null) {
+		        		batterieLevel = "N/A";
 		        	}
-	        	} else {
-	        		result = "N/A";
+
+					result = {
+						"battery_level" => batterieLevel,
+						"charging_state" => chargingState
+//						"charging_state" => "Charging"
+					};
 	        	}
-        	} else {
-        		result = "N/A";
         	}
 logMessage("onReceiveVehicleData received " + result);
-			result = { "battery_level" => result, "vehicle_id" => _vehicle_id };
+			result = { "battery_state" => result, "vehicle_id" => _vehicle_id };
         } else {
 			result = { "httpErrorTesla" => responseCode };
 	    }
+	    
+	    
 		Bg.exit({ "TeslaBatterieLevel" => result });
     }
-
 
 	(:background_method)
 	function makeWebRequest(url, params, callback) {
@@ -337,7 +345,7 @@ logMessage("onReceiveVehicleData received " + result);
               		"Authorization" => _token},
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
-logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
+//logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
 		Comms.makeWebRequest(url, params, options, callback);
     }
 
@@ -363,7 +371,7 @@ logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' o
 (:debug)
 function logMessage(message) {
 	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-	var dateStr = clockTime.hour + ":" + clockTime.min + ":" + clockTime.sec;
+	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 	Sys.println(dateStr + " : " + message);
 }
 

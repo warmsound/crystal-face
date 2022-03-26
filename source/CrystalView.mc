@@ -79,25 +79,39 @@ function drawBatteryMeter(dc, x, y, width, height) {
 
 function writeBatteryLevel(dc, x, y, width, height, type) {
 	var batteryLevel;		
-
+	var batteryStale = false;
+	var chargingState = false;
 	var textColour;
 	
 	if (type == 0) {
 		batteryLevel = Math.floor(Sys.getSystemStats().battery);
 	} else {
 		batteryLevel = App.getApp().getProperty("TeslaBatterieLevelValue");
+		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
+		chargingState = App.getApp().getProperty("TeslaChargingState");
+		if (chargingState != null) {
+			if (chargingState.equals("Charging")) {
+				chargingState = true;
+			} else {
+				chargingState = false;
+			}
+		} else {
+			chargingState = false;
+		}
 	}
-//logMessage(batteryLevel + " is of type " + type_name(batteryLevel));
 
 	var inText = false;
 	if (batteryLevel == null || (batteryLevel instanceof Toybox.Lang.String && batteryLevel.equals("N/A"))) {
 		textColour = Graphics.COLOR_LT_GRAY;
 		inText = true;
+		chargingState = false;
 		batteryLevel = "???";
 	} else {
 		batteryLevel = batteryLevel.toFloat();
-		
-		if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
+
+		if (batteryStale == true) {
+			textColour = Graphics.COLOR_LT_GRAY;
+		} else if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
 			textColour = Graphics.COLOR_RED;
 		} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
 			textColour = Graphics.COLOR_YELLOW;
@@ -110,7 +124,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	if (inText) {
 		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
 	} else {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState ? "+" : ""), Graphics.TEXT_JUSTIFY_LEFT);
 	}
 }
 
@@ -221,7 +235,7 @@ logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 	function updateNormalFont() {
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
-
+logMessage("which font " + ((city != null) && (city.length() > 0)));
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
 			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
