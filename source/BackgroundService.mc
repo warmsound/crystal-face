@@ -25,7 +25,7 @@ logMessage("initialize: No phone connected");
 		}
 			
 		if (App.getApp().getProperty("Tesla") == null) {
-logMessage("initialize: Not requesting Tesla stuff, bailing out");
+//logMessage("initialize: Not requesting Tesla stuff, bailing out");
 			return;
 		}
 
@@ -41,19 +41,21 @@ logMessage("initialize: Not requesting Tesla stuff, bailing out");
 		else {
 			createdAt = createdAt.toNumber();
 		}
-		var expireIn = App.getApp().getProperty("TeslaTokenExpiresIn");
-		if (expireIn == null) {
-			expireIn = 0;
+		var expiresIn = App.getApp().getProperty("TeslaTokenExpiresIn");
+		if (expiresIn == null) {
+			expiresIn = 0;
 		}
 		else {
-			expireIn = expireIn.toNumber();
+			expiresIn = expiresIn.toNumber();
 		}
 		
 		var timeNow = Time.now().value();
 		var interval = 5 * 60 * 60;
-		var answer = (timeNow + interval < createdAt + expireIn);
+		
+//logMessage("createdAt:" + type_name(createdAt) + " " + createdAt + " expiresIn:" + type_name(expiresIn) + " " + expiresIn + " timeNow:" + type_name(timeNow) + " " + timeNow + " interval:" + type_name(interval) + " " + interval);
+		var answer = (timeNow + interval < createdAt + expiresIn);
 		if (_token != null && _token.length() != 0 && answer == true) {
-			var expireAt = new Time.Moment(createdAt + expireIn);
+			var expireAt = new Time.Moment(createdAt + expiresIn);
 			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
@@ -72,10 +74,10 @@ logMessage("initialize:No refresh token!");
 
         _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
 		if (_vehicle_id == null) {
-logMessage("initialize:Getting vehicle_id");
+//logMessage("initialize:Getting vehicle_id");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
+//logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 		// ************************************************************************************
@@ -89,12 +91,12 @@ logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
 	(:background_method)
 	function onTemporalEvent() {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
-logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
+//logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
-logMessage("onTemporalEvent: doing city event");
+//logMessage("onTemporalEvent: doing city event");
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
@@ -106,7 +108,7 @@ logMessage("onTemporalEvent: doing city event");
 
 			// 2. Weather.
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-logMessage("onTemporalEvent: doing weather event");
+//logMessage("onTemporalEvent: doing weather event");
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -142,12 +144,12 @@ logMessage("onTemporalEvent: doing weather event");
 			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
 logMessage("onTemporalEvent: doing Tesla event");
 				if (!Sys.getDeviceSettings().phoneConnected) {
-logMessage("onTemporalEvent: No phone connected");
+//logMessage("onTemporalEvent: No phone connected");
 //					pendingWebRequests["TeslaBatterieLevel"] = null;
 					return;
 				}
 					
-logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
+//logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
 
 				if (_vehicle_id) {
 logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
@@ -317,9 +319,9 @@ logMessage("onReceiveVehicles responseCode is " + responseCode);
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
                 _vehicle_id = vehicles[0].get("id");
-logMessage("onReceiveVehicles:vehicle_id is " + _vehicle_id);
+//logMessage("onReceiveVehicles:vehicle_id is " + _vehicle_id);
 	        } else {
-logMessage("onReceiveVehicles:No vehicle in account");
+//logMessage("onReceiveVehicles:No vehicle in account");
 	            _vehicle_id = 0;
 		    }
 			result = { "vehicle_id" => _vehicle_id};
@@ -338,6 +340,7 @@ logMessage("onReceiveVehicles:No vehicle in account");
 		var chargingState = "Disconnected";
 
 logMessage("onReceiveVehicleData responseCode is " + responseCode);
+//logMessage("onReceiveVehicleData responseCode is " + responseCode + " with data '" + data + "'");
         if (responseCode == 200) {
         	result = data.get("response");
         	if (result != null) {
@@ -424,4 +427,44 @@ logMessage("onReceiveVehicleData received " + result);
 	(:release)
 	function logMessage(output) {
 	}
+
+/*	function type_name(obj) {
+	    if (obj instanceof Toybox.Lang.Number) {
+	        return "Number";
+	    } else if (obj instanceof Toybox.Lang.Long) {
+	        return "Long";
+	    } else if (obj instanceof Toybox.Lang.Float) {
+	        return "Float";
+	    } else if (obj instanceof Toybox.Lang.Double) {
+	        return "Double";
+	    } else if (obj instanceof Toybox.Lang.Boolean) {
+	        return "Boolean";
+	    } else if (obj instanceof Toybox.Lang.String) {
+	        return "String";
+	    } else if (obj instanceof Toybox.Lang.Array) {
+	        var s = "Array [";
+	        for (var i = 0; i < obj.size(); ++i) {
+	            s += type_name(obj);
+	            s += ", ";
+	        }
+	        s += "]";
+	        return s;
+	    } else if (obj instanceof Toybox.Lang.Dictionary) {
+	        var s = "Dictionary{";
+	        var keys = obj.keys();
+	        var vals = obj.values();
+	        for (var i = 0; i < keys.size(); ++i) {
+	            s += keys;
+	            s += ": ";
+	            s += vals;
+	            s += ", ";
+	        }
+	        s += "}";
+	        return s;
+	    } else if (obj instanceof Toybox.Time.Gregorian.Info) {
+	        return "Gregorian.Info";
+	    } else {
+	        return "???";
+	    }
+	}*/
 }

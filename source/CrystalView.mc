@@ -222,7 +222,7 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
-logMessage("onSettingsChanged called");
+//logMessage("onSettingsChanged called");
 
 		updateNormalFont();
 
@@ -548,7 +548,7 @@ logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 	}
 }
 
-function type_name(obj) {
+/*function type_name(obj) {
     if (obj instanceof Toybox.Lang.Number) {
         return "Number";
     } else if (obj instanceof Toybox.Lang.Long) {
@@ -586,4 +586,4 @@ function type_name(obj) {
     } else {
         return "???";
     }
-}
+}*/
