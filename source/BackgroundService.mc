@@ -15,6 +15,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
 
+		// ************************************************************************************
+		// REMOVE THIS IF YOU WANT TO EXCLUDE TESLA CODE
+		// ************************************************************************************
 		// If we don't have a phone connected, don't go any further.
 		if (!Sys.getDeviceSettings().phoneConnected) {
 logMessage("initialize: No phone connected");
@@ -27,16 +30,39 @@ logMessage("initialize: Not requesting Tesla stuff, bailing out");
 		}
 
 		// Need to get a token since we can't OAUTH from a watch face :-(
-		// If someone can it, be my guest. I spent too much time on this already
+		// If someone can make it work, be my guest. I spent too much time on this already
+		// Check if the access_token is about to expire and if so, don't wait for the 401 error, renew it now!
 		_token = App.getApp().getProperty("TeslaAccessToken");
-		if (_token != null && _token.equals("") == false) {
-logMessage("initialize:Using token '" + _token.substring(0,10) + "...'");
+
+		var createdAt = App.getApp().getProperty("TeslaTokenCreatedAt");
+		if (createdAt == null) {
+			createdAt = 0;
+		}
+		else {
+			createdAt = createdAt.toNumber();
+		}
+		var expireIn = App.getApp().getProperty("TeslaTokenExpiresIn");
+		if (expireIn == null) {
+			expireIn = 0;
+		}
+		else {
+			expireIn = expireIn.toNumber();
+		}
+		
+		var timeNow = Time.now().value();
+		var interval = 5 * 60 * 60;
+		var answer = (timeNow + interval < createdAt + expireIn);
+		if (_token != null && _token.equals("") == false && answer == true) {
+			var expireAt = new Time.Moment(createdAt + expireIn);
+			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
+			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
-logMessage("initialize:Generating Access Token");
+logMessage("initialize:Generating Access Token " + (answer == false) ? "because we're about to expire" : "because access token is null or empty");
 			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
-			if (refreshToken != null) {
+			if (refreshToken != null && refreshToken.equals("") == false) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
 logMessage("initialize:No refresh token!");
@@ -52,6 +78,9 @@ logMessage("initialize:Getting vehicle_id");
 logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
+		// ************************************************************************************
+		// END OF REMOVED SECTION
+		// ************************************************************************************
 	}
 
 	// Read pending web requests, and call appropriate web request function.
@@ -73,9 +102,9 @@ logMessage("onTemporalEvent: doing city event");
 					},
 					method(:onReceiveCityLocalTime)
 				);
+			} 
 
 			// 2. Weather.
-			} 
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
 logMessage("onTemporalEvent: doing weather event");
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
@@ -104,9 +133,12 @@ logMessage("onTemporalEvent: doing weather event");
 					},
 					method(:onReceiveOpenWeatherMapCurrent)
 				);
+			}
 
 			// 3. Tesla
-			}
+			// ************************************************************************************
+			// REMOVE THIS IF YOU WANT TO EXCLUDE TESLA CODE
+			// ************************************************************************************
 			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
 logMessage("onTemporalEvent: doing Tesla event");
 				if (!Sys.getDeviceSettings().phoneConnected) {
@@ -125,6 +157,9 @@ logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data bec
 //					pendingWebRequests["TeslaBatterieLevel"] = null;
 				}
 			}
+			// ************************************************************************************
+			// END OF REMOVED SECTION
+			// ************************************************************************************
 		} /* else {
 			Sys.println("onTemporalEvent() called with no pending web requests!");
 		} */
@@ -256,6 +291,9 @@ logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data bec
 		});
 	}
 
+	// ************************************************************************************
+	// REMOVE THIS IF YOU WANT TO EXCLUDE TESLA CODE
+	// ************************************************************************************
 	(:background_method)
     function onReceiveToken(responseCode, data) {
 		var result;
@@ -331,18 +369,6 @@ logMessage("onReceiveVehicleData received " + result);
     }
 
 	(:background_method)
-	function makeWebRequest(url, params, callback) {
-		var options = {
-			:method => Comms.HTTP_REQUEST_METHOD_GET,
-			:headers => {
-					"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
-			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
-		};
-
-		Comms.makeWebRequest(url, params, options, callback);
-	}
-
-	(:background_method)
     function makeTeslaWebRequest(url, params, callback) {
 		var options = {
             :method => Comms.HTTP_REQUEST_METHOD_GET,
@@ -372,15 +398,30 @@ logMessage("onReceiveVehicleData received " + result);
             notify
         );
     }
+	// ************************************************************************************
+	// END OF REMOVED SECTION
+	// ************************************************************************************
 
-(:debug)
-function logMessage(message) {
-	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-	Sys.println(dateStr + " : " + message);
-}
+	(:background_method)
+	function makeWebRequest(url, params, callback) {
+		var options = {
+			:method => Comms.HTTP_REQUEST_METHOD_GET,
+			:headers => {
+					"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
+			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
+		};
 
-(:release)
-function logMessage(output) {
-}
+		Comms.makeWebRequest(url, params, options, callback);
+	}
+
+	(:debug)
+	function logMessage(message) {
+		var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+		var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+		Sys.println(dateStr + " : " + message);
+	}
+	
+	(:release)
+	function logMessage(output) {
+	}
 }

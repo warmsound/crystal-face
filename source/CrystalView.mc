@@ -80,12 +80,17 @@ function drawBatteryMeter(dc, x, y, width, height) {
 function writeBatteryLevel(dc, x, y, width, height, type) {
 	var batteryLevel;		
 	var batteryStale = false;
+	var inText = false;
 	var chargingState = 0;
 	var textColour;
 	
 	if (type == 0) {
 		batteryLevel = Math.floor(Sys.getSystemStats().battery);
-	} else {
+	}
+	// ************************************************************************************
+	// REMOVE THIS IF YOU WANT TO EXCLUDE TESLA CODE
+	// ************************************************************************************
+	else {
 		batteryLevel = App.getApp().getProperty("TeslaBatterieLevelValue");
 		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
 		chargingState = App.getApp().getProperty("TeslaChargingState");
@@ -100,13 +105,16 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		}
 	}
 
-	var inText = false;
 	if (batteryLevel == null || (batteryLevel instanceof Toybox.Lang.String && batteryLevel.equals("N/A"))) {
 		textColour = Graphics.COLOR_LT_GRAY;
 		inText = true;
 		chargingState = false;
 		batteryLevel = "???";
-	} else {
+	} else 
+	// ************************************************************************************
+	// END OF REMOVED SECTION
+	// ************************************************************************************
+	{
 		batteryLevel = batteryLevel.toFloat();
 
 		if (batteryStale == true) {

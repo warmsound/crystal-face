@@ -184,6 +184,9 @@ if (doLog) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pend
 		}
 
 		// 3. Tesla:
+		// ************************************************************************************
+		// REMOVE THIS IF YOU WANT TO EXCLUDE TESLA CODE
+		// ************************************************************************************
 		if (getProperty("Tesla") != null) {
 if (doLog) { logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel); } 
 
@@ -230,17 +233,17 @@ if (doLog) { logMessage("checkPendingWebRequests:Got http error '" + result + "'
 if (doLog) { logMessage("checkPendingWebRequests:Got token data"); }
 					var accessToken = result["access_token"];
 					var refreshToken = result["refresh_token"];
-					var expires_in = result["refresh_token"];
-//					var created_at = teslaBatterieLevel["CreatedAt"]; 
+					var expires_in = result["expires_in"];
+					var created_at = Time.now().value(); 
 					setProperty("TeslaAccessToken", accessToken);
-					if (refreshToken != null && refreshToken.equals("") != false) { // Only if we received a refresh tokem
+					if (refreshToken != null && refreshToken.equals("") == false) { // Only if we received a refresh tokem
 						setProperty("TeslaRefreshToken", refreshToken);
 					}
 					else {
 if (doLog) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
 					}
 					setProperty("TeslaTokenExpiresIn", expires_in);
-//					setProperty("TeslaTokenCreatedAt", created_at);
+					setProperty("TeslaTokenCreatedAt", created_at);
 				}
 
 				// If the car isn't asleep, keep the current charge and clear the charging_state
@@ -283,6 +286,10 @@ if (doLog) { logMessage("checkPendingWebRequests:batterie_level is null"/* clear
 				pendingWebRequests["TeslaBatterieLevel"] = true;
 			}
 		}
+		// ************************************************************************************
+		// END OF REMOVED SECTION
+		// ************************************************************************************
+		
 		// If there are any pending requests:
 		if (pendingWebRequests.keys().size() > 0) {
 
