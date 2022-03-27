@@ -74,7 +74,8 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 				);
 
 			// 2. Weather.
-			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+			} 
+			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -103,7 +104,8 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 				);
 
 			// 3. Tesla
-			} else if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
+			}
+			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
 				if (!Sys.getDeviceSettings().phoneConnected) {
 logMessage("onTemporalEvent: No phone connected");
 //					pendingWebRequests["TeslaBatterieLevel"] = null;

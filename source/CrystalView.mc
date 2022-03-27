@@ -472,7 +472,7 @@ logMessage("which font " + ((city != null) && (city.length() > 0)));
 	function onExitSleep() {
 		mIsSleeping = false;
 
-		logMessage("onExitSleep:onExitSleep()");
+		//Sys.println("onExitSleep()");
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
@@ -483,7 +483,7 @@ logMessage("which font " + ((city != null) && (city.length() > 0)));
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
+//logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 
