@@ -80,7 +80,7 @@ function drawBatteryMeter(dc, x, y, width, height) {
 function writeBatteryLevel(dc, x, y, width, height, type) {
 	var batteryLevel;		
 	var batteryStale = false;
-	var chargingState = false;
+	var chargingState = 0;
 	var textColour;
 	
 	if (type == 0) {
@@ -91,12 +91,12 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		chargingState = App.getApp().getProperty("TeslaChargingState");
 		if (chargingState != null) {
 			if (chargingState.equals("Charging")) {
-				chargingState = true;
-			} else {
-				chargingState = false;
+				chargingState = 1;
+			} else if (chargingState.equals("Sleeping")) {
+				chargingState = 2;
 			}
 		} else {
-			chargingState = false;
+			chargingState = 0;
 		}
 	}
 
@@ -124,7 +124,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	if (inText) {
 		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
 	} else {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState ? "+" : ""), Graphics.TEXT_JUSTIFY_LEFT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
 	}
 }
 

@@ -276,9 +276,7 @@ if (doLog) { logMessage("checkPendingWebRequests:batterie_level is null"/* clear
 						setProperty("TeslaBatterieStale", true);
 					}
 				} else {
-					if (charging_state != null && charging_state.equals("Charging") == true) {
-						setProperty("TeslaChargingState", "");
-					}
+					setProperty("TeslaChargingState", "Sleeping");
 					setProperty("TeslaBatterieStale", false);
 				}
 				
