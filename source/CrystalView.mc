@@ -54,7 +54,8 @@ function drawBatteryMeter(dc, x, y, width, height) {
 
 	// Fill.
 	// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
-	var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
+	// #210 Changed from floor to round
+	var batteryLevel = Math.round(Sys.getSystemStats().battery);		
 
 	// Fill colour based on battery level.
 	var fillColour;
