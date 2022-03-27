@@ -235,7 +235,7 @@ logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 	function updateNormalFont() {
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
-logMessage("which font " + ((city != null) && (city.length() > 0)));
+//logMessage("which font " + ((city != null) && (city.length() > 0)));
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
 			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);

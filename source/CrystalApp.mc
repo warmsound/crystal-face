@@ -94,7 +94,7 @@ class CrystalApp extends App.AppBase {
 
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
-			// logMessage("Saving location");
+			logMessage("Saving location");
 			location = location.toDegrees(); // Array of Doubles.
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();

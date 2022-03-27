@@ -65,6 +65,7 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 
 			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
+logMessage("onTemporalEvent: doing city event");
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
@@ -76,6 +77,7 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 			// 2. Weather.
 			} 
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+logMessage("onTemporalEvent: doing weather event");
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -106,6 +108,7 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 			// 3. Tesla
 			}
 			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
+logMessage("onTemporalEvent: doing Tesla event");
 				if (!Sys.getDeviceSettings().phoneConnected) {
 logMessage("onTemporalEvent: No phone connected");
 //					pendingWebRequests["TeslaBatterieLevel"] = null;
