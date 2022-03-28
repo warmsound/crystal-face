@@ -52,7 +52,7 @@ logMessage("initialize: Not requesting Tesla stuff, bailing out");
 		var timeNow = Time.now().value();
 		var interval = 5 * 60 * 60;
 		var answer = (timeNow + interval < createdAt + expireIn);
-		if (_token != null && _token.length() != 0 && answer == true) {
+		if (_token != null && _token.equals("") == false && answer == true) {
 			var expireAt = new Time.Moment(createdAt + expireIn);
 			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
@@ -62,7 +62,7 @@ logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which exp
 		else {
 logMessage("initialize:Generating Access Token " + (answer == false) ? "because we're about to expire" : "because access token is null or empty");
 			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
-			if (refreshToken != null && refreshToken.length() != 0) {
+			if (refreshToken != null && refreshToken.equals("") == false) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
 logMessage("initialize:No refresh token!");

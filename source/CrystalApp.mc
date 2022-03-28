@@ -236,7 +236,7 @@ if (doLog) { logMessage("checkPendingWebRequests:Got token data"); }
 					var expires_in = result["expires_in"];
 					var created_at = Time.now().value(); 
 					setProperty("TeslaAccessToken", accessToken);
-					if (refreshToken != null && refreshToken.length() != 0) { // Only if we received a refresh tokem
+					if (refreshToken != null && refreshToken.equals("") == false) { // Only if we received a refresh tokem
 						setProperty("TeslaRefreshToken", refreshToken);
 					}
 					else {
