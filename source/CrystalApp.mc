@@ -18,8 +18,8 @@ class CrystalApp extends App.AppBase {
 
 	var mView;
 	var mFieldTypes = new [3];
-	var lastBackgroundSchedule = 0;
-	
+	var temporalRan = false;
+
 	function initialize() {
 		AppBase.initialize();
 	}
@@ -83,15 +83,11 @@ class CrystalApp extends App.AppBase {
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 
 		var lastTime = Bg.getLastTemporalEventTime();
-		var doLog = false;
 		var teslaBatterieLevel = getProperty("TeslaBatterieLevel");
+		var gotData = temporalRan;
+		temporalRan = false;
 
 //logMessage("checkPendingWebRequests:lastBackgroundSchedule is " + lastBackgroundSchedule + " lastTime is " + (lastTime == null ? "null" : lastTime.value()));
-		if (lastTime == null || lastBackgroundSchedule != lastTime.value()) {
-			lastBackgroundSchedule = lastTime.value();
-			doLog = true;
-		}
-
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
 			logMessage("Saving location");
@@ -122,7 +118,7 @@ class CrystalApp extends App.AppBase {
 		}
 
 		var pendingWebRequests = getProperty("PendingWebRequests");
-if (doLog) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequests + "'"); }
+if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequests + "'"); }
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -185,11 +181,11 @@ if (doLog) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pend
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-if (doLog) { logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel); } 
+if (gotData) { logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel.toString().substring(0,60) + " ..."); } 
 
 			// No existing data.
 			if (teslaBatterieLevel == null) {
-if (doLog) { logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read"); }
+//if (gotData) { logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read"); }
 
 				pendingWebRequests["TeslaBatterieLevel"] = true;
 
@@ -211,15 +207,21 @@ if (doLog) { logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking 
 				// Other errors are silent for now
 				var result = teslaBatterieLevel["httpErrorTesla"];
 				if (result != null) {
-if (doLog) { logMessage("checkPendingWebRequests:Got http error '" + result + "'"); }
+if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + "'"); }
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
 						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
 						batterie_stale = true;
+						batterie_level = result;
 					} else if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
 						setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
 						batterie_stale = true;
+						batterie_level = result;
 					} else if (result == 408) { // Car is aslepep keep the old data but stop charging if it still was before going to sleep
 						carAsleep = true;
+					}
+					else {
+						batterie_stale = true;
+						batterie_level = result;
 					}
 				}
 				
@@ -227,17 +229,17 @@ if (doLog) { logMessage("checkPendingWebRequests:Got http error '" + result + "'
 				result = teslaBatterieLevel["Token"];
 				if (result != null) {
 //logMessage("checkPendingWebRequests:Got token data '" + result + "'");
-if (doLog) { logMessage("checkPendingWebRequests:Got token data"); }
+if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
 					var accessToken = result["access_token"];
 					var refreshToken = result["refresh_token"];
 					var expires_in = result["refresh_token"];
 //					var created_at = teslaBatterieLevel["CreatedAt"]; 
 					setProperty("TeslaAccessToken", accessToken);
-					if (refreshToken != null && refreshToken.equals("") != false) { // Only if we received a refresh tokem
+					if (refreshToken != null && refreshToken.equals("") == false) { // Only if we received a refresh tokem
 						setProperty("TeslaRefreshToken", refreshToken);
 					}
 					else {
-if (doLog) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
+if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
 					}
 					setProperty("TeslaTokenExpiresIn", expires_in);
 //					setProperty("TeslaTokenCreatedAt", created_at);
@@ -250,16 +252,16 @@ if (doLog) { logMessage("checkPendingWebRequests:But missing the refresh token '
 					var vehicle_id = teslaBatterieLevel["vehicle_id"];
 					if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
 						if (vehicle_id != 0) {
-if (doLog) { logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id"); }
+//if (gotData) { logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id"); }
 							setProperty("TeslaVehicleID", vehicle_id.toString());
 						} else {
-if (doLog) { logMessage("checkPendingWebRequests: vehicle_id we got was 0"); }
+//if (gotData) { logMessage("checkPendingWebRequests: vehicle_id we got was 0"); }
 							setProperty("TeslaVehicleID", null);
 							batterie_stale = true;
 							batterie_level = "N/A";
 						}
 					} else {
-if (doLog) { logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null, keeping original value. If needed, it will generate a 404 whih will reset it"); }
+//if (gotData) { logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null, keeping original value. If needed, it will generate a 404 whih will reset it"); }
 //						setProperty("TeslaVehicleID", null);
 						batterie_stale = true;
 					}
@@ -271,7 +273,7 @@ if (doLog) { logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id]
 						setProperty("TeslaChargingState", charging_state);
 						
 					} else {
-if (doLog) { logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/); }
+//if (gotData) { logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/); }
 //						setProperty("TeslaBatterieLevelValue", null);
 						setProperty("TeslaBatterieStale", true);
 					}
@@ -292,10 +294,10 @@ if (doLog) { logMessage("checkPendingWebRequests:batterie_level is null"/* clear
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
 var clockTime = Gregorian.info(nextTime, Time.FORMAT_MEDIUM);
-if (doLog) { logMessage("checkPendingWebRequests:Scheduling for " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d")); }
+if (gotData) { logMessage("checkPendingWebRequests:Scheduling for " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d")); }
 				Bg.registerForTemporalEvent(nextTime);
 			} else {
-if (doLog) { logMessage("checkPendingWebRequests:Scheduling now"); }
+if (gotData) { logMessage("checkPendingWebRequests:Scheduling now"); }
 				Bg.registerForTemporalEvent(Time.now());
 			}
 		}
@@ -318,7 +320,7 @@ logMessage("onBackgroundData:received '" + data + "'");
 		var pendingWebRequests = getProperty("PendingWebRequests");
 logMessage("onBackgroundData:pendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests == null) {
-logMessage("onBackgroundData: called with no pending web requests!");
+//logMessage("onBackgroundData: called with no pending web requests!");
 			pendingWebRequests = {};
 		}
 
@@ -338,6 +340,8 @@ logMessage("onBackgroundData: called with no pending web requests!");
 		setProperty("PendingWebRequests", pendingWebRequests);
 		setProperty(type, storedData);
 
+		temporalRan = true;
+		
 		checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		
 		Ui.requestUpdate();

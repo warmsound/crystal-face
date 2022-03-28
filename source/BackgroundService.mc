@@ -16,13 +16,13 @@ class BackgroundService extends Sys.ServiceDelegate {
 		Sys.ServiceDelegate.initialize();
 
 		// If we don't have a phone connected, don't go any further.
-		if (!Sys.getDeviceSettings().phoneConnected) {
-logMessage("initialize: No phone connected");
-			return;
-		}
+//		if (!Sys.getDeviceSettings().phoneConnected) {
+//logMessage("initialize: No phone connected");
+//			return;
+//		}
 			
 		if (App.getApp().getProperty("Tesla") == null) {
-logMessage("initialize: Not requesting Tesla stuff, bailing out");
+//logMessage("initialize: Not requesting Tesla stuff, bailing out");
 			return;
 		}
 
@@ -49,7 +49,7 @@ logMessage("initialize:No refresh token!");
 logMessage("initialize:Getting vehicle_id");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
+logMessage("initialize:Asking vehicle data for " + _vehicle_id);
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 	}
@@ -65,7 +65,7 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 
 			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
-logMessage("onTemporalEvent: doing city event");
+//logMessage("onTemporalEvent: doing city event");
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
@@ -77,7 +77,7 @@ logMessage("onTemporalEvent: doing city event");
 			// 2. Weather.
 			} 
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-logMessage("onTemporalEvent: doing weather event");
+//logMessage("onTemporalEvent: doing weather event");
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -108,20 +108,20 @@ logMessage("onTemporalEvent: doing weather event");
 			// 3. Tesla
 			}
 			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
-logMessage("onTemporalEvent: doing Tesla event");
+logMessage("onTemporalEvent: WebRequest for vehicle id " + _vehicle_id);
 				if (!Sys.getDeviceSettings().phoneConnected) {
 logMessage("onTemporalEvent: No phone connected");
 //					pendingWebRequests["TeslaBatterieLevel"] = null;
 					return;
 				}
 					
-logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
+//logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
 
 				if (_vehicle_id) {
-logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
+//logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
 					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				} else {
-logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data because of null vehicle_id");
+//logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data because of null vehicle_id");
 //					pendingWebRequests["TeslaBatterieLevel"] = null;
 				}
 			}
@@ -261,7 +261,7 @@ logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data bec
 		var result;
 
 logMessage("onReceiveToken responseCode is " + responseCode);
-logMessage("onReceiveToken data  is " + data);
+//logMessage("onReceiveToken data  is " + data);
         if (responseCode == 200) {
         	result = { "Token" => data };
         } else {
@@ -274,14 +274,12 @@ logMessage("onReceiveToken data  is " + data);
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
-logMessage("onReceiveVehicles responseCode is " + responseCode);
+logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
         if (responseCode == 200) {
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
                 _vehicle_id = vehicles[0].get("id");
-logMessage("onReceiveVehicles:vehicle_id is " + _vehicle_id);
 	        } else {
-logMessage("onReceiveVehicles:No vehicle in account");
 	            _vehicle_id = 0;
 		    }
 			result = { "vehicle_id" => _vehicle_id};

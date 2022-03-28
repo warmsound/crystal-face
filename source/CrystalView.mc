@@ -109,7 +109,10 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	} else {
 		batteryLevel = batteryLevel.toFloat();
 
-		if (batteryStale == true) {
+		if (batteryLevel < 0 || batteryLevel > 100) {
+			textColour = Graphics.COLOR_PINK;
+			chargingState = -1;
+		} else if (batteryStale == true) {
 			textColour = Graphics.COLOR_LT_GRAY;
 		} else if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
 			textColour = Graphics.COLOR_RED;
@@ -124,7 +127,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	if (inText) {
 		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
 	} else {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + (chargingState != -1 ? "%" : "") + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
 	}
 }
 
@@ -224,7 +227,7 @@ logMessage("onSettingsChanged called");
 		updateHoursMinutesColours();
 
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
+//logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 	}
