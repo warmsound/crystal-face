@@ -396,8 +396,7 @@ class DataFields extends Ui.Drawable {
 
 			case FIELD_TYPE_BATTERY:
 				// #8: battery returned as float. Use floor() to match native. Must match drawBatteryMeter().
-				// #210 Changed from floor to round
-				value = Math.round(Sys.getSystemStats().battery);
+				value = Math.floor(Sys.getSystemStats().battery);
 				value = value.format(INTEGER_FORMAT) + "%";
 				break;
 
