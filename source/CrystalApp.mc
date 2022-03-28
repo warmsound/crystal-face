@@ -232,8 +232,8 @@ if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + 
 if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
 					var accessToken = result["access_token"];
 					var refreshToken = result["refresh_token"];
-					var expires_in = result["refresh_token"];
-//					var created_at = teslaBatterieLevel["CreatedAt"]; 
+					var expires_in = result["expires_in"];
+					var created_at = Time.now().value(); 
 					setProperty("TeslaAccessToken", accessToken);
 					if (refreshToken != null && refreshToken.equals("") == false) { // Only if we received a refresh tokem
 						setProperty("TeslaRefreshToken", refreshToken);
@@ -242,7 +242,7 @@ if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
 if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
 					}
 					setProperty("TeslaTokenExpiresIn", expires_in);
-//					setProperty("TeslaTokenCreatedAt", created_at);
+					setProperty("TeslaTokenCreatedAt", created_at);
 				}
 
 				// If the car isn't asleep, keep the current charge and clear the charging_state

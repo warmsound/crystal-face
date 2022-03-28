@@ -27,10 +27,24 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		// Need to get a token since we can't OAUTH from a watch face :-(
-		// If someone can it, be my guest. I spent too much time on this already
+		// If someone can do it, be my guest. I spent too much time on this already
 		_token = App.getApp().getProperty("TeslaAccessToken");
+
+		var createdAt = App.getApp().getProperty("TeslaTokenCreatedAt");
+		if (createdAt == null) {
+			createdAt = 0;
+		}
+
+		var expiresIn = App.getApp().getProperty("TeslaTokenExpiresIn");
+		if (expiresIn == null) {
+			expiresIn = 0;
+		}
+		
 		if (_token != null && _token.equals("") == false) {
-logMessage("initialize:Using token '" + _token.substring(0,10) + "...'");
+			var expireAt = new Time.Moment(createdAt + expiresIn);
+			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
+			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
