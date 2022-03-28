@@ -78,7 +78,7 @@ logMessage("initialize:No refresh token!");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
 //logMessage("Reusing vehicle_id and calling for vehicle data" + _vehicle_id);
-			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/data_request/charge_state", null, method(:onReceiveVehicleData));
+			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 		// ************************************************************************************
 		// END OF REMOVED SECTION
@@ -344,27 +344,29 @@ logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
         	result = data.get("response");
         	if (result != null) {
-	        	batterieLevel = result.get("battery_level");
-	        	chargingState = result.get("charging_state");
+	        	result = result.get("charge_state");
+	        	if (result != null) {
+		        	batterieLevel = result.get("battery_level");
+		        	chargingState = result.get("charging_state");
 		        	
 //batterieLevel = Math.rand() % 100;
-	        	if (batterieLevel == null) {
-	        		batterieLevel = "N/A";
-	        	}
+		        	if (batterieLevel == null) {
+		        		batterieLevel = "N/A";
+		        	}
 
-				result = {
-					"battery_level" => batterieLevel,
-					"charging_state" => chargingState
+					result = {
+						"battery_level" => batterieLevel,
+						"charging_state" => chargingState
 //						"charging_state" => "Charging"
-				};
-				result = { "battery_state" => result, "vehicle_id" => _vehicle_id };
-			} else {
-				result = { "httpErrorTesla" => -400 };
-			}
+					};
+	        	}
+        	}
 logMessage("onReceiveVehicleData received " + result);
+			result = { "battery_state" => result, "vehicle_id" => _vehicle_id };
         } else {
 			result = { "httpErrorTesla" => responseCode };
 	    }
+	    
 	    
 		Bg.exit({ "TeslaBatterieLevel" => result });
     }
