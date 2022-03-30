@@ -81,6 +81,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	var batteryLevel;		
 	var batteryStale = false;
 	var chargingState = 0;
+	var error = null;
 	var textColour;
 	
 	if (type == 0) {
@@ -89,11 +90,14 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		batteryLevel = App.getApp().getProperty("TeslaBatterieLevelValue");
 		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
 		chargingState = App.getApp().getProperty("TeslaChargingState");
+		error = App.getApp().getProperty("TeslaError");
 		if (chargingState != null) {
 			if (chargingState.equals("Charging")) {
 				chargingState = 1;
 			} else if (chargingState.equals("Sleeping")) {
 				chargingState = 2;
+			} else {
+				chargingState = 0;
 			}
 		} else {
 			chargingState = 0;
@@ -107,11 +111,15 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		chargingState = false;
 		batteryLevel = "???";
 	} else {
-		batteryLevel = batteryLevel.toFloat();
+		if (error != null) {
+			batteryLevel = error.toFloat();
+		} else {
+			batteryLevel = batteryLevel.toFloat();
+		}
 
 		if (batteryLevel < 0 || batteryLevel > 100) {
 			textColour = Graphics.COLOR_PINK;
-			chargingState = -1;
+			chargingState += 4;
 		} else if (batteryStale == true) {
 			textColour = Graphics.COLOR_LT_GRAY;
 		} else if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
@@ -127,7 +135,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 	if (inText) {
 		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
 	} else {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + (chargingState != -1 ? "%" : "") + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + ((chargingState & 4) != 4 ? "%" : "") + ((chargingState & 3) == 1 ? "+" : ((chargingState & 3) == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
 	}
 }
 

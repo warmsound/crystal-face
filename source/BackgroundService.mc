@@ -40,7 +40,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 			expiresIn = 0;
 		}
 		
-		if (_token != null && _token.equals("") == false) {
+		var timeNow = Time.now().value();
+		var interval = 5 * 60;
+		var answer = (timeNow + interval < createdAt + expiresIn);
+
+		if (_token != null && _token.equals("") == false && answer == true) {
 			var expireAt = new Time.Moment(createdAt + expiresIn);
 			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
