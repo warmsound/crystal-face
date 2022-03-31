@@ -90,7 +90,7 @@ class CrystalApp extends App.AppBase {
 //logMessage("checkPendingWebRequests:lastBackgroundSchedule is " + lastBackgroundSchedule + " lastTime is " + (lastTime == null ? "null" : lastTime.value()));
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
-			logMessage("Saving location");
+			//logMessage("Saving location");
 			location = location.toDegrees(); // Array of Doubles.
 			gLocationLat = location[0].toFloat();
 			gLocationLng = location[1].toFloat();
@@ -240,7 +240,7 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 				}
 
 				// If the car isn't asleep, keep the current charge and clear the charging_state
-				if (!carAsleep) {
+				else if (!carAsleep) {
 					var batterie_state = teslaBatterieLevel["battery_state"];
 					if (batterie_state) {
 						batterie_level = batterie_state["battery_level"]; 
