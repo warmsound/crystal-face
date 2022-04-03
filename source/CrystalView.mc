@@ -104,8 +104,8 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		var error = null;
 		var showMode;
 
-		gToggleCounter = (gToggleCounter + 1) & 15; // Increase by one, reset to 0 once 8 is reached
-		showMode = gToggleCounter / 4;  // 0-3 is battery, 4-7 Sentry, 8-11 preconditionning, 12-15 is inside temp changed to 0 to 3
+		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
+		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
 //logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
 		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
 		chargingState = App.getApp().getProperty("TeslaChargingState");
@@ -116,7 +116,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				chargingState = 1;
 			} else if (chargingState.equals("Sleeping")) {
 				chargingState = 2;
-				showMode /= 8; // Keep only 0 and 1.
+				showMode /= 2; // Keep only 0 and 1.
 			} else {
 				chargingState = 0;
 			}
@@ -158,10 +158,15 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				break;
 		}
 		
-		if (inText != null) {
+		if (inText != null && error == null) {
+			if (batteryStale == true) {
+				textColour = Graphics.COLOR_LT_GRAY;
+			} else {
+				textColour = gThemeColour;
+			}
 			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
-		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A"))) {
+		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A")) && error == null) {
 			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(x - (width / 2), y - height, gNormalFont, "???", Graphics.TEXT_JUSTIFY_LEFT);
 		} else {
