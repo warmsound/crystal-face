@@ -83,7 +83,7 @@ class CrystalApp extends App.AppBase {
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 
 		var lastTime = Bg.getLastTemporalEventTime();
-		var teslaBatterieLevel = getProperty("TeslaBatterieLevel");
+		var TeslaInfo = getProperty("TeslaInfo");
 		var gotData = temporalRan;
 		temporalRan = false;
 
@@ -181,13 +181,13 @@ if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pe
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-if (gotData) { logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaBatterieLevel.toString().substring(0,60) + " ..."); } 
+if (gotData) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
 
 			// No existing data.
-			if (teslaBatterieLevel == null) {
+			if (TeslaInfo == null) {
 //if (gotData) { logMessage("checkPendingWebRequests:checkPendingWebRequests:Asking first read"); }
 
-				pendingWebRequests["TeslaBatterieLevel"] = true;
+				pendingWebRequests["TeslaInfo"] = true;
 
 			// We got something, check what it is
 			} else {
@@ -199,7 +199,7 @@ if (gotData) { logMessage("checkPendingWebRequests:TeslaBatterieLevel=" + teslaB
 				// First handle errors, setting batterie_level to "N/A" if the query returned a vehicle not found.
 				// If we failed to get access, maybe our token has expired, clear it so next time the background process runs, it will refresh it
 				// Other errors are silent for now
-				var result = teslaBatterieLevel["httpErrorTesla"];
+				var result = TeslaInfo["httpErrorTesla"];
 				if (result != null) {
 if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + "'"); }
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
@@ -218,7 +218,7 @@ if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + 
 				}
 				
 				// Check if our access token was refreshed. If so, store the new access and refresh tokens
-				result = teslaBatterieLevel["Token"];
+				result = TeslaInfo["Token"];
 				if (result != null) {
 //logMessage("checkPendingWebRequests:Got token data '" + result + "'");
 if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
@@ -241,30 +241,30 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 
 				// If the car isn't asleep, keep the current charge and clear the charging_state
 				else if (!carAsleep) {
-					var batterie_state = teslaBatterieLevel["battery_state"];
+					var batterie_state = TeslaInfo["battery_state"];
 					if (batterie_state) {
 						batterie_level = batterie_state["battery_level"]; 
 						charging_state = batterie_state["charging_state"];
 					}
 
-					var inside_temp = teslaBatterieLevel["inside_temp"];
+					var inside_temp = TeslaInfo["inside_temp"];
 					if (inside_temp != null) {
 						setProperty("TeslaInsideTemp", inside_temp.toString());
 					}
 					
-					var precond_enabled = teslaBatterieLevel["preconditioning"];
+					var precond_enabled = TeslaInfo["preconditioning"];
 					if (precond_enabled != null) {
 						setProperty("TeslaPreconditioning", precond_enabled.toString());
 					}
 
-					var sentry_enabled = teslaBatterieLevel["sentry_enabled"];
+					var sentry_enabled = TeslaInfo["sentry_enabled"];
 					if (sentry_enabled != null) {
 						setProperty("TeslaSentryEnabled", sentry_enabled.toString());
 					}
 
 					// Read its vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
 					// If we have no vehicle, set the batterie level to N/A
-					var vehicle_id = teslaBatterieLevel["vehicle_id"];
+					var vehicle_id = TeslaInfo["vehicle_id"];
 					if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
 						if (vehicle_id != 0) {
 //if (gotData) { logMessage("checkPendingWebRequests:Saving '" + vehicle_id +"' as vehicle_id"); }
@@ -276,22 +276,22 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 							batterie_level = "N/A";
 						}
 					} else {
-//if (gotData) { logMessage("checkPendingWebRequests: teslaBatterieLevel[vehicle_id] is null, keeping original value. If needed, it will generate a 404 whih will reset it"); }
+//if (gotData) { logMessage("checkPendingWebRequests: TeslaInfo[vehicle_id] is null, keeping original value. If needed, it will generate a 404 whih will reset it"); }
 //						setProperty("TeslaVehicleID", null);
 						batterie_stale = true;
 					}
 
 					// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
 					if (batterie_level  != null) {
-						setProperty("TeslaBatterieLevelValue", batterie_level);
+						setProperty("TeslaBatterieLevel", batterie_level);
 						setProperty("TeslaBatterieStale", batterie_stale);
 						setProperty("TeslaChargingState", charging_state);
 
 						setProperty("TeslaError", null);
 						
 					} else {
-//if (gotData) { logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevelValue property"*/); }
-//						setProperty("TeslaBatterieLevelValue", null);
+//if (gotData) { logMessage("checkPendingWebRequests:batterie_level is null"/* clearing our TeslaBatterieLevel property"*/); }
+//						setProperty("TeslaBatterieLevel", null);
 						setProperty("TeslaBatterieStale", true);
 						setProperty("TeslaError", null);
 					}
@@ -301,7 +301,7 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 					setProperty("TeslaError", null);
 				}
 				
-				pendingWebRequests["TeslaBatterieLevel"] = true;
+				pendingWebRequests["TeslaInfo"] = true;
 			}
 		}
 		// If there are any pending requests:

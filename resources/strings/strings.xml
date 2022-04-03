@@ -105,7 +105,7 @@
 
 	<string id="BatteryNumeric">Battery Numeric</string>
 	<string id="PulseOx">Pulse Ox</string>
-	<string id="Tesla">Tesla battery level</string>
+	<string id="Tesla">Tesla Info</string>
 	<string id="TeslaAccessToken">Tesla Access Token</string>
 	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
 </strings>

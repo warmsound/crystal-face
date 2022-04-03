@@ -116,7 +116,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				chargingState = 1;
 			} else if (chargingState.equals("Sleeping")) {
 				chargingState = 2;
-				showMode /= 2; // Keep only 0 and 1.
+				showMode /= 2; // Keep only 0 and 2.
 			} else {
 				chargingState = 0;
 			}
@@ -127,7 +127,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		var inText = null;
 		switch (showMode) {
 			case 0:
-				value = App.getApp().getProperty("TeslaBatterieLevelValue");
+				value = App.getApp().getProperty("TeslaBatterieLevel");
 				break;
 			case 1:
 				value = App.getApp().getProperty("TeslaPreconditioning");
@@ -156,6 +156,11 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			case 3:
 				value = App.getApp().getProperty("TeslaInsideTemp");
 				break;
+		}
+
+//logMessage("value=" + value);		
+		if (value == null) {
+			value = "N/A";
 		}
 		
 		if (inText != null && error == null) {

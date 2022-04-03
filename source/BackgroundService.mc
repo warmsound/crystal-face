@@ -125,22 +125,22 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 
 			// 3. Tesla
 			}
-			if (pendingWebRequests["TeslaBatterieLevel"] != null && App.getApp().getProperty("Tesla") != null) {
+			if (pendingWebRequests["TeslaInfo"] != null && App.getApp().getProperty("Tesla") != null) {
 logMessage("onTemporalEvent: WebRequest for vehicle id " + _vehicle_id);
 				if (!Sys.getDeviceSettings().phoneConnected) {
 logMessage("onTemporalEvent: No phone connected");
-//					pendingWebRequests["TeslaBatterieLevel"] = null;
+//					pendingWebRequests["TeslaInfo"] = null;
 					return;
 				}
 					
-//logMessage("onTemporalEvent:TeslaBatterieLevel with vehicle_id at " + _vehicle_id);
+//logMessage("onTemporalEvent:TeslaInfo with vehicle_id at " + _vehicle_id);
 
 				if (_vehicle_id) {
 //logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
 					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				} else {
 //logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data because of null vehicle_id");
-//					pendingWebRequests["TeslaBatterieLevel"] = null;
+//					pendingWebRequests["TeslaInfo"] = null;
 				}
 			}
 		} /* else {
@@ -285,7 +285,7 @@ logMessage("onReceiveToken responseCode is " + responseCode);
         } else {
 			result = { "httpErrorTesla" => responseCode };
 	    }
-		Bg.exit({ "TeslaBatterieLevel" => result });
+		Bg.exit({ "TeslaInfo" => result });
     }
 
 	(:background_method)
@@ -306,7 +306,7 @@ logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " +
 			result = { "httpErrorTesla" => responseCode };
 	    }
 
-		Bg.exit({ "TeslaBatterieLevel" => result });
+		Bg.exit({ "TeslaInfo" => result });
     }
 
 	(:background_method)
@@ -352,7 +352,7 @@ logMessage("onReceiveVehicleData responseCode is " + responseCode);
 
 logMessage("onReceiveVehicleData received " + result);
 
-		Bg.exit({ "TeslaBatterieLevel" => result });
+		Bg.exit({ "TeslaInfo" => result });
     }
 
 	(:background_method)
