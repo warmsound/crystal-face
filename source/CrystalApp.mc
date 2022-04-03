@@ -181,7 +181,7 @@ if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pe
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-if (gotData) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
+if (gotData && TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
 
 			// No existing data.
 			if (TeslaInfo == null) {
