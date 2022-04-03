@@ -246,7 +246,22 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 						batterie_level = batterie_state["battery_level"]; 
 						charging_state = batterie_state["charging_state"];
 					}
+
+					var inside_temp = teslaBatterieLevel["inside_temp"];
+					if (inside_temp != null) {
+						setProperty("TeslaInsideTemp", inside_temp.toString());
+					}
 					
+					var precond_enabled = teslaBatterieLevel["preconditioning"];
+					if (precond_enabled != null) {
+						setProperty("TeslaPreconditioning", precond_enabled.toString());
+					}
+
+					var sentry_enabled = teslaBatterieLevel["sentry_enabled"];
+					if (sentry_enabled != null) {
+						setProperty("TeslaSentryEnabled", sentry_enabled.toString());
+					}
+
 					// Read its vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
 					// If we have no vehicle, set the batterie level to N/A
 					var vehicle_id = teslaBatterieLevel["vehicle_id"];

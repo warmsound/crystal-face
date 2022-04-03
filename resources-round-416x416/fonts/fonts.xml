@@ -5,7 +5,7 @@
 	<font id="DateFont" filename="titillium-web-semibold-42.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
 
 	<!-- Manually symlinked from resources-round-280x280/fonts. -->
-	<font id="NormalFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°+"/>
+	<font id="NormalFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°+PSon "/>
 	<font id="NormalFontCities" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž+"/>
 
 	<!-- Manually symlinked from resources-round-390x390/fonts. -->

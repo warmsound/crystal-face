@@ -77,65 +77,126 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		height - (2 * lineWidthPlusMargin));
 }
 
+var gToggleCounter = 0; // Used to switch between charge and inside temp
+
 function writeBatteryLevel(dc, x, y, width, height, type) {
 	var batteryLevel;		
-	var batteryStale = false;
-	var chargingState = 0;
-	var error = null;
 	var textColour;
 	
-	if (type == 0) {
+	if (type == 0) { // Standard watch battery is being shown
 		batteryLevel = Math.floor(Sys.getSystemStats().battery);
-	} else {
-		batteryLevel = App.getApp().getProperty("TeslaBatterieLevelValue");
-		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
-		chargingState = App.getApp().getProperty("TeslaChargingState");
-		error = App.getApp().getProperty("TeslaError");
-		if (chargingState != null) {
-			if (chargingState.equals("Charging")) {
-				chargingState = 1;
-			} else if (chargingState.equals("Sleeping")) {
-				chargingState = 2;
-			} else {
-				chargingState = 0;
-			}
-		} else {
-			chargingState = 0;
-		}
-	}
 
-	var inText = false;
-	if (batteryLevel == null || (batteryLevel instanceof Toybox.Lang.String && batteryLevel.equals("N/A"))) {
-		textColour = Graphics.COLOR_LT_GRAY;
-		inText = true;
-		chargingState = false;
-		batteryLevel = "???";
-	} else {
-		if (error != null) {
-			batteryLevel = error.toFloat();
-		} else {
-			batteryLevel = batteryLevel.toFloat();
-		}
-
-		if (batteryLevel < 0 || batteryLevel > 100) {
-			textColour = Graphics.COLOR_PINK;
-			chargingState += 4;
-		} else if (batteryStale == true) {
-			textColour = Graphics.COLOR_LT_GRAY;
-		} else if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
+		if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
 			textColour = Graphics.COLOR_RED;
 		} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
 			textColour = Graphics.COLOR_YELLOW;
 		} else {
 			textColour = gThemeColour;
 		}
-	}
 
-	dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-	if (inText) {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel, Graphics.TEXT_JUSTIFY_LEFT);
-	} else {
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + ((chargingState & 4) != 4 ? "%" : "") + ((chargingState & 3) == 1 ? "+" : ((chargingState & 3) == 2 ? "s" : "")), Graphics.TEXT_JUSTIFY_LEFT);
+		dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+	}
+	else { // Tesla stuff
+		var value;
+		var batteryStale = false;
+		var chargingState = 0;
+		var error = null;
+		var showMode;
+
+		gToggleCounter = (gToggleCounter + 1) & 15; // Increase by one, reset to 0 once 8 is reached
+		showMode = gToggleCounter / 4;  // 0-3 is battery, 4-7 Sentry, 8-11 preconditionning, 12-15 is inside temp changed to 0 to 3
+//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
+		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
+		chargingState = App.getApp().getProperty("TeslaChargingState");
+		error = App.getApp().getProperty("TeslaError");
+
+		if (chargingState != null) {
+			if (chargingState.equals("Charging")) {
+				chargingState = 1;
+			} else if (chargingState.equals("Sleeping")) {
+				chargingState = 2;
+				showMode /= 8; // Keep only 0 and 1.
+			} else {
+				chargingState = 0;
+			}
+		} else {
+			chargingState = 0;
+		}
+
+		var inText = null;
+		switch (showMode) {
+			case 0:
+				value = App.getApp().getProperty("TeslaBatterieLevelValue");
+				break;
+			case 1:
+				value = App.getApp().getProperty("TeslaPreconditioning");
+				if (value != null && value.equals("true")) {
+					inText = "P  on";
+				}
+				else if (value != null && value.equals("false")) {
+					inText = "P off";
+				}
+				else {
+					inText = "P ?";
+				}
+				break;
+			case 2:
+				value = App.getApp().getProperty("TeslaSentryEnabled");
+				if (value != null && value.equals("true")) {
+					inText = "S on";
+				}
+				else if (value != null && value.equals("false")) {
+					inText = "S off";
+				}
+				else {
+					inText = "S ?";
+				}
+				break;
+			case 3:
+				value = App.getApp().getProperty("TeslaInsideTemp");
+				break;
+		}
+		
+		if (inText != null) {
+			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
+		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A"))) {
+			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, "???", Graphics.TEXT_JUSTIFY_LEFT);
+		} else {
+			var suffixe = "";
+
+			if (error != null) {
+				textColour = Graphics.COLOR_PINK;
+				value = error.toFloat();
+			} else {
+				value = value.toFloat();
+	
+				if (batteryStale == true) {
+					textColour = Graphics.COLOR_LT_GRAY;
+				} else if (value <= /* BATTERY_LEVEL_CRITICAL */ 10 && showMode == 0) {
+					textColour = Graphics.COLOR_RED;
+				} else if (value <= /* BATTERY_LEVEL_LOW */ 20 && showMode == 0) {
+					textColour = Graphics.COLOR_YELLOW;
+				} else {
+					textColour = gThemeColour;
+				}
+			
+				if (showMode == 0) {
+					suffixe = "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
+				} else {
+					suffixe = "°C";
+					if (Sys.getDeviceSettings().temperatureUnits == Sys. UNIT_STATUTE) {
+						suffixe = "°F";
+						value = value * 9.0 / 5.0 + 32;
+					}
+				}
+			}
+
+			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, value.toNumber().format(INTEGER_FORMAT) + suffixe, Graphics.TEXT_JUSTIFY_LEFT);
+		}
 	}
 }
 
@@ -144,7 +205,6 @@ class CrystalView extends Ui.WatchFace {
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
 	private var mBurnInProtectionChangedSinceLastDraw = false; // Did burn-in protection change since last full update?
 	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
-
 	private var mTime;
 	var mDataFields;
 

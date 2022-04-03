@@ -311,38 +311,47 @@ logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " +
 
 	(:background_method)
     function onReceiveVehicleData(responseCode, data) {
-		var result;
+		var results;
+		var result = "N/A";
 		var batterieLevel = "N/A";
 		var chargingState = "Disconnected";
+		var insideTemp = "N/A";
+		var precondEnabled = "N/A";
+		var sentryEnabled = "N/A";
 
 logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
-        	result = data.get("response");
-        	if (result != null) {
-	        	result = result.get("charge_state");
+        	results = data.get("response");
+        	if (results != null) {
+	        	result = results.get("charge_state");
 	        	if (result != null) {
 		        	batterieLevel = result.get("battery_level");
 		        	chargingState = result.get("charging_state");
-		        	
-//batterieLevel = Math.rand() % 100;
-		        	if (batterieLevel == null) {
-		        		batterieLevel = "N/A";
-		        	}
-
-					result = {
-						"battery_level" => batterieLevel,
-						"charging_state" => chargingState
-//						"charging_state" => "Charging"
-					};
+		        	precondEnabled = result.get("preconditioning_enabled");
 	        	}
+	        	result = results.get("climate_state");
+	        	if (result != null) {
+		        	insideTemp = result.get("inside_temp");
+				}	        	
+				
+	        	result = results.get("vehicle_state");
+	        	if (result != null) {
+		        	sentryEnabled = result.get("sentry_mode");
+				}	        	
+				
+				result = {
+					"battery_level" => batterieLevel,
+					"charging_state" => chargingState
+				};
         	}
-logMessage("onReceiveVehicleData received " + result);
-			result = { "battery_state" => result, "vehicle_id" => _vehicle_id };
+
+			result = { "battery_state" => result, "inside_temp" => insideTemp, "preconditioning" => precondEnabled, "sentry_enabled" => sentryEnabled, "vehicle_id" => _vehicle_id };
         } else {
 			result = { "httpErrorTesla" => responseCode };
 	    }
-	    
-	    
+
+logMessage("onReceiveVehicleData received " + result);
+
 		Bg.exit({ "TeslaBatterieLevel" => result });
     }
 
@@ -354,7 +363,6 @@ logMessage("onReceiveVehicleData received " + result);
 					"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
 			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
 		};
-
 		Comms.makeWebRequest(url, params, options, callback);
 	}
 
@@ -367,6 +375,7 @@ logMessage("onReceiveVehicleData received " + result);
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 //logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
+//logMessage("url=" + url + "\nparams=" + params + "\noptions=" + options);
 		Comms.makeWebRequest(url, params, options, callback);
     }
 
