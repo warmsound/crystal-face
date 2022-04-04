@@ -44,7 +44,7 @@ class Indicators extends Ui.Drawable {
 			App.getApp().setProperty("Tesla", true);
 //logMessage("onSettingsChanged:Doing Tesla!");
 		} else {
-			App.getApp().setProperty("Tesla", false);
+			App.getApp().setProperty("Tesla", null);
 		}  
 	}
 

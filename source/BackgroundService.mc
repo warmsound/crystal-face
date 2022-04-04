@@ -20,7 +20,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 //logMessage("initialize: No phone connected");
 //			return;
 //		}
-			
+
 		if (App.getApp().getProperty("Tesla") == null) {
 //logMessage("initialize: Not requesting Tesla stuff, bailing out");
 			return;

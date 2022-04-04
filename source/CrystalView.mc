@@ -169,7 +169,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			} else {
 				textColour = gThemeColour;
 			}
-			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
+			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
 		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A")) && error == null) {
 			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);

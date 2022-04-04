@@ -239,8 +239,8 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 					setProperty("TeslaError", null);
 				}
 
-				// If the car isn't asleep, keep the current charge and clear the charging_state
-				else if (!carAsleep) {
+				// If the car isn't asleep and we didn't get an error, read what was returned
+				else if (!carAsleep && !batterie_stale) {
 					var batterie_state = TeslaInfo["battery_state"];
 					if (batterie_state) {
 						batterie_level = batterie_state["battery_level"]; 
@@ -295,7 +295,7 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 						setProperty("TeslaBatterieStale", true);
 						setProperty("TeslaError", null);
 					}
-				} else {
+				} else if (!batterie_stale) { // Car is asleap, say so
 					setProperty("TeslaChargingState", "Sleeping");
 					setProperty("TeslaBatterieStale", false);
 					setProperty("TeslaError", null);
@@ -304,6 +304,10 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 				pendingWebRequests["TeslaInfo"] = true;
 			}
 		}
+		else {
+			pendingWebRequests.remove("TeslaInfo");
+		}
+		
 		// If there are any pending requests:
 		if (pendingWebRequests.keys().size() > 0) {
 
