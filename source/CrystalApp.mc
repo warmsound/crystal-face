@@ -118,7 +118,7 @@ class CrystalApp extends App.AppBase {
 		}
 
 		var pendingWebRequests = getProperty("PendingWebRequests");
-if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequests + "'"); }
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pendingWebRequests + "'"); }
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -181,7 +181,7 @@ if (gotData) { logMessage("checkPendingWebRequests:PendingWebRequests is '" + pe
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-if (gotData && TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
+//2022-04-04 if (gotData && TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
 
 			// No existing data.
 			if (TeslaInfo == null) {
@@ -201,7 +201,7 @@ if (gotData && TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInf
 				// Other errors are silent for now
 				var result = TeslaInfo["httpErrorTesla"];
 				if (result != null) {
-if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + "'"); }
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + "'"); }
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
 						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
 						batterie_stale = true;
@@ -221,7 +221,7 @@ if (gotData) { logMessage("checkPendingWebRequests:Got http error '" + result + 
 				result = TeslaInfo["Token"];
 				if (result != null) {
 //logMessage("checkPendingWebRequests:Got token data '" + result + "'");
-if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
 					var accessToken = result["access_token"];
 					var refreshToken = result["refresh_token"];
 					var expires_in = result["expires_in"];
@@ -231,7 +231,7 @@ if (gotData) { logMessage("checkPendingWebRequests:Got token data"); }
 						setProperty("TeslaRefreshToken", refreshToken);
 					}
 					else {
-if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token '" + result + "'"); }
 					}
 					setProperty("TeslaTokenExpiresIn", expires_in);
 					setProperty("TeslaTokenCreatedAt", created_at);
@@ -316,11 +316,11 @@ if (gotData) { logMessage("checkPendingWebRequests:But missing the refresh token
 			if (lastTime) {
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
-var clockTime = Gregorian.info(nextTime, Time.FORMAT_MEDIUM);
-if (gotData) { logMessage("checkPendingWebRequests:Scheduling for " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d")); }
+//var clockTime = Gregorian.info(nextTime, Time.FORMAT_MEDIUM);
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:Scheduling for " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d")); }
 				Bg.registerForTemporalEvent(nextTime);
 			} else {
-if (gotData) { logMessage("checkPendingWebRequests:Scheduling now"); }
+//2022-04-04 if (gotData) { logMessage("checkPendingWebRequests:Scheduling now"); }
 				Bg.registerForTemporalEvent(Time.now());
 			}
 		}
@@ -339,9 +339,9 @@ if (gotData) { logMessage("checkPendingWebRequests:Scheduling now"); }
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
-logMessage("onBackgroundData:received '" + data + "'");
+//2022-04-04 logMessage("onBackgroundData:received '" + data + "'");
 		var pendingWebRequests = getProperty("PendingWebRequests");
-logMessage("onBackgroundData:pendingWebRequests is '" + pendingWebRequests + "'");
+//2022-04-04 logMessage("onBackgroundData:pendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests == null) {
 //logMessage("onBackgroundData: called with no pending web requests!");
 			pendingWebRequests = {};

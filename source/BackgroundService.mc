@@ -48,26 +48,26 @@ class BackgroundService extends Sys.ServiceDelegate {
 			var expireAt = new Time.Moment(createdAt + expiresIn);
 			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
+//2022-04-04 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
-logMessage("initialize:Generating Access Token");
+//2022-04-04 logMessage("initialize:Generating Access Token");
 			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
-logMessage("initialize:No refresh token!");
+//2022-04-04 logMessage("initialize:No refresh token!");
 			}
 			return;
 		}
 
         _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
 		if (_vehicle_id == null) {
-logMessage("initialize:Getting vehicle_id");
+//2022-04-04 logMessage("initialize:Getting vehicle_id");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-logMessage("initialize:Asking vehicle data for " + _vehicle_id);
+//2022-04-04 logMessage("initialize:Asking vehicle data for " + _vehicle_id);
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 	}
@@ -78,7 +78,7 @@ logMessage("initialize:Asking vehicle data for " + _vehicle_id);
 	(:background_method)
 	function onTemporalEvent() {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
-logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
+//2022-04-04 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -126,9 +126,9 @@ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'")
 			// 3. Tesla
 			}
 			if (pendingWebRequests["TeslaInfo"] != null && App.getApp().getProperty("Tesla") != null) {
-logMessage("onTemporalEvent: WebRequest for vehicle id " + _vehicle_id);
+//2022-04-04 logMessage("onTemporalEvent: WebRequest for vehicle id " + _vehicle_id);
 				if (!Sys.getDeviceSettings().phoneConnected) {
-logMessage("onTemporalEvent: No phone connected");
+//2022-04-04 logMessage("onTemporalEvent: No phone connected");
 //					pendingWebRequests["TeslaInfo"] = null;
 					return;
 				}
@@ -278,7 +278,7 @@ logMessage("onTemporalEvent: No phone connected");
     function onReceiveToken(responseCode, data) {
 		var result;
 
-logMessage("onReceiveToken responseCode is " + responseCode);
+//2022-04-04 logMessage("onReceiveToken responseCode is " + responseCode);
 //logMessage("onReceiveToken data  is " + data);
         if (responseCode == 200) {
         	result = { "Token" => data };
@@ -292,7 +292,7 @@ logMessage("onReceiveToken responseCode is " + responseCode);
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
-logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
+//2022-04-04 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
         if (responseCode == 200) {
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
@@ -319,7 +319,7 @@ logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " +
 		var precondEnabled = "N/A";
 		var sentryEnabled = "N/A";
 
-logMessage("onReceiveVehicleData responseCode is " + responseCode);
+//2022-04-04 logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
         	results = data.get("response");
         	if (results != null) {
@@ -350,7 +350,7 @@ logMessage("onReceiveVehicleData responseCode is " + responseCode);
 			result = { "httpErrorTesla" => responseCode };
 	    }
 
-logMessage("onReceiveVehicleData received " + result);
+//2022-04-04 logMessage("onReceiveVehicleData received " + result);
 
 		Bg.exit({ "TeslaInfo" => result });
     }
