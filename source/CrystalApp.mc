@@ -82,10 +82,14 @@ class CrystalApp extends App.AppBase {
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 
-		var lastTime = Bg.getLastTemporalEventTime();
+		var lastTime = null;
 		var TeslaInfo = getProperty("TeslaInfo");
 		var gotData = temporalRan;
 		temporalRan = false;
+
+		if(Toybox.System has :ServiceDelegate) {
+			lastTime = Bg.getLastTemporalEventTime();
+		}
 
 //logMessage("checkPendingWebRequests:lastBackgroundSchedule is " + lastBackgroundSchedule + " lastTime is " + (lastTime == null ? "null" : lastTime.value()));
 		var location = Activity.getActivityInfo().currentLocation;
@@ -308,9 +312,8 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests.remove("TeslaInfo");
 		}
 		
-		// If there are any pending requests:
-		if (pendingWebRequests.keys().size() > 0) {
-
+		// If there are any pending requests and we can do background process
+		if (Toybox.System has :ServiceDelegate && pendingWebRequests.keys().size() > 0) {
 			// Register for background temporal event as soon as possible.
 //			var lastTime = Bg.getLastTemporalEventTime();
 			if (lastTime) {
