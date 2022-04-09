@@ -499,11 +499,11 @@ class DataFields extends Ui.Drawable {
 					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
 					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
 					now = now.hour + ((now.min + 1) / 60.0);
-					//Sys.println(now);
+					//logMessage(now);
 
 					// Get today's sunrise/sunset times in current time zone.
 					sunTimes = getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
-					//Sys.println(sunTimes);
+					//logMessage(sunTimes);
 
 					// If sunrise/sunset happens today.
 					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
@@ -653,7 +653,7 @@ class DataFields extends Ui.Drawable {
 		if (tomorrow) {
 			now = now.add(new Time.Duration(24 * 60 * 60));
 		}
-		var d = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+		var d = Gregorian.info(now, Time.FORMAT_SHORT);
 		var rad = Math.PI / 180.0d;
 		var deg = 180.0d / Math.PI;
 		
