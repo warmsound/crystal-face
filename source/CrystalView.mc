@@ -4,6 +4,10 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.Communications as Comms;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.Weather;
+using Toybox.Position;
 
 using Toybox.Math;
 
@@ -217,6 +221,63 @@ class CrystalView extends Ui.WatchFace {
 	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
 	private var mTime;
 	var mDataFields;
+	var mHasGarminWeather;
+	var mGarminToOWM = {
+		"0" => "01",
+		"1" => "02",
+		"2" => "03",
+		"3" => "10",
+		"4" => "13",
+		"5" => "04",
+		"6" => "11",
+		"7" => "13",
+		"8" => "50",
+		"9" => "50",
+		"10" => "10",
+		"11" => "09",
+		"12" => "11",
+		"13" => "01",
+		"14" => "09",
+		"15" => "10",
+		"16" => "13",
+		"17" => "13",
+		"18" => "13",
+		"19" => "13",
+		"20" => "04",
+		"21" => "13",
+		"22" => "03",
+		"23" => "02",
+		"24" => "09",
+		"25" => "10",
+		"26" => "10",
+		"27" => "09",
+		"28" => "11",
+		"29" => "50",
+		"30" => "04",
+		"31" => "09",
+		"32" => "11",
+		"33" => "04",
+		"34" => "13",
+		"35" => "04",
+		"36" => "04",
+		"37" => "04",
+		"38" => "04",
+		"39" => "50",
+		"40" => "02",
+		"41" => "11",
+		"42" => "11",
+		"43" => "13",
+		"44" => "13",
+		"45" => "09",
+		"46" => "13",
+		"47" => "13",
+		"48" => "13",
+		"49" => "13",
+		"50" => "13",
+		"51" => "13",
+		"52" => "02",
+		"53" => "01"
+	};
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
@@ -250,6 +311,21 @@ class CrystalView extends Ui.WatchFace {
 
 	function initialize() {
 		WatchFace.initialize();
+
+		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+//logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
+		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
+			if (Toybox has :Weather) {
+				mHasGarminWeather = true;
+//logMessage("Does support Weather");
+			} else {
+				mHasGarminWeather = false;
+//logMessage("Does not support Weather");
+			}
+		} else {
+				mHasGarminWeather = false;
+//logMessage("Using OpenWeatherMap");
+		}
 	}
 
 	// Load your resources here
@@ -308,7 +384,92 @@ class CrystalView extends Ui.WatchFace {
 //logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
+		
+		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
+			ReadWeather();
+		}	
 	}
+
+	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
+	function ReadWeather() {
+		var weather = Weather.getCurrentConditions();
+		var result;
+		if (weather != null) {
+			var temperature = weather.temperature;
+			var humidity = weather.relativeHumidity;
+			var condition = weather.condition;
+			var icon;
+			var day = "d";
+			
+//			var myLocation = new Position.Location({:latitude => gLocationLat, :longitude => gLocationLng, :format => :degrees });
+			var myLocation = weather.observationLocationPosition;
+			var myLocationArray = myLocation.toDegrees();
+//			var now = Time.now();
+			var now = weather.observationTime;
+			if (Toybox.Weather has :getSunrise) {
+//logMessage("We have sunrise and sunset routines!");
+				var sunrise = 0;
+				var sunset = 0;
+				sunrise = Weather.getSunrise(myLocation, now);
+				sunset = Weather.getSunset(myLocation, now);
+
+				var sinceSunrise = sunrise.compare(now);
+				var sinceSunset = now.compare(sunset);
+				if (sinceSunrise >= 0 || sinceSunset >= 0) {
+					day = "n";
+				}
+
+				/*var nowtime = Gregorian.info(now, Time.FORMAT_MEDIUM);
+				var nowStr = nowtime.day + " " + nowtime.hour + ":" + nowtime.min.format("%02d") + ":" + nowtime.sec.format("%02d");
+				var sunrisetime = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
+				var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+				var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
+				var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
+				logMessage("At=" + nowStr);
+				logMessage("Sunrise=" + sunriseStr);
+				logMessage("Sunset=" + sunsetStr);
+				logMessage("Since sunrize " + sinceSunrise);
+				logMessage("Since sunset " + sinceSunset);*/
+
+				now = now.value();
+			} else {
+//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+
+				var nextSunEvent = 0;
+				var value = 0;
+				
+				now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+				// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+				// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+				now = now.hour + ((now.min + 1) / 60.0);
+				//logMessage(now);
+
+				// Get today's sunrise/sunset times in current time zone.
+				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+				//logMessage(sunTimes);
+//logMessage("now=" + now); 
+//logMessage("sunTimes=" + sunTimes); 
+				// If sunrise/sunset happens today.
+				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+				if (sunriseSunsetToday) {
+					if (now < sunTimes[0] || now > sunTimes[1]) {
+						day = "n";
+					}
+				}
+				
+				now = Time.now().value();
+			}
+
+			icon = mGarminToOWM[condition.toString()] + day;
+			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => now, "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
+		} else {
+			now = Time.now().value();
+			result = { "cod" => 408, "dt" => now };
+		}
+		App.getApp().setProperty("OpenWeatherMapCurrent", result);
+//logMessage("Weather at " + weather.observationLocationName + " is " + result);
+	}	
 
 	// Select normal font, based on whether time zone feature is being used.
 	// Saves memory when cities are not in use.
@@ -567,6 +728,10 @@ class CrystalView extends Ui.WatchFace {
 //logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
+		
+		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
+			ReadWeather();
+		}	
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
 		var settings = Sys.getDeviceSettings();

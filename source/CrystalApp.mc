@@ -159,33 +159,38 @@ class CrystalApp extends App.AppBase {
 		if ((gLocationLat != null) &&
 			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmCurrent = getProperty("OpenWeatherMapCurrent");
-
-			// No existing data.
-			if (owmCurrent == null) {
-
-				pendingWebRequests["OpenWeatherMapCurrent"] = true;
-
-			// Successfully received weather data.
-			} else if (owmCurrent["cod"] == 200) {
-
-				// Existing data is older than 30 mins.
-				// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
-				if ((Time.now().value() > (owmCurrent["dt"] + 1800)) ||
-
-				// Existing data not for this location.
-				// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
-				// true distance calculation. 0.02 degree of latitude is just over a mile.
-				(((gLocationLat - owmCurrent["lat"]).abs() > 0.02) || ((gLocationLng - owmCurrent["lon"]).abs() > 0.02))) {
-
+			var owmKeyOverride = getProperty("OWMKeyOverride");
+			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
+//logMessage("Using Garmin Weather so skipping this");
+			} else {
+//logMessage("Using OpenWeatherMap");
+				var owmCurrent = getProperty("OpenWeatherMapCurrent");
+	
+				// No existing data.
+				if (owmCurrent == null) {
 					pendingWebRequests["OpenWeatherMapCurrent"] = true;
+				// Successfully received weather data.
+				} else if (owmCurrent["cod"] == 200) {
+//logMessage(owmCurrent["dt"]);
+					// Existing data is older than 30 mins.
+					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
+					if ((Time.now().value() > (owmCurrent["dt"] + 1800)) ||
+	
+					// Existing data not for this location.
+					// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
+					// true distance calculation. 0.02 degree of latitude is just over a mile.
+					(((gLocationLat - owmCurrent["lat"]).abs() > 0.02) || ((gLocationLng - owmCurrent["lon"]).abs() > 0.02))) {
+	
+						pendingWebRequests["OpenWeatherMapCurrent"] = true;
+					}
 				}
 			}
 		}
 
 		// 3. Tesla:
 		if (getProperty("Tesla") != null) {
-//2022-04-04 if (gotData && TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
+//logMessage("checkPendingWebRequests in Tesla code");
+//if (/*gotData &&*/ TeslaInfo != null) { logMessage("checkPendingWebRequests:TeslaInfo=" + TeslaInfo.toString().substring(0,60) + " ..."); } 
 
 			// No existing data.
 			if (TeslaInfo == null) {
