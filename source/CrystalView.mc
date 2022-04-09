@@ -398,7 +398,7 @@ class CrystalView extends Ui.WatchFace {
 			var temperature = weather.temperature;
 			var humidity = weather.relativeHumidity;
 			var condition = weather.condition;
-			var icon;
+			var icon = "01";
 			var day = "d";
 			
 //			var myLocation = new Position.Location({:latitude => gLocationLat, :longitude => gLocationLng, :format => :degrees });
@@ -408,10 +408,8 @@ class CrystalView extends Ui.WatchFace {
 			var now = weather.observationTime;
 			if (Toybox.Weather has :getSunrise) {
 //logMessage("We have sunrise and sunset routines!");
-				var sunrise = 0;
-				var sunset = 0;
-				sunrise = Weather.getSunrise(myLocation, now);
-				sunset = Weather.getSunset(myLocation, now);
+				var sunrise = Weather.getSunrise(myLocation, now);
+				var sunset = Weather.getSunset(myLocation, now);
 
 				var sinceSunrise = sunrise.compare(now);
 				var sinceSunset = now.compare(sunset);
@@ -431,14 +429,10 @@ class CrystalView extends Ui.WatchFace {
 				logMessage("Since sunrize " + sinceSunrise);
 				logMessage("Since sunset " + sinceSunset);*/
 
-				now = now.value();
 			} else {
 //logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
-
-				var nextSunEvent = 0;
-				var value = 0;
 				
-				now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+				now = Gregorian.info(now, Time.FORMAT_SHORT);
 
 				// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
 				// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
@@ -448,8 +442,8 @@ class CrystalView extends Ui.WatchFace {
 				// Get today's sunrise/sunset times in current time zone.
 				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
 				//logMessage(sunTimes);
-//logMessage("now=" + now); 
-//logMessage("sunTimes=" + sunTimes); 
+logMessage("now=" + now); 
+logMessage("sunTimes=" + sunTimes); 
 				// If sunrise/sunset happens today.
 				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
 				if (sunriseSunsetToday) {
@@ -458,10 +452,13 @@ class CrystalView extends Ui.WatchFace {
 					}
 				}
 				
-				now = Time.now().value();
 			}
 
-			icon = mGarminToOWM[condition.toString()] + day;
+			now = Time.now().value();
+			if (condition < 53) {
+				icon = mGarminToOWM[condition.toString()] + day;
+logMessage("icon=" + icon); 
+			}
 			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => now, "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
 		} else {
 			now = Time.now().value();
