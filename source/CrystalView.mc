@@ -29,6 +29,8 @@ const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 360) ? 1 : 2;
 const BATTERY_HEAD_HEIGHT = 4 * SCREEN_MULTIPLIER;
 const BATTERY_MARGIN = SCREEN_MULTIPLIER;
 
+var mGarminToOWM = [ 1, 2, 3, 10, 13, 4, 11, 13, 50, 50, 10, 9, 11, 1, 9, 10, 13, 13, 13, 13, 4, 13, 3, 2, 9, 10, 10, 9, 11, 50, 4, 9, 11, 4, 13, 4, 4, 4, 4, 50, 2, 11, 11, 13, 13, 9, 13, 13, 13, 13, 13, 13, 2, 1 ];
+
 //const BATTERY_LEVEL_LOW = 20;
 //const BATTERY_LEVEL_CRITICAL = 10;
 
@@ -222,63 +224,6 @@ class CrystalView extends Ui.WatchFace {
 	private var mTime;
 	var mDataFields;
 	var mHasGarminWeather;
-	var mGarminToOWM = {
-		"0" => "01",
-		"1" => "02",
-		"2" => "03",
-		"3" => "10",
-		"4" => "13",
-		"5" => "04",
-		"6" => "11",
-		"7" => "13",
-		"8" => "50",
-		"9" => "50",
-		"10" => "10",
-		"11" => "09",
-		"12" => "11",
-		"13" => "01",
-		"14" => "09",
-		"15" => "10",
-		"16" => "13",
-		"17" => "13",
-		"18" => "13",
-		"19" => "13",
-		"20" => "04",
-		"21" => "13",
-		"22" => "03",
-		"23" => "02",
-		"24" => "09",
-		"25" => "10",
-		"26" => "10",
-		"27" => "09",
-		"28" => "11",
-		"29" => "50",
-		"30" => "04",
-		"31" => "09",
-		"32" => "11",
-		"33" => "04",
-		"34" => "13",
-		"35" => "04",
-		"36" => "04",
-		"37" => "04",
-		"38" => "04",
-		"39" => "50",
-		"40" => "02",
-		"41" => "11",
-		"42" => "11",
-		"43" => "13",
-		"44" => "13",
-		"45" => "09",
-		"46" => "13",
-		"47" => "13",
-		"48" => "13",
-		"49" => "13",
-		"50" => "13",
-		"51" => "13",
-		"52" => "02",
-		"53" => "01"
-	};
-
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
 
@@ -312,6 +257,11 @@ class CrystalView extends Ui.WatchFace {
 	function initialize() {
 		WatchFace.initialize();
 
+		rereadWeatherMethod();
+	}
+
+	// Reread Weather method
+	function rereadWeatherMethod() {
 		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 //logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
 		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
@@ -327,7 +277,7 @@ class CrystalView extends Ui.WatchFace {
 //logMessage("Using OpenWeatherMap");
 		}
 	}
-
+	
 	// Load your resources here
 	function onLayout(dc) {
 		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
@@ -370,7 +320,7 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
-//2022-04-04 logMessage("onSettingsChanged called");
+//logMessage("onSettingsChanged called");
 
 		updateNormalFont();
 
@@ -385,6 +335,8 @@ class CrystalView extends Ui.WatchFace {
 			App.getApp().checkPendingWebRequests();
 		}
 		
+		rereadWeatherMethod(); // Check if we changed from Garmin Weather or OWM
+
 		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
 			ReadWeather();
 		}	
@@ -442,8 +394,8 @@ class CrystalView extends Ui.WatchFace {
 				// Get today's sunrise/sunset times in current time zone.
 				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
 				//logMessage(sunTimes);
-logMessage("now=" + now); 
-logMessage("sunTimes=" + sunTimes); 
+//logMessage("now=" + now); 
+//logMessage("sunTimes=" + sunTimes); 
 				// If sunrise/sunset happens today.
 				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
 				if (sunriseSunsetToday) {
@@ -456,8 +408,8 @@ logMessage("sunTimes=" + sunTimes);
 
 			now = Time.now().value();
 			if (condition < 53) {
-				icon = mGarminToOWM[condition.toString()] + day;
-logMessage("icon=" + icon); 
+				icon = (mGarminToOWM[condition]).format("%02d") + day;
+//logMessage("icon=" + icon); 
 			}
 			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => now, "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
 		} else {
