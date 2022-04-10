@@ -3,6 +3,11 @@ using Toybox.Graphics as Graphics;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
+using Toybox.Communications as Comms;
+using Toybox.Time;
+using Toybox.Time.Gregorian;
+using Toybox.Weather;
+using Toybox.Position;
 
 using Toybox.Math;
 
@@ -23,6 +28,8 @@ const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 360) ? 1 : 2;
 //const BATTERY_LINE_WIDTH = 2;
 const BATTERY_HEAD_HEIGHT = 4 * SCREEN_MULTIPLIER;
 const BATTERY_MARGIN = SCREEN_MULTIPLIER;
+
+var mGarminToOWM = [ 1, 2, 3, 10, 13, 4, 11, 13, 50, 50, 10, 9, 11, 1, 9, 10, 13, 13, 13, 13, 4, 13, 3, 2, 9, 10, 10, 9, 11, 50, 4, 9, 11, 4, 13, 4, 4, 4, 4, 50, 2, 11, 11, 13, 13, 9, 13, 13, 13, 13, 13, 13, 2, 1 ];
 
 //const BATTERY_LEVEL_LOW = 20;
 //const BATTERY_LEVEL_CRITICAL = 10;
@@ -76,15 +83,147 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		height - (2 * lineWidthPlusMargin));
 }
 
+var gToggleCounter = 0; // Used to switch between charge and inside temp
+
+function writeBatteryLevel(dc, x, y, width, height, type) {
+	var batteryLevel;		
+	var textColour;
+	
+	if (type == 0) { // Standard watch battery is being shown
+		batteryLevel = Math.floor(Sys.getSystemStats().battery);
+
+		if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
+			textColour = Graphics.COLOR_RED;
+		} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
+			textColour = Graphics.COLOR_YELLOW;
+		} else {
+			textColour = gThemeColour;
+		}
+
+		dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
+	}
+	else { // Tesla stuff
+		var value;
+		var batteryStale = false;
+		var chargingState = 0;
+		var error = null;
+		var showMode;
+
+		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
+		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
+//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
+		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
+		chargingState = App.getApp().getProperty("TeslaChargingState");
+		error = App.getApp().getProperty("TeslaError");
+
+		if (chargingState != null) {
+			if (chargingState.equals("Charging")) {
+				chargingState = 1;
+			} else if (chargingState.equals("Sleeping")) {
+				chargingState = 2;
+				showMode /= 2; // Keep only 0 and 2.
+			} else {
+				chargingState = 0;
+			}
+		} else {
+			chargingState = 0;
+		}
+
+		var inText = null;
+		switch (showMode) {
+			case 0:
+				value = App.getApp().getProperty("TeslaBatterieLevel");
+				break;
+			case 1:
+				value = App.getApp().getProperty("TeslaPreconditioning");
+				if (value != null && value.equals("true")) {
+					inText = "P  on";
+				}
+				else if (value != null && value.equals("false")) {
+					inText = "P off";
+				}
+				else {
+					inText = "P ?";
+				}
+				break;
+			case 2:
+				value = App.getApp().getProperty("TeslaSentryEnabled");
+				if (value != null && value.equals("true")) {
+					inText = "S on";
+				}
+				else if (value != null && value.equals("false")) {
+					inText = "S off";
+				}
+				else {
+					inText = "S ?";
+				}
+				break;
+			case 3:
+				value = App.getApp().getProperty("TeslaInsideTemp");
+				break;
+		}
+
+//logMessage("value=" + value);		
+		if (value == null) {
+			value = "N/A";
+		}
+		
+		if (inText != null && error == null) {
+			if (batteryStale == true) {
+				textColour = Graphics.COLOR_LT_GRAY;
+			} else {
+				textColour = gThemeColour;
+			}
+			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
+		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A")) && error == null) {
+			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, "???", Graphics.TEXT_JUSTIFY_LEFT);
+		} else {
+			var suffixe = "";
+
+			if (error != null) {
+				textColour = Graphics.COLOR_PINK;
+				value = error.toFloat();
+			} else {
+				value = value.toFloat();
+	
+				if (batteryStale == true) {
+					textColour = Graphics.COLOR_LT_GRAY;
+				} else if (value <= /* BATTERY_LEVEL_CRITICAL */ 10 && showMode == 0) {
+					textColour = Graphics.COLOR_RED;
+				} else if (value <= /* BATTERY_LEVEL_LOW */ 20 && showMode == 0) {
+					textColour = Graphics.COLOR_YELLOW;
+				} else {
+					textColour = gThemeColour;
+				}
+			
+				if (showMode == 0) {
+					suffixe = "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
+				} else {
+					suffixe = "°C";
+					if (Sys.getDeviceSettings().temperatureUnits == Sys. UNIT_STATUTE) {
+						suffixe = "°F";
+						value = value * 9.0 / 5.0 + 32;
+					}
+				}
+			}
+
+			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+			dc.drawText(x - (width / 2), y - height, gNormalFont, value.toNumber().format(INTEGER_FORMAT) + suffixe, Graphics.TEXT_JUSTIFY_LEFT);
+		}
+	}
+}
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
 	private var mBurnInProtectionChangedSinceLastDraw = false; // Did burn-in protection change since last full update?
 	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
-
 	private var mTime;
 	var mDataFields;
-
+	var mHasGarminWeather;
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	private var mDrawables = {};
 
@@ -117,8 +256,28 @@ class CrystalView extends Ui.WatchFace {
 
 	function initialize() {
 		WatchFace.initialize();
+
+		rereadWeatherMethod();
 	}
 
+	// Reread Weather method
+	function rereadWeatherMethod() {
+		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+//logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
+		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
+			if (Toybox has :Weather) {
+				mHasGarminWeather = true;
+//logMessage("Does support Weather");
+			} else {
+				mHasGarminWeather = false;
+//logMessage("Does not support Weather");
+			}
+		} else {
+				mHasGarminWeather = false;
+//logMessage("Using OpenWeatherMap");
+		}
+	}
+	
 	// Load your resources here
 	function onLayout(dc) {
 		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
@@ -161,6 +320,7 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
+//logMessage("onSettingsChanged called");
 
 		updateNormalFont();
 
@@ -171,9 +331,94 @@ class CrystalView extends Ui.WatchFace {
 		updateHoursMinutesColours();
 
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+//logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
+		
+		rereadWeatherMethod(); // Check if we changed from Garmin Weather or OWM
+
+		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
+			ReadWeather();
+		}	
 	}
+
+	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
+	function ReadWeather() {
+		var weather = Weather.getCurrentConditions();
+		var result;
+		if (weather != null) {
+			var temperature = weather.temperature;
+			var humidity = weather.relativeHumidity;
+			var condition = weather.condition;
+			var icon = "01";
+			var day = "d";
+			
+//			var myLocation = new Position.Location({:latitude => gLocationLat, :longitude => gLocationLng, :format => :degrees });
+			var myLocation = weather.observationLocationPosition;
+			var myLocationArray = myLocation.toDegrees();
+//			var now = Time.now();
+			var now = weather.observationTime;
+			if (Toybox.Weather has :getSunrise) {
+//logMessage("We have sunrise and sunset routines!");
+				var sunrise = Weather.getSunrise(myLocation, now);
+				var sunset = Weather.getSunset(myLocation, now);
+
+				var sinceSunrise = sunrise.compare(now);
+				var sinceSunset = now.compare(sunset);
+				if (sinceSunrise >= 0 || sinceSunset >= 0) {
+					day = "n";
+				}
+
+				/*var nowtime = Gregorian.info(now, Time.FORMAT_MEDIUM);
+				var nowStr = nowtime.day + " " + nowtime.hour + ":" + nowtime.min.format("%02d") + ":" + nowtime.sec.format("%02d");
+				var sunrisetime = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
+				var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+				var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
+				var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
+				logMessage("At=" + nowStr);
+				logMessage("Sunrise=" + sunriseStr);
+				logMessage("Sunset=" + sunsetStr);
+				logMessage("Since sunrize " + sinceSunrise);
+				logMessage("Since sunset " + sinceSunset);*/
+
+			} else {
+//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+				
+				now = Gregorian.info(now, Time.FORMAT_SHORT);
+
+				// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+				// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+				now = now.hour + ((now.min + 1) / 60.0);
+				//logMessage(now);
+
+				// Get today's sunrise/sunset times in current time zone.
+				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+				//logMessage(sunTimes);
+//logMessage("now=" + now); 
+//logMessage("sunTimes=" + sunTimes); 
+				// If sunrise/sunset happens today.
+				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+				if (sunriseSunsetToday) {
+					if (now < sunTimes[0] || now > sunTimes[1]) {
+						day = "n";
+					}
+				}
+				
+			}
+
+			now = Time.now().value();
+			if (condition < 53) {
+				icon = (mGarminToOWM[condition]).format("%02d") + day;
+//logMessage("icon=" + icon); 
+			}
+			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => now, "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
+		} else {
+			now = Time.now().value();
+			result = { "cod" => 408, "dt" => now };
+		}
+		App.getApp().setProperty("OpenWeatherMapCurrent", result);
+//logMessage("Weather at " + weather.observationLocationName + " is " + result);
+	}	
 
 	// Select normal font, based on whether time zone feature is being used.
 	// Saves memory when cities are not in use.
@@ -181,7 +426,7 @@ class CrystalView extends Ui.WatchFace {
 	function updateNormalFont() {
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
-
+//logMessage("which font " + ((city != null) && (city.length() > 0)));
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
 			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
@@ -429,8 +674,13 @@ class CrystalView extends Ui.WatchFace {
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
+//logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
+		
+		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
+			ReadWeather();
+		}	
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
 		var settings = Sys.getDeviceSettings();
@@ -482,4 +732,44 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
+}
+
+function type_name(obj) {
+    if (obj instanceof Toybox.Lang.Number) {
+        return "Number";
+    } else if (obj instanceof Toybox.Lang.Long) {
+        return "Long";
+    } else if (obj instanceof Toybox.Lang.Float) {
+        return "Float";
+    } else if (obj instanceof Toybox.Lang.Double) {
+        return "Double";
+    } else if (obj instanceof Toybox.Lang.Boolean) {
+        return "Boolean";
+    } else if (obj instanceof Toybox.Lang.String) {
+        return "String";
+    } else if (obj instanceof Toybox.Lang.Array) {
+        var s = "Array [";
+        for (var i = 0; i < obj.size(); ++i) {
+            s += type_name(obj);
+            s += ", ";
+        }
+        s += "]";
+        return s;
+    } else if (obj instanceof Toybox.Lang.Dictionary) {
+        var s = "Dictionary{";
+        var keys = obj.keys();
+        var vals = obj.values();
+        for (var i = 0; i < keys.size(); ++i) {
+            s += keys;
+            s += ": ";
+            s += vals;
+            s += ", ";
+        }
+        s += "}";
+        return s;
+    } else if (obj instanceof Toybox.Time.Gregorian.Info) {
+        return "Gregorian.Info";
+    } else {
+        return "???";
+    }
 }

@@ -88,6 +88,7 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -107,6 +108,7 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -126,6 +128,7 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -140,6 +143,8 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -150,6 +155,8 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -160,6 +167,8 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -201,6 +210,14 @@
 
 	<setting propertyKey="@Properties.OWMKeyOverride" title="@Strings.OWMKeyOverride">
 		<settingConfig type="alphaNumeric" maxLength="32"/>
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaAccessToken" title="@Strings.TeslaAccessToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaRefreshToken" title="@Strings.TeslaRefreshToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
 	</setting>
 
 </settings>

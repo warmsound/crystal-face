@@ -4,7 +4,7 @@
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">App Version</string>
 
-	<string id="ThemeTitle">Theme</string>
+	<string id="ThemeTitle">Thème</string>
 	<string id="HoursColourTitle">Hours Colour</string>
 	<string id="MinutesColourTitle">Minutes Colour</string>
 	<string id="LeftGoalMeterTitle">Left Meter</string>
@@ -78,30 +78,29 @@
 	<string id="Weather">Weather</string>
 	<string id="Humidity">Humidity</string>
 	<string id="Pressure">Pressure</string>
-	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
 
-	<string id="Sun">Ned</string>
-	<string id="Mon">Pon</string>
-	<string id="Tue">Uto</string>
-	<string id="Wed">Sri</string>
-	<string id="Thu">Čet</string>
-	<string id="Fri">Pet</string>
-	<string id="Sat">Sub</string>
+	<string id="Sun">Dim</string>
+	<string id="Mon">Lun</string>
+	<string id="Tue">Mar</string>
+	<string id="Wed">Mer</string>
+	<string id="Thu">Jeu</string>
+	<string id="Fri">Ven</string>
+	<string id="Sat">Sam</string>
 
-	<string id="Jan">Sij</string>
-	<string id="Feb">Vel</string>
-	<string id="Mar">Ožu</string>
-	<string id="Apr">Tra</string>
-	<string id="May">Svi</string>
-	<string id="Jun">Lip</string>
-	<string id="Jul">Srp</string>
-	<string id="Aug">Kol</string>
-	<string id="Sep">Ruj</string>
-	<string id="Oct">Lis</string>
-	<string id="Nov">Stu</string>
-	<string id="Dec">Pro</string>
+	<string id="Jan">Jan</string>
+	<string id="Feb">Fev</string>
+	<string id="Mar">Mar</string>
+	<string id="Apr">Avr</string>
+	<string id="May">Mai</string>
+	<string id="Jun">Juin</string>
+	<string id="Jul">Juil</string>
+	<string id="Aug">Aout</string>
+	<string id="Sep">Sep</string>
+	<string id="Oct">Oct</string>
+	<string id="Nov">Nov</string>
+	<string id="Dec">Dec</string>
 
 </strings>

@@ -39,6 +39,13 @@ class Indicators extends Ui.Drawable {
 		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
 		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
 		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+		
+		if (mIndicator1Type == 6 || mIndicator2Type == 6 || mIndicator3Type == 6) {
+			App.getApp().setProperty("Tesla", true);
+//logMessage("onSettingsChanged:Doing Tesla!");
+		} else {
+			App.getApp().setProperty("Tesla", null);
+		}  
 	}
 
 	function draw(dc) {
@@ -89,6 +96,16 @@ class Indicators extends Ui.Drawable {
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
 			drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
+			return;
+		}
+
+		if (indicatorType == 5 /* INDICATOR_TYPE_BATTERY_NUMERIC */) {
+			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 0);
+			return;
+		}
+
+		if (indicatorType == 6 /* INDICATOR_TYPE_TESLA */) { // We're reusing the watch batterie indicator to show the Tesla's batterie level
+			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
 			return;
 		}
 
