@@ -566,7 +566,6 @@ class DataFields extends Ui.Drawable {
 
 				// Stored weather data available.
 				} else if (weather != null) {
-
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
 						weatherValue = weather["temp"]; // Celcius.
@@ -586,7 +585,7 @@ class DataFields extends Ui.Drawable {
 
 				// Awaiting response.
 				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
-					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"]) {
+					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"] != null) {
 
 					value = "...";
 				}

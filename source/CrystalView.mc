@@ -103,6 +103,9 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
 	}
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
 	else { // Tesla stuff
 		var value;
 		var batteryStale = false;
@@ -214,6 +217,9 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			dc.drawText(x - (width / 2), y - height, gNormalFont, value.toNumber().format(INTEGER_FORMAT) + suffixe, Graphics.TEXT_JUSTIFY_LEFT);
 		}
 	}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 }
 
 class CrystalView extends Ui.WatchFace {
@@ -263,18 +269,18 @@ class CrystalView extends Ui.WatchFace {
 	// Reread Weather method
 	function rereadWeatherMethod() {
 		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
-//logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
+//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
 		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 			if (Toybox has :Weather) {
 				mHasGarminWeather = true;
-//logMessage("Does support Weather");
+//2022-04-10 logMessage("Does support Weather");
 			} else {
 				mHasGarminWeather = false;
-//logMessage("Does not support Weather");
+//2022-04-10 logMessage("Does not support Weather");
 			}
 		} else {
 				mHasGarminWeather = false;
-//logMessage("Using OpenWeatherMap");
+//2022-04-10 logMessage("Using OpenWeatherMap");
 		}
 	}
 	
@@ -331,7 +337,6 @@ class CrystalView extends Ui.WatchFace {
 		updateHoursMinutesColours();
 
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-//logMessage("onSettingsChanged:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 		
@@ -353,11 +358,14 @@ class CrystalView extends Ui.WatchFace {
 			var icon = "01";
 			var day = "d";
 			
-//			var myLocation = new Position.Location({:latitude => gLocationLat, :longitude => gLocationLng, :format => :degrees });
 			var myLocation = weather.observationLocationPosition;
 			var myLocationArray = myLocation.toDegrees();
-//			var now = Time.now();
-			var now = weather.observationTime;
+
+			// So the OWM code knows our location since it's background code won't run to fetch it
+			gLocationLat = myLocationArray[0];
+			gLocationLng = myLocationArray[1];
+			
+			var now = Time.now();
 			if (Toybox.Weather has :getSunrise) {
 //logMessage("We have sunrise and sunset routines!");
 				var sunrise = Weather.getSunrise(myLocation, now);
@@ -375,7 +383,7 @@ class CrystalView extends Ui.WatchFace {
 				var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
 				var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
 				var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
-				logMessage("At=" + nowStr);
+				logMessage("For=" + nowStr);
 				logMessage("Sunrise=" + sunriseStr);
 				logMessage("Sunset=" + sunsetStr);
 				logMessage("Since sunrize " + sinceSunrise);
@@ -406,18 +414,17 @@ class CrystalView extends Ui.WatchFace {
 				
 			}
 
-			now = Time.now().value();
 			if (condition < 53) {
 				icon = (mGarminToOWM[condition]).format("%02d") + day;
 //logMessage("icon=" + icon); 
 			}
-			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => now, "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
+			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => weather.observationTime.value(), "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
+//2022-04-10 logMessage("Weather at " + weather.observationLocationName + " is " + result);
 		} else {
-			now = Time.now().value();
-			result = { "cod" => 408, "dt" => now };
+			result = null;
+//2022-04-10 logMessage("No weather data, returning null");
 		}
 		App.getApp().setProperty("OpenWeatherMapCurrent", result);
-//logMessage("Weather at " + weather.observationLocationName + " is " + result);
 	}	
 
 	// Select normal font, based on whether time zone feature is being used.
@@ -426,7 +433,7 @@ class CrystalView extends Ui.WatchFace {
 	function updateNormalFont() {
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
-//logMessage("which font " + ((city != null) && (city.length() > 0)));
+
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
 			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
@@ -733,7 +740,7 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
 }
-
+/*
 function type_name(obj) {
     if (obj instanceof Toybox.Lang.Number) {
         return "Number";
@@ -773,3 +780,4 @@ function type_name(obj) {
         return "???";
     }
 }
+*/

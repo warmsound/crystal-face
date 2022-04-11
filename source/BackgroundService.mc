@@ -15,14 +15,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
 
-		// If we don't have a phone connected, don't go any further.
-//		if (!Sys.getDeviceSettings().phoneConnected) {
-//logMessage("initialize: No phone connected");
-//			return;
-//		}
-
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
 		if (App.getApp().getProperty("Tesla") == null) {
-//logMessage("initialize: Not requesting Tesla stuff, bailing out");
 			return;
 		}
 
@@ -48,28 +44,29 @@ class BackgroundService extends Sys.ServiceDelegate {
 			var expireAt = new Time.Moment(createdAt + expiresIn);
 			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-//2022-04-04 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
+//2022-04-10 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
-//2022-04-04 logMessage("initialize:Generating Access Token");
+//2022-04-10 logMessage("initialize:Generating Access Token");
 			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
-//2022-04-04 logMessage("initialize:No refresh token!");
+//2022-04-10 logMessage("initialize:No refresh token!");
 			}
 			return;
 		}
 
         _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
 		if (_vehicle_id == null) {
-//2022-04-04 logMessage("initialize:Getting vehicle_id");
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-//2022-04-04 logMessage("initialize:Asking vehicle data for " + _vehicle_id);
 			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 	}
 
 	// Read pending web requests, and call appropriate web request function.
@@ -78,12 +75,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function onTemporalEvent() {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
-//2022-04-04 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
+//2022-04-10 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
-//logMessage("onTemporalEvent: doing city event");
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
@@ -92,10 +88,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 					method(:onReceiveCityLocalTime)
 				);
 
-			// 2. Weather.
 			} 
+
+			// 2. Weather.
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-//logMessage("onTemporalEvent: doing weather event");
 				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
@@ -123,24 +119,16 @@ class BackgroundService extends Sys.ServiceDelegate {
 					method(:onReceiveOpenWeatherMapCurrent)
 				);
 
-			// 3. Tesla
 			}
+
+			// 3. Tesla
 			if (pendingWebRequests["TeslaInfo"] != null && App.getApp().getProperty("Tesla") != null) {
-//2022-04-04 logMessage("onTemporalEvent: WebRequest for vehicle id " + _vehicle_id);
 				if (!Sys.getDeviceSettings().phoneConnected) {
-//2022-04-04 logMessage("onTemporalEvent: No phone connected");
-//					pendingWebRequests["TeslaInfo"] = null;
 					return;
 				}
 					
-//logMessage("onTemporalEvent:TeslaInfo with vehicle_id at " + _vehicle_id);
-
 				if (_vehicle_id) {
-//logMessage("onTemporalEvent:Calling makeTeslaWebRequest to get vehicle data");
 					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
-				} else {
-//logMessage("onTemporalEvent:NOT calling makeTeslaWebRequest for vehicle data because of null vehicle_id");
-//					pendingWebRequests["TeslaInfo"] = null;
 				}
 			}
 		} /* else {
@@ -274,11 +262,14 @@ class BackgroundService extends Sys.ServiceDelegate {
 		});
 	}
 
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
 	(:background_method)
     function onReceiveToken(responseCode, data) {
 		var result;
 
-//2022-04-04 logMessage("onReceiveToken responseCode is " + responseCode);
+//2022-04-10 logMessage("onReceiveToken responseCode is " + responseCode);
 //logMessage("onReceiveToken data  is " + data);
         if (responseCode == 200) {
         	result = { "Token" => data };
@@ -292,7 +283,7 @@ class BackgroundService extends Sys.ServiceDelegate {
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
-//2022-04-04 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
+//2022-04-10 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
         if (responseCode == 200) {
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
@@ -319,7 +310,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var precondEnabled = "N/A";
 		var sentryEnabled = "N/A";
 
-//2022-04-04 logMessage("onReceiveVehicleData responseCode is " + responseCode);
+//2022-04-10 logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
         	results = data.get("response");
         	if (results != null) {
@@ -350,10 +341,30 @@ class BackgroundService extends Sys.ServiceDelegate {
 			result = { "httpErrorTesla" => responseCode };
 	    }
 
-//2022-04-04 logMessage("onReceiveVehicleData received " + result);
-
 		Bg.exit({ "TeslaInfo" => result });
     }
+
+	(:background_method)
+    function makeTeslaWebPost(token, notify) {
+        var url = "https://auth.tesla.com/oauth2/v3/token";
+        Communications.makeWebRequest(
+            url,
+            {
+				"grant_type" => "refresh_token",
+				"client_id" => "ownerapi",
+				"refresh_token" => token,
+				"scope" => "openid email offline_access"
+            },
+            {
+                :method => Communications.HTTP_REQUEST_METHOD_POST,
+                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            },
+            notify
+        );
+    }
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 
 	(:background_method)
 	function makeWebRequest(url, params, callback) {
@@ -374,28 +385,7 @@ class BackgroundService extends Sys.ServiceDelegate {
               		"Authorization" => _token},
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
-//logMessage("makeTeslaWebRequest with url='" + url + "' params='" + params + "' options='" + options + "'");
-//logMessage("url=" + url + "\nparams=" + params + "\noptions=" + options);
 		Comms.makeWebRequest(url, params, options, callback);
-    }
-
-	(:background_method)
-    function makeTeslaWebPost(token, notify) {
-        var url = "https://auth.tesla.com/oauth2/v3/token";
-        Communications.makeWebRequest(
-            url,
-            {
-				"grant_type" => "refresh_token",
-				"client_id" => "ownerapi",
-				"refresh_token" => token,
-				"scope" => "openid email offline_access"
-            },
-            {
-                :method => Communications.HTTP_REQUEST_METHOD_POST,
-                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
-            },
-            notify
-        );
     }
 
 (:debug)

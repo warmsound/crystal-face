@@ -40,12 +40,18 @@ class Indicators extends Ui.Drawable {
 		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
 		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
 		
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
 		if (mIndicator1Type == 6 || mIndicator2Type == 6 || mIndicator3Type == 6) {
 			App.getApp().setProperty("Tesla", true);
 //logMessage("onSettingsChanged:Doing Tesla!");
 		} else {
 			App.getApp().setProperty("Tesla", null);
 		}  
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 	}
 
 	function draw(dc) {
@@ -104,10 +110,16 @@ class Indicators extends Ui.Drawable {
 			return;
 		}
 
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
 		if (indicatorType == 6 /* INDICATOR_TYPE_TESLA */) { // We're reusing the watch batterie indicator to show the Tesla's batterie level
 			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
 			return;
 		}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 
 		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
 		var settings = Sys.getDeviceSettings();
