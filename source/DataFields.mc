@@ -33,6 +33,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_PULSE_OX
 }
 
+var gAltitude = null; // To keep our altitude in case we looe GPS signal
+
 class DataFields extends Ui.Drawable {
 
 	private var mLeft;
@@ -448,13 +450,18 @@ class DataFields extends Ui.Drawable {
 				activityInfo = Activity.getActivityInfo();
 				altitude = activityInfo.altitude;
 				if ((altitude == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
-					sample = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST })
-						.next();
+					sample = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST }).next();
 					if ((sample != null) && (sample.data != null)) {
 						altitude = sample.data;
 					}
 				}
-				if (altitude != null) {
+	
+				if (altitude != null || gAltitude != null) {
+					if (altitude == null) { // If we didn't get an altitude this time, grab the saved one
+						altitude = gAltitude; 
+					} else { // We got altitude info, store it in case we lose it
+						gAltitude = altitude; 
+					}
 
 					// Metres (no conversion necessary).
 					if (settings.elevationUnits == System.UNIT_METRIC) {
