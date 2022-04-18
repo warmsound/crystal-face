@@ -115,15 +115,18 @@ class ThickThinTime extends Ui.Drawable {
 	// If isPartialUpdate flag is set to true, strictly limit the updated screen area: set clip rectangle before clearing old text
 	// and drawing new. Clipping rectangle should not change between seconds.
 	function drawSeconds(dc, isPartialUpdate) {
-		if (mHideSeconds || mSecondsClipRectX == null || mSecondsClipXAdjust == null || mSecondsClipRectY == null || mSecondsClipRectWidth == null || mSecondsClipRectHeight == null) { // Fixes a crash when null value are found. WHy it get there first, I don't kmow.
+		if (mHideSeconds) {
 			return;
 		}
-		
+
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
 		if (isPartialUpdate) {
-			
+			if (mSecondsClipRectX == null || mSecondsClipXAdjust == null || mSecondsClipRectY == null || mSecondsClipRectWidth == null || mSecondsClipRectHeight == null) { // Fixes a crash when null value are found. WHy it get there first, I don't kmow.
+				return;
+			}
+
 			dc.setClip(
 				mSecondsClipRectX + mSecondsClipXAdjust,
 				mSecondsClipRectY,
