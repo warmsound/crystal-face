@@ -89,6 +89,7 @@
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -109,6 +110,7 @@
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -129,6 +131,7 @@
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 		</settingConfig>
 	</setting>
 
