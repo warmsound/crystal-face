@@ -192,22 +192,68 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// Date.
 		y = mDataY + burnInYOffset;	
-		dc.drawText(
-			mDataLeft,
-			y,
-			mDateFont,
-			Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+		if (App.getApp().getProperty("Tesla") != null) {
+			dc.drawText(
+				mDataLeft,
+				y,
+				mDateFont,
+				Lang.format("$1$ $2$", [day, mMonthString]),
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 
-		// Battery.
-		var battery = Math.floor(Sys.getSystemStats().battery);
-		dc.drawText(
-			dc.getWidth() - mDataLeft,
-			y,
-			mBatteryFont,
-			battery.format(INTEGER_FORMAT) + "%",
-			Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+			// Batteries.
+			var battery = Math.floor(Sys.getSystemStats().battery);
+			var batteryStale = App.getApp().getProperty("TeslaBatterieStale");
+			var chargingState = App.getApp().getProperty("TeslaChargingState");
+			var error = App.getApp().getProperty("TeslaError");
+			var teslaBat = null;
+
+			if (chargingState != null) {
+				if (chargingState.equals("Charging")) {
+					chargingState = 1;
+				} else if (chargingState.equals("Sleeping")) {
+					chargingState = 2;
+				} else {
+					chargingState = 0;
+				}
+			} else {
+				chargingState = 0;
+			}
+
+			var value = App.getApp().getProperty("TeslaBatterieLevel");
+			if (error != null) {
+				value = error.toNumber().format(INTEGER_FORMAT);
+			} else if (value == null) {
+				value = "???";
+			} else {
+				value = value.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
+			}
+
+			dc.drawText(
+				dc.getWidth() - mDataLeft,
+				y,
+				mBatteryFont,
+				"T" + value + " " + battery.format(INTEGER_FORMAT) + "%",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		} else {
+			dc.drawText(
+				mDataLeft,
+				y,
+				mDateFont,
+				Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Battery.
+			var battery = Math.floor(Sys.getSystemStats().battery);
+			dc.drawText(
+				dc.getWidth() - mDataLeft,
+				y,
+				mBatteryFont,
+				battery.format(INTEGER_FORMAT) + "%",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 	}
 }

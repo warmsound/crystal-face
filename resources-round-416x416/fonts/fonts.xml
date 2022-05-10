@@ -31,5 +31,5 @@
 	<font id="AlwaysOnDateFontOverrideZHT" filename="../../resources-round-260x260/fonts/noto-sans-cjk-tc-medium-26.fnt" antialias="true"/>
 	<font id="AlwaysOnDateFontOverrideRUS" filename="../../resources-round-260x260/fonts/noto-sans-rus-bold-26.fnt" antialias="true"/>
 	<font id="AlwaysOnDateFontOverrideKOR" filename="../../resources-round-260x260/fonts/namum-gothic-kor-26.fnt" antialias="true"/>
-	<font id="AlwaysOnBatteryFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter="%0123456789"/>
+	<font id="AlwaysOnBatteryFont" filename="../../resources-round-260x260/fonts/titillium-web-semibold-26.fnt" antialias="true" filter="%0123456789Ts+-? "/>
 </fonts>
