@@ -19,4 +19,5 @@ char id=62   x=49    y=28    width=32    height=28    xoffset=0     yoffset=0   
 char id=63   x=81    y=28    width=32    height=28    xoffset=0     yoffset=0    xadvance=32    page=0  chnl=15
 char id=64   x=113   y=28    width=24    height=28    xoffset=0     yoffset=0    xadvance=24    page=0  chnl=15
 char id=65   x=137   y=28    width=19    height=28    xoffset=0     yoffset=0    xadvance=19    page=0  chnl=15
-char id=66   x=158   y=32    width=28    height=25    xoffset=0     yoffset=0    xadvance=32    page=0  chnl=15
+char id=66   x=158   y=28    width=28    height=25    xoffset=0     yoffset=0    xadvance=28    page=0  chnl=15
+char id=67   x=186   y=28    width=26    height=25    xoffset=0     yoffset=0    xadvance=26    page=0  chnl=15

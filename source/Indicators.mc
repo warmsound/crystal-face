@@ -117,6 +117,7 @@ class Indicators extends Ui.Drawable {
 			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
 			return;
 		}
+
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
 //****************************************************************
@@ -130,12 +131,16 @@ class Indicators extends Ui.Drawable {
 				indicatorType = 0; // INDICATOR_TYPE_BLUETOOTH
 			}
 		}
+		else if (indicatorType == 7) {
+			indicatorType = 3;
+		}
 
 		// Get value for indicator type.
 		var value = [
 			/* INDICATOR_TYPE_BLUETOOTH */ settings.phoneConnected,
 			/* INDICATOR_TYPE_ALARMS */ settings.alarmCount > 0,
-			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0
+			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0,
+			/* Do Not Disturb */ settings has :doNotDisturb && settings.doNotDisturb
 		][indicatorType];
 
 		dc.setColor(value ? gThemeColour : gMeterBackgroundColour, Graphics.COLOR_TRANSPARENT);
@@ -145,7 +150,7 @@ class Indicators extends Ui.Drawable {
 			x,
 			y,
 			gIconsFont,
-			["8", ":", "5"][indicatorType], // Get icon font char for indicator type.
+			["8", ":", "5", "C"][indicatorType], // Get icon font char for indicator type.
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}

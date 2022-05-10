@@ -108,4 +108,5 @@
 	<string id="Tesla">Information Tesla</string>
 	<string id="TeslaAccessToken">Tesla Access Token</string>
 	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
+	<string id="DND">Ne Pas Déranger</string>
 </strings>
