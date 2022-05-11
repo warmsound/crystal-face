@@ -7,8 +7,6 @@
             <iq:product id="approachs62"/>
             <iq:product id="d2air"/>
             <iq:product id="d2airx10"/>
-            <iq:product id="d2bravo"/>
-            <iq:product id="d2bravo_titanium"/>
             <iq:product id="d2charlie"/>
             <iq:product id="d2delta"/>
             <iq:product id="d2deltapx"/>
@@ -18,8 +16,6 @@
             <iq:product id="descentmk2"/>
             <iq:product id="descentmk2s"/>
             <iq:product id="epix2"/>
-            <iq:product id="fenix3"/>
-            <iq:product id="fenix3_hr"/>
             <iq:product id="fenix5"/>
             <iq:product id="fenix5plus"/>
             <iq:product id="fenix5s"/>
@@ -35,18 +31,12 @@
             <iq:product id="fenix7s"/>
             <iq:product id="fenix7x"/>
             <iq:product id="fenixchronos"/>
-            <iq:product id="fr230"/>
-            <iq:product id="fr235"/>
             <iq:product id="fr245"/>
             <iq:product id="fr245m"/>
-            <iq:product id="fr45"/>
             <iq:product id="fr55"/>
-            <iq:product id="fr630"/>
             <iq:product id="fr645"/>
             <iq:product id="fr645m"/>
-            <iq:product id="fr735xt"/>
             <iq:product id="fr745"/>
-            <iq:product id="fr920xt"/>
             <iq:product id="fr935"/>
             <iq:product id="fr945"/>
             <iq:product id="fr945lte"/>
@@ -69,15 +59,12 @@
             <iq:product id="venud"/>
             <iq:product id="venusq"/>
             <iq:product id="venusqm"/>
-            <iq:product id="vivoactive"/>
             <iq:product id="vivoactive3"/>
             <iq:product id="vivoactive3d"/>
             <iq:product id="vivoactive3m"/>
             <iq:product id="vivoactive3mlte"/>
             <iq:product id="vivoactive4"/>
             <iq:product id="vivoactive4s"/>
-            <iq:product id="vivoactive_hr"/>
-            <iq:product id="vivolife"/>
         </iq:products>
         <iq:permissions>
             <iq:uses-permission id="Background"/>
