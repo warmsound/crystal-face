@@ -347,7 +347,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
     function makeTeslaWebPost(token, notify) {
         var url = "https://auth.tesla.com/oauth2/v3/token";
-        Communications.makeWebRequest(
+        Comms.makeWebRequest(
             url,
             {
 				"grant_type" => "refresh_token",
@@ -356,26 +356,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 				"scope" => "openid email offline_access"
             },
             {
-                :method => Communications.HTTP_REQUEST_METHOD_POST,
-                :responseType => Communications.HTTP_RESPONSE_CONTENT_TYPE_JSON
+                :method => Comms.HTTP_REQUEST_METHOD_POST,
+                :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
             },
             notify
         );
     }
-//****************************************************************
-//******************** END OF REMVOVED SECTION *******************
-//****************************************************************
-
-	(:background_method)
-	function makeWebRequest(url, params, callback) {
-		var options = {
-			:method => Comms.HTTP_REQUEST_METHOD_GET,
-			:headers => {
-					"Content-Type" => Communications.REQUEST_CONTENT_TYPE_URL_ENCODED},
-			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
-		};
-		Comms.makeWebRequest(url, params, options, callback);
-	}
 
 	(:background_method)
     function makeTeslaWebRequest(url, params, callback) {
@@ -387,6 +373,20 @@ class BackgroundService extends Sys.ServiceDelegate {
         };
 		Comms.makeWebRequest(url, params, options, callback);
     }
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
+
+	(:background_method)
+	function makeWebRequest(url, params, callback) {
+		var options = {
+			:method => Comms.HTTP_REQUEST_METHOD_GET,
+			:headers => {
+					"Content-Type" => Comms.REQUEST_CONTENT_TYPE_URL_ENCODED},
+			:responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
+		};
+		Comms.makeWebRequest(url, params, options, callback);
+	}
 
 (:debug)
 function logMessage(message) {

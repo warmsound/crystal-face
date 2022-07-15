@@ -90,6 +90,7 @@
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -111,6 +112,7 @@
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -132,6 +134,7 @@
 			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 		</settingConfig>
 	</setting>
 

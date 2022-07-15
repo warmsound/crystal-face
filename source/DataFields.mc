@@ -31,7 +31,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_PRESSURE,
 	FIELD_TYPE_HUMIDITY,
 	FIELD_TYPE_PULSE_OX,
-	FIELD_FLOOR_CLIMBED
+	FIELD_FLOOR_CLIMBED,
+	FIELD_SOLAR_INTENSITY
 }
 
 class DataFields extends Ui.Drawable {
@@ -320,6 +321,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_TYPE_HUMIDITY => "A",
 					FIELD_TYPE_PULSE_OX => "B", // SG Addition
 					FIELD_FLOOR_CLIMBED => "1", // SG Addition
+					FIELD_SOLAR_INTENSITY => "D", // SG Addition
 				}[fieldType];
 			}
 
@@ -373,8 +375,18 @@ class DataFields extends Ui.Drawable {
 
 		switch (type) {
 			// SG Addition
+			case FIELD_SOLAR_INTENSITY:
+				var stats = Sys.getSystemStats();
+				if (stats has :solarIntensity) {
+					var solarIntensity = stats.solarIntensity;
+					if (solarIntensity != null) {
+						value = solarIntensity.format(INTEGER_FORMAT);
+					}
+				}
+				break;
+			// SG Addition
 			case FIELD_FLOOR_CLIMBED:
-				var info = ActivityMonitor.getInfo();
+ 				var info = ActivityMonitor.getInfo();
 				if (info has :floorsClimbed) {
 					var climbed = info.floorsClimbed;
 					var goal = info.floorsClimbedGoal;
