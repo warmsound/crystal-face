@@ -32,7 +32,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_HUMIDITY,
 	FIELD_TYPE_PULSE_OX,
 	FIELD_FLOOR_CLIMBED,
-	FIELD_SOLAR_INTENSITY
+	FIELD_SOLAR_INTENSITY,
+	FIELD_BODY_BATTERY
 }
 
 class DataFields extends Ui.Drawable {
@@ -322,6 +323,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_TYPE_PULSE_OX => "B", // SG Addition
 					FIELD_FLOOR_CLIMBED => "1", // SG Addition
 					FIELD_SOLAR_INTENSITY => "D", // SG Addition
+					FIELD_BODY_BATTERY => "E", // SG Addition
 				}[fieldType];
 			}
 
@@ -374,6 +376,22 @@ class DataFields extends Ui.Drawable {
 		var unit;
 
 		switch (type) {
+			// SG Addition
+			case FIELD_BODY_BATTERY:
+				var bodyBattery = null;
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
+					bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					if (bodyBattery != null) {
+						bodyBattery = bodyBattery.next();
+					}
+					if (bodyBattery !=null) {
+						bodyBattery = bodyBattery.data;
+					}
+					if (bodyBattery != null && bodyBattery >= 0 && bodyBattery <= 100) {
+						value = bodyBattery.format(INTEGER_FORMAT);
+					}
+				}
+				break;
 			// SG Addition
 			case FIELD_SOLAR_INTENSITY:
 				var stats = Sys.getSystemStats();

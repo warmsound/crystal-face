@@ -58,6 +58,7 @@
 	<string id="Steps">Steps</string>
 	<string id="FloorsClimbed">Floors Climbed</string>
 	<string id="SolarIntensity">Solar Intensity</string>
+	<string id="BodyBattery">Body Battery</string>
 	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
 	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
 	<string id="Off">Off</string>

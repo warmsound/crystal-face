@@ -91,6 +91,7 @@
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -113,6 +114,7 @@
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -135,6 +137,7 @@
 			<listEntry value="14">@Strings.PulseOx</listEntry>
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 

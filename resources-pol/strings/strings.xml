@@ -58,6 +58,7 @@
 	<string id="Steps">Kroki</string>
 	<string id="FloorsClimbed">Pokonane Piętra</string>
 	<string id="SolarIntensity">Solar Intensity</string>
+	<string id="BodyBattery">Body Battery</string>
 	<string id="ActiveMinutes">Aktywne Minuty (Tygodniowo)</string>
 	<string id="CaloriesManualGoal">Spalone Kalorie (Ręczny Cel)</string>
 	<string id="Off">Off</string><!-- TODO_TRANSLATE -->

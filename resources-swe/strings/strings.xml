@@ -58,6 +58,7 @@
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>
 	<string id="SolarIntensity">Solar Intensity</string>
+	<string id="BodyBattery">Body Battery</string>
 	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
