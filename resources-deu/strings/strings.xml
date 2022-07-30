@@ -58,8 +58,8 @@
 	<string id="Steps">Schritte</string>
 	<string id="FloorsClimbed">Stockwerke</string>
 	<string id="SolarIntensity">Solar Intensity</string>
-	<string id="BodyBattery">Body Battery</string>
-	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string>
+	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
+	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string><!-- TODO_TRANSLATE -->
 	<string id="CaloriesManualGoal">Kalorien (manuelles Ziel)</string>
 	<string id="Off">Aus</string>
 
@@ -79,7 +79,7 @@
 	<string id="Weather">Wetter</string>
 	<string id="Humidity">Feuchtigkeit</string>
 	<string id="Pressure">Druck</string>
-	<string id="PulseOx">Pulse Ox</string>
+	<string id="PulseOx">Pulse Ox</string><!-- TODO_TRANSLATE -->
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

@@ -58,8 +58,8 @@
 
 	<string id="Steps">Stappen</string>
 	<string id="FloorsClimbed">Trappen Beklommen</string>
-	<string id="SolarIntensity">Solar Intensity</string>
-	<string id="BodyBattery">Body Battery</string>
+	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
+	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Active Minuten (Wekelijks)</string>
 	<string id="CaloriesManualGoal">Calorien (Manueel Doel)</string>
 	<string id="Off">Uit</string>
@@ -80,7 +80,7 @@
 	<string id="Weather">Weeer</string>
 	<string id="Humidity">Vochtigheid</string>
 	<string id="Pressure">Luchtdruk</string>
-	<string id="PulseOx">Pulse Ox</string>
+	<string id="PulseOx">Pulse Ox</string><!-- TODO_TRANSLATE -->
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	

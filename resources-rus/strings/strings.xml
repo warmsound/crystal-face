@@ -57,8 +57,8 @@
 
 	<string id="Steps">Шаги</string>
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
-	<string id="SolarIntensity">Solar Intensity</string>
-	<string id="BodyBattery">Body Battery</string>
+	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
+	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
 	<string id="Off">Выключено</string>
@@ -79,7 +79,7 @@
 	<string id="Weather">Погода</string>
 	<string id="Humidity">Влажность</string>
 	<string id="Pressure">Давление</string>
-	<string id="PulseOx">Pulse Ox</string>
+	<string id="PulseOx">Pulse Ox</string><!-- TODO_TRANSLATE -->
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE">RUS</string>
