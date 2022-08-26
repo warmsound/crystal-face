@@ -18,6 +18,9 @@ dontIncludeKerningPairs=0
 useHinting=1
 renderFromOutline=0
 useClearType=1
+autoFitNumPages=0
+autoFitFontSizeMin=0
+autoFitFontSizeMax=0
 
 # character alignment
 paddingDown=0
@@ -28,6 +31,7 @@ spacingHoriz=1
 spacingVert=1
 useFixedHeight=0
 forceZero=0
+widthPaddingFactor=0.00
 
 # output file
 outWidth=256
@@ -50,8 +54,8 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-33,37,39,44-46,48-58,63,65-90,97-122,176,193,196-197,201,205-206,214,216,218,225,227-230,232
-chars=233,237,240-241,243-244,246,248,251-252,268,282,344,346,352,377,381-382,8304,8308-8309,8311-8313
-
+chars=32-33,37,39,44-46,48-58,63,65-90,97-122,176,193,196-197,201,205-206,214,216,218-219,225,227-230
+chars=232-233,237,240-241,243-244,246,248,251-252,268,282,344,346,352,377,381-382,8304,8308-8309,8311
+chars=8312-8313
 
 # imported icon images
