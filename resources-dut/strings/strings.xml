@@ -9,13 +9,13 @@
 	<string id="MinutesColourTitle">Minuten Kleur</string>
 	<string id="LeftGoalMeterTitle">Linker Meter</string>
 	<string id="RightGoalMeterTitle">Rechter Meter</string>
-	<string id="CaloriesGoalTitle">Calorien Doel (1-10,000kCal)</string>
+	<string id="CaloriesGoalTitle">Calorieën Doel (1-10,000kCal)</string>
 	<string id="GoalMeterStyleTitle">Meter Stijl</string>
 	<string id="MeterDigitsStyleTitle">Meter Getallen Stijl</string>
 	<string id="LocalTimeInCityTitle">Voeg Lokale Tijd In Stad Toe (Beta)</string>
 	<string id="MoveBarStyleTitle">Beweeg Balk Stijl</string>
 	<string id="HideSecondsTitle">Verberg Seconden</string>
-	<string id="HideHoursLeadingZeroTitle">Verberg Eerste Nul Bij Uuren</string>
+	<string id="HideHoursLeadingZeroTitle">Verberg Eerste Nul Bij Uren</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Hoeveelheid Datavelden</string>
@@ -58,29 +58,29 @@
 
 	<string id="Steps">Stappen</string>
 	<string id="FloorsClimbed">Trappen Beklommen</string>
-	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
+	<string id="SolarIntensity">Zonne-intensiteit</string>
 	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
-	<string id="ActiveMinutes">Active Minuten (Wekelijks)</string>
-	<string id="CaloriesManualGoal">Calorien (Manueel Doel)</string>
+	<string id="ActiveMinutes">Actieve Minuten (Wekelijks)</string>
+	<string id="CaloriesManualGoal">Calorieën (Manueel Doel)</string>
 	<string id="Off">Uit</string>
 
-	<string id="HeartRate">Hartslage</string>
+	<string id="HeartRate">Hartslag</string>
 	<string id="HeartRateLive5s">Hartslag (Live 5s)</string>
 	<string id="Battery">Batterij</string>
 	<string id="BatteryHidePercentage">Batterij (Verberg Percentage)</string>
 	<string id="Notifications">Notificaties</string>
-	<string id="Calories">Calorien</string>
+	<string id="Calories">Calorieën</string>
 	<string id="Distance">Afstand</string>
 	<string id="Alarms">Alarmen</string>
 	<string id="Altitude">Hoogte</string>
 	<string id="Temperature">Thermometer</string>
 	<string id="Bluetooth">Bluetooth</string>
 	<string id="BluetoothOrNotifications">Bluetooth/Notificaties</string>
-	<string id="SunriseSunset">Zonopkomst / -Ondergang</string>
-	<string id="Weather">Weeer</string>
+	<string id="SunriseSunset">Zonsopkomst / -Ondergang</string>
+	<string id="Weather">Weer</string>
 	<string id="Humidity">Vochtigheid</string>
 	<string id="Pressure">Luchtdruk</string>
-	<string id="PulseOx">Pulse Ox</string><!-- TODO_TRANSLATE -->
+	<string id="PulseOx">Pulsoximeter</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	
