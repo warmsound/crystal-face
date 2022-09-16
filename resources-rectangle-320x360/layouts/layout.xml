@@ -60,4 +60,19 @@
 			<param name="separator">4</param>
 		</drawable>
 	</layout>
+
+	<!-- Shown in low power mode -->
+	<layout id="AlwaysOn">
+		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
+			<param name="burnInYOffsets">[-57, -29, 29, 57]</param>
+			<param name="adjustY">-2</param>
+			<param name="timeY">153</param>
+			<param name="lineY">200</param>
+			<!-- Allow room for Chinese date -->	
+			<param name="lineWidth">216</param>
+			<!-- param name="lineStroke">2</param -->	
+			<param name="dataY">225</param>
+			<param name="dataLeft">65</param>
+		</drawable>
+	</layout>
 </resources>
