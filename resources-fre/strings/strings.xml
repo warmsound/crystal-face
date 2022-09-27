@@ -60,6 +60,7 @@
 	<string id="FloorsClimbed">Étages montées</string>
 	<string id="SolarIntensity">Intensité solaire</string>
 	<string id="BodyBattery">Batterie corporelle</string>
+	<string id="RecoveryTime">Temps de recouvrement</string>
 	<string id="ActiveMinutes">Minutes actives (hebdo)</string>
 	<string id="CaloriesManualGoal">Calories (objectif manuel)</string>
 	<string id="Off">Masqué</string>

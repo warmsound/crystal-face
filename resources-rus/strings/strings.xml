@@ -59,6 +59,7 @@
 	<string id="FloorsClimbed">Пройденные вверх этажи</string>
 	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
 	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
+	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
 	<string id="Off">Выключено</string>

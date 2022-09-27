@@ -59,6 +59,7 @@
 	<string id="FloorsClimbed">Våningar</string>
 	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
 	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
+	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 	<string id="Off">Off</string><!-- TODO_TRANSLATE -->

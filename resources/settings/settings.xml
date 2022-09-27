@@ -92,6 +92,7 @@
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -115,6 +116,7 @@
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -138,6 +140,7 @@
 			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
 			<listEntry value="16">@Strings.SolarIntensity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 		</settingConfig>
 	</setting>
 

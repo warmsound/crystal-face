@@ -33,7 +33,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_PULSE_OX,
 	FIELD_FLOOR_CLIMBED,
 	FIELD_SOLAR_INTENSITY,
-	FIELD_BODY_BATTERY
+	FIELD_BODY_BATTERY,
+	FIELD_RECOVERY_TIME
 }
 
 class DataFields extends Ui.Drawable {
@@ -324,6 +325,7 @@ class DataFields extends Ui.Drawable {
 					FIELD_FLOOR_CLIMBED => "1", // SG Addition
 					FIELD_SOLAR_INTENSITY => "D", // SG Addition
 					FIELD_BODY_BATTERY => "E", // SG Addition
+					FIELD_RECOVERY_TIME => "F" // SG Addition
 				}[fieldType];
 			}
 
@@ -374,8 +376,19 @@ class DataFields extends Ui.Drawable {
 		var weatherValue;
 		var sunTimes;
 		var unit;
+		var info;
 
 		switch (type) {
+			// SG Addition
+			case FIELD_RECOVERY_TIME:
+				info = ActivityMonitor.getInfo();
+				if (info has :timeToRecovery) {
+					var recoveryTyime = info.timeToRecovery;
+					if (recoveryTyime != null) {
+						value = recoveryTyime.format(INTEGER_FORMAT);
+					}
+				}
+				break;
 			// SG Addition
 			case FIELD_BODY_BATTERY:
 				var bodyBattery = null;
@@ -404,7 +417,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_FLOOR_CLIMBED:
- 				var info = ActivityMonitor.getInfo();
+ 				info = ActivityMonitor.getInfo();
 				if (info has :floorsClimbed) {
 					var climbed = info.floorsClimbed;
 					var goal = info.floorsClimbedGoal;

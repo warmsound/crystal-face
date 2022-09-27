@@ -59,6 +59,7 @@
 	<string id="FloorsClimbed">Stockwerke</string>
 	<string id="SolarIntensity">Solar Intensity</string>
 	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
+	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string><!-- TODO_TRANSLATE -->
 	<string id="CaloriesManualGoal">Kalorien (manuelles Ziel)</string>
 	<string id="Off">Aus</string>
