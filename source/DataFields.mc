@@ -562,7 +562,8 @@ class DataFields extends Ui.Drawable {
 					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
 					now = now.hour + ((now.min + 1) / 60.0);
 					//logMessage(now);
-
+gLocationLat=-34.9998826;
+gLocationLng=138.3309808;
 					// Get today's sunrise/sunset times in current time zone.
 					sunTimes = getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
 					//logMessage(sunTimes);
@@ -794,7 +795,7 @@ function getSunTimes(lat, lng, tz, tomorrow) {
 	var deltaJSet = jSet - jDate;
 	var deltaJRise = jRise - jDate;
 
-	var tzOffset = (tz == null) ? (Sys.getClockTime().timeZoneOffset / 3600) : tz;
+	var tzOffset = (tz == null) ? (Sys.getClockTime().timeZoneOffset / 3600.0) : tz;
 	return [
 		/* localRise */ (deltaJRise * 24) + tzOffset,
 		/* localSet */ (deltaJSet * 24) + tzOffset

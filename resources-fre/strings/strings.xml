@@ -111,5 +111,10 @@
 	<string id="Tesla">Information Tesla</string>
 	<string id="TeslaAccessToken">Tesla Access Token</string>
 	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
+    <string id="Tesla_api_server_location_label">Location du serveur API de Tesla</string>
+    <string id="Tesla_auth_server_location_label">Location du serveur Auth de Tesla</string>
+    <string id="Tesla_server_location_prompt">Entrez le nom de domaine du serveur</string>
 	<string id="DND">Ne Pas Déranger</string>
+	<string id="ThemeOverride">RGB Theme override</string>
+	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
 </strings>

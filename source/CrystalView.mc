@@ -443,59 +443,67 @@ class CrystalView extends Ui.WatchFace {
 
 		// #182 Protect against null or unexpected type e.g. String.
 		var theme = App.getApp().getIntProperty("Theme", 0);
+		var lightFlag;
+		var themeOverride = App.getApp().getProperty("ThemeOverride");
+		if (themeOverride.equals("")) {
+			// Theme-specific colours.
+			gThemeColour = [
+				Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
+				Graphics.COLOR_PINK,     // THEME_PINK_DARK
+				Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
+				Graphics.COLOR_DK_GRAY,  // THEME_MONO_LIGHT
+				0x55AAFF,                // THEME_CORNFLOWER_BLUE_DARK
+				0xFFFFAA,                // THEME_LEMON_CREAM_DARK
+				Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_DARK
+				Graphics.COLOR_RED,      // THEME_RED_DARK
+				Graphics.COLOR_WHITE,    // THEME_MONO_DARK
+				Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
+				Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
+				Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
+				0xFFFF00,                // THEME_VIVID_YELLOW_DARK
+				Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_LIGHT
+				Graphics.COLOR_YELLOW    // THEME_CORN_YELLOW_DARK
+			][theme];
 
-		// Theme-specific colours.
-		gThemeColour = [
-			Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
-			Graphics.COLOR_PINK,     // THEME_PINK_DARK
-			Graphics.COLOR_GREEN,    // THEME_GREEN_DARK
-			Graphics.COLOR_DK_GRAY,  // THEME_MONO_LIGHT
-			0x55AAFF,                // THEME_CORNFLOWER_BLUE_DARK
-			0xFFFFAA,                // THEME_LEMON_CREAM_DARK
-			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_DARK
-			Graphics.COLOR_RED,      // THEME_RED_DARK
-			Graphics.COLOR_WHITE,    // THEME_MONO_DARK
-			Graphics.COLOR_DK_BLUE,  // THEME_BLUE_LIGHT
-			Graphics.COLOR_DK_GREEN, // THEME_GREEN_LIGHT
-			Graphics.COLOR_DK_RED,   // THEME_RED_LIGHT
-			0xFFFF00,                // THEME_VIVID_YELLOW_DARK
-			Graphics.COLOR_ORANGE,   // THEME_DAYGLO_ORANGE_LIGHT
-			Graphics.COLOR_YELLOW    // THEME_CORN_YELLOW_DARK
-		][theme];
+			// Light/dark-specific colours.
+			var lightFlags = [
+				false, // THEME_BLUE_DARK
+				false, // THEME_PINK_DARK
+				false, // THEME_GREEN_DARK
+				true,  // THEME_MONO_LIGHT
+				false, // THEME_CORNFLOWER_BLUE_DARK
+				false, // THEME_LEMON_CREAM_DARK
+				false, // THEME_DAYGLO_ORANGE_DARK
+				false, // THEME_RED_DARK
+				false, // THEME_MONO_DARK
+				true,  // THEME_BLUE_LIGHT
+				true,  // THEME_GREEN_LIGHT
+				true,  // THEME_RED_LIGHT
+				false, // THEME_VIVID_YELLOW_DARK
+				true,  // THEME_DAYGLO_ORANGE_LIGHT
+				false, // THEME_CORN_YELLOW_DARK
+			];
 
-		// Light/dark-specific colours.
-		var lightFlags = [
-			false, // THEME_BLUE_DARK
-			false, // THEME_PINK_DARK
-			false, // THEME_GREEN_DARK
-			true,  // THEME_MONO_LIGHT
-			false, // THEME_CORNFLOWER_BLUE_DARK
-			false, // THEME_LEMON_CREAM_DARK
-			false, // THEME_DAYGLO_ORANGE_DARK
-			false, // THEME_RED_DARK
-			false, // THEME_MONO_DARK
-			true,  // THEME_BLUE_LIGHT
-			true,  // THEME_GREEN_LIGHT
-			true,  // THEME_RED_LIGHT
-			false, // THEME_VIVID_YELLOW_DARK
-			true,  // THEME_DAYGLO_ORANGE_LIGHT
-			false, // THEME_CORN_YELLOW_DARK
-		];
+			lightFlag = lightFlags[theme];
+		} else {
+			gThemeColour = themeOverride.toNumberWithBase(16);
+			lightFlag = App.getApp().getProperty("ThemeLightOverride");
+		}
 
-		// #124: fr45 cannot show grey.
-		var isFr45 = (Sys.getDeviceSettings().screenWidth == 208);
+		// #124: fr45 cannot show grey. SG Fr45 not supported
+		//var isFr45 = (Sys.getDeviceSettings().screenWidth == 208);
 
-		if (lightFlags[theme]) {
+		if (lightFlag) {
 			gMonoLightColour = Graphics.COLOR_BLACK;
-			gMonoDarkColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_DK_GRAY;			
+			gMonoDarkColour = /*isFr45 ? Graphics.COLOR_BLACK : */ Graphics.COLOR_DK_GRAY;			
 			
-			gMeterBackgroundColour = isFr45 ? Graphics.COLOR_BLACK : Graphics.COLOR_LT_GRAY;
+			gMeterBackgroundColour = /*isFr45 ? Graphics.COLOR_BLACK : */ Graphics.COLOR_LT_GRAY;
 			gBackgroundColour = Graphics.COLOR_WHITE;
 		} else {
 			gMonoLightColour = Graphics.COLOR_WHITE;
-			gMonoDarkColour = isFr45 ? Graphics.COLOR_WHITE : Graphics.COLOR_LT_GRAY;
+			gMonoDarkColour = /*isFr45 ? Graphics.COLOR_WHITE : */ Graphics.COLOR_LT_GRAY;
 
-			gMeterBackgroundColour = isFr45 ? Graphics.COLOR_WHITE : Graphics.COLOR_DK_GRAY;
+			gMeterBackgroundColour = /*isFr45 ? Graphics.COLOR_WHITE : */ Graphics.COLOR_DK_GRAY;
 			gBackgroundColour = Graphics.COLOR_BLACK;
 		}
 	}

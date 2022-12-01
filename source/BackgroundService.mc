@@ -60,9 +60,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 
         _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
 		if (_vehicle_id == null) {
-			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles", null, method(:onReceiveVehicles));
+			makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-			makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+			makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
@@ -128,7 +128,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				}
 					
 				if (_vehicle_id) {
-					makeTeslaWebRequest("https://owner-api.teslamotors.com/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+					makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				}
 			}
 		} /* else {
@@ -346,7 +346,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background_method)
     function makeTeslaWebPost(token, notify) {
-        var url = "https://auth.tesla.com/oauth2/v3/token";
+        var url = "https://" + App.getApp().getProperty("TeslaServerAUTHLocation") + "/oauth2/v3/token";
         Comms.makeWebRequest(
             url,
             {

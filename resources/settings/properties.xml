@@ -3,6 +3,8 @@
 	<property id="AppVersion" type="string">2.5.0</property>
 
 	<property id="Theme" type="number">0</property>
+	<property id="ThemeOverride" type="string"></property>
+	<property id="ThemeLightOverride" type="boolean">false</property>
 
 	<property id="HoursColourOverride" type="number">0</property>
 	<property id="MinutesColourOverride" type="number">0</property>
@@ -34,5 +36,7 @@
 
 	<property id="TeslaAccessToken" type="string"></property>
 	<property id="TeslaRefreshToken" type="string"></property>
+	<property id="TeslaServerAPILocation" type="string">owner-api.teslamotors.com</property>
+	<property id="TeslaServerAUTHLocation" type="string">auth.tesla.com</property>
 
 </properties>

@@ -81,7 +81,6 @@
 	<string id="Weather">Weather</string>
 	<string id="Humidity">Humidity</string>
 	<string id="Pressure">Pressure</string>
-	<string id="PulseOx">Pulse Ox</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>
@@ -107,4 +106,14 @@
 	<string id="Nov">Mar</string>
 	<string id="Dec">Jou</string>
 
+	<!-- TODO_TRANSLATE -->
+	<string id="BatteryNumeric">Battery Numeric</string>
+	<string id="PulseOx">Pulse Ox</string>
+	<string id="Tesla">Tesla Info</string>
+	<string id="TeslaAccessToken">Tesla Access Token</string>
+	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
+    <string id="Tesla_api_server_location_label">Location of Tesla's API servers?</string>
+    <string id="Tesla_auth_server_location_label">Location of Tesla's Auth servers?</string>
+    <string id="Tesla_server_location_prompt">Enter the server domain name</string>
+	<string id="DND">Do Not Disturb</string>
 </strings>

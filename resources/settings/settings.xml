@@ -24,6 +24,14 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.ThemeOverride" title="@Strings.ThemeOverride" prompt="@Strings.ThemeOverridePrompt">
+		<settingConfig type="alphaNumeric" maxLength="6"/>
+	</setting>
+	<setting propertyKey="@Properties.ThemeLightOverride" title="@Strings.ThemeLightOverride">
+		<settingConfig type="boolean"/>
+	</setting>
+
+
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>
@@ -233,6 +241,13 @@
 
 	<setting propertyKey="@Properties.TeslaRefreshToken" title="@Strings.TeslaRefreshToken">
 		<settingConfig type="alphaNumeric" maxLength="2048"/>
+	</setting>
+	<setting propertyKey="@Properties.TeslaServerAPILocation" title="@Strings.Tesla_api_server_location_label" prompt="@Strings.Tesla_server_location_prompt">
+		<settingConfig type="alphaNumeric" />
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaServerAUTHLocation" title="@Strings.Tesla_auth_server_location_label" prompt="@Strings.Tesla_server_location_prompt">
+		<settingConfig type="alphaNumeric" />
 	</setting>
 
 </settings>
