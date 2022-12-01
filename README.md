@@ -2,7 +2,7 @@
 A Garmin Connect IQ watch face.
 
 ## Description
-**If you enjoy this maintained version of Crystal with Tesla integration, you can support my work with a small donation:**[
+**If you enjoy this maintained version of Crystal with Tesla integration, you can support my work with a small donation:**
 https://bit.ly/sylvainga
 
 **FAQs, including how to change watch face settings:**
