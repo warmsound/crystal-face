@@ -49,7 +49,6 @@ Reviews:
     - DARK BLUE	 0000FF
     - PURPLE	 AA00FF
     - PINK	 FF00FF
-    - 
 
 ### 2.11.0
 - Added Recovery Time Left as a data field
