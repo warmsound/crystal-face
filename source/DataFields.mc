@@ -562,8 +562,7 @@ class DataFields extends Ui.Drawable {
 					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
 					now = now.hour + ((now.min + 1) / 60.0);
 					//logMessage(now);
-gLocationLat=-34.9998826;
-gLocationLng=138.3309808;
+
 					// Get today's sunrise/sunset times in current time zone.
 					sunTimes = getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
 					//logMessage(sunTimes);
