@@ -27,6 +27,9 @@ Reviews:
 
 ## What has been added by me. See https://apps.garmin.com/en-US/apps/9fd04d09-8c80-4c81-9257-17cfa0f0081b for what has been added previously by Pixel Pathos
 
+### 2.12.1
+- Removed troubleshooting code left by mistake
+
 ### 2.12.0
 - Fixed sunrize/sunset time error when timezone has a 30 minutes offset
 - Added support for Teslas in China. These needs different Tesla servers domain name than the rest of the world. These can be changed through the phone app.
