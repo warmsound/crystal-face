@@ -27,6 +27,9 @@ Reviews:
 
 ## What has been added by me. See https://apps.garmin.com/en-US/apps/9fd04d09-8c80-4c81-9257-17cfa0f0081b for what has been added previously by Pixel Pathos
 
+### 2.13.0
+- Added Body Battery as a Goal Meter
+
 ### 2.12.1
 - Removed troubleshooting code left by mistake
 
