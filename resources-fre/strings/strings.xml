@@ -115,6 +115,7 @@
     <string id="Tesla_auth_server_location_label">Location du serveur Auth de Tesla</string>
     <string id="Tesla_server_location_prompt">Entrez le nom de domaine du serveur</string>
 	<string id="DND">Ne Pas Déranger</string>
-	<string id="ThemeOverride">RGB Theme override</string>
-	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
+	<string id="ThemeOverride">Remplacement du thème par RGB</string>
+	<string id="ThemeOverridePrompt">En hexadécimal en utilisant ce format RRGGBB. Si celui-ci est différent de 0, c'est cette combinaison de couleurs qui sera utilisée à la place du thème</string>
+	<string id="ThemeLightOverride">Remplacement du thème Clair</string>
 </strings>
