@@ -8,6 +8,7 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Weather;
 using Toybox.Position;
+using Toybox.SensorHistory as SensorHistory;
 
 using Toybox.Math;
 
@@ -632,6 +633,28 @@ class CrystalView extends Ui.WatchFace {
 				// #8: floor() battery to be consistent.
 				values[:current] = Math.floor(Sys.getSystemStats().battery);
 				values[:max] = 100;
+				break;
+
+			case GOAL_TYPE_BODY_BATTERY:
+				// #8: floor() battery to be consistent.
+				var bodyBattery = null;
+				values[:isValid] = false;
+				values[:max] = 100;
+
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
+					bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					if (bodyBattery != null) {
+						bodyBattery = bodyBattery.next();
+					}
+					if (bodyBattery !=null) {
+						bodyBattery = bodyBattery.data;
+					}
+					if (bodyBattery != null && bodyBattery >= 0 && bodyBattery <= 100) {
+						values[:current] = bodyBattery.toFloat();
+						values[:isValid] = true;
+					}
+				}
+
 				break;
 
 			case GOAL_TYPE_CALORIES:

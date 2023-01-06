@@ -41,7 +41,7 @@ class DataArea extends Ui.Drawable {
 
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
-			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
+			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY || mLeftGoalType == GOAL_TYPE_BODY_BATTERY) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
@@ -52,7 +52,7 @@ class DataArea extends Ui.Drawable {
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
-			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
+			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY || mRightGoalType == GOAL_TYPE_BODY_BATTERY) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
@@ -149,6 +149,7 @@ class DataArea extends Ui.Drawable {
 			GOAL_TYPE_STEPS => "0",
 			GOAL_TYPE_FLOORS_CLIMBED => "1",
 			GOAL_TYPE_ACTIVE_MINUTES => "2",
+			GOAL_TYPE_BODY_BATTERY => "E",
 		}[type];
 
 		dc.setColor(isValid ? gThemeColour : gMeterBackgroundColour, Gfx.COLOR_TRANSPARENT);
