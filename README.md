@@ -130,7 +130,7 @@ Reviews:
 - Disables background services for watch that doesn't support it. Features that won't work without background services are Weather, sunrise/sunset and Tesla Info.
 
 ### 2.6.1
-- Better handling of errors and can now refresh an access token through… 
+- Better handling of errors and can now refresh an access token through the help of the Refresh token (hopefully)
 
 ### 2.6.0
 - Added a Tesla battery level as an indicator which is activated by choosing the indicator 'Tesla Info'. If the vehicle is awake, it will display the battery charge level as a percentage, followed by a '+' sign if it's being actively charged. It will also cycle to P on/off for the Preconditioning Status, S on/off for Sentry Status and the vehicle's inside temperature. If the car is asleep, a 's' will be displayed after the battery level and it will only cycle between that and P on/off. If an error is received from the car, it will be displayed in pink instead of the battery level. Scan interval is the standard 5 minutes so give it at least 15 minutes at start to get the access to the car and poll its status.
