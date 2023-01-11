@@ -705,7 +705,8 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		var hideSeconds = App.getApp().getProperty("HideSeconds");
+		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1 ) {
 			setHideSeconds(false);
 		}
 
@@ -738,7 +739,8 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		var hideSeconds = App.getApp().getProperty("HideSeconds");
+		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1) {
 			setHideSeconds(true);
 		}
 

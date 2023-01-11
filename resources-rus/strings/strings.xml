@@ -14,6 +14,9 @@
 	<string id="LocalTimeInCityTitle">Добавить местное время в городе (бета)</string>
 	<string id="MoveBarStyleTitle">Вид полосы подвижности</string>
 	<string id="HideSecondsTitle">Скрывать секунды</string>
+	<string id="HideSecondsOff">Show seconds</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsLowPower">Hide seconds when inactive</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Скрывать нули перед часами</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 

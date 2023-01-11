@@ -27,6 +27,14 @@ Reviews:
 
 ## What has been added by me. See https://apps.garmin.com/en-US/apps/9fd04d09-8c80-4c81-9257-17cfa0f0081b for what has been added previously by Pixel Pathos
 
+### 2.14.0
+- "Hide seconds" has been changed from a checkbox to a list with three entries:
+  - Show seconds
+  - Hide seconds when inactive 
+  - Always hide seconds
+  
+  Show and Hide seconds behaves like the old toggle but "Hide seconds when inactive" will not display seconds when the watchface is in low power mode (ie, inactive). "Memory-In-Pixel" watch consumes energy when a pixel is changed. Preventing the seconds to update every secondes can help reduce the energy drawn by the watchface. Has no Effect on AMOLED watches.
+
 ### 2.13.0
 - Added Body Battery as a Goal Meter
 

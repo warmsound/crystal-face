@@ -14,6 +14,9 @@
 	<string id="LocalTimeInCityTitle">Add Local Time in City (Beta)</string><!-- TODO_TRANSLATE -->
 	<string id="MoveBarStyleTitle">Wygląd Move Bar'a</string>
 	<string id="HideSecondsTitle">Ukryj Sekundy</string>
+	<string id="HideSecondsOff">Show seconds</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsLowPower">Hide seconds when inactive</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Ukryj Zero Poprzedzające Godzinę</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 

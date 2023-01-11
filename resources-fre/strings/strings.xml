@@ -1,6 +1,5 @@
 <strings>
 
-	<!-- TODO_TRANSLATE -->
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">Version de l'appli</string>
 
@@ -15,6 +14,9 @@
 	<string id="LocalTimeInCityTitle">Ajout de l'heure d'une ville (Beta)</string>
 	<string id="MoveBarStyleTitle">Apparence de la barre d'activité</string>
 	<string id="HideSecondsTitle">Masquer les secondes</string>
+	<string id="HideSecondsOff">Toujours afficher</string>
+	<string id="HideSecondsLowPower">Afficher sauf quand inactif</string>
+	<string id="HideSecondsAlways">Toujours cacher</string>
 	<string id="HideHoursLeadingZeroTitle">Masquer le zéro avant l'heure</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 

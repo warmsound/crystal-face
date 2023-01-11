@@ -1,6 +1,5 @@
 <strings>
 
-	<!-- TODO_TRANSLATE -->
 	<string id="AppName">Crystal</string>
 	<string id="AppVersionTitle">App Versie</string>
 
@@ -15,6 +14,9 @@
 	<string id="LocalTimeInCityTitle">Voeg Lokale Tijd In Stad Toe (Beta)</string>
 	<string id="MoveBarStyleTitle">Beweeg Balk Stijl</string>
 	<string id="HideSecondsTitle">Verberg Seconden</string>
+	<string id="HideSecondsOff">Show seconds</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsLowPower">Hide seconds when inactive</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Verberg Eerste Nul Bij Uren</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 

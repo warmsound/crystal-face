@@ -218,7 +218,11 @@
 	</setting>
 
 	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
-		<settingConfig type="boolean"/>
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.HideSecondsOff</listEntry>
+            <listEntry value="1">@Strings.HideSecondsLowPower</listEntry>
+            <listEntry value="2">@Strings.HideSecondsAlways</listEntry>
+        </settingConfig>
 	</setting>
 
 	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
