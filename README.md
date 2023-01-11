@@ -25,7 +25,8 @@ This is my first ever Connect IQ watch face (please be kind!), so I look forward
 Reviews:
 - Video review in Spanish, by Sergio: https://www.youtube.com/watch?v=TZFhnm_y1MM.
 
-## What has been added by me. See https://apps.garmin.com/en-US/apps/9fd04d09-8c80-4c81-9257-17cfa0f0081b for what has been added previously by Pixel Pathos
+
+## Below is what has been added by me (SylvainGa).
 
 ### 2.14.0
 - "Hide seconds" has been changed from a checkbox to a list with three entries:
@@ -127,5 +128,16 @@ Reviews:
 
 ### 2.6.2
 - Disables background services for watch that doesn't support it. Features that won't work without background services are Weather, sunrise/sunset and Tesla Info.
+
+### 2.6.1
+- Better handling of errors and can now refresh an access token through… 
+
+### 2.6.0
+- Added a Tesla battery level as an indicator which is activated by choosing the indicator 'Tesla Info'. If the vehicle is awake, it will display the battery charge level as a percentage, followed by a '+' sign if it's being actively charged. It will also cycle to P on/off for the Preconditioning Status, S on/off for Sentry Status and the vehicle's inside temperature. If the car is asleep, a 's' will be displayed after the battery level and it will only cycle between that and P on/off. If an error is received from the car, it will be displayed in pink instead of the battery level. Scan interval is the standard 5 minutes so give it at least 15 minutes at start to get the access to the car and poll its status.
+
+  You'll need to generate at least a refresh token and enter it in the watch face parameter to give access to your vehicle status. You can get a token through online services or phone apps like Tesla Token. If you give it also an access token, the refresh time before capturing data will be decreased by 5 minutes. Make sure your vehicle is awake for at least 15 minutes when you first launch the watch with the token set so it can connect to it. It will NOT wake the vehicle to retrieve any of the info and it does NOT prevent the vehicle from falling asleep.
+
+### 2.5.x
+- Added PulseOx as a data field
 
 See https://apps.garmin.com/en-US/apps/9fd04d09-8c80-4c81-9257-17cfa0f0081b for previous changes made by Pixel Pathos
