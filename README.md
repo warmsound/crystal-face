@@ -78,7 +78,7 @@ Reviews:
 ### 2.10.3
 - Added the Enduro, Venu SQ 2 and Venu SQ 2 Music
 
-#### 2.10.2
+### 2.10.2
 - Fixed missing 'Û' in 280x280 font
 
 ### 2.10.1
