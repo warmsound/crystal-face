@@ -1,6 +1,0 @@
-<properties>
-
-	<!-- Active Minutes, because Floors not supported -->
-	<property id="RightGoalType" type="number">2</property>
-
-</properties>

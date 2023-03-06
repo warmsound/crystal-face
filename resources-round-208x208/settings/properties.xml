@@ -1,8 +1,0 @@
-<properties>
-
-	<!-- Can't just override settings.xml: appears you need to override properties.xml as well -->
-	<!-- CIQ 1.x devices do not support Floors or Active Minutes, so show Battery in right meter, and Calories in centre field -->
-	<property id="RightGoalType" type="number">-1</property>
-	<property id="Field2Type" type="number">3</property>
-
-</properties>
