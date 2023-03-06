@@ -1,5 +1,5 @@
-# Crystal-Tesla
-A Garmin Connect IQ watch face based on PixelPathos Crystal.
+# Crystal
+A Garmin Connect IQ watch face.
 
 ## Description
 **If you enjoy this maintained version of Crystal with Tesla integration, you can support my work with a small donation:**
@@ -12,24 +12,21 @@ A crystal clear watch face, with LCD-like goal meter segments, written while sno
 
 Features (depending on watch support):
 - Big time digits right in the middle, with hours in bold. Leading zero and seconds can be hidden. Hours and minutes colours can be set independently.
-- Up to 3 customisable data fields: HR (historical/live), battery, notifications, calories, distance, alarms, altitude, thermometer, sunrise/sunset, weather (OpenWeatherMap). THE FOLLOWING ADDED By SylvainGa: Garmin Weather, Recovery Time Left, Body Battery, Solar Intensity, Floors climbed and Pulse Ox.
-- Up to 3 customisable indicators: Bluetooth, alarms, notifications, Bluetooth/notifications, battery, THE FOLLOWING ADDED By SylvainGa: Do Not Disturb and Tesla batterie level/status.
-- 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal), THE FOLLOWING ADDED By SylvainGa: Body Battery. The meters have auto-scaling segments and current/target value display.
+- Up to 3 customisable data fields: HR (historical/live), battery, notifications, calories, distance, alarms, altitude, thermometer, sunrise/sunset, weather (OpenWeatherMap).
+- Up to 3 customisable indicators: Bluetooth, alarms, notifications, Bluetooth/notifications, battery.
+- 2 customisable meters: steps, floors climbed, active minutes (weekly), battery, calories (custom goal). The meters have auto-scaling segments and current/target value display.
 - Move bar.
-- 12 colour themes, THE FOLLOWING ADDED By SylvainGa: Customizable themes.
+- 12 colour themes.
 
 The techie bit: to save your watch battery, the goal meters and move bar are drawn from a palette-restricted back buffer, for improved drawing performance, with minimal memory penalty.
 
-This is my first modification of a Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
+This is my first ever Connect IQ watch face (please be kind!), so I look forward to your feedback, improving the watch face, and bringing it to more devices.
 
 Reviews:
 - Video review in Spanish, by Sergio: https://www.youtube.com/watch?v=TZFhnm_y1MM.
 
-## Below is what has been added by me (SylvainGa).
 
-### 2.14.1
-- Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965
-- Removed all the depencies between the devices and the sensors, features, themes color, etc. This makes supporting features much more easy but also could create confusion to some as to why a sensor for example doesn't work or a theme color seems odd. That's because your device doesn't specifically support that sensor or theme. For theme, it's basically the devices with less than 64 colors that will be affected. For sensors, it will depend on what your device support. See the specs of your specific devices for its available sensors.
+## Below is what has been added by me (SylvainGa).
 
 ### 2.14.0
 - "Hide seconds" has been changed from a checkbox to a list with three entries:
