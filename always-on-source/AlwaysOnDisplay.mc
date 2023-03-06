@@ -203,10 +203,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 			// Batteries.
 			var battery = Math.floor(Sys.getSystemStats().battery);
-			var batteryStale = App.getApp().getProperty("TeslaBatterieStale");
 			var chargingState = App.getApp().getProperty("TeslaChargingState");
 			var error = App.getApp().getProperty("TeslaError");
-			var teslaBat = null;
 
 			if (chargingState != null) {
 				if (chargingState.equals("Charging")) {
