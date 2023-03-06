@@ -28,7 +28,7 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.14.1
-- Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965
+- Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965 (first 454x454 watch)
 - Added BodyBattery to the Forerunner 55
 
 ### 2.14.0
