@@ -22,7 +22,7 @@
 		</settingConfig>
 	</setting>
 
-	<!-- Same as resources-ciq_1.x -->
+	<!-- Same as resources-ciq_1.x but with the addition of Body Battery -->
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>
@@ -30,11 +30,12 @@
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
 			<listEntry value="-4">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
-	<!-- Same as resources-ciq_1.x -->
+	<!-- Same as resources-ciq_1.x but with the addition of Body Battery -->
 	<setting propertyKey="@Properties.RightGoalType" title="@Strings.RightGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>
@@ -42,6 +43,7 @@
 			<!--listEntry value="2">@Strings.ActiveMinutes</listEntry-->
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
 			<listEntry value="-4">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>

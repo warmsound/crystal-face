@@ -41,9 +41,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var answer = (timeNow + interval < createdAt + expiresIn);
 
 		if (_token != null && _token.equals("") == false && answer == true) {
-			var expireAt = new Time.Moment(createdAt + expiresIn);
-			var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
-			var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+//2023-03-05 var expireAt = new Time.Moment(createdAt + expiresIn);
+//2023-03-05 var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
+//2023-03-05 var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 //2023-03-05 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}

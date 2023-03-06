@@ -29,7 +29,7 @@ Reviews:
 
 ### 2.14.1
 - Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965
-- Removed all the depencies between the devices and the sensors, features, themes color, etc. This makes supporting features much more easy but also could create confusion to some as to why a sensor for example doesn't work or a theme color seems odd. That's because your device doesn't specifically support that sensor or theme. For theme, it's basically the devices with less than 64 colors that will be affected. For sensors, it will depend on what your device support. See the specs of your specific devices for its available sensors.
+- Added BodyBattery to the Forerunner 55
 
 ### 2.14.0
 - "Hide seconds" has been changed from a checkbox to a list with three entries:

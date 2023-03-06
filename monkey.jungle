@@ -7,6 +7,9 @@ base.sourcePath = source
 fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
 fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
 
+# Needs BodyBattery
+fr55.resourcePath = $(fr55.resourcePath);resources-small-time;resources-small-icons
+
 # Smaller round watches use small time font.
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 

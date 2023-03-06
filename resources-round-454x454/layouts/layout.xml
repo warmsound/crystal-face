@@ -5,57 +5,57 @@
 		<drawable id="LeftGoalMeter" class="GoalMeter">
 			<param name="side">:left</param>
 			<param name="stroke">14</param>
-			<param name="height">277</param>
+			<param name="height">302</param>
 			<param name="separator">3</param>
 		</drawable>
 
 		<drawable id="RightGoalMeter" class="GoalMeter">
 			<param name="side">:right</param>
 			<param name="stroke">14</param>
-			<param name="height">277</param>
+			<param name="height">302</param>
 			<param name="separator">3</param>
 		</drawable>
 
 		<drawable id="DataArea" class="DataArea">
 			<param name="locX">136</param>
-			<param name="width">144</param>
-			<param name="row1Y">336</param>
-			<param name="row2Y">362</param>
-			<param name="goalIconY">331</param>
+			<param name="width">157</param>
+			<param name="row1Y">366</param>
+			<param name="row2Y">395</param>
+			<param name="goalIconY">361</param>
 			<param name="goalIconLeftX">92</param>
-			<param name="goalIconRightX">324</param>
+			<param name="goalIconRightX">353</param>
 		</drawable>
 
 		<drawable id="DataFields" class="DataFields">
 			<param name="left">134</param>
-			<param name="right">282</param>
+			<param name="right">318</param>
 			<param name="top">44</param>
-			<param name="bottom">78</param>
-			<param name="batteryWidth">49</param>
+			<param name="bottom">85</param>
+			<param name="batteryWidth">53</param>
 		</drawable>
 
 		<drawable id="Date" class="DateLine">
-			<param name="y">127</param>
+			<param name="y">138</param>
 		</drawable>
 
 		<drawable id="Indicators" class="Indicators">
-			<param name="locX">49</param>
-			<param name="locY">208</param>
-			<param name="spacingY">51</param>
-			<param name="batteryWidth">41</param>
+			<param name="locX">62</param>
+			<param name="locY">227</param>
+			<param name="spacingY">60</param>
+			<param name="batteryWidth">45</param>
 		</drawable>
 
 		<drawable id="Time" class="ThickThinTime">
 			<param name="adjustY">-4</param>
-			<param name="secondsX">291</param>
-			<param name="secondsY">252</param>
+			<param name="secondsX">304</param>
+			<param name="secondsY">263</param>
 		</drawable>
 
 		<drawable id="MoveBar" class="MoveBar">
 			<param name="x">88</param>
-			<param name="y">286</param>
-			<param name="width">192</param>
-			<param name="height">13</param>
+			<param name="y">312</param>
+			<param name="width">209</param>
+			<param name="height">14</param>
 			<param name="separator">4</param>
 		</drawable>
 		
@@ -66,13 +66,13 @@
 		<drawable id="AlwaysOnDisplay" class="AlwaysOnDisplay">
 			<param name="burnInYOffsets">[-60, -30, 30, 60]</param>
 			<param name="adjustY">-4</param>
-			<param name="timeY">179</param>
-			<param name="lineY">230</param>
+			<param name="timeY">195</param>
+			<param name="lineY">221</param>
 			<!-- Allow room for Chinese date -->	
-			<param name="lineWidth">230</param>
+			<param name="lineWidth">251</param>
 			<!-- param name="lineStroke">2</param -->	
-			<param name="dataY">258</param>
-			<param name="dataLeft">105</param>
+			<param name="dataY">281</param>
+			<param name="dataLeft">114</param>
 		</drawable>
 	</layout>
 </resources>
