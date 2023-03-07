@@ -90,4 +90,3 @@ fr965.sourcePath = $(fr965.sourcePath);always-on-source
 fr265.sourcePath = $(fr265.sourcePath);always-on-source
 fr265s.sourcePath = $(fr265s.sourcePath);always-on-source
 
-project.typecheck = 0
