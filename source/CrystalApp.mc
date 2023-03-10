@@ -79,6 +79,7 @@ class CrystalApp extends App.AppBase {
 	function checkPendingWebRequests() {
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
+
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
 			location = location.toDegrees(); // Array of Doubles.
@@ -93,12 +94,12 @@ class CrystalApp extends App.AppBase {
 		} else {
 			var lat = getProperty("LastLocationLat");
 			if (lat != null) {
-				gLocationLat = lat;
+				gLocationLat = lat.toFloat();
 			}
 
 			var lng = getProperty("LastLocationLng");
 			if (lng != null) {
-				gLocationLng = lng;
+				gLocationLng = lng.toFloat();
 			}
 		}
 
@@ -333,7 +334,7 @@ class CrystalApp extends App.AppBase {
 			setProperty(type, storedData);
 	
 			checkPendingWebRequests(); // We just got new data, process them right away before displaying
-		}		
+		}
 
 		Ui.requestUpdate();
 	}

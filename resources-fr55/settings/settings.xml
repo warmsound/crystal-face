@@ -48,7 +48,7 @@
 		</settingConfig>
 	</setting>
 
-	<!-- Same as resources-ciq_1.x -->
+	<!-- Same as resources-ciq_1.x but with the addition of Body Battery -->
 	<setting propertyKey="@Properties.Field1Type" title="@Strings.DataField1Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
@@ -65,10 +65,11 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<!--listEntry value="11">@Strings.Weather</listEntry-->
 			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 
-	<!-- Same as resources-ciq_1.x -->
+	<!-- Same as resources-ciq_1.x but with the addition of Body Battery -->
 	<setting propertyKey="@Properties.Field2Type" title="@Strings.DataField2Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
@@ -85,10 +86,11 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<!--listEntry value="11">@Strings.Weather</listEntry-->
 			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 
-	<!-- Same as resources-ciq_1.x -->
+	<!-- Same as resources-ciq_1.x but with the addition of Body Battery -->
 	<setting propertyKey="@Properties.Field3Type" title="@Strings.DataField3Title">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.HeartRate</listEntry>
@@ -105,6 +107,7 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<!--listEntry value="11">@Strings.Weather</listEntry-->
 			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
 		</settingConfig>
 	</setting>
 	

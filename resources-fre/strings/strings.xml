@@ -120,4 +120,6 @@
 	<string id="ThemeOverride">Remplacement du thème par RGB</string>
 	<string id="ThemeOverridePrompt">En hexadécimal en utilisant ce format RRGGBB. Si celui-ci est différent de 0, c'est cette combinaison de couleurs qui sera utilisée à la place du thème</string>
 	<string id="ThemeLightOverride">Remplacement du thème Clair</string>
+	<string id="latitude">Latitude</string>
+	<string id="longitude">Longitude</string>
 </strings>

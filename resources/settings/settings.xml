@@ -237,6 +237,14 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.LastLocationLat" title="@Strings.latitude">
+		<settingConfig type="alphaNumeric" maxLength="16" required="false"/>
+	</setting>
+
+	<setting propertyKey="@Properties.LastLocationLng" title="@Strings.longitude">
+		<settingConfig type="alphaNumeric" maxLength="16" required="false"/>
+	</setting>
+
 	<setting propertyKey="@Properties.OWMKeyOverride" title="@Strings.OWMKeyOverride">
 		<settingConfig type="alphaNumeric" maxLength="32"/>
 	</setting>

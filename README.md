@@ -27,6 +27,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.14.2
+- Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and weather. Any activity found with GPS data will override this location. This should fix many "gps?" error. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
+- Added BodyBattery as a datafield to the Forerunner 55
+
 ### 2.14.1
 - Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965 (first 454x454 watch)
 - Added BodyBattery to the Forerunner 55

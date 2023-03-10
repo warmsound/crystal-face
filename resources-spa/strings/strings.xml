@@ -122,4 +122,6 @@
 	<string id="ThemeOverride">RGB Theme override</string>
 	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
 	<string id="ThemeLightOverride">Light theme override</string>
+	<string id="latitude">Latitude</string>
+	<string id="longitude">Longitude</string>
 </strings>

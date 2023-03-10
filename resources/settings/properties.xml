@@ -1,6 +1,6 @@
 <properties>
 
-	<property id="AppVersion" type="string">2.14.0</property>
+	<property id="AppVersion" type="string">2.14.2</property>
 
 	<property id="Theme" type="number">0</property>
 	<property id="ThemeOverride" type="string"></property>
@@ -33,10 +33,12 @@
 	<property id="HideHoursLeadingZero" type="boolean">true</property>
 
 	<property id="OWMKeyOverride" type="string">3268578d0f3633073e62b3d8a560a09a</property>
+    
+	<property id="LastLocationLat" type="string"></property>
+	<property id="LastLocationLng" type="string"></property>
 
 	<property id="TeslaAccessToken" type="string"></property>
 	<property id="TeslaRefreshToken" type="string"></property>
 	<property id="TeslaServerAPILocation" type="string">owner-api.teslamotors.com</property>
 	<property id="TeslaServerAUTHLocation" type="string">auth.tesla.com</property>
-
 </properties>
