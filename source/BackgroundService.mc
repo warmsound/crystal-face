@@ -252,9 +252,18 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		// HTTP error: do not save.
 		} else {
-			result = {
-				"httpError" => responseCode
-			};
+			result = App.getApp().getProperty("OpenWeatherMapCurrent");
+			if (result) {
+				result["cod"] = responseCode;
+			} else {
+				result = {
+					"httpError" => responseCode
+				};
+			}
+
+			var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+			var dateStr = clockTime.year + " " + clockTime.month + " " + clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+			Sys.println(dateStr + " : httpError=" + responseCode);
 		}
 
 		Bg.exit({

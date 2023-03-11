@@ -28,8 +28,10 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.14.2
-- Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and OpenWeatherMap weather . Any activity found with GPS data will override this location. This should fix many "gps?" error. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
+- Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and OpenWeatherMap weather . Any activity found with GPS data will override this location. This should fix many "gps?" error, which simply means no actvity with GPS have been found to locate your position. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
+- The weather icon will be grayed out if the request to get the weather fails for some reason (like Bluetooth off, no Internet access or bad OWM API key). If this happems, the temperature or humidity value displayed will be staled. If you create a file called CRYSTALFACE.TXT in the /GARMIN/APPS/LOGS on your watch (connect to your computer first), it will log inside that file the error code of why it failed (unless it's because BLE is Off). This could be helpfull at determing the reason of the failure.
 - Added BodyBattery as a datafield to the Forerunner 55
+- Increased the time font for the 454x454 devices
 
 ### 2.14.1
 - Compiled with Connect IQ 4.2.1 which added the Forerunner 265, 265s and 965 (first 454x454 watch)

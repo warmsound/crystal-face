@@ -168,6 +168,7 @@ class DataFields extends Ui.Drawable {
 		// 1. Value: draw first, as top of text overlaps icon.
 		var result = getValueForFieldType(fieldType);
 		var value = result["value"];
+		var stale = result["stale"];
 
 		// Optimisation: if live HR remains unavailable, skip the rest of this partial update.
 		var isHRAvailable = isHeartRate && (value.length() != 0);
@@ -201,7 +202,7 @@ class DataFields extends Ui.Drawable {
 
 		// Grey out icon if no value was retrieved.
 		// #37 Do not grey out battery icon (getValueForFieldType() returns empty string).
-		var colour = (value.length() == 0) ? gMeterBackgroundColour : gThemeColour;
+		var colour = (value.length() == 0 || stale) ? gMeterBackgroundColour : gThemeColour;
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
@@ -364,6 +365,7 @@ class DataFields extends Ui.Drawable {
 	private function getValueForFieldType(type) {
 		var result = {};
 		var value = "";
+		var stale = false;
 
 		var settings = Sys.getDeviceSettings();
 
@@ -645,11 +647,19 @@ class DataFields extends Ui.Drawable {
 						value = weatherValue.format(INTEGER_FORMAT) + "%";
 					}
 
+					if (weather["cod"] != 200 || !settings.phoneConnected) {
+						stale = true;
+					}
+
 				// Awaiting response.
 				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
 					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"] != null) {
 
 					value = "...";
+					
+					if (!settings.phoneConnected) {
+						stale = true;
+					}
 				}
 				break;
 
@@ -683,6 +693,7 @@ class DataFields extends Ui.Drawable {
 		}
 
 		result["value"] = value;
+		result["stale"] = stale;
 		return result;
 	}
 }
