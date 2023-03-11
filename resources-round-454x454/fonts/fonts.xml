@@ -1,8 +1,8 @@
 <fonts>
 	<font id="HoursFont" filename="titillium-web-bold-128-tall.fnt" antialias="true"/>
 	<font id="MinutesFont" filename="titillium-web-light-128-tall.fnt" antialias="true"/>
-	<font id="SecondsFont" filename="titillium-web-semibold-42.fnt" antialias="true" filter="0123456789AP"/>
-	<font id="DateFont" filename="titillium-web-semibold-42.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
+	<font id="SecondsFont" filename="titillium-web-semibold-45.fnt" antialias="true" filter="0123456789AP"/>
+	<font id="DateFont" filename="titillium-web-semibold-45.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
 
 	<!-- Manually symlinked from resources-round-280x280/fonts. -->
 	<font id="NormalFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°+PSon /"/>
