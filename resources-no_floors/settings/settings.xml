@@ -6,7 +6,9 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
-			<listEntry value="-4">@Strings.Off</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
+			<listEntry value="-4">@Strings.StressLevel</listEntry>
+			<listEntry value="-5">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -17,7 +19,9 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
-			<listEntry value="-4">@Strings.Off</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
+			<listEntry value="-4">@Strings.StressLevel</listEntry>
+			<listEntry value="-5">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 </settings>

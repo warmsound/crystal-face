@@ -123,4 +123,5 @@
 	<string id="ThemeLightOverride">Light theme override</string>
 	<string id="latitude">Latitude</string>
 	<string id="longitude">Longitude</string>
+	<string id="StressLevel">Stress Level</string>
 </strings>

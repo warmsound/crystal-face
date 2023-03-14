@@ -122,4 +122,5 @@
 	<string id="ThemeLightOverride">Remplacement du thème Clair</string>
 	<string id="latitude">Latitude</string>
 	<string id="longitude">Longitude</string>
+	<string id="StressLevel">Niveau de stress</string>
 </strings>

@@ -34,7 +34,8 @@ enum /* FIELD_TYPES */ {
 	FIELD_FLOOR_CLIMBED,
 	FIELD_SOLAR_INTENSITY,
 	FIELD_BODY_BATTERY,
-	FIELD_RECOVERY_TIME
+	FIELD_RECOVERY_TIME,
+	FIELD_STRESS_LEVEL
 }
 
 class DataFields extends Ui.Drawable {
@@ -326,7 +327,8 @@ class DataFields extends Ui.Drawable {
 					FIELD_FLOOR_CLIMBED => "1", // SG Addition
 					FIELD_SOLAR_INTENSITY => "D", // SG Addition
 					FIELD_BODY_BATTERY => "E", // SG Addition
-					FIELD_RECOVERY_TIME => "F" // SG Addition
+					FIELD_RECOVERY_TIME => "F", // SG Addition
+					FIELD_STRESS_LEVEL => "G" // SG Addition
 				}[fieldType];
 			}
 
@@ -404,6 +406,22 @@ class DataFields extends Ui.Drawable {
 					}
 					if (bodyBattery != null && bodyBattery >= 0 && bodyBattery <= 100) {
 						value = bodyBattery.format(INTEGER_FORMAT);
+					}
+				}
+				break;
+			// SG Addition
+			case FIELD_STRESS_LEVEL:
+				var stressLevel = null;
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+					stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
+					if (stressLevel != null) {
+						stressLevel = stressLevel.next();
+					}
+					if (stressLevel !=null) {
+						stressLevel = stressLevel.data;
+					}
+					if (stressLevel != null && stressLevel >= 0 && stressLevel <= 100) {
+						value = stressLevel.format(INTEGER_FORMAT);
 					}
 				}
 				break;

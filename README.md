@@ -27,6 +27,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.15.0
+- Added Stress Level as a goal meter and datafield
+- Consolidated some of the watches that were missing goal meters or datafields. If you select one and get a gray icon, it means it's not available for your watch model. If there is a goal meter or datafield that your watch support but can't see it, let me know.
+
 ### 2.14.2
 - Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and OpenWeatherMap weather . Any activity found with GPS data will override this location. This should fix many "gps?" error, which simply means no activity with GPS have been found to locate your position, yet. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
 - The weather icon will be grayed out if the request to get the weather fails for some reason (like Bluetooth off, no Internet access or bad OWM API key). If this happens, the temperature or humidity value displayed will be staled. If you create a file called CRYSTALFACE.TXT in the /GARMIN/APPS/LOGS on your watch (connect to your computer first), it will log inside that file the error code of why it failed (unless it's because BLE is Off). This could be helpful at determining the reason of the failure.

@@ -635,8 +635,8 @@ class CrystalView extends Ui.WatchFace {
 				values[:max] = 100;
 				break;
 
+			// SG Addition
 			case GOAL_TYPE_BODY_BATTERY:
-				// #8: floor() battery to be consistent.
 				var bodyBattery = null;
 				values[:isValid] = false;
 				values[:max] = 100;
@@ -651,6 +651,28 @@ class CrystalView extends Ui.WatchFace {
 					}
 					if (bodyBattery != null && bodyBattery >= 0 && bodyBattery <= 100) {
 						values[:current] = bodyBattery.toFloat();
+						values[:isValid] = true;
+					}
+				}
+
+				break;
+
+			// SG Addition
+			case GOAL_TYPE_STRESS_LEVEL:
+				var stressLevel = null;
+				values[:isValid] = false;
+				values[:max] = 100;
+
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+					stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
+					if (stressLevel != null) {
+						stressLevel = stressLevel.next();
+					}
+					if (stressLevel !=null) {
+						stressLevel = stressLevel.data;
+					}
+					if (stressLevel != null && stressLevel >= 0 && stressLevel <= 100) {
+						values[:current] = stressLevel.toFloat();
 						values[:isValid] = true;
 					}
 				}
