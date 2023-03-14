@@ -30,6 +30,7 @@ Reviews:
 ### 2.15.0
 - Added Stress Level as a goal meter and datafield
 - Consolidated some of the watches that were missing goal meters or datafields. If you select one and get a gray icon, it means it's not available for your watch model. If there is a goal meter or datafield that your watch support but can't see it, let me know.
+- Compiled with Connect IQ 4.2.2 which I hope fixes the missing Body Battery sensor
 
 ### 2.14.2
 - Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and OpenWeatherMap weather . Any activity found with GPS data will override this location. This should fix many "gps?" error, which simply means no activity with GPS have been found to locate your position, yet. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
