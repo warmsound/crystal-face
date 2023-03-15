@@ -67,7 +67,7 @@
 			<param name="burnInYOffsets">[-60, -30, 30, 60]</param>
 			<param name="adjustY">-4</param>
 			<param name="timeY">195</param>
-			<param name="lineY">221</param>
+			<param name="lineY">241</param>
 			<!-- Allow room for Chinese date -->	
 			<param name="lineWidth">251</param>
 			<!-- param name="lineStroke">2</param -->	

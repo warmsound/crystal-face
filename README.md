@@ -27,6 +27,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.15.1
+- Reverted to Connect IQ 4.1.7 since there are too many problem with sensors with this 4.2.x version so far. Hopefully this doesn't break the newest Forerunner 265, 265S and 965.
+- Moved the line between time and date in Always so it doesn't strike the time.
+
 ### 2.15.0
 - Added Stress Level as a goal meter and datafield
 - Consolidated some of the watches that were missing goal meters or datafields. If you select one and get a gray icon, it means it's not available for your watch model. If there is a goal meter or datafield that your watch support but can't see it, let me know.
