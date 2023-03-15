@@ -28,8 +28,8 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.15.1
-- Reverted to Connect IQ 4.1.7 since there are too many problem with sensors with this 4.2.x version so far. Hopefully this doesn't break the newest Forerunner 265, 265S and 965.
-- Moved the line between time and date in Always so it doesn't strike the time.
+- Reverted to Connect IQ 4.1.7 since there are too many problem with sensors with this 4.2.x version so far. Hopefully this doesn't break the watchface on newest Forerunner 265, 265S and 965.
+- Moved the line between time and date in Always On Display so it doesn't strike through the time.
 
 ### 2.15.0
 - Added Stress Level as a goal meter and datafield
