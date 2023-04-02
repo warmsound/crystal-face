@@ -701,7 +701,6 @@ class CrystalView extends Ui.WatchFace {
 
 							/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
 							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
-							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 							var logText = "stressLevel " + stressLevel + "is over limit, ignoring";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 								logMessage(logText);
@@ -721,7 +720,6 @@ class CrystalView extends Ui.WatchFace {
 
 						/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
 						var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
-						var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 						var logText = "stressLevel " + gStressLevel + " IS staled";
 						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 							logMessage(logText);
