@@ -29,8 +29,8 @@ Reviews:
 
 ### 2.16.0
 - Added a optional colon between hours and minutes
-- Access to stress level is not as stable as the Garmin access to it. To help here, if a value isn't returned, the last good one is used and the icon is greyed out to indicate the data is stale.
 - Bug fix in the default latitude/longitude when the last activity has no GPS coordinates.
+- Notice: Access to stress level is not as stable as the Garmin has access to it. To help here, if a value isn't returned, the last good one is used and the icon is greyed out to indicate the data is stale.
 
 ### 2.15.1
 - Reverted to Connect IQ 4.1.7 since there are too many problem with sensors with this 4.2.x version so far. Hopefully this doesn't break the watchface on newest Forerunner 265, 265S and 965.
