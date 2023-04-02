@@ -29,7 +29,7 @@ var gNormalFont;
 var gIconsFont;
 
 var gStressLevel;
-//DEBUG*/ var gStressLevelLogText;
+/*DEBUG*/ var gStressLevelLogText;
 
 const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 360) ? 1 : 2;
 //const BATTERY_LINE_WIDTH = 2;
@@ -122,7 +122,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
 		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
-//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
+		//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
 		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
 		chargingState = App.getApp().getProperty("TeslaChargingState");
 		error = App.getApp().getProperty("TeslaError");
@@ -174,7 +174,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				break;
 		}
 
-//logMessage("value=" + value);		
+		//logMessage("value=" + value);		
 		if (value == null) {
 			value = "N/A";
 		}
@@ -276,18 +276,18 @@ class CrystalView extends Ui.WatchFace {
 	// Reread Weather method
 	function rereadWeatherMethod() {
 		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
-//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
+		//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
 		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 			if (Toybox has :Weather) {
 				mHasGarminWeather = true;
-//2022-04-10 logMessage("Does support Weather");
+				//2022-04-10 logMessage("Does support Weather");
 			} else {
 				mHasGarminWeather = false;
-//2022-04-10 logMessage("Does not support Weather");
+				//2022-04-10 logMessage("Does not support Weather");
 			}
 		} else {
 				mHasGarminWeather = false;
-//2022-04-10 logMessage("Using OpenWeatherMap");
+				//2022-04-10 logMessage("Using OpenWeatherMap");
 		}
 	}
 	
@@ -333,7 +333,7 @@ class CrystalView extends Ui.WatchFace {
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
-//logMessage("onSettingsChanged called");
+		//logMessage("onSettingsChanged called");
 
 		updateNormalFont();
 
@@ -374,7 +374,7 @@ class CrystalView extends Ui.WatchFace {
 			
 			var now = Time.now();
 			if (Toybox.Weather has :getSunrise) {
-//logMessage("We have sunrise and sunset routines!");
+				//logMessage("We have sunrise and sunset routines!");
 				var sunrise = Weather.getSunrise(myLocation, now);
 				var sunset = Weather.getSunset(myLocation, now);
 
@@ -397,7 +397,7 @@ class CrystalView extends Ui.WatchFace {
 				logMessage("Since sunset " + sinceSunset);*/
 
 			} else {
-//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+				//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
 				
 				now = Gregorian.info(now, Time.FORMAT_SHORT);
 
@@ -409,8 +409,8 @@ class CrystalView extends Ui.WatchFace {
 				// Get today's sunrise/sunset times in current time zone.
 				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
 				//logMessage(sunTimes);
-//logMessage("now=" + now); 
-//logMessage("sunTimes=" + sunTimes); 
+				//logMessage("now=" + now); 
+				//logMessage("sunTimes=" + sunTimes); 
 				// If sunrise/sunset happens today.
 				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
 				if (sunriseSunsetToday) {
@@ -423,13 +423,13 @@ class CrystalView extends Ui.WatchFace {
 
 			if (condition < 53) {
 				icon = (mGarminToOWM[condition]).format("%02d") + day;
-//logMessage("icon=" + icon); 
+				//logMessage("icon=" + icon); 
 			}
 			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => weather.observationTime.value(), "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
-//2022-04-10 logMessage("Weather at " + weather.observationLocationName + " is " + result);
+			//2022-04-10 logMessage("Weather at " + weather.observationLocationName + " is " + result);
 		} else {
 			result = null;
-//2022-04-10 logMessage("No weather data, returning null");
+			//2022-04-10 logMessage("No weather data, returning null");
 		}
 		App.getApp().setProperty("OpenWeatherMapCurrent", result);
 	}	
@@ -668,40 +668,6 @@ class CrystalView extends Ui.WatchFace {
 				values[:isValid] = false;
 				values[:max] = 100;
 
-/*				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
-					var stressLevelIterator;
-					var stressLevel = null;
-
-					stressLevelIterator = Toybox.SensorHistory.getStressHistory({});
-					if (stressLevelIterator == null) {
-						break;
-					}
-
-					var sample = stressLevelIterator.next();
-					var stressLevelDate = 0;
-					var count = 0;
-					var keptCount = 0;
-					while (sample != null) {
-						count++;
-						if (sample.when.value() > stressLevelDate) {
-							keptCount = count;
-							stressLevel = sample.data;
-							stressLevelDate = sample.when.value();
-						}
-						sample = stressLevelIterator.next();
-					}
-
-					if (sample != null) {
-						stressLevel = sample.data;
-						stressLevelDate = sample.when.value();
-					}
-
-					if (stressLevel != null && stressLevel >= 0 && stressLevel <= 100) {
-						values[:current] = stressLevel.toFloat();
-						values[:isValid] = true;
-					}
-*/
-
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
 					var stressLevel = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					var stressLevelDate = 0;
@@ -720,61 +686,61 @@ class CrystalView extends Ui.WatchFace {
 							values[:isValid] = true;
 							gStressLevel = stressLevel;
 
-							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+							/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
 							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 							var logText = "stressLevel " + stressLevel + " stressLevelDate " + dateStr + " is GOOD";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 								logMessage(logText);
 								gStressLevelLogText = logText;
-							}*/
+							}/**/
 	 					} else if (gStressLevel != null) {
 							values[:current] = gStressLevel.toFloat();
 							values[:isValid] = true;
 							values[:staled] = true;
 
-							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+							/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
 							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 							var logText = "stressLevel " + stressLevel + "is over limit, ignoring";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 								logMessage(logText);
 								gStressLevelLogText = logText;
-							}*/
+							}/**/
 						} else {
-							/*DEBUG var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
+							/*DEBUG*/ var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 								logMessage(logText);
 								gStressLevelLogText = logText;
-							}*/
+							}/**/
 						}
  					} else if (gStressLevel != null) {
 						values[:current] = gStressLevel.toFloat();
 						values[:isValid] = true;
 						values[:staled] = true;
 
-						/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+						/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
 						var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 						var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 						var logText = "stressLevel " + gStressLevel + " IS staled";
 						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 							logMessage(logText);
 							gStressLevelLogText = logText;
-						}*/
+						}/**/
 					} else {
-						/*DEBUG var logText = "No StressHistory data found yet";
+						/*DEBUG*/ var logText = "No StressHistory data found yet";
 						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 							logMessage(logText);
 							gStressLevelLogText = logText;
-						}*/
+						}/**/
 					}
-//					logMessage("stressLeve " + stressLevel + " count " + count + " keptCount " + keptCount + " stressLevelDate " + stressLevelDate);
+					//logMessage("stressLeve " + stressLevel + " count " + count + " keptCount " + keptCount + " stressLevelDate " + stressLevelDate);
 				} else {
-					/*DEBUG var logText = "No StressHistory Sensor found";
+					/*DEBUG*/ var logText = "No StressHistory Sensor found";
 					if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 						logMessage(logText);
 						gStressLevelLogText = logText;
-					}*/
+					}/**/
 				}
 
 				break;
@@ -835,7 +801,7 @@ class CrystalView extends Ui.WatchFace {
 		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
 		// sleep.
 		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-//logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
+			//logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
 			App.getApp().checkPendingWebRequests();
 		}
 		
@@ -919,7 +885,7 @@ class CrystalView extends Ui.WatchFace {
     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
         System.println("Average execution time: " + powerInfo.executionTimeAverage);
         System.println("Allowed execution time: " + powerInfo.executionTimeLimit);
-//        _view.turnPartialUpdatesOff();
+		//_view.turnPartialUpdatesOff();
     }
 }*/
 

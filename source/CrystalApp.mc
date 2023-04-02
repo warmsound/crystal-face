@@ -160,9 +160,9 @@ class CrystalApp extends App.AppBase {
 
 			var owmKeyOverride = getProperty("OWMKeyOverride");
 			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
-//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
+				//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
 			} else {
-//2022-04-10 logMessage("Using OpenWeatherMap");
+				//2022-04-10 logMessage("Using OpenWeatherMap");
 				var owmCurrent = getProperty("OpenWeatherMapCurrent");
 	
 				// No existing data.
@@ -330,7 +330,7 @@ class CrystalApp extends App.AppBase {
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
-//2022-04-10 logMessage("onBackgroundData:received '" + data + "'");
+		//2022-04-10 logMessage("onBackgroundData:received '" + data + "'");
 		var pendingWebRequests = getProperty("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};

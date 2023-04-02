@@ -48,12 +48,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 			_token = "Bearer " + _token;
 		}
 		else {
-//2023-03-05 logMessage("initialize:Generating Access Token");
+			//2023-03-05 logMessage("initialize:Generating Access Token");
 			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
-//2023-03-05 logMessage("initialize:No refresh token!");
+				//2023-03-05 logMessage("initialize:No refresh token!");
 			}
 			return;
 		}
@@ -75,7 +75,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function onTemporalEvent() {
 		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
-//2023-03-05 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
+		//2023-03-05 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -278,8 +278,8 @@ class BackgroundService extends Sys.ServiceDelegate {
     function onReceiveToken(responseCode, data) {
 		var result;
 
-//2023-03-05 logMessage("onReceiveToken responseCode is " + responseCode);
-//logMessage("onReceiveToken data  is " + data);
+		//2023-03-05 logMessage("onReceiveToken responseCode is " + responseCode);
+		//logMessage("onReceiveToken data  is " + data);
         if (responseCode == 200) {
         	result = { "Token" => data };
         } else {
@@ -292,7 +292,7 @@ class BackgroundService extends Sys.ServiceDelegate {
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
-//2023-03-05 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
+		//2023-03-05 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
         if (responseCode == 200) {
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
@@ -319,7 +319,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var precondEnabled = "N/A";
 		var sentryEnabled = "N/A";
 
-//2023-03-05 logMessage("onReceiveVehicleData responseCode is " + responseCode);
+		//2023-03-05 logMessage("onReceiveVehicleData responseCode is " + responseCode);
         if (responseCode == 200) {
         	results = data.get("response");
         	if (results != null) {
@@ -382,7 +382,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 					},
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
-//2023-03-05 logMessage("makeWebRequest url: '" + url + "'");
+		//2023-03-05 logMessage("makeWebRequest url: '" + url + "'");
 		Comms.makeWebRequest(url, params, options, callback);
     }
 //****************************************************************
