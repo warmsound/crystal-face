@@ -27,6 +27,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.15.2
+- Access to stress level is not as stable as the Garmin access to it. To help here, if a value isn't returned, the last good one is used and the icon is greyed out to indicate the data is stale.
+- Bug fix in the default latitude/longitude when the last activity has no GPS coordinates.
+
 ### 2.15.1
 - Reverted to Connect IQ 4.1.7 since there are too many problem with sensors with this 4.2.x version so far. Hopefully this doesn't break the watchface on newest Forerunner 265, 265S and 965.
 - Moved the line between time and date in Always On Display so it doesn't strike through the time.
@@ -38,7 +42,7 @@ Reviews:
 
 ### 2.14.2
 - Added Longitude and Latitude as editable fields in the parameters to allow for a DEFAULT location for sunrise/sunset and OpenWeatherMap weather . Any activity found with GPS data will override this location. This should fix many "gps?" error, which simply means no activity with GPS have been found to locate your position, yet. Keep in mind it can take up to 5 minutes before data is retrieved from OWM or Garmin Weather.
-- The weather icon will be grayed out if the request to get the weather fails for some reason (like Bluetooth off, no Internet access or bad OWM API key). If this happens, the temperature or humidity value displayed will be staled. If you create a file called CRYSTALFACE.TXT in the /GARMIN/APPS/LOGS on your watch (connect to your computer first), it will log inside that file the error code of why it failed (unless it's because BLE is Off). This could be helpful at determining the reason of the failure.
+- The weather icon will be grayed out if the request to get the weather fails for some reason (like Bluetooth off, no Internet access or bad OWM API key). If this happens, the temperature or humidity value displayed will be stale. If you create a file called CRYSTALFACE.TXT in the /GARMIN/APPS/LOGS on your watch (connect to your computer first), it will log inside that file the error code of why it failed (unless it's because BLE is Off). This could be helpful at determining the reason of the failure.
 - Added BodyBattery as a datafield to the Forerunner 55
 - Increased the time and date fonts for the 454x454 devices
 - Fixed the missing "/" in the floor climbs datafield for 416x416 and 454x454 devices

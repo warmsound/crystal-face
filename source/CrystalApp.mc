@@ -5,6 +5,10 @@ using Toybox.WatchUi as Ui;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+import Toybox.Application;
+import Toybox.Lang;
+import Toybox.WatchUi;
+
 // In-memory current location.
 // Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
 // Current location retrieved/saved in checkPendingWebRequests().
@@ -35,9 +39,17 @@ class CrystalApp extends App.AppBase {
 
 	// Return the initial view of your application here
 	function getInitialView() {
-		mView = new CrystalView();
-		onSettingsChanged(); // After creating view.
-		return [mView];
+		/*if (WatchUi has :WatchFaceDelegate) {
+			mView = new CrystalView();
+			onSettingsChanged(); // After creating view.
+			var delegate = new CrystalDelegate(mView);
+			return [mView, delegate] as Array<Views or InputDelegates>;
+		}
+		else {*/
+			mView = new CrystalView();
+			onSettingsChanged(); // After creating view.
+			return [mView];
+		//}
 	}
 
 	function getView() {
@@ -83,15 +95,17 @@ class CrystalApp extends App.AppBase {
 		var location = Activity.getActivityInfo().currentLocation;
 		if (location) {
 			location = location.toDegrees(); // Array of Doubles.
-			gLocationLat = location[0].toFloat();
-			gLocationLng = location[1].toFloat();
+			if (location[0] != 0.0 && location[1] != 0.0) {
+				gLocationLat = location[0];
+				gLocationLng = location[1];
 
-			setProperty("LastLocationLat", gLocationLat);
-			setProperty("LastLocationLng", gLocationLng);
-
+				setProperty("LastLocationLat", gLocationLat);
+				setProperty("LastLocationLng", gLocationLng);
+			}
+		}
 		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
 		// in-memory value with an invalid stored one.
-		} else {
+		else {
 			var lat = getProperty("LastLocationLat");
 			if (lat != null) {
 				gLocationLat = lat.toFloat();

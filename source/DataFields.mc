@@ -395,9 +395,8 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_BODY_BATTERY:
-				var bodyBattery = null;
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
-					bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					var bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					if (bodyBattery != null) {
 						bodyBattery = bodyBattery.next();
 					}
@@ -411,9 +410,8 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
-				var stressLevel = null;
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
-					stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
+					var stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
 					if (stressLevel != null) {
 						stressLevel = stressLevel.next();
 					}
@@ -462,8 +460,7 @@ class DataFields extends Ui.Drawable {
 				if (sample != null) {
 					value = sample.format(INTEGER_FORMAT);
 				} else if (ActivityMonitor has :getHeartRateHistory) {
-					sample = ActivityMonitor.getHeartRateHistory(1, /* newestFirst */ true)
-						.next();
+					sample = ActivityMonitor.getHeartRateHistory(1, true).next();
 					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
 						value = sample.heartRate.format(INTEGER_FORMAT);
 					}

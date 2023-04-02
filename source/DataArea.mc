@@ -12,11 +12,13 @@ class DataArea extends Ui.Drawable {
 
 	private var mLeftGoalType;
 	private var mLeftGoalIsValid;
+	private var mLeftGoalstaled;
 	private var mLeftGoalCurrent;
 	private var mLeftGoalMax;
 
 	private var mRightGoalType;
 	private var mRightGoalIsValid;
+	private var mRightGoalstaled;
 	private var mRightGoalCurrent;
 	private var mRightGoalMax;
 
@@ -38,6 +40,7 @@ class DataArea extends Ui.Drawable {
 	function setGoalValues(leftType, leftValues, rightType, rightValues) {
 		mLeftGoalType = leftType;
 		mLeftGoalIsValid = leftValues[:isValid];
+		mLeftGoalstaled = leftValues[:staled];
 
 		if (leftValues[:isValid]) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
@@ -49,6 +52,7 @@ class DataArea extends Ui.Drawable {
 
 		mRightGoalType = rightType;
 		mRightGoalIsValid = rightValues[:isValid];
+		mRightGoalstaled = leftValues[:staled];
 
 		if (rightValues[:isValid]) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
@@ -60,8 +64,8 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, Graphics.TEXT_JUSTIFY_LEFT);
-		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, Graphics.TEXT_JUSTIFY_RIGHT);
+		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, mLeftGoalstaled, Graphics.TEXT_JUSTIFY_LEFT);
+		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
 		var city = App.getApp().getProperty("LocalTimeInCity");
 
@@ -138,7 +142,7 @@ class DataArea extends Ui.Drawable {
 		}
 	}
 
-	function drawGoalIcon(dc, x, type, isValid, align) {
+	function drawGoalIcon(dc, x, type, isValid, staled, align) {
 		if (type == GOAL_TYPE_OFF) {
 			return;
 		}
@@ -153,7 +157,7 @@ class DataArea extends Ui.Drawable {
 			GOAL_TYPE_STRESS_LEVEL => "G", // SG Addition
 		}[type];
 
-		dc.setColor(isValid ? gThemeColour : gMeterBackgroundColour, Gfx.COLOR_TRANSPARENT);
+		dc.setColor(isValid && !staled ? gThemeColour : gMeterBackgroundColour, Gfx.COLOR_TRANSPARENT);
 		dc.drawText(
 			x,
 			mGoalIconY,

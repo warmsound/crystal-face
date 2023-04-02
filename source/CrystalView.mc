@@ -14,6 +14,9 @@ using Toybox.Math;
 
 const INTEGER_FORMAT = "%d";
 
+import Toybox.Lang;
+import Toybox.WatchUi;
+
 var gThemeColour;
 var gMonoLightColour;
 var gMonoDarkColour;
@@ -24,6 +27,9 @@ var gMinutesColour;
 
 var gNormalFont;
 var gIconsFont;
+
+var gStressLevel;
+//DEBUG*/ var gStressLevelLogText;
 
 const SCREEN_MULTIPLIER = (Sys.getDeviceSettings().screenWidth < 360) ? 1 : 2;
 //const BATTERY_LINE_WIDTH = 2;
@@ -599,7 +605,8 @@ class CrystalView extends Ui.WatchFace {
 		var values = {
 			:current => 0,
 			:max => 1,
-			:isValid => true
+			:isValid => true,
+			:staled => false
 		};
 
 		var info = ActivityMonitor.getInfo();
@@ -637,12 +644,11 @@ class CrystalView extends Ui.WatchFace {
 
 			// SG Addition
 			case GOAL_TYPE_BODY_BATTERY:
-				var bodyBattery = null;
 				values[:isValid] = false;
 				values[:max] = 100;
 
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
-					bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					var bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					if (bodyBattery != null) {
 						bodyBattery = bodyBattery.next();
 					}
@@ -659,22 +665,116 @@ class CrystalView extends Ui.WatchFace {
 
 			// SG Addition
 			case GOAL_TYPE_STRESS_LEVEL:
-				var stressLevel = null;
 				values[:isValid] = false;
 				values[:max] = 100;
 
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
-					stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
-					if (stressLevel != null) {
-						stressLevel = stressLevel.next();
+/*				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+					var stressLevelIterator;
+					var stressLevel = null;
+
+					stressLevelIterator = Toybox.SensorHistory.getStressHistory({});
+					if (stressLevelIterator == null) {
+						break;
 					}
-					if (stressLevel !=null) {
-						stressLevel = stressLevel.data;
+
+					var sample = stressLevelIterator.next();
+					var stressLevelDate = 0;
+					var count = 0;
+					var keptCount = 0;
+					while (sample != null) {
+						count++;
+						if (sample.when.value() > stressLevelDate) {
+							keptCount = count;
+							stressLevel = sample.data;
+							stressLevelDate = sample.when.value();
+						}
+						sample = stressLevelIterator.next();
 					}
+
+					if (sample != null) {
+						stressLevel = sample.data;
+						stressLevelDate = sample.when.value();
+					}
+
 					if (stressLevel != null && stressLevel >= 0 && stressLevel <= 100) {
 						values[:current] = stressLevel.toFloat();
 						values[:isValid] = true;
 					}
+*/
+
+				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+					var stressLevel = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					var stressLevelDate = 0;
+
+					if (stressLevel != null) {
+						stressLevel = stressLevel.next();
+					}
+					if (stressLevel !=null) {
+						stressLevelDate = stressLevel.when.value();
+						stressLevel = stressLevel.data;
+					}
+
+					if (stressLevel != null) {
+						if (stressLevel >= 0 && stressLevel <= 100) {
+							values[:current] = stressLevel.toFloat();
+							values[:isValid] = true;
+							gStressLevel = stressLevel;
+
+							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
+							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+							var logText = "stressLevel " + stressLevel + " stressLevelDate " + dateStr + " is GOOD";
+							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+								logMessage(logText);
+								gStressLevelLogText = logText;
+							}*/
+	 					} else if (gStressLevel != null) {
+							values[:current] = gStressLevel.toFloat();
+							values[:isValid] = true;
+							values[:staled] = true;
+
+							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
+							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+							var logText = "stressLevel " + stressLevel + "is over limit, ignoring";
+							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+								logMessage(logText);
+								gStressLevelLogText = logText;
+							}*/
+						} else {
+							/*DEBUG var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
+							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+								logMessage(logText);
+								gStressLevelLogText = logText;
+							}*/
+						}
+ 					} else if (gStressLevel != null) {
+						values[:current] = gStressLevel.toFloat();
+						values[:isValid] = true;
+						values[:staled] = true;
+
+						/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
+						var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
+						var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+						var logText = "stressLevel " + gStressLevel + " IS staled";
+						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+							logMessage(logText);
+							gStressLevelLogText = logText;
+						}*/
+					} else {
+						/*DEBUG var logText = "No StressHistory data found yet";
+						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+							logMessage(logText);
+							gStressLevelLogText = logText;
+						}*/
+					}
+//					logMessage("stressLeve " + stressLevel + " count " + count + " keptCount " + keptCount + " stressLevelDate " + stressLevelDate);
+				} else {
+					/*DEBUG var logText = "No StressHistory Sensor found";
+					if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
+						logMessage(logText);
+						gStressLevelLogText = logText;
+					}*/
 				}
 
 				break;
@@ -795,6 +895,34 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
 }
+
+/*class CrystalDelegate extends Ui.WatchFaceDelegate {
+    private var _view as CrystalView;
+
+    //! Constructor
+    //! @param view The analog view
+    public function initialize(view as CrystalView) {
+        WatchFaceDelegate.initialize();
+        _view = view;
+    }
+
+	public function  onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
+        System.println("onPress called!!!");
+	}
+
+    //! The onPowerBudgetExceeded callback is called by the system if the
+    //! onPartialUpdate method exceeds the allowed power budget. If this occurs,
+    //! the system will stop invoking onPartialUpdate each second, so we notify the
+    //! view here to let the rendering methods know they should not be rendering a
+    //! second hand.
+    //! @param powerInfo Information about the power budget
+    public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
+        System.println("Average execution time: " + powerInfo.executionTimeAverage);
+        System.println("Allowed execution time: " + powerInfo.executionTimeLimit);
+//        _view.turnPartialUpdatesOff();
+    }
+}*/
+
 /*
 function type_name(obj) {
     if (obj instanceof Toybox.Lang.Number) {
