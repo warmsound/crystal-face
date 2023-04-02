@@ -2,7 +2,7 @@ info face="Titillium Web Light" size=-128 bold=0 italic=0 charset="" unicode=1 s
 common lineHeight=205 base=153 scaleW=256 scaleH=256 pages=2 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
 page id=0 file="titillium-web-light-128-tall_0.png"
 page id=1 file="titillium-web-light-128-tall_1.png"
-chars count=10
+chars count=11
 char id=48   x=64    y=0     width=61    height=92    xoffset=6     yoffset=62    xadvance=71    page=0  chnl=15
 char id=49   x=221   y=93    width=34    height=89    xoffset=15    yoffset=64    xadvance=71    page=0  chnl=15
 char id=50   x=56    y=93    width=54    height=91    xoffset=9     yoffset=62    xadvance=71    page=0  chnl=15
@@ -13,3 +13,4 @@ char id=54   x=126   y=0     width=59    height=92    xoffset=7     yoffset=62  
 char id=55   x=168   y=93    width=52    height=90    xoffset=10    yoffset=64    xadvance=71    page=0  chnl=15
 char id=56   x=0     y=0     width=63    height=92    xoffset=4     yoffset=62    xadvance=71    page=0  chnl=15
 char id=57   x=186   y=0     width=59    height=92    xoffset=6     yoffset=62    xadvance=71    page=0  chnl=15
+char id=58   x=246   y=0     width=9     height=59    xoffset=9     yoffset=94    xadvance=26    page=0  chnl=15

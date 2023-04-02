@@ -18,6 +18,7 @@
 	<string id="HideSecondsLowPower">Hide seconds when inactive</string><!-- TODO_TRANSLATE -->
 	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Скрывать нули перед часами</string>
+	<string id="AddColon">Add colon between hours and minutes</string><!-- TODO_TRANSLATE -->
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Количество полей данных</string>

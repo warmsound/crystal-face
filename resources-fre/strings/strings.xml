@@ -18,6 +18,7 @@
 	<string id="HideSecondsLowPower">Afficher sauf quand inactif</string>
 	<string id="HideSecondsAlways">Toujours cacher</string>
 	<string id="HideHoursLeadingZeroTitle">Masquer le zéro avant l'heure</string>
+	<string id="AddColon">Ajouter un deux-points entre les heures et minutes</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 
 	<string id="FieldCountTitle">Nombre de champs de données</string>

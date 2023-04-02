@@ -1,6 +1,6 @@
 <properties>
 
-	<property id="AppVersion" type="string">2.15.1</property>
+	<property id="AppVersion" type="string">2.15.2</property>
 
 	<property id="Theme" type="number">0</property>
 	<property id="ThemeOverride" type="string"></property>
@@ -28,6 +28,8 @@
 	<property id="LocalTimeInCity" type="string"></property>
 
 	<property id="MoveBarStyle" type="number">0</property>
+
+	<property id="AddColon" type="boolean">false</property>
 	
 	<property id="HideSeconds" type="number">0</property>
 	<property id="HideHoursLeadingZero" type="boolean">true</property>

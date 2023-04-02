@@ -27,7 +27,8 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
-### 2.15.2
+### 2.16.0
+- Added a optional colon between hours and minutes
 - Access to stress level is not as stable as the Garmin access to it. To help here, if a value isn't returned, the last good one is used and the icon is greyed out to indicate the data is stale.
 - Bug fix in the default latitude/longitude when the last activity has no GPS coordinates.
 

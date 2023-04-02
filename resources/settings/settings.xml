@@ -1,9 +1,4 @@
 <settings>
-
-	<setting propertyKey="@Properties.AppVersion" title="@Strings.AppVersionTitle">
-		<settingConfig type="alphaNumeric" readonly="true"/>
-	</setting>
-
 	<setting propertyKey="@Properties.Theme" title="@Strings.ThemeTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
@@ -219,6 +214,10 @@
 	</setting>
 
 	<setting propertyKey="@Properties.HideHoursLeadingZero" title="@Strings.HideHoursLeadingZeroTitle">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.AddColon" title="@Strings.AddColon">
 		<settingConfig type="boolean"/>
 	</setting>
 

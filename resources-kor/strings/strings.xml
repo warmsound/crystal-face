@@ -19,6 +19,7 @@
 	<string id="HideSecondsLowPower">Hide seconds when inactive</string>
 	<string id="HideSecondsAlways">Always hide seconds</string>
 	<string id="HideHoursLeadingZeroTitle">Hide Hours Leading Zero</string>
+	<string id="AddColon">Add colon between hours and minutes</string>
 	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 
 	<string id="FieldCountTitle">Number Of Data Fields</string>

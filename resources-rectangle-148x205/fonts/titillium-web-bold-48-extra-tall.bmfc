@@ -5,9 +5,9 @@ fileVersion=1
 fontName=Titillium Web
 fontFile=
 charSet=0
-fontSize=-48
+fontSize=-54
 aa=1
-scaleH=110
+scaleH=100
 useSmoothing=1
 isBold=1
 isItalic=0
@@ -18,6 +18,9 @@ dontIncludeKerningPairs=0
 useHinting=1
 renderFromOutline=0
 useClearType=0
+autoFitNumPages=0
+autoFitFontSizeMin=0
+autoFitFontSizeMax=0
 
 # character alignment
 paddingDown=0
@@ -28,6 +31,7 @@ spacingHoriz=1
 spacingVert=1
 useFixedHeight=0
 forceZero=0
+widthPaddingFactor=0.00
 
 # output file
 outWidth=256

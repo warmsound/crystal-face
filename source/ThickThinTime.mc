@@ -87,6 +87,17 @@ class ThickThinTime extends Ui.Drawable {
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
 
+		if (App.getApp().getProperty("AddColon")) {
+			dc.drawText(
+				x,
+				halfDCHeight,
+				mMinutesFont,
+				":",
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			x += dc.getTextWidthInPixels(":", mMinutesFont);
+		}
+
 		// Draw minutes.
 		dc.setColor(gMinutesColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
