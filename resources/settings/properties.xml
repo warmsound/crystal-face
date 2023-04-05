@@ -1,13 +1,9 @@
 <properties>
-
-	<property id="AppVersion" type="string">2.15.2</property>
+	<property id="AppVersion" type="string"></property>
 
 	<property id="Theme" type="number">0</property>
 	<property id="ThemeOverride" type="string"></property>
 	<property id="ThemeLightOverride" type="boolean">false</property>
-
-	<property id="HoursColourOverride" type="number">0</property>
-	<property id="MinutesColourOverride" type="number">0</property>
 
 	<property id="LeftGoalType" type="number">0</property>
 	<property id="RightGoalType" type="number">1</property>
@@ -25,20 +21,21 @@
 	<property id="Indicator2Type" type="number">3</property>
 	<property id="Indicator3Type" type="number">0</property>
 
+	<property id="HoursColourOverride" type="number">0</property>
+	<property id="MinutesColourOverride" type="number">0</property>
+	<property id="HideHoursLeadingZero" type="boolean">true</property>
+	<property id="AddColon" type="boolean">false</property>
+	<property id="HideSeconds" type="number">0</property>
+
 	<property id="LocalTimeInCity" type="string"></property>
 
 	<property id="MoveBarStyle" type="number">0</property>
 
-	<property id="AddColon" type="boolean">false</property>
-	
-	<property id="HideSeconds" type="number">0</property>
-	<property id="HideHoursLeadingZero" type="boolean">true</property>
-
-	<property id="OWMKeyOverride" type="string">2651f49cb20de925fc57590709b86ce6</property>
-    
 	<property id="LastLocationLat" type="string"></property>
 	<property id="LastLocationLng" type="string"></property>
 
+	<property id="OWMKeyOverride" type="string">2651f49cb20de925fc57590709b86ce6</property>
+    
 	<property id="TeslaAccessToken" type="string"></property>
 	<property id="TeslaRefreshToken" type="string"></property>
 	<property id="TeslaServerAPILocation" type="string">owner-api.teslamotors.com</property>

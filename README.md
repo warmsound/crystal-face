@@ -27,6 +27,12 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.16.2
+Hopefully fixed the fail to save settings for everyone with the issue.
+
+### 2.16.1
+Double entry in the english string file was (not) causing Connect to fail saving settings on devices but not in simulator.
+
 ### 2.16.0
 - Added a optional colon between hours and minutes
 - Bug fix in the default latitude/longitude when the last activity has no GPS coordinates.

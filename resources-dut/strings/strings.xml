@@ -1,7 +1,6 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Versie</string>
 
 	<string id="ThemeTitle">Thema</string>
 	<string id="HoursColourTitle">Uren Kleur</string>
@@ -84,7 +83,6 @@
 	<string id="Weather">Weer</string>
 	<string id="Humidity">Vochtigheid</string>
 	<string id="Pressure">Luchtdruk</string>
-	<string id="PulseOx">Pulsoximeter</string>
 
 	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
 	<string id="DATE_FONT_OVERRIDE"></string>	
@@ -112,6 +110,7 @@
 
 	<!-- TODO_TRANSLATE -->
 	<string id="BatteryNumeric">Battery Numeric</string>
+	<string id="PulseOx">Pulsoximeter</string>
 	<string id="Tesla">Tesla Info</string>
 	<string id="TeslaAccessToken">Tesla Access Token</string>
 	<string id="TeslaRefreshToken">Tesla Refresh Token</string>

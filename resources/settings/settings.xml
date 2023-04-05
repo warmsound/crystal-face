@@ -1,4 +1,8 @@
 <settings>
+	<setting propertyKey="@Properties.AppVersion" title="@Strings.AppNameVersion">
+		<settingConfig type="alphaNumeric" readonly="true"/>
+	</setting>
+
 	<setting propertyKey="@Properties.Theme" title="@Strings.ThemeTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.ThemeBlueDark</listEntry>
@@ -25,7 +29,6 @@
 	<setting propertyKey="@Properties.ThemeLightOverride" title="@Strings.ThemeLightOverride">
 		<settingConfig type="boolean"/>
 	</setting>
-
 
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
@@ -267,5 +270,4 @@
 	<setting propertyKey="@Properties.TeslaServerAUTHLocation" title="@Strings.Tesla_auth_server_location_label" prompt="@Strings.Tesla_server_location_prompt">
 		<settingConfig type="alphaNumeric" />
 	</setting>
-
 </settings>

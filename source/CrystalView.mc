@@ -670,13 +670,13 @@ class CrystalView extends Ui.WatchFace {
 
 				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
 					var stressLevel = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
-					var stressLevelDate = 0;
+					//DEBUG*/ var stressLevelDate = 0;
 
 					if (stressLevel != null) {
 						stressLevel = stressLevel.next();
 					}
 					if (stressLevel !=null) {
-						stressLevelDate = stressLevel.when.value();
+						//DEBUG*/ stressLevelDate = stressLevel.when.value();
 						stressLevel = stressLevel.data;
 					}
 
@@ -686,7 +686,7 @@ class CrystalView extends Ui.WatchFace {
 							values[:isValid] = true;
 							gStressLevel = stressLevel;
 
-							/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
+							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
 							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 							var logText = "stressLevel " + stressLevel + " stressLevelDate " + dateStr + " is GOOD";
@@ -699,7 +699,7 @@ class CrystalView extends Ui.WatchFace {
 							values[:isValid] = true;
 							values[:staled] = true;
 
-							/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
+							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
 							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 							var logText = "stressLevel " + stressLevel + "is over limit, ignoring";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
@@ -707,7 +707,7 @@ class CrystalView extends Ui.WatchFace {
 								gStressLevelLogText = logText;
 							}/**/
 						} else {
-							/*DEBUG*/ var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
+							/*DEBUG var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
 							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 								logMessage(logText);
 								gStressLevelLogText = logText;
@@ -718,7 +718,7 @@ class CrystalView extends Ui.WatchFace {
 						values[:isValid] = true;
 						values[:staled] = true;
 
-						/*DEBUG*/ var timeMoment = new Time.Moment(stressLevelDate);
+						/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
 						var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
 						var logText = "stressLevel " + gStressLevel + " IS staled";
 						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
@@ -726,7 +726,7 @@ class CrystalView extends Ui.WatchFace {
 							gStressLevelLogText = logText;
 						}/**/
 					} else {
-						/*DEBUG*/ var logText = "No StressHistory data found yet";
+						/*DEBUG var logText = "No StressHistory data found yet";
 						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 							logMessage(logText);
 							gStressLevelLogText = logText;
@@ -734,7 +734,7 @@ class CrystalView extends Ui.WatchFace {
 					}
 					//logMessage("stressLeve " + stressLevel + " count " + count + " keptCount " + keptCount + " stressLevelDate " + stressLevelDate);
 				} else {
-					/*DEBUG*/ var logText = "No StressHistory Sensor found";
+					/*DEBUG var logText = "No StressHistory Sensor found";
 					if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
 						logMessage(logText);
 						gStressLevelLogText = logText;

@@ -1,8 +1,7 @@
-<strings>
+﻿<strings>
 
 	<!-- TODO_TRANSLATE -->
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Version</string>
 
 	<string id="ThemeTitle">Theme</string>
 	<string id="HoursColourTitle">Hours Colour</string>
@@ -110,7 +109,6 @@
 	<string id="Nov">十一月</string>
 	<string id="Dec">十二月</string>
 
-	<!-- TODO_TRANSLATE -->
 	<string id="BatteryNumeric">Battery Numeric</string>
 	<string id="PulseOx">Pulse Ox</string>
 	<string id="Tesla">Tesla Info</string>

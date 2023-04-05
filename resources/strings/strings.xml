@@ -1,7 +1,6 @@
 <strings>
-
-	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App Version</string>
+    <string id="AppName">Crystal</string>
+    <string id="AppNameVersion">Crystal-Tesla V2.16.2</string>
 
 	<string id="ThemeTitle">Theme</string>
 	<string id="HoursColourTitle">Hours Colour</string>
@@ -71,7 +70,6 @@
 	<string id="HeartRate">Heart Rate</string>
 	<string id="HeartRateLive5s">Heart Rate (Live 5s)</string>
 	<string id="Battery">Battery</string>
-	<string id="BatteryNumeric">Battery Numeric</string>
 	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
 	<string id="Notifications">Notifications</string>
 	<string id="Calories">Calories</string>
@@ -123,7 +121,6 @@
 	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
 	<string id="ThemeLightOverride">Light theme override</string>
 	<string id="latitude">Latitude</string>
-	<string id="longitude">Longitude</string>
 	<string id="longitude">Longitude</string>
 	<string id="StressLevel">Stress Level</string>
 </strings>
