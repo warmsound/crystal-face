@@ -1,7 +1,6 @@
 .project
 .settings/
 bin/
-manifest.xml
 .vscode/launch.json
 .vscode/tasks.json
 .vscode/settings.json
