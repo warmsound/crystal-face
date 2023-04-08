@@ -28,7 +28,8 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.16.3
-Recompiled with ConnectIQ4.1.7 which will hopefully fixed the fail to save settings for everyone with the issue and not create more issues.
+- Recompiled with ConnectIQ4.1.7 which will hopefully fixed the fail to save settings for everyone with the issue and not create more issues.
+- Fixed the 416x416 watch font missing a '+'
 
 ### 2.16.2
 Hopefully fixed the fail to save settings for everyone with the issue.
