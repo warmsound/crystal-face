@@ -532,7 +532,7 @@ class DataFields extends Ui.Drawable {
 				if (altitude == null) { // If we didn't get an altitude this time, grab the saved one
 					altitude = Storage.getValue("LastAltitude");
 				} else { // We got altitude info, store it in case we lose it
-					Properties.Storage("LastAltitude", altitude);
+					Storage.setValue("LastAltitude", altitude);
 				}
 
 				if (altitude != null) { // If we didn't get an altitude this time, grab the saved one
