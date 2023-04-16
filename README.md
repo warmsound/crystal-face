@@ -27,6 +27,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.16.4
+- Recompiled with ConnectIQ4.2.4 since that wasn't the issue with the save settings. It was because watches with ICQ 4.2.0+ didn't support the getProperties/setProperties functions that were used throughout the app. I replaced them all with their corresponding Storage or Properties (for settings) getValue/setValue and was finally able to save the settings on my new Venu2. I was unable to reproduce on my old Venu since it was released pre 4.2.0.
+- Added the MARQ® (Gen 2) Athlete / Adventurer / Captain / Golfer / Aviator watches
+
 ### 2.16.3
 - Recompiled with ConnectIQ4.1.7 which will hopefully fixed the fail to save settings for everyone with the issue and not create more issues.
 - Fixed the 416x416 watch font missing a '+'

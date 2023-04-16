@@ -4,6 +4,8 @@ using Toybox.Communications as Comms;
 using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
@@ -18,20 +20,20 @@ class BackgroundService extends Sys.ServiceDelegate {
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		if (App.getApp().getProperty("Tesla") == null) {
+		if (Storage.getValue("Tesla") == null) {
 			return;
 		}
 
 		// Need to get a token since we can't OAUTH from a watch face :-(
 		// If someone can do it, be my guest. I spent too much time on this already
-		_token = App.getApp().getProperty("TeslaAccessToken");
+		_token = Properties.getValue("TeslaAccessToken");
 
-		var createdAt = App.getApp().getProperty("TeslaTokenCreatedAt");
+		var createdAt = Storage.getValue("TeslaTokenCreatedAt");
 		if (createdAt == null) {
 			createdAt = 0;
 		}
 
-		var expiresIn = App.getApp().getProperty("TeslaTokenExpiresIn");
+		var expiresIn = Storage.getValue("TeslaTokenExpiresIn");
 		if (expiresIn == null) {
 			expiresIn = 0;
 		}
@@ -49,7 +51,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 		else {
 			//2023-03-05 logMessage("initialize:Generating Access Token");
-			var refreshToken = App.getApp().getProperty("TeslaRefreshToken");
+			var refreshToken = Properties.getValue("TeslaRefreshToken");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
@@ -58,11 +60,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 			return;
 		}
 
-        _vehicle_id = App.getApp().getProperty("TeslaVehicleID");
+        _vehicle_id = Storage.getValue("TeslaVehicleID");
 		if (_vehicle_id == null) {
-			makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-			makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+			makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
@@ -74,7 +76,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	(:background_method)
 	function onTemporalEvent() {
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+		var pendingWebRequests = Storage.getValue("PendingWebRequests");
 		//2023-03-05 logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "'");
 		if (pendingWebRequests != null) {
 
@@ -83,7 +85,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
-						"city" => App.getApp().getProperty("LocalTimeInCity")
+						"city" => Properties.getValue("LocalTimeInCity")
 					},
 					method(:onReceiveCityLocalTime)
 				);
@@ -92,12 +94,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 			// 2. Weather.
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+				var owmKeyOverride = Properties.getValue("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
-						"lat" => App.getApp().getProperty("LastLocationLat"),
-						"lon" => App.getApp().getProperty("LastLocationLng"),
+						"lat" => Properties.getValue("LastLocationLat"),
+						"lon" => Properties.getValue("LastLocationLng"),
 
 						// Polite request from Vince, developer of the Crystal Watch Face:
 						//
@@ -122,13 +124,13 @@ class BackgroundService extends Sys.ServiceDelegate {
 			}
 
 			// 3. Tesla
-			if (pendingWebRequests["TeslaInfo"] != null && App.getApp().getProperty("Tesla") != null) {
+			if (pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null) {
 				if (!Sys.getDeviceSettings().phoneConnected) {
 					return;
 				}
 					
 				if (_vehicle_id) {
-					makeTeslaWebRequest("https://" + App.getApp().getProperty("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+					makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				}
 			}
 		} /* else {
@@ -252,7 +254,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		// HTTP error: do not save.
 		} else {
-			result = App.getApp().getProperty("OpenWeatherMapCurrent");
+			result = Storage.getValue("OpenWeatherMapCurrent");
 			if (result) {
 				result["cod"] = responseCode;
 			} else {
@@ -261,9 +263,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 				};
 			}
 
-			var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
+			/*var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 			var dateStr = clockTime.year + " " + clockTime.month + " " + clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-			Sys.println(dateStr + " : httpError=" + responseCode);
+			Sys.println(dateStr + " : httpError=" + responseCode);*/
 		}
 
 		Bg.exit({
@@ -355,7 +357,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background_method)
     function makeTeslaWebPost(token, notify) {
-        var url = "https://" + App.getApp().getProperty("TeslaServerAUTHLocation") + "/oauth2/v3/token";
+        var url = "https://" + Properties.getValue("TeslaServerAUTHLocation") + "/oauth2/v3/token";
         Comms.makeWebRequest(
             url,
             {

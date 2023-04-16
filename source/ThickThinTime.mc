@@ -1,6 +1,8 @@
 using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 class ThickThinTime extends Ui.Drawable {
 
@@ -87,7 +89,7 @@ class ThickThinTime extends Ui.Drawable {
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
 
-		if (App.getApp().getProperty("AddColon")) {
+		if (Properties.getValue("AddColon")) {
 			dc.drawText(
 				x,
 				halfDCHeight,

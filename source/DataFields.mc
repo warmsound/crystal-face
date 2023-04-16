@@ -6,9 +6,10 @@ using Toybox.Activity as Activity;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.SensorHistory as SensorHistory;
 using Toybox.Math;
-
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 enum /* FIELD_TYPES */ {
 	// Pseudo-fields.	
@@ -529,9 +530,9 @@ class DataFields extends Ui.Drawable {
 				}
 
 				if (altitude == null) { // If we didn't get an altitude this time, grab the saved one
-					altitude = App.getApp().getProperty("LastAltitude");
+					altitude = Storage.getValue("LastAltitude");
 				} else { // We got altitude info, store it in case we lose it
-					App.getApp().setProperty("LastAltitude", altitude);
+					Properties.Storage("LastAltitude", altitude);
 				}
 
 				if (altitude != null) { // If we didn't get an altitude this time, grab the saved one
@@ -637,7 +638,7 @@ class DataFields extends Ui.Drawable {
 					result["weatherIcon"] = "01d";
 				}
 
-				weather = App.getApp().getProperty("OpenWeatherMapCurrent");
+				weather = Storage.getValue("OpenWeatherMapCurrent");
 
 				// Awaiting location.
 				if (gLocationLat == null) {
@@ -667,8 +668,8 @@ class DataFields extends Ui.Drawable {
 					}
 
 				// Awaiting response.
-				} else if ((App.getApp().getProperty("PendingWebRequests") != null) &&
-					App.getApp().getProperty("PendingWebRequests")["OpenWeatherMapCurrent"] != null) {
+				} else if ((Storage.getValue("PendingWebRequests") != null) &&
+					Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"] != null) {
 
 					value = "...";
 					

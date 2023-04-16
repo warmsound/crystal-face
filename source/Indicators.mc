@@ -2,6 +2,8 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 class Indicators extends Ui.Drawable {
 
@@ -36,18 +38,18 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function onSettingsChanged() {
-		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
-		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
-		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+		mIndicator1Type = Properties.getValue("Indicator1Type");
+		mIndicator2Type = Properties.getValue("Indicator2Type");
+		mIndicator3Type = Properties.getValue("Indicator3Type");
 		
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 		if (mIndicator1Type == 6 || mIndicator2Type == 6 || mIndicator3Type == 6) {
-			App.getApp().setProperty("Tesla", true);
+			Storage.setValue("Tesla", true);
 			//logMessage("onSettingsChanged:Doing Tesla!");
 		} else {
-			App.getApp().setProperty("Tesla", null);
+			Storage.setValue("Tesla", null);
 		}  
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************

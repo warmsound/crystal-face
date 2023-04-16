@@ -89,4 +89,5 @@ epix2.sourcePath = $(epix2.sourcePath);always-on-source
 fr965.sourcePath = $(fr965.sourcePath);always-on-source
 fr265.sourcePath = $(fr265.sourcePath);always-on-source
 fr265s.sourcePath = $(fr265s.sourcePath);always-on-source
-
+marq2.sourcePath = $(marq2.sourcePath);always-on-source
+marq2aviator.sourcePath = $(marq2aviator.sourcePath);always-on-source

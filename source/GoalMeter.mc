@@ -2,6 +2,8 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Graphics;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 // const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
@@ -112,7 +114,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// #18 Only read separator width from layout if multi segment style is selected.
 		// #62 Or if filled segment style is selected.
-		var goalMeterStyle = App.getApp().getProperty("GoalMeterStyle");
+		var goalMeterStyle = Properties.getValue("GoalMeterStyle");
 		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
@@ -145,7 +147,7 @@ class GoalMeter extends Ui.Drawable {
 	function draw(dc) {
 
 		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
-		if ((App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
+		if ((Properties.getValue("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
 			return;
 		}
 
@@ -167,7 +169,7 @@ class GoalMeter extends Ui.Drawable {
 
 			// Unfilled segments: fill height --> height.
 			// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-			if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+			if (Properties.getValue("GoalMeterStyle") <= 1) {
 				drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
 			}
 		}
@@ -243,7 +245,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// Draw unfilled segments.
 		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-		if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+		if (Properties.getValue("GoalMeterStyle") <= 1) {
 			clipBottom = clipTop;
 			clipTop = top;
 			clipHeight = clipBottom - clipTop;

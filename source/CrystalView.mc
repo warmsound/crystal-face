@@ -9,6 +9,9 @@ using Toybox.Time.Gregorian;
 using Toybox.Weather;
 using Toybox.Position;
 using Toybox.SensorHistory as SensorHistory;
+using Toybox.Complications as Complications;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 using Toybox.Math;
 
@@ -123,9 +126,9 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
 		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
 		//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
-		batteryStale = App.getApp().getProperty("TeslaBatterieStale");
-		chargingState = App.getApp().getProperty("TeslaChargingState");
-		error = App.getApp().getProperty("TeslaError");
+		batteryStale = Storage.getValue("TeslaBatterieStale");
+		chargingState = Storage.getValue("TeslaChargingState");
+		error = Storage.getValue("TeslaError");
 
 		if (chargingState != null) {
 			if (chargingState.equals("Charging")) {
@@ -143,10 +146,10 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		var inText = null;
 		switch (showMode) {
 			case 0:
-				value = App.getApp().getProperty("TeslaBatterieLevel");
+				value = Storage.getValue("TeslaBatterieLevel");
 				break;
 			case 1:
-				value = App.getApp().getProperty("TeslaPreconditioning");
+				value = Storage.getValue("TeslaPreconditioning");
 				if (value != null && value.equals("true")) {
 					inText = "P  on";
 				}
@@ -158,7 +161,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				}
 				break;
 			case 2:
-				value = App.getApp().getProperty("TeslaSentryEnabled");
+				value = Storage.getValue("TeslaSentryEnabled");
 				if (value != null && value.equals("true")) {
 					inText = "S on";
 				}
@@ -170,7 +173,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				}
 				break;
 			case 3:
-				value = App.getApp().getProperty("TeslaInsideTemp");
+				value = Storage.getValue("TeslaInsideTemp");
 				break;
 		}
 
@@ -273,9 +276,20 @@ class CrystalView extends Ui.WatchFace {
 		rereadWeatherMethod();
 	}
 
+	// callback that updates the complication value
+	/*function updateComplication(complication) {
+		var thisComplication = Complications.getComplication(complication);
+		var thisType = thisComplication.getType();
+
+		var value = thisComplication.value;
+		var label = thisComplication.shortLabel;
+
+		logMessage(label + "=" + value);
+	}*/
+
 	// Reread Weather method
 	function rereadWeatherMethod() {
-		var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+		var owmKeyOverride = Properties.getValue("OWMKeyOverride");
 		//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
 		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 			if (Toybox has :Weather) {
@@ -317,7 +331,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 
-		setHideSeconds(App.getApp().getProperty("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
+		setHideSeconds(Properties.getValue("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
 	}
 
 	/*
@@ -431,7 +445,7 @@ class CrystalView extends Ui.WatchFace {
 			result = null;
 			//2022-04-10 logMessage("No weather data, returning null");
 		}
-		App.getApp().setProperty("OpenWeatherMapCurrent", result);
+		Storage.setValue("OpenWeatherMapCurrent", result);
 	}	
 
 	// Select normal font, based on whether time zone feature is being used.
@@ -439,7 +453,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update drawables that use normal font.
 	function updateNormalFont() {
 
-		var city = App.getApp().getProperty("LocalTimeInCity");
+		var city = Properties.getValue("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
@@ -451,7 +465,7 @@ class CrystalView extends Ui.WatchFace {
 		// #182 Protect against null or unexpected type e.g. String.
 		var theme = App.getApp().getIntProperty("Theme", 0);
 		var lightFlag;
-		var themeOverride = App.getApp().getProperty("ThemeOverride");
+		var themeOverride = Properties.getValue("ThemeOverride");
 		if (themeOverride.equals("")) {
 			// Theme-specific colours.
 			gThemeColour = [
@@ -494,7 +508,7 @@ class CrystalView extends Ui.WatchFace {
 			lightFlag = lightFlags[theme];
 		} else {
 			gThemeColour = themeOverride.toNumberWithBase(16);
-			lightFlag = App.getApp().getProperty("ThemeLightOverride");
+			lightFlag = Properties.getValue("ThemeLightOverride");
 		}
 
 		// #124: fr45 cannot show grey. SG Fr45 not supported
@@ -548,7 +562,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
-			setHideSeconds(App.getApp().getProperty("HideSeconds")); 
+			setHideSeconds(Properties.getValue("HideSeconds")); 
 		} 
 
 		mSettingsChangedSinceLastDraw = false;
@@ -590,11 +604,11 @@ class CrystalView extends Ui.WatchFace {
 			return;
 		}
 
-		var leftType = App.getApp().getProperty("LeftGoalType");
+		var leftType = Properties.getValue("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
 		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
-		var rightType = App.getApp().getProperty("RightGoalType");
+		var rightType = Properties.getValue("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
 		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
@@ -791,7 +805,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
-		var hideSeconds = App.getApp().getProperty("HideSeconds");
+		var hideSeconds = Properties.getValue("HideSeconds");
 		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1 ) {
 			setHideSeconds(false);
 		}
@@ -825,7 +839,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
-		var hideSeconds = App.getApp().getProperty("HideSeconds");
+		var hideSeconds = Properties.getValue("HideSeconds");
 		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1) {
 			setHideSeconds(true);
 		}
@@ -860,32 +874,33 @@ class CrystalView extends Ui.WatchFace {
 	}
 }
 
-/*class CrystalDelegate extends Ui.WatchFaceDelegate {
-    private var _view as CrystalView;
+// class CrystalDelegate extends Ui.WatchFaceDelegate {
+//     private var _view as CrystalView;
 
-    //! Constructor
-    //! @param view The analog view
-    public function initialize(view as CrystalView) {
-        WatchFaceDelegate.initialize();
-        _view = view;
-    }
+//     //! Constructor
+//     //! @param view The analog view
+//     public function initialize(view as CrystalView) {
+//         WatchFaceDelegate.initialize();
+//         _view = view;
+//     }
 
-	public function  onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
-        System.println("onPress called!!!");
-	}
+// 	public function  onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
+// 		var complication = /*Complications.getComplication(*/new Complications.Id(Complications.COMPLICATION_TYPE_HEART_RATE)/*)*/;
+//         System.println("onPress called!!!");
+// 	}
 
-    //! The onPowerBudgetExceeded callback is called by the system if the
-    //! onPartialUpdate method exceeds the allowed power budget. If this occurs,
-    //! the system will stop invoking onPartialUpdate each second, so we notify the
-    //! view here to let the rendering methods know they should not be rendering a
-    //! second hand.
-    //! @param powerInfo Information about the power budget
-    public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
-        System.println("Average execution time: " + powerInfo.executionTimeAverage);
-        System.println("Allowed execution time: " + powerInfo.executionTimeLimit);
-		//_view.turnPartialUpdatesOff();
-    }
-}*/
+//     //! The onPowerBudgetExceeded callback is called by the system if the
+//     //! onPartialUpdate method exceeds the allowed power budget. If this occurs,
+//     //! the system will stop invoking onPartialUpdate each second, so we notify the
+//     //! view here to let the rendering methods know they should not be rendering a
+//     //! second hand.
+//     //! @param powerInfo Information about the power budget
+//     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
+//         System.println("Average execution time: " + powerInfo.executionTimeAverage);
+//         System.println("Allowed execution time: " + powerInfo.executionTimeLimit);
+// 		//_view.turnPartialUpdatesOff();
+//     }
+// }
 
 /*
 function type_name(obj) {

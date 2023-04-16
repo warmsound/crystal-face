@@ -4,6 +4,8 @@ using Toybox.Application as App;
 using Toybox.System as Sys;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 class DataArea extends Ui.Drawable {
 
@@ -67,12 +69,12 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, mLeftGoalstaled, Graphics.TEXT_JUSTIFY_LEFT);
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
-		var city = App.getApp().getProperty("LocalTimeInCity");
+		var city = Properties.getValue("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() != 0)) {
 			//drawTimeZone();
-			var cityLocalTime = App.getApp().getProperty("CityLocalTime");
+			var cityLocalTime = Properties.getValue("CityLocalTime");
 
 			// If available, use city returned from web request; otherwise, use raw city from settings.
 			// N.B. error response will NOT contain city.
@@ -168,7 +170,7 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
-		var digitStyle = App.getApp().getProperty("GoalMeterDigitsStyle");
+		var digitStyle = Properties.getValue("GoalMeterDigitsStyle");
 
 		// #107 Only draw values if digit style is not Hidden.
 		if (digitStyle != 2 /* HIDDEN */) {

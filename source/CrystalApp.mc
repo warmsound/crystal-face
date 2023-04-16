@@ -4,6 +4,9 @@ using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+//using Toybox.Complications as Complications;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 import Toybox.Application;
 import Toybox.Lang;
@@ -30,7 +33,18 @@ class CrystalApp extends App.AppBase {
 	/*
 	// onStart() is called on application start up
 	function onStart(state) {
+      Complications.registerComplicationChangeCallback(self.method(:onComplicationUpdated));
 	}
+
+    function onComplicationUpdated(complicationId) {
+        if (mView != null) {
+            try {
+                mView.updateComplication(complicationId);
+            } catch (e) {
+                logMessage("error passing complication " + complicationId + " to watchface");
+            }
+        }
+    }
 
 	// onStop() is called when your application is exiting
 	function onStop(state) {
@@ -57,7 +71,7 @@ class CrystalApp extends App.AppBase {
 	}
 
 	function getIntProperty(key, defaultValue) {
-		var value = getProperty(key);
+		var value = Properties.getValue(key);
 		if (value == null) {
 			value = defaultValue;
 		} else if (!(value instanceof Number)) {
@@ -98,20 +112,19 @@ class CrystalApp extends App.AppBase {
 			if (location[0] != 0.0 && location[1] != 0.0) {
 				gLocationLat = location[0];
 				gLocationLng = location[1];
-
-				setProperty("LastLocationLat", gLocationLat);
-				setProperty("LastLocationLng", gLocationLng);
+				Properties.setValue("LastLocationLat", gLocationLat.format("%0.5f"));
+				Properties.setValue("LastLocationLng", gLocationLng.format("%0.5f"));
 			}
 		}
 		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
 		// in-memory value with an invalid stored one.
 		else {
-			var lat = getProperty("LastLocationLat");
+			var lat = Properties.getValue("LastLocationLat");
 			if (lat != null) {
 				gLocationLat = lat.toFloat();
 			}
 
-			var lng = getProperty("LastLocationLng");
+			var lng = Properties.getValue("LastLocationLng");
 			if (lng != null) {
 				gLocationLng = lng.toFloat();
 			}
@@ -121,19 +134,19 @@ class CrystalApp extends App.AppBase {
 			return;
 		}
 
-		var pendingWebRequests = getProperty("PendingWebRequests");
+		var pendingWebRequests = Storage.getValue("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
 
 		// 1. City local time:
 		// City has been specified.
-		var city = getProperty("LocalTimeInCity");
+		var city = Properties.getValue("LocalTimeInCity");
 		
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = getProperty("CityLocalTime");
+			var cityLocalTime = Properties.getValue("CityLocalTime");
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
@@ -158,12 +171,12 @@ class CrystalApp extends App.AppBase {
 		if ((gLocationLat != null) &&
 			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmKeyOverride = getProperty("OWMKeyOverride");
+			var owmKeyOverride = Properties.getValue("OWMKeyOverride");
 			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 				//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
 			} else {
 				//2022-04-10 logMessage("Using OpenWeatherMap");
-				var owmCurrent = getProperty("OpenWeatherMapCurrent");
+				var owmCurrent = Storage.getValue("OpenWeatherMapCurrent");
 	
 				// No existing data.
 				if (owmCurrent == null) {
@@ -190,8 +203,8 @@ class CrystalApp extends App.AppBase {
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		if (getProperty("Tesla") != null) {
-			var TeslaInfo = getProperty("TeslaInfo");
+		if (Storage.getValue("Tesla") != null) {
+			var TeslaInfo = Storage.getValue("TeslaInfo");
 			if (TeslaInfo == null) { // We're not doing Tesla stuff so why asking for it, clear that
 				pendingWebRequests["TeslaInfo"] = false;
 			} else { // We're doing Tesla stuff
@@ -206,10 +219,10 @@ class CrystalApp extends App.AppBase {
 				var result = TeslaInfo["httpErrorTesla"];
 				if (result != null) {
 					if (result == 400 || result == 401) { // Our token has expired, refresh it
-						setProperty("TeslaAccessToken", null); // Try to get a new vehicleID
+						Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
 						batterie_stale = true;
 					} else if (result == 404) { // We got an vehicle not found error, reset our vehicle ID
-						setProperty("TeslaVehicleID", null); // Try to get a new vehicleID
+						Storage.setValue("TeslaVehicleID", null); // Try to get a new vehicleID
 						batterie_stale = true;
 					} else if (result == 408) { // Car is aslepep keep the old data but stop charging if it still was before going to sleep
 						carAsleep = true;
@@ -217,7 +230,7 @@ class CrystalApp extends App.AppBase {
 					else {
 						batterie_stale = true;
 					}
-					setProperty("TeslaError", result);
+					Storage.setValue("TeslaError", result);
 				}
 				
 				// Check if our access token was refreshed. If so, store the new access and refresh tokens
@@ -227,14 +240,14 @@ class CrystalApp extends App.AppBase {
 					var refreshToken = result["refresh_token"];
 					var expires_in = result["expires_in"];
 					var created_at = Time.now().value(); 
-					setProperty("TeslaAccessToken", accessToken);
+					Properties.setValue("TeslaAccessToken", accessToken);
 					if (refreshToken != null && refreshToken.equals("") == false) { // Only if we received a refresh tokem
-						setProperty("TeslaRefreshToken", refreshToken);
+						Properties.setValue("TeslaRefreshToken", refreshToken);
 					}
-					setProperty("TeslaTokenExpiresIn", expires_in);
-					setProperty("TeslaTokenCreatedAt", created_at);
+					Storage.setValue("TeslaTokenExpiresIn", expires_in);
+					Storage.setValue("TeslaTokenCreatedAt", created_at);
 
-					setProperty("TeslaError", null);
+					Storage.setValue("TeslaError", null);
 				}
 
 				// If the car isn't asleep and we didn't get an error, read what was returned
@@ -247,17 +260,17 @@ class CrystalApp extends App.AppBase {
 
 					var inside_temp = TeslaInfo["inside_temp"];
 					if (inside_temp != null) {
-						setProperty("TeslaInsideTemp", inside_temp.toString());
+						Storage.setValue("TeslaInsideTemp", inside_temp.toString());
 					}
 					
 					var precond_enabled = TeslaInfo["preconditioning"];
 					if (precond_enabled != null) {
-						setProperty("TeslaPreconditioning", precond_enabled.toString());
+						Storage.setValue("TeslaPreconditioning", precond_enabled.toString());
 					}
 
 					var sentry_enabled = TeslaInfo["sentry_enabled"];
 					if (sentry_enabled != null) {
-						setProperty("TeslaSentryEnabled", sentry_enabled.toString());
+						Storage.setValue("TeslaSentryEnabled", sentry_enabled.toString());
 					}
 
 					// Read its vehicleID. If we don't have one, clear our property so the next call made by the background process will try to retrieve it.
@@ -265,9 +278,9 @@ class CrystalApp extends App.AppBase {
 					var vehicle_id = TeslaInfo["vehicle_id"];
 					if (vehicle_id != null) { // We got our vehicle ID. Store it for future use in the background process
 						if (vehicle_id != 0) {
-							setProperty("TeslaVehicleID", vehicle_id.toString());
+							Storage.setValue("TeslaVehicleID", vehicle_id.toString());
 						} else {
-							setProperty("TeslaVehicleID", null);
+							Storage.setValue("TeslaVehicleID", null);
 							batterie_stale = true;
 							batterie_level = "N/A";
 						}
@@ -277,20 +290,20 @@ class CrystalApp extends App.AppBase {
 
 					// Here batterie_level is the same as what was read earlier or changed to N/A for some reason above.
 					if (batterie_level  != null) {
-						setProperty("TeslaBatterieLevel", batterie_level);
-						setProperty("TeslaBatterieStale", batterie_stale);
-						setProperty("TeslaChargingState", charging_state);
+						Storage.setValue("TeslaBatterieLevel", batterie_level);
+						Storage.setValue("TeslaBatterieStale", batterie_stale);
+						Storage.setValue("TeslaChargingState", charging_state);
 
-						setProperty("TeslaError", null);
+						Storage.setValue("TeslaError", null);
 						
 					} else {
-						setProperty("TeslaBatterieStale", true);
-						setProperty("TeslaError", null);
+						Storage.setValue("TeslaBatterieStale", true);
+						Storage.setValue("TeslaError", null);
 					}
 				} else if (!batterie_stale) { // Car is asleap, say so
-					setProperty("TeslaChargingState", "Sleeping");
-					setProperty("TeslaBatterieStale", false);
-					setProperty("TeslaError", null);
+					Storage.setValue("TeslaChargingState", "Sleeping");
+					Storage.setValue("TeslaBatterieStale", false);
+					Storage.setValue("TeslaError", null);
 				}
 				
 				pendingWebRequests["TeslaInfo"] = true;
@@ -316,7 +329,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
-		setProperty("PendingWebRequests", pendingWebRequests);
+		Storage.setValue("PendingWebRequests", pendingWebRequests);
 	}
 
 	(:background_method)
@@ -331,13 +344,13 @@ class CrystalApp extends App.AppBase {
 	(:background_method)
 	function onBackgroundData(data) {
 		//2022-04-10 logMessage("onBackgroundData:received '" + data + "'");
-		var pendingWebRequests = getProperty("PendingWebRequests");
+		var pendingWebRequests = Storage.getValue("PendingWebRequests");
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
 
 		var type = data.keys()[0]; // Type of received data.
-		var storedData = getProperty(type);
+		var storedData = Storage.getValue(type);
 		var receivedData = data[type]; // The actual data received: strip away type key.
 		
 		// Do process the data if what we got was an error
@@ -345,8 +358,8 @@ class CrystalApp extends App.AppBase {
 			// New data received: clear pendingWebRequests flag and overwrite stored data.
 			storedData = receivedData;
 			pendingWebRequests.remove(type);
-			setProperty("PendingWebRequests", pendingWebRequests);
-			setProperty(type, storedData);
+			Storage.setValue("PendingWebRequests", pendingWebRequests);
+			Storage.setValue(type, storedData);
 	
 			checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		}
@@ -383,7 +396,7 @@ class CrystalApp extends App.AppBase {
 
 		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero. Otherwise, show leading zero.
 		// #69 Setting now applies to both 12- and 24-hour modes.
-		hour = hour.format(getProperty("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
+		hour = hour.format(Properties.getValue("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
 
 		return {
 			:hour => hour,
