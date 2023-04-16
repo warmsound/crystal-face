@@ -146,7 +146,7 @@ class CrystalApp extends App.AppBase {
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = Properties.getValue("CityLocalTime");
+			var cityLocalTime = Storage.getValue("CityLocalTime");
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
