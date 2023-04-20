@@ -649,12 +649,17 @@ class DataFields extends Ui.Drawable {
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
 						weatherValue = weather["temp"]; // Celcius.
+						try {
+							if (settings.temperatureUnits == System.UNIT_STATUTE) {
+								weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							}
 
-						if (settings.temperatureUnits == System.UNIT_STATUTE) {
-							weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							value = weatherValue.format(INTEGER_FORMAT) + "°";
 						}
-
-						value = weatherValue.format(INTEGER_FORMAT) + "°";
+						catch (e) {
+							//DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
+							value = "???";
+						}
 						result["weatherIcon"] = weather["icon"];
 
 					// FIELD_TYPE_HUMIDITY.
