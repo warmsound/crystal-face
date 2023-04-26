@@ -27,8 +27,11 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.16.5b
+- Fixed a crash reported through the Error Reporting Application (ERA)
+
 ### 2.16.5a
-- Fixed two crashes reported through the Error Reporting Application
+- Fixed two crashes reported through the Error Reporting Application (ERA)
 
 ### 2.16.5
 - Fixed a crash when entering a City in the "Add a local time in City"

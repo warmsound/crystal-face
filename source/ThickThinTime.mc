@@ -89,7 +89,13 @@ class ThickThinTime extends Ui.Drawable {
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
 
-        var addColon = Properties.getValue("AddColon");
+		var addColon;
+		try {
+        	addColon = Properties.getValue("AddColon");
+		}
+		catch (e) {
+			addColon = false;
+		}
 		if (addColon != null && addColon == true) {
 			dc.drawText(
 				x,
