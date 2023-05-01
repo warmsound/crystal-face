@@ -10,6 +10,7 @@ using Toybox.Time;
 using Toybox.Time.Gregorian;
 using Toybox.Application.Storage;
 using Toybox.Application.Properties;
+using Toybox.Complications;
 
 enum /* FIELD_TYPES */ {
 	// Pseudo-fields.	
@@ -41,9 +42,9 @@ enum /* FIELD_TYPES */ {
 
 class DataFields extends Ui.Drawable {
 
-	private var mLeft;
-	private var mRight;
-	private var mTop;
+	var mLeft;
+	var mRight;
+	var mTop;
 	private var mBottom;
 
 	private var mWeatherIconsFont;
@@ -99,6 +100,36 @@ class DataFields extends Ui.Drawable {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
+
+		if (Toybox has :Complications) {
+			var complications = [{"type" => FIELD_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
+								 {"type" => FIELD_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
+								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
+								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
+								];
+			var filled = [false, false, false];
+			var i;
+
+			for (i = 0; i < complications.size(); i++) {
+				if (App.getApp().hasField(complications[i].get("type"))) {
+					var fieldTypes = App.getApp().mFieldTypes;
+					for (var j = 0; j < mFieldCount; j++) {
+						if (fieldTypes[j].get("type") == complications[i].get("type")) {
+							$.updateComplications("", "Complication_F", j + 1, complications[i].get("complicationType"));
+							fieldTypes[j].put("ComplicationType", complications[i].get("complicationType"));
+							filled[j] = true;
+						}
+					}
+				}
+			}
+
+			// Now delete any fields that doesn't have a Complication
+			for (i = 1; i < 4; i++)	{
+				if (filled[i - 1] == false) {
+					Storage.deleteValue("Complication_F" + i);
+				}
+			}
+		}
 	}
 
 	function draw(dc) {
@@ -114,16 +145,16 @@ class DataFields extends Ui.Drawable {
 
 		switch (mFieldCount) {
 			case 3:
-				drawDataField(dc, isPartialUpdate, fieldTypes[0], mLeft);
-				drawDataField(dc, isPartialUpdate, fieldTypes[1], (mRight + mLeft) / 2);
-				drawDataField(dc, isPartialUpdate, fieldTypes[2], mRight);
+				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), mLeft, 0);
+				drawDataField(dc, isPartialUpdate, fieldTypes[1].get("type"), (mRight + mLeft) / 2, 1);
+				drawDataField(dc, isPartialUpdate, fieldTypes[2].get("type"), mRight, 2);
 				break;
 			case 2:
-				drawDataField(dc, isPartialUpdate, fieldTypes[0], mLeft + ((mRight - mLeft) * 0.15));
-				drawDataField(dc, isPartialUpdate, fieldTypes[1], mLeft + ((mRight - mLeft) * 0.85));
+				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), mLeft + ((mRight - mLeft) * 0.15), 0);
+				drawDataField(dc, isPartialUpdate, fieldTypes[1].get("type"), mLeft + ((mRight - mLeft) * 0.85), 1);
 				break;
 			case 1:
-				drawDataField(dc, isPartialUpdate, fieldTypes[0], (mRight + mLeft) / 2);
+				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), (mRight + mLeft) / 2, 0);
 				break;
 			/*
 			case 0:
@@ -135,7 +166,7 @@ class DataFields extends Ui.Drawable {
 	// Both regular and small icon fonts use same spot size for easier optimisation.
 	//private const LIVE_HR_SPOT_RADIUS = 3;
 
-	private function drawDataField(dc, isPartialUpdate, fieldType, x) {		
+	private function drawDataField(dc, isPartialUpdate, fieldType, x, index) {		
 
 		// Assume we're only drawing live HR spot every 5 seconds; skip all other partial updates.
 		var isLiveHeartRate = (fieldType == FIELD_TYPE_HR_LIVE_5S);
@@ -168,7 +199,7 @@ class DataFields extends Ui.Drawable {
 		}
 
 		// 1. Value: draw first, as top of text overlaps icon.
-		var result = getValueForFieldType(fieldType);
+		var result = getValueForFieldType(fieldType, index);
 		var value = result["value"];
 		var stale = result["stale"];
 
@@ -365,7 +396,7 @@ class DataFields extends Ui.Drawable {
 	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
 	// result["isSunriseNext"] indicates that sunrise icon should be shown for FIELD_TYPE_SUNRISE_SUNSET, rather than default
 	// sunset icon.
-	private function getValueForFieldType(type) {
+	private function getValueForFieldType(type, index) {
 		var result = {};
 		var value = "";
 		var stale = false;
@@ -396,7 +427,14 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_BODY_BATTERY:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
+				if (Toybox has :Complications) {
+					var fieldTypes = App.getApp().mFieldTypes;
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = tmpValue.toString();
+					}
+				}
+				if (value.equals("") == true && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
 					var bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					if (bodyBattery != null) {
 						bodyBattery = bodyBattery.next();
@@ -411,7 +449,14 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+				if (Toybox has :Complications) {
+					var fieldTypes = App.getApp().mFieldTypes;
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = tmpValue.toString();
+					}
+				}
+				if (value.equals("") == true && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
 					var stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
 					if (stressLevel != null) {
 						stressLevel = stressLevel.next();
@@ -447,23 +492,42 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
-				activityInfo = Activity.getActivityInfo();
-				sample = activityInfo != null and activityInfo has :currentOxygenSaturation ? activityInfo.currentOxygenSaturation : null;
-				if (sample != null) {
-					value = sample.format(INTEGER_FORMAT) + "%";
+				if (Toybox has :Complications) {
+					var fieldTypes = App.getApp().mFieldTypes;
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = tmpValue.toString() + "%";
+					}
+				}
+				if (value.equals("") == true) {
+					activityInfo = Activity.getActivityInfo();
+					sample = activityInfo != null and activityInfo has :currentOxygenSaturation ? activityInfo.currentOxygenSaturation : null;
+					if (sample != null) {
+						value = sample.format(INTEGER_FORMAT) + "%";
+					}
 				}
 				break;
 			case FIELD_TYPE_HEART_RATE:
+				if (Toybox has :Complications) {
+					var fieldTypes = App.getApp().mFieldTypes;
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = tmpValue.toString();
+					}
+				}
+				// Yes, no break. We flow through in case with don't have Complication. FIELD_TYPE_HEART_RATE and FIELD_TYPE_HR_LIVE_5S were doing the same thing
 			case FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
-				activityInfo = Activity.getActivityInfo();
-				sample = activityInfo.currentHeartRate;
-				if (sample != null) {
-					value = sample.format(INTEGER_FORMAT);
-				} else if (ActivityMonitor has :getHeartRateHistory) {
-					sample = ActivityMonitor.getHeartRateHistory(1, true).next();
-					if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
-						value = sample.heartRate.format(INTEGER_FORMAT);
+				if (value.equals("") == true) {
+					activityInfo = Activity.getActivityInfo();
+					sample = activityInfo.currentHeartRate;
+					if (sample != null) {
+						value = sample.format(INTEGER_FORMAT);
+					} else if (ActivityMonitor has :getHeartRateHistory) {
+						sample = ActivityMonitor.getHeartRateHistory(1, true).next();
+						if ((sample != null) && (sample.heartRate != ActivityMonitor.INVALID_HR_SAMPLE)) {
+							value = sample.heartRate.format(INTEGER_FORMAT);
+						}
 					}
 				}
 				break;

@@ -4,16 +4,17 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Application.Storage;
 using Toybox.Application.Properties;
+using Toybox.Complications;
 
 class Indicators extends Ui.Drawable {
 
-	private var mSpacing;
-	private var mIsHorizontal = false;
-	private var mBatteryWidth;
+	var mSpacing;
+	var mIsHorizontal = false;
+	var mBatteryWidth;
 
-	private var mIndicator1Type;
-	private var mIndicator2Type;
-	private var mIndicator3Type;
+	var mIndicator1Type;
+	var mIndicator2Type;
+	var mIndicator3Type;
 
 	// private enum /* INDICATOR_TYPES */ {
 	// 	INDICATOR_TYPE_BLUETOOTH,
@@ -41,16 +42,34 @@ class Indicators extends Ui.Drawable {
 		mIndicator1Type = Properties.getValue("Indicator1Type");
 		mIndicator2Type = Properties.getValue("Indicator2Type");
 		mIndicator3Type = Properties.getValue("Indicator3Type");
-		
+
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		if (mIndicator1Type == 6 || mIndicator2Type == 6 || mIndicator3Type == 6) {
-			Storage.setValue("Tesla", true);
+		var teslaIndicator;
+		if (mIndicator1Type == 6) {
+			teslaIndicator = 1;
+		}
+		if (mIndicator2Type == 6) {
+			teslaIndicator = 2;
+		}
+		if (mIndicator3Type == 6) {
+			teslaIndicator = 3;
+		}
+		if (teslaIndicator != null) {
 			//logMessage("onSettingsChanged:Doing Tesla!");
+			Storage.setValue("Tesla", true);
+			$.updateComplications("Tesla-Link", "Complication_I", teslaIndicator, Complications.COMPLICATION_TYPE_INVALID);
 		} else {
-			Storage.setValue("Tesla", null);
-		}  
+			Storage.deleteValue("Tesla");
+			teslaIndicator = 0;
+		}
+
+		for (var i = 1; i < 4; i++) {
+			if (i != teslaIndicator) {
+				Storage.deleteValue("Complication_I" + i);
+			}
+		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
 //****************************************************************

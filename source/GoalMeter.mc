@@ -4,6 +4,7 @@ using Toybox.Application as App;
 using Toybox.Graphics;
 using Toybox.Application.Storage;
 using Toybox.Application.Properties;
+using Toybox.Complications;
 
 // const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
@@ -46,6 +47,9 @@ class GoalMeter extends Ui.Drawable {
 	private var mCurrentValue;
 	private var mMaxValue;
 	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
+
+	var mComplicationType;
+	var mComplicationValue;
 
 	// private enum /* GOAL_METER_STYLES */ {
 	// 	ALL_SEGMENTS,
@@ -132,6 +136,36 @@ class GoalMeter extends Ui.Drawable {
 			}
 
 			mSeparator = 0;
+		}
+	}
+
+	function setComplication(index) {
+		if (Toybox has :Complications) {
+			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
+								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
+								];
+
+			var leftType = Properties.getValue("LeftGoalType");
+			var rightType = Properties.getValue("RightGoalType");
+
+			mComplicationType = null;
+
+			for (var i = 0; i < complications.size(); i++) {
+				if (index == 1 && leftType == complications[i].get("type")) {
+					$.updateComplications("", "Complication_G", index, complications[i].get("complicationType"));
+					mComplicationType = complications[i].get("complicationType");
+					break;
+				}
+				else if (index == 2 && rightType == complications[i].get("type")) {
+					$.updateComplications("", "Complication_G", index, complications[i].get("complicationType"));
+					mComplicationType = complications[i].get("complicationType");
+					break;
+				}
+			}
+
+			if (mComplicationType == null) {
+				Storage.deleteValue("Complication_G" + index);
+			}
 		}
 	}
 

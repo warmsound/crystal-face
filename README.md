@@ -27,6 +27,11 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.17.0
+- Tesla-Info now support launching the main Tesla-Link App from the watch face.
+- Heart rate, PulseOx, BodyBattery and Stress Level are now read through complications if available
+- Complication read fields will launch their widget when long pressed. Applies to Fields, Indicators (for Tesla-Info only for now) and Goals.
+
 ### 2.16.5b
 - Fixed a crash reported through the Error Reporting Application (ERA)
 

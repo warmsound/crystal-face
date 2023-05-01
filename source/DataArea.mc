@@ -24,9 +24,9 @@ class DataArea extends Ui.Drawable {
 	private var mRightGoalCurrent;
 	private var mRightGoalMax;
 
-	private var mGoalIconY;
-	private var mGoalIconLeftX;
-	private var mGoalIconRightX;
+	var mGoalIconY;
+	var mGoalIconLeftX;
+	var mGoalIconRightX;
 
 	function initialize(params) {
 		Drawable.initialize(params);

@@ -12,6 +12,7 @@ using Toybox.SensorHistory as SensorHistory;
 using Toybox.Complications as Complications;
 using Toybox.Application.Storage;
 using Toybox.Application.Properties;
+using Toybox.Complications;
 
 using Toybox.Math;
 
@@ -232,6 +233,36 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 //****************************************************************
 }
 
+function updateComplications(complicationName, storageName, index, complicationType) {
+	if (Toybox has :Complications) {
+		// Check if we should subscribe to our Tesla Complication
+		var iter = Complications.getComplications();
+		var complicationId = iter.next();
+
+		while (complicationId != null) {
+			//logMessage(complicationId.longLabel.toString());
+			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel.equals(complicationName))) {
+				break;
+			}
+			complicationId = iter.next();
+		}
+
+		if (complicationId != null) {
+			if (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID) {
+				complicationId = complicationId.complicationId;
+			}
+			else {
+				complicationId = new Complications.Id(complicationType);
+			}
+			if (index != null) {
+				Storage.setValue(storageName + index, complicationId);
+				Complications.subscribeToUpdates(complicationId);
+			}
+		}
+	}
+}
+
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
@@ -241,7 +272,7 @@ class CrystalView extends Ui.WatchFace {
 	var mDataFields;
 	var mHasGarminWeather;
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
-	private var mDrawables = {};
+	var mDrawables = {};
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -277,7 +308,7 @@ class CrystalView extends Ui.WatchFace {
 	}
 
 	// callback that updates the complication value
-	/*function updateComplication(complication) {
+	function updateComplication(complication) {
 		var thisComplication = Complications.getComplication(complication);
 		var thisType = thisComplication.getType();
 
@@ -285,7 +316,7 @@ class CrystalView extends Ui.WatchFace {
 		var label = thisComplication.shortLabel;
 
 		logMessage(label + "=" + value);
-	}*/
+	}
 
 	// Reread Weather method
 	function rereadWeatherMethod() {
@@ -366,7 +397,43 @@ class CrystalView extends Ui.WatchFace {
 		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
 			ReadWeather();
 		}	
+
+		// Reread our complications
+		if (Toybox has :Complications) {
+			// First we drop all our subscriptions before building a new list
+			Complications.unsubscribeFromAllUpdates();
+			Complications.registerComplicationChangeCallback(self.method(:onComplicationUpdated));
+		}
+
 	}
+
+    function onComplicationUpdated(complicationId) {
+		var complication = Complications.getComplication(complicationId);
+		var complicationType = complication.getType();
+		var complicationLabel = complication.shortLabel;
+		var complicationValue = complication.value;
+
+//		logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue);
+
+		// Do fields first
+		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
+		var fieldTypes = App.getApp().mFieldTypes;
+
+		for (var i = 0; i < fieldCount; i++) {
+			if (fieldTypes[i].get("ComplicationType") == complicationType) {
+				fieldTypes[i].put("ComplicationValue", complicationValue);
+				break;
+			}
+		}
+
+		// Now do goals
+		if (mDrawables[:LeftGoalMeter].mComplicationType == complicationType) {
+			mDrawables[:LeftGoalMeter].mComplicationValue = complicationValue;
+		}
+		if (mDrawables[:RightGoalMeter].mComplicationType == complicationType) {
+			mDrawables[:RightGoalMeter].mComplicationValue = complicationValue;
+		}
+    }
 
 	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
 	function ReadWeather() {
@@ -559,6 +626,9 @@ class CrystalView extends Ui.WatchFace {
 			mDrawables[:Indicators].onSettingsChanged();
 		}
 
+		mDrawables[:LeftGoalMeter].setComplication(1);
+		mDrawables[:RightGoalMeter].setComplication(2);	
+
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
@@ -605,17 +675,17 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		var leftType = Properties.getValue("LeftGoalType");
-		var leftValues = getValuesForGoalType(leftType);
+		var leftValues = getValuesForGoalType(0, leftType);
 		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
 		var rightType = Properties.getValue("RightGoalType");
-		var rightValues = getValuesForGoalType(rightType);
+		var rightValues = getValuesForGoalType(1, rightType);
 		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
 		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
 
-	function getValuesForGoalType(type) {
+	function getValuesForGoalType(index, type) {
 		var values = {
 			:current => 0,
 			:max => 1,
@@ -661,7 +731,14 @@ class CrystalView extends Ui.WatchFace {
 				values[:isValid] = false;
 				values[:max] = 100;
 
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
+				if (Toybox has :Complications) {
+					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					if (tmpValue != null) {
+						values[:current] = tmpValue.toFloat();
+						values[:isValid] = true;
+					}
+				}
+				if (values[:isValid] == false && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
 					var bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					if (bodyBattery != null) {
 						bodyBattery = bodyBattery.next();
@@ -682,7 +759,14 @@ class CrystalView extends Ui.WatchFace {
 				values[:isValid] = false;
 				values[:max] = 100;
 
-				if ((Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+				if (Toybox has :Complications) {
+					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					if (tmpValue != null) {
+						values[:current] = tmpValue.toFloat();
+						values[:isValid] = true;
+					}
+				}
+				if (values[:isValid] == false && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
 					var stressLevel = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					//DEBUG*/ var stressLevelDate = 0;
 
@@ -874,33 +958,129 @@ class CrystalView extends Ui.WatchFace {
 	}
 }
 
-// class CrystalDelegate extends Ui.WatchFaceDelegate {
-//     private var _view as CrystalView;
+class CrystalDelegate extends Ui.WatchFaceDelegate {
+    private var mview as CrystalView;
 
-//     //! Constructor
-//     //! @param view The analog view
-//     public function initialize(view as CrystalView) {
-//         WatchFaceDelegate.initialize();
-//         _view = view;
-//     }
+    //! Constructor
+    //! @param view The analog view
+    public function initialize(view as CrystalView) {
+        WatchFaceDelegate.initialize();
+        mview = view;
+    }
 
-// 	public function  onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
-// 		var complication = /*Complications.getComplication(*/new Complications.Id(Complications.COMPLICATION_TYPE_HEART_RATE)/*)*/;
-//         System.println("onPress called!!!");
-// 	}
+	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
+		var co_ords = clickEvent.getCoordinates();
+        logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
-//     //! The onPowerBudgetExceeded callback is called by the system if the
-//     //! onPartialUpdate method exceeds the allowed power budget. If this occurs,
-//     //! the system will stop invoking onPartialUpdate each second, so we notify the
-//     //! view here to let the rendering methods know they should not be rendering a
-//     //! second hand.
-//     //! @param powerInfo Information about the power budget
-//     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
-//         System.println("Average execution time: " + powerInfo.executionTimeAverage);
-//         System.println("Allowed execution time: " + powerInfo.executionTimeLimit);
-// 		//_view.turnPartialUpdatesOff();
-//     }
-// }
+		// returns the complicationId within the boundingBoxes
+		var complicationId = checkBoundingBoxes(co_ords);
+		if (complicationId != null) {
+            Complications.exitTo(complicationId);
+		}
+	}
+
+	function checkBoundingBoxes(co_ords) {
+		// First check the indicators
+		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
+		var spacing;
+		var complicationIndex;
+		var complicationId;
+
+		if (indicatorCount > 0) {
+			var indicators = mview.mDrawables[:Indicators];
+			var locX = indicators[:locX];
+			var locY = indicators[:locY];
+			var batteryWidth = indicators[:mBatteryWidth];
+
+			spacing = indicators[:mSpacing];
+			locX -= batteryWidth / 2;
+			locY -= batteryWidth / 2;
+
+			if (indicatorCount == 3) {
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacing, spacing, "1") + isWithin(co_ords[0], co_ords[1], locX, locY, spacing, "2") + isWithin(co_ords[0], co_ords[1], locX, locY + spacing, spacing, "3");
+			} else if (indicatorCount == 2) {
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacing / 2, spacing, "1") + isWithin(co_ords[0], co_ords[1], locX, locY + spacing / 2, spacing, "2");
+			} else if (indicatorCount == 1) {
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY, spacing, "1");
+			}
+
+			if (complicationIndex.equals("Complication_I") == false) {
+				complicationId = Storage.getValue(complicationIndex);
+			}
+
+			logMessage(complicationIndex + " = " + complicationId);
+			if (complicationId != null) {
+				return complicationId;
+			}
+		}
+		
+		spacing = Sys.getDeviceSettings().screenWidth / 12;
+
+		// Check the fields
+		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
+		if (fieldCount > 0) {
+			var left = mview.mDataFields.mLeft;
+			var right = mview.mDataFields.mRight;
+			var top = mview.mDataFields.mTop;
+
+			if (fieldCount == 3) {
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left - spacing, top - spacing, spacing * 2, "1") + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacing, top - spacing, spacing * 2, "2") + isWithin(co_ords[0], co_ords[1], right - spacing, top - spacing, spacing * 2, "3");
+			} else if (fieldCount == 2) {
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.15) - spacing, top - spacing, spacing * 2, "1") + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.85) - spacing, top - spacing, spacing * 2, "2");
+			} else if (fieldCount == 1) {
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacing, top - spacing, spacing * 2, "1");
+			}
+
+			if (complicationIndex.equals("Complication_F") == false) {
+				complicationId = Storage.getValue(complicationIndex);
+			}
+
+			logMessage(complicationIndex + " = " + complicationId);
+			if (complicationId != null) {
+				return complicationId;
+			}
+		}
+
+		// Check the goals
+		var left = mview.mDrawables[:DataArea].mGoalIconLeftX;
+		var right = mview.mDrawables[:DataArea].mGoalIconRightX;
+		var y = mview.mDrawables[:DataArea].mGoalIconY;
+
+		// spacing * 3 to give it more room so we can press on the text too.
+		complicationIndex = "Complication_G" + isWithin(co_ords[0], co_ords[1], left, y, spacing * 3, "1") + isWithin(co_ords[0], co_ords[1], right - spacing * 3, y, spacing * 3, "2");
+		if (complicationIndex.equals("Complication_G") == false) {
+			complicationId = Storage.getValue(complicationIndex);
+		}
+
+		logMessage(complicationIndex + " = " + complicationId);
+		if (complicationId != null) {
+			return complicationId;
+		}
+
+		return null;
+	}
+
+	function isWithin(x, y, startX, startY, spacing, field) {
+		if (x > startX && x < startX + spacing && y > startY and y < startY + spacing) {
+			return field;
+		}
+		else {
+			return "";
+		}
+	}
+
+    //! The onPowerBudgetExceeded callback is called by the system if the
+    //! onPartialUpdate method exceeds the allowed power budget. If this occurs,
+    //! the system will stop invoking onPartialUpdate each second, so we notify the
+    //! view here to let the rendering methods know they should not be rendering a
+    //! second hand.
+    //! @param powerInfo Information about the power budget
+    public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
+        logMessage("Average execution time: " + powerInfo.executionTimeAverage);
+        logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
+		//mview.turnPartialUpdatesOff();
+    }
+}
 
 /*
 function type_name(obj) {
