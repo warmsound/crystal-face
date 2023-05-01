@@ -242,7 +242,7 @@ function updateComplications(complicationName, storageName, index, complicationT
 		while (complicationId != null) {
 			//logMessage(complicationId.longLabel.toString());
 			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel.equals(complicationName))) {
-				//DEBUG*/ logMessage("Found complication " + complicationName + " with type " + complicationType);
+				logMessage("Found complication " + complicationName + " with type " + complicationType);
 				break;
 			}
 			complicationId = iter.next();
@@ -960,7 +960,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
 		var co_ords = clickEvent.getCoordinates();
-        //DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
+        logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
 		// returns the complicationId within the boundingBoxes
 		var complicationId = checkBoundingBoxes(co_ords);
@@ -998,7 +998,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 				complicationId = Storage.getValue(complicationIndex);
 			}
 
-			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+			logMessage(complicationIndex + " = " + complicationId);
 			if (complicationId != null) {
 				return complicationId;
 			}
@@ -1025,7 +1025,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 				complicationId = Storage.getValue(complicationIndex);
 			}
 
-			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+			logMessage(complicationIndex + " = " + complicationId);
 			if (complicationId != null) {
 				return complicationId;
 			}
@@ -1042,7 +1042,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 			complicationId = Storage.getValue(complicationIndex);
 		}
 
-		//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+		logMessage(complicationIndex + " = " + complicationId);
 		if (complicationId != null) {
 			return complicationId;
 		}
@@ -1052,11 +1052,11 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	function isWithin(x, y, startX, startY, spacing, field) {
 		if (x > startX && x < startX + spacing && y > startY and y < startY + spacing) {
-			//DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
+			logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
 			return field;
 		}
 		else {
-			//DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
+			logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
 			return "";
 		}
 	}
@@ -1068,8 +1068,8 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
     //! second hand.
     //! @param powerInfo Information about the power budget
     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
-        //DEBUG*/ logMessage("Average execution time: " + powerInfo.executionTimeAverage);
-        //DEBUG*/ logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
+        logMessage("Average execution time: " + powerInfo.executionTimeAverage);
+        logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
 		//mview.turnPartialUpdatesOff();
     }
 }
