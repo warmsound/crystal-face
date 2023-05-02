@@ -702,11 +702,11 @@ class CrystalView extends Ui.WatchFace {
 						values[:isValid] = true;
 					}
 				}
-				if (values[:isValid] == false) {
-					values[:isValid] = true;
+				if (values[:isValid] == false) { // ignore steps (but get the max value) if we have Complication
 					values[:current] = info.steps;
-					values[:max] = info.stepGoal;
 				}
+				values[:max] = info.stepGoal;
+				values[:isValid] = true;
 				break;
 
 			case GOAL_TYPE_FLOORS_CLIMBED:
@@ -718,13 +718,14 @@ class CrystalView extends Ui.WatchFace {
 						values[:isValid] = true;
 					}
 				}
-				if (values[:isValid] == false) {
-					if (info has :floorsClimbed) {
+				if (info has :floorsClimbed) {
+					if (values[:isValid] == false) { // ignore floor climbs (but get the max value) if we have Complication
 						values[:current] = info.floorsClimbed;
-						values[:max] = info.floorsClimbedGoal;
-					} else {
-						values[:isValid] = false;
 					}
+					values[:max] = info.floorsClimbedGoal;
+					values[:isValid] = true;
+				} else {
+					values[:isValid] = false;
 				}
 				break;
 
