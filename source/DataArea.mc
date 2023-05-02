@@ -142,6 +142,16 @@ class DataArea extends Ui.Drawable {
 			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
 			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
 		}
+
+		/*var spacingX = Sys.getDeviceSettings().screenWidth / 11;
+		var spacingY = Sys.getDeviceSettings().screenHeight / 6;
+
+		var left = mGoalIconLeftX - spacingX / 8;
+		var right = mGoalIconRightX + spacingX / 8;
+		var y = mGoalIconY - spacingY / 8;
+
+		dc.drawRectangle(left, y, spacingX * 3, spacingY);
+		dc.drawRectangle(right - spacingX * 3, y, spacingX * 3, spacingY);*/
 	}
 
 	function drawGoalIcon(dc, x, type, isValid, staled, align) {

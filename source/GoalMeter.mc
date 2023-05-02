@@ -142,6 +142,8 @@ class GoalMeter extends Ui.Drawable {
 	function setComplication(index) {
 		if (Toybox has :Complications) {
 			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
+								 {"type" => GOAL_TYPE_FLOORS_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
+								 {"type" => GOAL_TYPE_STEPS, "complicationType" => Complications.COMPLICATION_TYPE_STEPS},
 								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
 								];
 

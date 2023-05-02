@@ -3,6 +3,7 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using Toybox.Application.Storage;
 
 // Draw time, line, date, battery.
 // Combine stripped down versions of ThickThinTime and DateLine.
@@ -192,7 +193,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// Date.
 		y = mDataY + burnInYOffset;	
-		if (App.getApp().getProperty("Tesla") != null) {
+		if (Storage.getValue("Tesla") != null) {
 			dc.drawText(
 				mDataLeft,
 				y,
@@ -203,8 +204,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 			// Batteries.
 			var battery = Math.floor(Sys.getSystemStats().battery);
-			var chargingState = App.getApp().getProperty("TeslaChargingState");
-			var error = App.getApp().getProperty("TeslaError");
+			var chargingState = Storage.getValue("TeslaChargingState");
+			var error = Storage.getValue("TeslaError");
 
 			if (chargingState != null) {
 				if (chargingState.equals("Charging")) {
@@ -218,7 +219,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				chargingState = 0;
 			}
 
-			var value = App.getApp().getProperty("TeslaBatterieLevel");
+			var value = Storage.getValue("TeslaBatterieLevel");
 			if (error != null) {
 				value = error.toNumber().format(INTEGER_FORMAT);
 			} else if (value == null) {

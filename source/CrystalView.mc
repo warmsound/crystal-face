@@ -242,7 +242,7 @@ function updateComplications(complicationName, storageName, index, complicationT
 		while (complicationId != null) {
 			//logMessage(complicationId.longLabel.toString());
 			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel.equals(complicationName))) {
-				logMessage("Found complication " + complicationName + " with type " + complicationType);
+				//DEBUG*/ logMessage("Found complication " + complicationName + " with type " + complicationType);
 				break;
 			}
 			complicationId = iter.next();
@@ -385,7 +385,7 @@ class CrystalView extends Ui.WatchFace {
 		rereadWeatherMethod(); // Check if we changed from Garmin Weather or OWM
 
 		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
-			ReadWeather();
+			ReadWeather(false);
 		}	
 
 		// Reread our complications
@@ -416,18 +416,25 @@ class CrystalView extends Ui.WatchFace {
 			}
 		}
 
-		// Now do goals
-		if (mDrawables[:LeftGoalMeter].mComplicationType == complicationType) {
-			mDrawables[:LeftGoalMeter].mComplicationValue = complicationValue;
-		}
-		if (mDrawables[:RightGoalMeter].mComplicationType == complicationType) {
-			mDrawables[:RightGoalMeter].mComplicationValue = complicationValue;
+		// Now do goals (but only if we're not in burnin protection as our drawables are null in that mode)
+		if (mDrawables[:LeftGoalMeter] != null && mDrawables[:RightGoalMeter] != null) {
+			if (mDrawables[:LeftGoalMeter].mComplicationType == complicationType) {
+				mDrawables[:LeftGoalMeter].mComplicationValue = complicationValue;
+			}
+			if (mDrawables[:RightGoalMeter].mComplicationType == complicationType) {
+				mDrawables[:RightGoalMeter].mComplicationValue = complicationValue;
+			}
 		}
     }
 
 	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
-	function ReadWeather() {
-		var weather = Weather.getCurrentConditions();
+	function ReadWeather(fromComplication) {
+		var weather;
+		if (fromComplication) {
+		}
+		else {
+			weather = Weather.getCurrentConditions();
+		}
 		var result;
 		if (weather != null) {
 			var temperature = weather.temperature;
@@ -687,18 +694,38 @@ class CrystalView extends Ui.WatchFace {
 
 		switch(type) {
 			case GOAL_TYPE_STEPS:
-				values[:current] = info.steps;
-				values[:max] = info.stepGoal;
+				values[:isValid] = false;
+				if (Toybox has :Complications) {
+					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					if (tmpValue != null) {
+						values[:current] = tmpValue.toNumber();
+						values[:isValid] = true;
+					}
+				}
+				if (values[:isValid] == false) {
+					values[:isValid] = true;
+					values[:current] = info.steps;
+					values[:max] = info.stepGoal;
+				}
 				break;
 
 			case GOAL_TYPE_FLOORS_CLIMBED:
-				if (info has :floorsClimbed) {
-					values[:current] = info.floorsClimbed;
-					values[:max] = info.floorsClimbedGoal;
-				} else {
-					values[:isValid] = false;
+				values[:isValid] = false;
+				if (Toybox has :Complications) {
+					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					if (tmpValue != null) {
+						values[:current] = tmpValue.toNumber();
+						values[:isValid] = true;
+					}
 				}
-				
+				if (values[:isValid] == false) {
+					if (info has :floorsClimbed) {
+						values[:current] = info.floorsClimbed;
+						values[:max] = info.floorsClimbedGoal;
+					} else {
+						values[:isValid] = false;
+					}
+				}
 				break;
 
 			case GOAL_TYPE_ACTIVE_MINUTES:
@@ -892,7 +919,7 @@ class CrystalView extends Ui.WatchFace {
 		}
 		
 		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
-			ReadWeather();
+			ReadWeather(false);
 		}	
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
@@ -960,7 +987,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
 		var co_ords = clickEvent.getCoordinates();
-        logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
+        //DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
 		// returns the complicationId within the boundingBoxes
 		var complicationId = checkBoundingBoxes(co_ords);
@@ -972,7 +999,8 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 	function checkBoundingBoxes(co_ords) {
 		// First check the indicators
 		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
-		var spacing;
+		var spacingX;
+		var spacingY;
 		var complicationIndex;
 		var complicationId;
 
@@ -982,67 +1010,79 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 			var locY = indicators[:locY];
 			var batteryWidth = indicators[:mBatteryWidth];
 
-			spacing = indicators[:mSpacing];
-			locX -= batteryWidth / 2;
-			locY -= batteryWidth / 2;
+			spacingY = indicators[:mSpacing];
+			spacingX = batteryWidth * 2;
+			locX -= (batteryWidth / 1.5).toNumber();
+			if (indicatorCount == 1) {
+				locY -= spacingY;
+				spacingY *= 2;
+			}
+			else {
+				locY -= spacingY / 2;
+			}
 
 			if (indicatorCount == 3) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacing, spacing, "1") + isWithin(co_ords[0], co_ords[1], locX, locY, spacing, "2") + isWithin(co_ords[0], co_ords[1], locX, locY + spacing, spacing, "3");
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY, spacingX, spacingY, "3");
 			} else if (indicatorCount == 2) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacing / 2, spacing, "1") + isWithin(co_ords[0], co_ords[1], locX, locY + spacing / 2, spacing, "2");
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY / 2, spacingX, spacingY, "2");
 			} else if (indicatorCount == 1) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY, spacing, "1");
+				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "1");
 			}
 
 			if (complicationIndex.equals("Complication_I") == false) {
 				complicationId = Storage.getValue(complicationIndex);
 			}
 
-			logMessage(complicationIndex + " = " + complicationId);
+			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
 			if (complicationId != null) {
 				return complicationId;
 			}
 		}
 		
-		spacing = Sys.getDeviceSettings().screenWidth / 12;
-
 		// Check the fields
 		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
+
 		if (fieldCount > 0) {
+			spacingX = Sys.getDeviceSettings().screenWidth / (2 * fieldCount);
+			spacingY = Sys.getDeviceSettings().screenHeight / 4;
+
 			var left = mview.mDataFields.mLeft;
 			var right = mview.mDataFields.mRight;
 			var top = mview.mDataFields.mTop;
 
 			if (fieldCount == 3) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left - spacing, top - spacing, spacing * 2, "1") + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacing, top - spacing, spacing * 2, "2") + isWithin(co_ords[0], co_ords[1], right - spacing, top - spacing, spacing * 2, "3");
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY /2, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], right - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "3");
 			} else if (fieldCount == 2) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.15) - spacing, top - spacing, spacing * 2, "1") + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.85) - spacing, top - spacing, spacing * 2, "2");
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.15) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.85) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "2");
 			} else if (fieldCount == 1) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacing, top - spacing, spacing * 2, "1");
+				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1");
 			}
 
 			if (complicationIndex.equals("Complication_F") == false) {
 				complicationId = Storage.getValue(complicationIndex);
 			}
 
-			logMessage(complicationIndex + " = " + complicationId);
+			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
 			if (complicationId != null) {
 				return complicationId;
 			}
 		}
 
 		// Check the goals
-		var left = mview.mDrawables[:DataArea].mGoalIconLeftX;
-		var right = mview.mDrawables[:DataArea].mGoalIconRightX;
-		var y = mview.mDrawables[:DataArea].mGoalIconY;
+		spacingX = Sys.getDeviceSettings().screenWidth / 11;
+		spacingY = Sys.getDeviceSettings().screenHeight / 6;
+
+		var left = mview.mDrawables[:DataArea].mGoalIconLeftX - spacingX / 8;
+		var right = mview.mDrawables[:DataArea].mGoalIconRightX + spacingX / 8;
+		var y = mview.mDrawables[:DataArea].mGoalIconY - spacingY / 8;
 
 		// spacing * 3 to give it more room so we can press on the text too.
-		complicationIndex = "Complication_G" + isWithin(co_ords[0], co_ords[1], left, y, spacing * 3, "1") + isWithin(co_ords[0], co_ords[1], right - spacing * 3, y, spacing * 3, "2");
+		complicationIndex = "Complication_G" + isWithin(co_ords[0], co_ords[1], left, y, spacingX * 3, spacingY, "1") + isWithin(co_ords[0], co_ords[1], right - spacingX * 3, y, spacingX * 3, spacingY, "2");
 		if (complicationIndex.equals("Complication_G") == false) {
 			complicationId = Storage.getValue(complicationIndex);
 		}
 
-		logMessage(complicationIndex + " = " + complicationId);
+		//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
 		if (complicationId != null) {
 			return complicationId;
 		}
@@ -1050,13 +1090,13 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		return null;
 	}
 
-	function isWithin(x, y, startX, startY, spacing, field) {
-		if (x > startX && x < startX + spacing && y > startY and y < startY + spacing) {
-			logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
+	function isWithin(x, y, startX, startY, spacingX, spacingY, field) {
+		if (x > startX && x < startX + spacingX && y > startY and y < startY + spacingY) {
+			//DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return field;
 		}
 		else {
-			logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacing).toString() + "/" + (startY + spacing).toString());
+			//DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return "";
 		}
 	}
@@ -1068,8 +1108,8 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
     //! second hand.
     //! @param powerInfo Information about the power budget
     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
-        logMessage("Average execution time: " + powerInfo.executionTimeAverage);
-        logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
+        //DEBUG*/ logMessage("Average execution time: " + powerInfo.executionTimeAverage);
+        //DEBUG*/ logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
 		//mview.turnPartialUpdatesOff();
     }
 }

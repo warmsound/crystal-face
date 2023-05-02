@@ -27,6 +27,11 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.17.1
+- Fixed a crash when Complications were received while leaving Always On Display mode
+- Added Steps and Floor climbs as Complication for Goals.
+- Readded the Tesla Battery display to the Always On Display mode
+
 ### 2.17.0
 - Tesla-Info now support launching the main Tesla-Link App from the watch face.
 - Heart rate, PulseOx, BodyBattery and Stress Level are now read through complications if available

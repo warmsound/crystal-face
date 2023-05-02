@@ -104,6 +104,7 @@ class DataFields extends Ui.Drawable {
 		if (Toybox has :Complications) {
 			var complications = [{"type" => FIELD_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => FIELD_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
+								 {"type" => FIELD_FLOOR_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
 								];
@@ -143,18 +144,31 @@ class DataFields extends Ui.Drawable {
 
 		var fieldTypes = App.getApp().mFieldTypes;
 
+		/*var spacingX = Sys.getDeviceSettings().screenWidth / (2 * mFieldCount);
+		var spacingY = Sys.getDeviceSettings().screenHeight / 4;
+
+		var left = mLeft;
+		var right = mRight;
+		var top = mTop;*/
+
 		switch (mFieldCount) {
 			case 3:
 				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), mLeft, 0);
 				drawDataField(dc, isPartialUpdate, fieldTypes[1].get("type"), (mRight + mLeft) / 2, 1);
 				drawDataField(dc, isPartialUpdate, fieldTypes[2].get("type"), mRight, 2);
+				// dc.drawRectangle(left - spacingX / 2, top - spacingY / 2, spacingX, spacingY);
+				// dc.drawRectangle((right + left) / 2 - spacingX / 2, top - spacingY /2, spacingX, spacingY);
+				// dc.drawRectangle(right - spacingX / 2, top - spacingY / 2, spacingX, spacingY);
 				break;
 			case 2:
 				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), mLeft + ((mRight - mLeft) * 0.15), 0);
 				drawDataField(dc, isPartialUpdate, fieldTypes[1].get("type"), mLeft + ((mRight - mLeft) * 0.85), 1);
+				// dc.drawRectangle(left + ((right - left) * 0.15) - spacingX / 2, top - spacingY / 2, spacingX, spacingY);
+				// dc.drawRectangle(left + ((right - left) * 0.85) - spacingX / 2, top - spacingY / 2, spacingX, spacingY);
 				break;
 			case 1:
 				drawDataField(dc, isPartialUpdate, fieldTypes[0].get("type"), (mRight + mLeft) / 2, 0);
+				// dc.drawRectangle((right + left) / 2 - spacingX / 2, top - spacingY / 2, spacingX, spacingY);
 				break;
 			/*
 			case 0:

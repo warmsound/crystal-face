@@ -57,7 +57,7 @@ class Indicators extends Ui.Drawable {
 			teslaIndicator = 3;
 		}
 		if (teslaIndicator != null) {
-			logMessage("onSettingsChanged:Doing Tesla!");
+			//DEBUG*/ logMessage("onSettingsChanged:Doing Tesla!");
 			Storage.setValue("Tesla", true);
 			$.updateComplications("Tesla-Link", "Complication_I", teslaIndicator, Complications.COMPLICATION_TYPE_INVALID);
 		} else {
@@ -106,15 +106,35 @@ class Indicators extends Ui.Drawable {
 
 	(:vertical_indicators)
 	function drawVertical(dc, indicatorCount) {
+
+		/*var spacingY = mSpacing;
+		var spacingX = mBatteryWidth * 2;
+
+		var xlocX = locX - (mBatteryWidth / 1.5).toNumber();
+		var ylocY;
+		if (indicatorCount == 1) {
+			ylocY = locY - spacingY;
+			spacingY *= 2;
+		}
+		else {
+			ylocY = locY - spacingY / 2;
+		}*/
+
 		if (indicatorCount == 3) {
 			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacing);
 			drawIndicator(dc, mIndicator2Type, locX, locY);
 			drawIndicator(dc, mIndicator3Type, locX, locY + mSpacing);
+			// dc.drawRectangle(xlocX, ylocY - spacingY, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY + spacingY, spacingX, spacingY);
 		} else if (indicatorCount == 2) {
 			drawIndicator(dc, mIndicator1Type, locX, locY - (mSpacing / 2));
 			drawIndicator(dc, mIndicator2Type, locX, locY + (mSpacing / 2));
+			// dc.drawRectangle(xlocX, ylocY - spacingY / 2, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY + spacingY / 2, spacingX, spacingY);
 		} else if (indicatorCount == 1) {
 			drawIndicator(dc, mIndicator1Type, locX, locY);
+			// dc.drawRectangle(xlocX, ylocY, spacingX, spacingY);
 		}
 	}
 
