@@ -621,10 +621,11 @@ class CrystalView extends Ui.WatchFace {
 			mDataFields.onSettingsChanged();	
 
 			mDrawables[:Indicators].onSettingsChanged();
+			
+			mDrawables[:LeftGoalMeter].setComplication(1);
+			mDrawables[:RightGoalMeter].setComplication(2);	
 		}
 
-		mDrawables[:LeftGoalMeter].setComplication(1);
-		mDrawables[:RightGoalMeter].setComplication(2);	
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
