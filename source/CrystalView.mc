@@ -310,6 +310,10 @@ class CrystalView extends Ui.WatchFace {
 		rereadWeatherMethod();
 	}
 
+	function burnInProtectionIsOrWasActive() {
+		return mIsBurnInProtection | mBurnInProtectionChangedSinceLastDraw;
+	}
+
 	// Reread Weather method
 	function rereadWeatherMethod() {
 		var owmKeyOverride = Properties.getValue("OWMKeyOverride");
@@ -654,9 +658,12 @@ class CrystalView extends Ui.WatchFace {
 		// any use of mDrawables cache must only occur when burn in protection is NOT active.
 		// If turning off burn-in protection, recache regular watch face drawables.
 		if (mBurnInProtectionChangedSinceLastDraw) {
-			mBurnInProtectionChangedSinceLastDraw = false;
 			setLayout(mIsBurnInProtection ? Rez.Layouts.AlwaysOn(dc) : Rez.Layouts.WatchFace(dc));
 			cacheDrawables();
+			mBurnInProtectionChangedSinceLastDraw = false;
+			if (!mIsBurnInProtection) {
+				return;
+			}
 		}
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.

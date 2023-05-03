@@ -42,6 +42,8 @@ enum /* FIELD_TYPES */ {
 
 class DataFields extends Ui.Drawable {
 
+	private var mView;
+	
 	var mLeft;
 	var mRight;
 	var mTop;
@@ -76,6 +78,8 @@ class DataFields extends Ui.Drawable {
 	// Cache FieldCount setting, and determine appropriate maximum field length.
 	function onSettingsChanged() {
 
+		mView = App.getApp().getView();
+
 		// #123 Protect against null or unexpected type e.g. String.
 		mFieldCount = App.getApp().getIntProperty("FieldCount", 3);
 
@@ -101,7 +105,7 @@ class DataFields extends Ui.Drawable {
 			mWeatherIconsSubset = null;
 		}
 
-		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+		if (Toybox has :Complications && mView.useComplications()) {
 			var complications = [{"type" => FIELD_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => FIELD_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
 								 {"type" => FIELD_FLOOR_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
@@ -134,7 +138,14 @@ class DataFields extends Ui.Drawable {
 	}
 
 	function draw(dc) {
-		update(dc, /* isPartialUpdate */ false);
+		// I'm getting wierd crashes on AMOLED watchs as if some of the fields of the datafields drawable aren't initialized. Only thing in common is AoD.
+		// Therefore added a check to make sure we aren't drawing will if are or were in burnin protection.
+		if (!mView.burnInProtectionIsOrWasActive()) {
+			update(dc, /* isPartialUpdate */ false);
+		}
+		else {
+			/*DEBUG*/ logMessage("datafields draw Skipping because of burning protections");
+		}
 	}
 
 	function update(dc, isPartialUpdate) {
@@ -195,7 +206,7 @@ class DataFields extends Ui.Drawable {
 		if (isHeartRate) {
 
 			// High power mode: 0 on, 1 off, 2 on, etc.
-			if (!App.getApp().getView().isSleeping()) {
+			if (!mView.isSleeping()) {
 				showLiveHRSpot = ((seconds % 2) == 0);
 
 			// Low power mode:
@@ -441,7 +452,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_BODY_BATTERY:
-				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+				if (Toybox has :Complications && mView.useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -463,7 +474,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
-				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+				if (Toybox has :Complications && mView.useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -506,7 +517,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
-				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+				if (Toybox has :Complications && mView.useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -522,7 +533,7 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 			case FIELD_TYPE_HEART_RATE:
-				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+				if (Toybox has :Complications && mView.useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
