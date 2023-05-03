@@ -275,6 +275,8 @@ class CrystalView extends Ui.WatchFace {
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
 
+	private var mUseComplications;
+
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
 
@@ -388,13 +390,14 @@ class CrystalView extends Ui.WatchFace {
 			ReadWeather(false);
 		}	
 
-		// Reread our complications
+		// Reread our complications if we're allowed
+		mUseComplications = Properties.getValue("UseComplications");
 		if (Toybox has :Complications) {
 			// First we drop all our subscriptions before building a new list
 			Complications.unsubscribeFromAllUpdates();
-			Complications.registerComplicationChangeCallback(self.method(:onComplicationUpdated));
+			// We listen for complications if we're allowed
+			Complications.registerComplicationChangeCallback(mUseComplications ? self.method(:onComplicationUpdated) : null);
 		}
-
 	}
 
     function onComplicationUpdated(complicationId) {
@@ -405,6 +408,11 @@ class CrystalView extends Ui.WatchFace {
 
 		//logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue);
 
+		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
+		if (!mUseComplications) {
+			/*DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
+			return;
+		}
 		// Do fields first
 		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
 		var fieldTypes = App.getApp().mFieldTypes;
@@ -622,10 +630,11 @@ class CrystalView extends Ui.WatchFace {
 
 			mDrawables[:Indicators].onSettingsChanged();
 			
-			mDrawables[:LeftGoalMeter].setComplication(1);
-			mDrawables[:RightGoalMeter].setComplication(2);	
+			if (mUseComplications) {
+				mDrawables[:LeftGoalMeter].setComplication(1);
+				mDrawables[:RightGoalMeter].setComplication(2);	
+			}
 		}
-
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
@@ -696,7 +705,7 @@ class CrystalView extends Ui.WatchFace {
 		switch(type) {
 			case GOAL_TYPE_STEPS:
 				values[:isValid] = false;
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && mUseComplications) {
 					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toNumber();
@@ -712,7 +721,7 @@ class CrystalView extends Ui.WatchFace {
 
 			case GOAL_TYPE_FLOORS_CLIMBED:
 				values[:isValid] = false;
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && mUseComplications) {
 					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toNumber();
@@ -750,7 +759,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:isValid] = false;
 				values[:max] = 100;
 
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && mUseComplications) {
 					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
@@ -778,7 +787,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:isValid] = false;
 				values[:max] = 100;
 
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && mUseComplications) {
 					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
@@ -875,8 +884,15 @@ class CrystalView extends Ui.WatchFace {
 
 		// #16: If user has set goal to zero, or negative (in simulator), show as invalid. Set max to 1 to avoid divide-by-zero
 		// crash in GoalMeter.getSegmentScale().
-		if (values[:max] < 1) {
+		// Sanity check. I've seen weird Invalid Value and "System Error" in DataArea.setGoalValues:48 and :61. Make sure the data is valid
+		if (values[:isValid] && (!(values[:max] instanceof Lang.Number || values[:max] instanceof Lang.Float) || values[:max] < 1)) {
+			/*DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
 			values[:max] = 1;
+			values[:isValid] = false;
+		}
+		if (values[:isValid] && (!(values[:current] instanceof Lang.Number || values[:current] instanceof Lang.Float))) {
+			/*DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
+			values[:current] = 0;
 			values[:isValid] = false;
 		}
 
@@ -950,6 +966,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch requires burn-in protection, set flag to true when entering sleep.
 		var settings = Sys.getDeviceSettings();
 		if (settings has :requiresBurnInProtection && settings.requiresBurnInProtection) {
+			//DEBUG*/ logMessage("onEnterSleep with needing burning proctection");
 			mIsBurnInProtection = true;
 			mBurnInProtectionChangedSinceLastDraw = true;
 		}
@@ -959,6 +976,10 @@ class CrystalView extends Ui.WatchFace {
 
 	function isSleeping() {
 		return mIsSleeping;
+	}
+
+	function useComplications() {
+		return mUseComplications;
 	}
 
 	function setHideSeconds(hideSeconds) {
@@ -989,12 +1010,14 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
 		var co_ords = clickEvent.getCoordinates();
-        //DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
+        /*DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
 		// returns the complicationId within the boundingBoxes
-		var complicationId = checkBoundingBoxes(co_ords);
-		if (complicationId != null) {
-            Complications.exitTo(complicationId);
+		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+			var complicationId = checkBoundingBoxes(co_ords);
+			if (complicationId != null) {
+	            Complications.exitTo(complicationId);
+			}
 		}
 	}
 

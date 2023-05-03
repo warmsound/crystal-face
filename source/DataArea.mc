@@ -44,10 +44,11 @@ class DataArea extends Ui.Drawable {
 		mLeftGoalIsValid = leftValues[:isValid];
 		mLeftGoalstaled = leftValues[:staled];
 
-		if (leftValues[:isValid]) {
+		if (leftValues[:isValid] && (leftValues[:current] instanceof Lang.Number || leftValues[:current] instanceof Lang.Float) && (leftValues[:max] instanceof Lang.Number || leftValues[:max] instanceof Lang.Float) ) {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
 			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY || mLeftGoalType == GOAL_TYPE_BODY_BATTERY || mLeftGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
+			/*DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
 		}
@@ -56,10 +57,11 @@ class DataArea extends Ui.Drawable {
 		mRightGoalIsValid = rightValues[:isValid];
 		mRightGoalstaled = leftValues[:staled];
 
-		if (rightValues[:isValid]) {
+		if (rightValues[:isValid] && (rightValues[:current] instanceof Lang.Number || rightValues[:current] instanceof Lang.Float) && (rightValues[:max] instanceof Lang.Number || rightValues[:max] instanceof Lang.Float) ) {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
 			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY || mRightGoalType == GOAL_TYPE_BODY_BATTERY || mRightGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
+			/*DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
 		}

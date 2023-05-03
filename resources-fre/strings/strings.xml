@@ -123,4 +123,5 @@
 	<string id="latitude">Latitude</string>
 	<string id="longitude">Longitude</string>
 	<string id="StressLevel">Niveau de stress</string>
+	<string id="UseComplications">Utilisez les complications, si disponible</string>
 </strings>

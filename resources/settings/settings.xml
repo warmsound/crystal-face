@@ -30,6 +30,10 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.UseComplications" title="@Strings.UseComplications">
+		<settingConfig type="boolean"/>
+	</setting>
+
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>

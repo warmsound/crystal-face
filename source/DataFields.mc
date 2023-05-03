@@ -101,7 +101,7 @@ class DataFields extends Ui.Drawable {
 			mWeatherIconsSubset = null;
 		}
 
-		if (Toybox has :Complications) {
+		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
 			var complications = [{"type" => FIELD_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => FIELD_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
 								 {"type" => FIELD_FLOOR_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
@@ -441,7 +441,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_BODY_BATTERY:
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -463,7 +463,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -506,7 +506,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
@@ -522,7 +522,7 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 			case FIELD_TYPE_HEART_RATE:
-				if (Toybox has :Complications) {
+				if (Toybox has :Complications && App.getApp().getView().useComplications()) {
 					var fieldTypes = App.getApp().mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {

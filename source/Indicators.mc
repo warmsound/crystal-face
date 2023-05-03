@@ -59,7 +59,9 @@ class Indicators extends Ui.Drawable {
 		if (teslaIndicator != null) {
 			//DEBUG*/ logMessage("onSettingsChanged:Doing Tesla!");
 			Storage.setValue("Tesla", true);
-			$.updateComplications("Tesla-Link", "Complication_I", teslaIndicator, Complications.COMPLICATION_TYPE_INVALID);
+			if (App.getApp().getView().useComplications()) {
+				$.updateComplications("Tesla-Link", "Complication_I", teslaIndicator, Complications.COMPLICATION_TYPE_INVALID);
+			}
 		} else {
 			Storage.deleteValue("Tesla");
 			teslaIndicator = 0;
