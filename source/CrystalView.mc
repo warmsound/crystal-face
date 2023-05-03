@@ -550,7 +550,18 @@ class CrystalView extends Ui.WatchFace {
 		var theme = App.getApp().getIntProperty("Theme", 0);
 		var lightFlag;
 		var themeOverride = Properties.getValue("ThemeOverride");
-		if (themeOverride.equals("")) {
+
+		gThemeColour = null; // Will still be null if our override is invalid
+		if (themeOverride.equals("") == false) {
+			try {
+				gThemeColour = themeOverride.toNumberWithBase(16);
+			}
+			catch (e) {
+			}
+			lightFlag = Properties.getValue("ThemeLightOverride");
+		}
+
+		if (gThemeColour == null) {
 			// Theme-specific colours.
 			gThemeColour = [
 				Graphics.COLOR_BLUE,     // THEME_BLUE_DARK
@@ -590,9 +601,6 @@ class CrystalView extends Ui.WatchFace {
 			];
 
 			lightFlag = lightFlags[theme];
-		} else {
-			gThemeColour = themeOverride.toNumberWithBase(16);
-			lightFlag = Properties.getValue("ThemeLightOverride");
 		}
 
 		// #124: fr45 cannot show grey. SG Fr45 not supported
