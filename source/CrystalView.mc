@@ -410,13 +410,13 @@ class CrystalView extends Ui.WatchFace {
 		var complicationLabel = complication.shortLabel;
 		var complicationValue = complication.value;
 
-		if (complicationType == Complications.COMPLICATION_TYPE_STRESS) {
-			/*DEBUG*/ logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue + " burnIn active? " + mIsBurnInProtection);
-		}
+		//if (complicationType == Complications.COMPLICATION_TYPE_STRESS) {
+			//DEBUG*/ logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue + " burnIn active? " + mIsBurnInProtection);
+		//}
 
 		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
 		if (!mUseComplications) {
-			/*DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
+			//DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
 			return;
 		}
 
@@ -906,12 +906,12 @@ class CrystalView extends Ui.WatchFace {
 		// crash in GoalMeter.getSegmentScale().
 		// Sanity check. I've seen weird Invalid Value and "System Error" in DataArea.setGoalValues:48 and :61. Make sure the data is valid
 		if (values[:isValid] && (!(values[:max] instanceof Lang.Number || values[:max] instanceof Lang.Float) || values[:max] < 1)) {
-			/*DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
+			//DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
 			values[:max] = 1;
 			values[:isValid] = false;
 		}
 		if (values[:isValid] && (!(values[:current] instanceof Lang.Number || values[:current] instanceof Lang.Float))) {
-			/*DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
+			//DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
 			values[:current] = 0;
 			values[:isValid] = false;
 		}
