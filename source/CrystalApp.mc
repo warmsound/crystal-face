@@ -25,6 +25,7 @@ class CrystalApp extends App.AppBase {
 
 	var mView;
 	var mFieldTypes = new [3];
+	var mGoalTypes = new [2];
 
 	function initialize() {
 		AppBase.initialize();
@@ -32,6 +33,9 @@ class CrystalApp extends App.AppBase {
 		mFieldTypes[0] = {};
 		mFieldTypes[1] = {};
 		mFieldTypes[2] = {};
+
+		mGoalTypes[0] = {};
+		mGoalTypes[1] = {};
 	}
 
 	// onStart() is called on application start up
@@ -78,15 +82,23 @@ class CrystalApp extends App.AppBase {
 		mFieldTypes[1].put("type", getIntProperty("Field2Type", 1));
 		mFieldTypes[2].put("type", getIntProperty("Field3Type", 2));
 
+		mGoalTypes[0].put("type", getIntProperty("LeftGoalType", 0));
+		mGoalTypes[1].put("type", getIntProperty("RightGoalType", 0));
+
 		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
 
 		Ui.requestUpdate();
 	}
 
+	function hasGoal(goalType) {
+		return ((mGoalTypes[0].get("type") == goalType) ||
+				(mGoalTypes[1].get("type") == goalType));
+	}
+
 	function hasField(fieldType) {
 		return ((mFieldTypes[0].get("type") == fieldType) ||
-			(mFieldTypes[1].get("type") == fieldType) ||
-			(mFieldTypes[2].get("type") == fieldType));
+				(mFieldTypes[1].get("type") == fieldType) ||
+				(mFieldTypes[2].get("type") == fieldType));
 	}
 
 	// Determine if any web requests are needed.

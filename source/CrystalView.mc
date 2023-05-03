@@ -407,19 +407,28 @@ class CrystalView extends Ui.WatchFace {
     function onComplicationUpdated(complicationId) {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
-		//var complicationLabel = complication.shortLabel;
+		var complicationLabel = complication.shortLabel;
 		var complicationValue = complication.value;
 
-		//logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue);
+		if (complicationType == Complications.COMPLICATION_TYPE_STRESS) {
+			/*DEBUG*/ logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue + " burnIn active? " + mIsBurnInProtection);
+		}
 
 		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
 		if (!mUseComplications) {
 			/*DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
 			return;
 		}
+
+		// I've seen this while in low power mode, so skip it
+		if (complicationValue == null) {
+			return;
+		}
+
 		// Do fields first
-		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
-		var fieldTypes = App.getApp().mFieldTypes;
+		var app = App.getApp();
+		var fieldCount = app.getIntProperty("FieldCount", 3);
+		var fieldTypes = app.mFieldTypes;
 
 		for (var i = 0; i < fieldCount; i++) {
 			if (fieldTypes[i].get("ComplicationType") == complicationType) {
@@ -429,12 +438,11 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// Now do goals (but only if we're not in burnin protection as our drawables are null in that mode)
-		if (mDrawables[:LeftGoalMeter] != null && mDrawables[:RightGoalMeter] != null) {
-			if (mDrawables[:LeftGoalMeter].mComplicationType == complicationType) {
-				mDrawables[:LeftGoalMeter].mComplicationValue = complicationValue;
-			}
-			if (mDrawables[:RightGoalMeter].mComplicationType == complicationType) {
-				mDrawables[:RightGoalMeter].mComplicationValue = complicationValue;
+		var goalTypes = app.mGoalTypes;
+
+		for (var i = 0; i < 2; i++) {
+			if (goalTypes[i].get("ComplicationType") == complicationType) {
+				goalTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
     }
@@ -625,19 +633,14 @@ class CrystalView extends Ui.WatchFace {
 		if (!mIsBurnInProtection) {
 
 			// Recreate background buffers for each meter, in case theme colour has changed.	
-			mDrawables[:LeftGoalMeter].onSettingsChanged();	
-			mDrawables[:RightGoalMeter].onSettingsChanged();	
+			mDrawables[:LeftGoalMeter].onSettingsChanged(0);
+			mDrawables[:RightGoalMeter].onSettingsChanged(1);
 
 			mDrawables[:MoveBar].onSettingsChanged();	
 
 			mDataFields.onSettingsChanged();	
 
 			mDrawables[:Indicators].onSettingsChanged();
-			
-			if (mUseComplications) {
-				mDrawables[:LeftGoalMeter].setComplication(1);
-				mDrawables[:RightGoalMeter].setComplication(2);	
-			}
 		}
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
@@ -707,13 +710,15 @@ class CrystalView extends Ui.WatchFace {
 			:staled => false
 		};
 
+		var app = App.getApp();
+		var goalTypes = app.mGoalTypes;
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
 			case GOAL_TYPE_STEPS:
 				values[:isValid] = false;
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					var tmpValue = goalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toNumber();
 						values[:isValid] = true;
@@ -729,7 +734,7 @@ class CrystalView extends Ui.WatchFace {
 			case GOAL_TYPE_FLOORS_CLIMBED:
 				values[:isValid] = false;
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					var tmpValue = goalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toNumber();
 						values[:isValid] = true;
@@ -767,7 +772,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:max] = 100;
 
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					var tmpValue = goalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
 						values[:isValid] = true;
@@ -795,7 +800,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:max] = 100;
 
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = mDrawables[(index == 0 ? :LeftGoalMeter : :RightGoalMeter)].mComplicationValue;
+					var tmpValue = goalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
 						values[:isValid] = true;
@@ -881,7 +886,7 @@ class CrystalView extends Ui.WatchFace {
 
 				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
 				// Protect against unexpected type e.g. String.
-				values[:max] = App.getApp().getIntProperty("CaloriesGoal", 2000);
+				values[:max] = app.getIntProperty("CaloriesGoal", 2000);
 				break;
 
 			case GOAL_TYPE_OFF:

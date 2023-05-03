@@ -78,10 +78,11 @@ class DataFields extends Ui.Drawable {
 	// Cache FieldCount setting, and determine appropriate maximum field length.
 	function onSettingsChanged() {
 
-		mView = App.getApp().getView();
+		var app = App.getApp();
+		mView = app.getView();
 
 		// #123 Protect against null or unexpected type e.g. String.
-		mFieldCount = App.getApp().getIntProperty("FieldCount", 3);
+		mFieldCount = app.getIntProperty("FieldCount", 3);
 
 		/* switch (mFieldCount) {
 			case 3:
@@ -98,9 +99,9 @@ class DataFields extends Ui.Drawable {
 		// #116 Handle FieldCount = 0 correctly.
 		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
-		mHasLiveHR = App.getApp().hasField(FIELD_TYPE_HR_LIVE_5S);
+		mHasLiveHR = app.hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		if (!App.getApp().hasField(FIELD_TYPE_WEATHER)) {
+		if (!app.hasField(FIELD_TYPE_WEATHER)) {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
@@ -112,12 +113,13 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
 								];
+
+			var fieldTypes = app.mFieldTypes;
 			var filled = [false, false, false];
 			var i;
 
 			for (i = 0; i < complications.size(); i++) {
-				if (App.getApp().hasField(complications[i].get("type"))) {
-					var fieldTypes = App.getApp().mFieldTypes;
+				if (app.hasField(complications[i].get("type"))) {
 					for (var j = 0; j < mFieldCount; j++) {
 						if (fieldTypes[j].get("type") == complications[i].get("type")) {
 							$.updateComplications("", "Complication_F", j + 1, complications[i].get("complicationType"));

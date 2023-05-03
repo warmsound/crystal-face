@@ -48,9 +48,6 @@ class GoalMeter extends Ui.Drawable {
 	private var mMaxValue;
 	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
 
-	var mComplicationType;
-	var mComplicationValue;
-
 	// private enum /* GOAL_METER_STYLES */ {
 	// 	ALL_SEGMENTS,
 	// 	ALL_SEGMENTS_MERGED,
@@ -68,7 +65,7 @@ class GoalMeter extends Ui.Drawable {
 		mLayoutSeparator = params[:separator];
 
 		// Read meter style setting to determine current separator width.
-		onSettingsChanged();
+		onSettingsChanged(mSide == :left ? 0 : 1);
 
 		mWidth = getWidth();
 	}
@@ -113,7 +110,9 @@ class GoalMeter extends Ui.Drawable {
 		mIsOff = isOff;
 	}
 
-	function onSettingsChanged() {
+	function onSettingsChanged(index) {
+		var app = App.getApp();
+
 		mBuffersNeedRecreate = true;
 
 		// #18 Only read separator width from layout if multi segment style is selected.
@@ -137,36 +136,27 @@ class GoalMeter extends Ui.Drawable {
 
 			mSeparator = 0;
 		}
-	}
 
-	function setComplication(index) {
-		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+		if (Toybox has :Complications && app.getView().useComplications()) {
 			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => GOAL_TYPE_FLOORS_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => GOAL_TYPE_STEPS, "complicationType" => Complications.COMPLICATION_TYPE_STEPS},
 								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
 								];
 
-			var leftType = Properties.getValue("LeftGoalType");
-			var rightType = Properties.getValue("RightGoalType");
-
-			mComplicationType = null;
+			var goalTypes = app.mGoalTypes;
+			var filled = false;
 
 			for (var i = 0; i < complications.size(); i++) {
-				if (index == 1 && leftType == complications[i].get("type")) {
-					$.updateComplications("", "Complication_G", index, complications[i].get("complicationType"));
-					mComplicationType = complications[i].get("complicationType");
-					break;
-				}
-				else if (index == 2 && rightType == complications[i].get("type")) {
-					$.updateComplications("", "Complication_G", index, complications[i].get("complicationType"));
-					mComplicationType = complications[i].get("complicationType");
-					break;
+				if (goalTypes[index].get("type") == complications[i].get("type")) {
+					$.updateComplications("", "Complication_G", index + 1, complications[i].get("complicationType"));
+					goalTypes[index].put("ComplicationType", complications[i].get("complicationType"));
+					filled = true;
 				}
 			}
 
-			if (mComplicationType == null) {
-				Storage.deleteValue("Complication_G" + index);
+			if (filled == false) {
+				Storage.deleteValue("Complication_G" + (index + 1).toString());
 			}
 		}
 	}
