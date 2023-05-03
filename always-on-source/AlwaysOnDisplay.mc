@@ -11,7 +11,7 @@ using Toybox.Application.Storage;
 class AlwaysOnDisplay extends Ui.Drawable {
 
 	private var mBurnInYOffsets;
-	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont;
+	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont, mTeslaFont;
 
 	// Wide rectangle: time should be moved up slightly to centre within available space.
 	private var mAdjustY = 0;
@@ -69,6 +69,11 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
 		var dateFont = (resourceMap.hasKey(dateFontOverride)) ? resourceMap[dateFontOverride] : rezFonts.AlwaysOnDateFont;
 		mDateFont = Ui.loadResource(dateFont);
+
+		if (Storage.getValue("Tesla") != null) {
+			mTeslaFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		}
+
 	}
 	
 	function draw(dc) {
@@ -228,11 +233,22 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				value = value.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
 			}
 
+			var text = value + " " + battery.format(INTEGER_FORMAT) + "%";
+			var widthText = dc.getTextWidthInPixels(text, mBatteryFont);
+			var widthTeslaT = dc.getTextWidthInPixels("T", mTeslaFont);
+
+			dc.drawText(
+				dc.getWidth() - mDataLeft - widthText,
+				y,
+				mTeslaFont,
+				"T",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 			dc.drawText(
 				dc.getWidth() - mDataLeft,
 				y,
 				mBatteryFont,
-				"T" + value + " " + battery.format(INTEGER_FORMAT) + "%",
+				value + " " + battery.format(INTEGER_FORMAT) + "%",
 				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 		} else {
