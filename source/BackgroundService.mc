@@ -405,15 +405,4 @@ class BackgroundService extends Sys.ServiceDelegate {
 		};
 		Comms.makeWebRequest(url, params, options, callback);
 	}
-
-(:debug)
-function logMessage(message) {
-	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
-	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-	Sys.println(dateStr + " : " + message);
-}
-
-(:release)
-function logMessage(output) {
-}
 }

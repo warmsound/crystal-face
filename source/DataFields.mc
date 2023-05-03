@@ -735,7 +735,7 @@ class DataFields extends Ui.Drawable {
 							value = weatherValue.format(INTEGER_FORMAT) + "°";
 						}
 						catch (e) {
-							//DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
+							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
 							value = "???";
 						}
 						result["weatherIcon"] = weather["icon"];
