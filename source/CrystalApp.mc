@@ -410,7 +410,13 @@ function getIntProperty(key, defaultValue) {
 	catch (e) {
 		value = defaultValue;
 	}
-	if (value == null) {
+
+	return validateNumber(value, defaultValue);
+}
+
+(:background)
+function validateNumber(value, defaultValue) {
+	if (value == null || !(value has :toNumber)) {
 		value = defaultValue;
 	} else if (!(value instanceof Lang.Number)) {
 		try {
@@ -419,6 +425,9 @@ function getIntProperty(key, defaultValue) {
 		catch (e) {
 			value = defaultValue;
 		}
+	}
+	if (value == null) {
+		value = defaultValue;
 	}
 	return value;
 }
@@ -433,7 +442,12 @@ function getFloatProperty(key, defaultValue) {
 	catch (e) {
 		value = defaultValue;
 	}
-	if (value == null) {
+	return validateFloat(value, defaultValue);
+}
+
+(:background)
+function validateFloat(value, defaultValue) {
+	if (value == null || !(value has :toFloat)) {
 		value = defaultValue;
 	} else if (!(value instanceof Lang.Float)) {
 		try {
@@ -442,6 +456,9 @@ function getFloatProperty(key, defaultValue) {
 		catch (e) {
 			value = defaultValue;
 		}
+	}
+	if (value == null) {
+		value = defaultValue;
 	}
 	return value;
 }
@@ -456,7 +473,12 @@ function getStringProperty(key, defaultValue) {
 	catch (e) {
 		value = defaultValue;
 	}
-	if (value == null) {
+	return validateString(value, defaultValue);
+}
+
+(:background)
+function validateString(value, defaultValue) {
+	if (value == null || !(value has :toString)) {
 		value = defaultValue;
 	} else if (!(value instanceof Lang.String)) {
 		try {
@@ -465,6 +487,9 @@ function getStringProperty(key, defaultValue) {
 		catch (e) {
 			value = defaultValue;
 		}
+	}
+	if (value == null) {
+		value = defaultValue;
 	}
 	return value;
 }
@@ -479,15 +504,33 @@ function getBoolProperty(key, defaultValue) {
 	catch (e) {
 		value = defaultValue;
 	}
+
+	return validateBoolean(value, defaultValue);
+}
+
+(:background)
+function validateBoolean(value, defaultValue) {
 	if (value == null) {
 		value = defaultValue;
-	} else if (!(value instanceof Lang.Boolean)) {
+	} else if ((value instanceof Lang.Boolean) || (value instanceof Lang.Number)) {
 		try {
-			value = (value == true);
+			if (value) {
+				value = true;
+			}
+			else {
+				value = false;
+			}
 		}
 		catch (e) {
 			value = defaultValue;
 		}
+	}
+	else {
+		value = defaultValue;
+	}
+
+	if (value == null) {
+		value = defaultValue;
 	}
 	return value;
 }
