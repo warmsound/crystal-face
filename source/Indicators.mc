@@ -39,9 +39,9 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function onSettingsChanged() {
-		mIndicator1Type = Properties.getValue("Indicator1Type");
-		mIndicator2Type = Properties.getValue("Indicator2Type");
-		mIndicator3Type = Properties.getValue("Indicator3Type");
+		mIndicator1Type = $.getIntProperty("Indicator1Type", 5);
+		mIndicator2Type = $.getIntProperty("Indicator2Type", 3);
+		mIndicator3Type = $.getIntProperty("Indicator3Type", 0);
 
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
@@ -80,7 +80,7 @@ class Indicators extends Ui.Drawable {
 	function draw(dc) {
 
 		// #123 Protect against null or unexpected type e.g. String.
-		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
+		var indicatorCount = $.getIntProperty("IndicatorCount", 1);
 
 		// Horizontal layout for rectangle-148x205.
 		if (mIsHorizontal) {

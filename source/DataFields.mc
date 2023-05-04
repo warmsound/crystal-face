@@ -82,7 +82,7 @@ class DataFields extends Ui.Drawable {
 		mView = app.getView();
 
 		// #123 Protect against null or unexpected type e.g. String.
-		mFieldCount = app.getIntProperty("FieldCount", 3);
+		mFieldCount = $.getIntProperty("FieldCount", 3);
 
 		/* switch (mFieldCount) {
 			case 3:
@@ -146,7 +146,7 @@ class DataFields extends Ui.Drawable {
 			update(dc, /* isPartialUpdate */ false);
 		}
 		else {
-			//DEBUG*/ logMessage("datafields draw Skipping because of burning protections");
+			/*DEBUG*/ logMessage("datafields draw Skipping because of burning protections");
 		}
 	}
 
@@ -748,7 +748,7 @@ class DataFields extends Ui.Drawable {
 							value = weatherValue.format(INTEGER_FORMAT) + "°";
 						}
 						catch (e) {
-							//DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
+							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
 							value = "???";
 						}
 						result["weatherIcon"] = weather["icon"];

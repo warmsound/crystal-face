@@ -316,7 +316,7 @@ class CrystalView extends Ui.WatchFace {
 
 	// Reread Weather method
 	function rereadWeatherMethod() {
-		var owmKeyOverride = Properties.getValue("OWMKeyOverride");
+		var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
 		//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
 		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 			if (Toybox has :Weather) {
@@ -358,7 +358,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 
-		setHideSeconds(Properties.getValue("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
+		setHideSeconds($.getIntProperty("HideSeconds", 0)); // Requires mTime, mDrawables[:MoveBar];
 	}
 
 	/*
@@ -395,7 +395,7 @@ class CrystalView extends Ui.WatchFace {
 		}	
 
 		// Reread our complications if we're allowed
-		mUseComplications = Properties.getValue("UseComplications");
+		mUseComplications = $.getBoolProperty("UseComplications", false);
 		if (Toybox has :Complications) {
 			// First we drop all our subscriptions before building a new list
 			Complications.unsubscribeFromAllUpdates();
@@ -407,7 +407,7 @@ class CrystalView extends Ui.WatchFace {
     function onComplicationUpdated(complicationId) {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
-		var complicationLabel = complication.shortLabel;
+		//DEBUG*/ var complicationLabel = complication.shortLabel;
 		var complicationValue = complication.value;
 
 		//if (complicationType == Complications.COMPLICATION_TYPE_STRESS) {
@@ -416,28 +416,28 @@ class CrystalView extends Ui.WatchFace {
 
 		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
 		if (!mUseComplications) {
-			//DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
+			/*DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
 			return;
 		}
 
 		// I've seen this while in low power mode, so skip it
 		if (complicationValue == null) {
+			/*DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
 			return;
 		}
 
 		// Do fields first
 		var app = App.getApp();
-		var fieldCount = app.getIntProperty("FieldCount", 3);
+		var fieldCount = $.getIntProperty("FieldCount", 3);
 		var fieldTypes = app.mFieldTypes;
 
 		for (var i = 0; i < fieldCount; i++) {
 			if (fieldTypes[i].get("ComplicationType") == complicationType) {
 				fieldTypes[i].put("ComplicationValue", complicationValue);
-				break;
 			}
 		}
 
-		// Now do goals (but only if we're not in burnin protection as our drawables are null in that mode)
+		// Now do goals
 		var goalTypes = app.mGoalTypes;
 
 		for (var i = 0; i < 2; i++) {
@@ -536,8 +536,7 @@ class CrystalView extends Ui.WatchFace {
 	// Saves memory when cities are not in use.
 	// Update drawables that use normal font.
 	function updateNormalFont() {
-
-		var city = Properties.getValue("LocalTimeInCity");
+		var city = $.getStringProperty("LocalTimeInCity","");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
@@ -547,9 +546,9 @@ class CrystalView extends Ui.WatchFace {
 	function updateThemeColours() {
 
 		// #182 Protect against null or unexpected type e.g. String.
-		var theme = App.getApp().getIntProperty("Theme", 0);
+		var theme = $.getIntProperty("Theme", 0);
 		var lightFlag;
-		var themeOverride = Properties.getValue("ThemeOverride");
+		var themeOverride = $.getStringProperty("ThemeOverride","");
 
 		gThemeColour = null; // Will still be null if our override is invalid
 		if (themeOverride.equals("") == false) {
@@ -558,7 +557,7 @@ class CrystalView extends Ui.WatchFace {
 			}
 			catch (e) {
 			}
-			lightFlag = Properties.getValue("ThemeLightOverride");
+			lightFlag = $.getStringProperty("ThemeLightOverride", "");
 		}
 
 		if (gThemeColour == null) {
@@ -630,10 +629,10 @@ class CrystalView extends Ui.WatchFace {
 
 		// #182 Protect against null or unexpected type e.g. String.
 		// #182 Protect against invalid integer values (still crashing with getIntProperty()).
-		var hco = App.getApp().getIntProperty("HoursColourOverride", 0);
+		var hco = $.getIntProperty("HoursColourOverride", 0);
 		gHoursColour = overrideColours[(hco < 0 || hco > 2) ? 0 : hco];
 
-		var mco = App.getApp().getIntProperty("MinutesColourOverride", 0);
+		var mco = $.getIntProperty("MinutesColourOverride", 0);
 		gMinutesColour = overrideColours[(mco < 0 || mco > 2) ? 0 : mco];
 	}
 
@@ -654,7 +653,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
-			setHideSeconds(Properties.getValue("HideSeconds")); 
+			setHideSeconds($.getIntProperty("HideSeconds", 0)); 
 		} 
 
 		mSettingsChangedSinceLastDraw = false;
@@ -699,11 +698,11 @@ class CrystalView extends Ui.WatchFace {
 			return;
 		}
 
-		var leftType = Properties.getValue("LeftGoalType");
+		var leftType = $.getIntProperty("LeftGoalType", 0);
 		var leftValues = getValuesForGoalType(0, leftType);
 		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
-		var rightType = Properties.getValue("RightGoalType");
+		var rightType = $.getIntProperty("RightGoalType", 1);
 		var rightValues = getValuesForGoalType(1, rightType);
 		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
@@ -894,7 +893,7 @@ class CrystalView extends Ui.WatchFace {
 
 				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
 				// Protect against unexpected type e.g. String.
-				values[:max] = app.getIntProperty("CaloriesGoal", 2000);
+				values[:max] = $.getIntProperty("CaloriesGoal", 2000);
 				break;
 
 			case GOAL_TYPE_OFF:
@@ -906,12 +905,12 @@ class CrystalView extends Ui.WatchFace {
 		// crash in GoalMeter.getSegmentScale().
 		// Sanity check. I've seen weird Invalid Value and "System Error" in DataArea.setGoalValues:48 and :61. Make sure the data is valid
 		if (values[:isValid] && (!(values[:max] instanceof Lang.Number || values[:max] instanceof Lang.Float) || values[:max] < 1)) {
-			//DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
+			/*DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
 			values[:max] = 1;
 			values[:isValid] = false;
 		}
 		if (values[:isValid] && (!(values[:current] instanceof Lang.Number || values[:current] instanceof Lang.Float))) {
-			//DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
+			/*DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
 			values[:current] = 0;
 			values[:isValid] = false;
 		}
@@ -944,7 +943,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
-		var hideSeconds = Properties.getValue("HideSeconds");
+		var hideSeconds = $.getIntProperty("HideSeconds", 0);
 		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1 ) {
 			setHideSeconds(false);
 		}
@@ -978,7 +977,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
-		var hideSeconds = Properties.getValue("HideSeconds");
+		var hideSeconds = $.getIntProperty("HideSeconds", 0);
 		if ((!PER_SECOND_UPDATES_SUPPORTED && hideSeconds == 0) || hideSeconds == 1) {
 			setHideSeconds(true);
 		}
@@ -1030,7 +1029,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
 		var co_ords = clickEvent.getCoordinates();
-        //DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
+        /*DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
 		// returns the complicationId within the boundingBoxes
 		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
@@ -1043,7 +1042,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	function checkBoundingBoxes(co_ords) {
 		// First check the indicators
-		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
+		var indicatorCount = $.getIntProperty("IndicatorCount", 1);
 		var spacingX;
 		var spacingY;
 		var complicationIndex;
@@ -1085,7 +1084,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		}
 		
 		// Check the fields
-		var fieldCount = App.getApp().getIntProperty("FieldCount", 3);
+		var fieldCount = $.getIntProperty("FieldCount", 3);
 
 		if (fieldCount > 0) {
 			spacingX = Sys.getDeviceSettings().screenWidth / (2 * fieldCount);
@@ -1137,11 +1136,11 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	function isWithin(x, y, startX, startY, spacingX, spacingY, field) {
 		if (x > startX && x < startX + spacingX && y > startY and y < startY + spacingY) {
-			//DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
+			/*DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return field;
 		}
 		else {
-			//DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
+			/*DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return "";
 		}
 	}

@@ -198,7 +198,29 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// Date.
 		y = mDataY + burnInYOffset;	
-		if (Storage.getValue("Tesla") != null) {
+		if (Storage.getValue("Tesla") == null) {
+			dc.drawText(
+				mDataLeft,
+				y,
+				mDateFont,
+				Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Battery.
+			var battery = Math.floor(Sys.getSystemStats().battery);
+			dc.drawText(
+				dc.getWidth() - mDataLeft,
+				y,
+				mBatteryFont,
+				battery.format(INTEGER_FORMAT) + "%",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
+		else {
 			dc.drawText(
 				mDataLeft,
 				y,
@@ -251,24 +273,9 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				value + " " + battery.format(INTEGER_FORMAT) + "%",
 				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
-		} else {
-			dc.drawText(
-				mDataLeft,
-				y,
-				mDateFont,
-				Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
-				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-			// Battery.
-			var battery = Math.floor(Sys.getSystemStats().battery);
-			dc.drawText(
-				dc.getWidth() - mDataLeft,
-				y,
-				mBatteryFont,
-				battery.format(INTEGER_FORMAT) + "%",
-				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-			);
 		}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 	}
 }

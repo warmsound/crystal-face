@@ -26,7 +26,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		// Need to get a token since we can't OAUTH from a watch face :-(
 		// If someone can do it, be my guest. I spent too much time on this already
-		_token = Properties.getValue("TeslaAccessToken");
+		_token = $.getStringProperty("TeslaAccessToken","");
 
 		var createdAt = Storage.getValue("TeslaTokenCreatedAt");
 		if (createdAt == null) {
@@ -51,7 +51,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 		else {
 			//2023-03-05 logMessage("initialize:Generating Access Token");
-			var refreshToken = Properties.getValue("TeslaRefreshToken");
+			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
 			} else {
@@ -62,9 +62,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 
         _vehicle_id = Storage.getValue("TeslaVehicleID");
 		if (_vehicle_id == null) {
-			makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
-			makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
@@ -85,7 +85,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
-						"city" => Properties.getValue("LocalTimeInCity")
+						"city" => $.getStringProperty("LocalTimeInCity","")
 					},
 					method(:onReceiveCityLocalTime)
 				);
@@ -94,9 +94,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 			// 2. Weather.
 			if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-				var owmKeyOverride = Properties.getValue("OWMKeyOverride");
-				var lat = Properties.getValue("LastLocationLat");
-				var lon = Properties.getValue("LastLocationLng");
+				var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
+				var lat = $.getStringProperty("LastLocationLat","");
+				var lon = $.getStringProperty("LastLocationLng","");
 
 				if (lat != null && lon != null) {
 					makeWebRequest(
@@ -134,7 +134,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				}
 					
 				if (_vehicle_id) {
-					makeTeslaWebRequest("https://" + Properties.getValue("TeslaServerAPILocation") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+					makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				}
 			}
 		} /* else {
@@ -361,7 +361,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background_method)
     function makeTeslaWebPost(token, notify) {
-        var url = "https://" + Properties.getValue("TeslaServerAUTHLocation") + "/oauth2/v3/token";
+        var url = "https://" + $.getStringProperty("TeslaServerAUTHLocation","") + "/oauth2/v3/token";
         Comms.makeWebRequest(
             url,
             {

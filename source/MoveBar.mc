@@ -54,7 +54,7 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		if (Properties.getValue("MoveBarStyle") == 2 /* HIDDEN */) {
+		if ($.getIntProperty("MoveBarStyle", 0) == 2 /* HIDDEN */) {
 			return;
 		}
 
@@ -137,7 +137,7 @@ class MoveBar extends Ui.Drawable {
 		var thisBarWidth;
 		var thisBarColour = 0;
 		var barX = x + mTailWidth;
-		var moveBarStyle = Properties.getValue("MoveBarStyle");
+		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
 
 		// One-based, to correspond with move bar level (zero means no bars).
 		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {

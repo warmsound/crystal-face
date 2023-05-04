@@ -48,7 +48,9 @@ class DataArea extends Ui.Drawable {
 			mLeftGoalCurrent = leftValues[:current].format(INTEGER_FORMAT);
 			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY || mLeftGoalType == GOAL_TYPE_BODY_BATTERY || mLeftGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
-			//DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
+			if (leftValues[:isValid]) {
+				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
+			}
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
 		}
@@ -61,7 +63,9 @@ class DataArea extends Ui.Drawable {
 			mRightGoalCurrent = rightValues[:current].format(INTEGER_FORMAT);
 			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY || mRightGoalType == GOAL_TYPE_BODY_BATTERY || mRightGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
-			//DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
+			if (rightValues[:isValid]) {
+				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
+			}
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
 		}
@@ -71,7 +75,7 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, mLeftGoalstaled, Graphics.TEXT_JUSTIFY_LEFT);
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
-		var city = Properties.getValue("LocalTimeInCity");
+		var city = $.getStringProperty("LocalTimeInCity", "");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() != 0)) {
@@ -182,7 +186,7 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
-		var digitStyle = Properties.getValue("GoalMeterDigitsStyle");
+		var digitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
 
 		// #107 Only draw values if digit style is not Hidden.
 		if (digitStyle != 2 /* HIDDEN */) {

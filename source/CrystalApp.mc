@@ -66,16 +66,6 @@ class CrystalApp extends App.AppBase {
 		return mView;
 	}
 
-	function getIntProperty(key, defaultValue) {
-		var value = Properties.getValue(key);
-		if (value == null) {
-			value = defaultValue;
-		} else if (!(value instanceof Number)) {
-			value = value.toNumber();
-		}
-		return value;
-	}
-
 	// New app settings have been received so trigger a UI update
 	function onSettingsChanged() {
 		mFieldTypes[0].put("type", getIntProperty("Field1Type", 0));
@@ -123,12 +113,12 @@ class CrystalApp extends App.AppBase {
 		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
 		// in-memory value with an invalid stored one.
 		else {
-			var lat = Properties.getValue("LastLocationLat");
+			var lat = $.getStringProperty("LastLocationLat","");
 			if (lat != null) {
 				gLocationLat = lat.toFloat();
 			}
 
-			var lng = Properties.getValue("LastLocationLng");
+			var lng = $.getStringProperty("LastLocationLng","");
 			if (lng != null) {
 				gLocationLng = lng.toFloat();
 			}
@@ -145,7 +135,7 @@ class CrystalApp extends App.AppBase {
 
 		// 1. City local time:
 		// City has been specified.
-		var city = Properties.getValue("LocalTimeInCity");
+		var city = $.getStringProperty("LocalTimeInCity","");
 		
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
@@ -175,7 +165,7 @@ class CrystalApp extends App.AppBase {
 		if ((gLocationLat != null) &&
 			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmKeyOverride = Properties.getValue("OWMKeyOverride");
+			var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
 			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
 				//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
 			} else {
@@ -400,7 +390,7 @@ class CrystalApp extends App.AppBase {
 
 		// #10 If in 12-hour mode with Hide Hours Leading Zero set, hide leading zero. Otherwise, show leading zero.
 		// #69 Setting now applies to both 12- and 24-hour modes.
-		hour = hour.format(Properties.getValue("HideHoursLeadingZero") ? INTEGER_FORMAT : "%02d");
+		hour = hour.format($.getBoolProperty("HideHoursLeadingZero", true) ? INTEGER_FORMAT : "%02d");
 
 		return {
 			:hour => hour,
@@ -408,6 +398,98 @@ class CrystalApp extends App.AppBase {
 			:amPm => amPm
 		};
 	}
+}
+
+(:background)
+function getIntProperty(key, defaultValue) {
+	var value;
+
+	try {
+		value = Properties.getValue(key);
+	}
+	catch (e) {
+		value = defaultValue;
+	}
+	if (value == null) {
+		value = defaultValue;
+	} else if (!(value instanceof Lang.Number)) {
+		try {
+			value = value.toNumber();
+		}
+		catch (e) {
+			value = defaultValue;
+		}
+	}
+	return value;
+}
+
+(:background)
+function getFloatProperty(key, defaultValue) {
+	var value;
+
+	try {
+		value = Properties.getValue(key);
+	}
+	catch (e) {
+		value = defaultValue;
+	}
+	if (value == null) {
+		value = defaultValue;
+	} else if (!(value instanceof Lang.Float)) {
+		try {
+			value = value.toFloat();
+		}
+		catch (e) {
+			value = defaultValue;
+		}
+	}
+	return value;
+}
+
+(:background)
+function getStringProperty(key, defaultValue) {
+	var value;
+
+	try {
+		value = Properties.getValue(key);
+	}
+	catch (e) {
+		value = defaultValue;
+	}
+	if (value == null) {
+		value = defaultValue;
+	} else if (!(value instanceof Lang.String)) {
+		try {
+			value = value.toString();
+		}
+		catch (e) {
+			value = defaultValue;
+		}
+	}
+	return value;
+}
+
+(:background)
+function getBoolProperty(key, defaultValue) {
+	var value;
+
+	try {
+		value = Properties.getValue(key);
+	}
+	catch (e) {
+		value = defaultValue;
+	}
+	if (value == null) {
+		value = defaultValue;
+	} else if (!(value instanceof Lang.Boolean)) {
+		try {
+			value = (value == true);
+		}
+		catch (e) {
+			value = defaultValue;
+		}
+	}
+	return value;
 }
 
 (:debug, :background)

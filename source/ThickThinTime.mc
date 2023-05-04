@@ -91,7 +91,7 @@ class ThickThinTime extends Ui.Drawable {
 
 		var addColon;
 		try {
-        	addColon = Properties.getValue("AddColon");
+        	addColon = $.getBoolProperty("AddColon", false);
 		}
 		catch (e) {
 			addColon = false;
