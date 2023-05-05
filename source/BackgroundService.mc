@@ -50,7 +50,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			_token = "Bearer " + _token;
 		}
 		else {
-			//2023-03-05 logMessage("initialize:Generating Access Token");
+			/*DEBUG*/ logMessage("initialize:Generating Access Token");
 			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
 				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
@@ -62,8 +62,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 
         _vehicle_id = Storage.getValue("TeslaVehicleID");
 		if (_vehicle_id == null) {
+			/*DEBUG*/ logMessage("initialize:Getting vehicles");
 			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 		} else {
+			/*DEBUG*/ logMessage("initialize:Getting vehicle data");
 			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 //****************************************************************
@@ -285,7 +287,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var result;
 
 		//2023-03-05 logMessage("onReceiveToken responseCode is " + responseCode);
-		//logMessage("onReceiveToken data  is " + data);
+		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
         if (responseCode == 200) {
         	result = { "Token" => data };
         } else {
@@ -298,7 +300,7 @@ class BackgroundService extends Sys.ServiceDelegate {
     function onReceiveVehicles(responseCode, data) {
 		var result;
 
-		//2023-03-05 logMessage("onReceiveVehicles responseCode is " + responseCode + " with data " + data);
+		/*DEBUG*/ logMessage("onReceiveVehicles: " + responseCode);
         if (responseCode == 200) {
             var vehicles = data.get("response");
             if (vehicles.size() > 0) {
@@ -325,7 +327,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var precondEnabled = "N/A";
 		var sentryEnabled = "N/A";
 
-		//2023-03-05 logMessage("onReceiveVehicleData responseCode is " + responseCode);
+		/*DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
+        /*DEBUG*/ var myStats = Sys.getSystemStats();
+        /*DEBUG*/ logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
         if (responseCode == 200) {
         	results = data.get("response");
         	if (results != null) {

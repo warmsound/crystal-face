@@ -403,14 +403,24 @@ class CrystalApp extends App.AppBase {
 (:background)
 function getIntProperty(key, defaultValue) {
 	var value;
+	var exception;
 
 	try {
+		exception = false;
 		value = Properties.getValue(key);
 	}
 	catch (e) {
+		exception = true;
 		value = defaultValue;
 	}
 
+	if (exception) {
+		try {
+			Properties.setValue(key, defaultValue);
+		}
+		catch (e) {
+		}
+	}
 	return validateNumber(value, defaultValue);
 }
 
@@ -435,12 +445,23 @@ function validateNumber(value, defaultValue) {
 (:background)
 function getFloatProperty(key, defaultValue) {
 	var value;
+	var exception;
 
 	try {
+		exception = false;
 		value = Properties.getValue(key);
 	}
 	catch (e) {
+		exception = true;
 		value = defaultValue;
+	}
+
+	if (exception) {
+		try {
+			Properties.setValue(key, defaultValue);
+		}
+		catch (e) {
+		}
 	}
 	return validateFloat(value, defaultValue);
 }
@@ -466,12 +487,23 @@ function validateFloat(value, defaultValue) {
 (:background)
 function getStringProperty(key, defaultValue) {
 	var value;
+	var exception;
 
 	try {
+		exception = false;
 		value = Properties.getValue(key);
 	}
 	catch (e) {
+		exception = true;
 		value = defaultValue;
+	}
+
+	if (exception) {
+		try {
+			Properties.setValue(key, defaultValue);
+		}
+		catch (e) {
+		}
 	}
 	return validateString(value, defaultValue);
 }
@@ -497,12 +529,23 @@ function validateString(value, defaultValue) {
 (:background)
 function getBoolProperty(key, defaultValue) {
 	var value;
+	var exception;
 
 	try {
+		exception = false;
 		value = Properties.getValue(key);
 	}
 	catch (e) {
+		exception = true;
 		value = defaultValue;
+	}
+
+	if (exception) {
+		try {
+			Properties.setValue(key, defaultValue);
+		}
+		catch (e) {
+		}
 	}
 
 	return validateBoolean(value, defaultValue);

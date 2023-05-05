@@ -237,11 +237,14 @@ function updateComplications(complicationName, storageName, index, complicationT
 	if (Toybox has :Complications) {
 		// Check if we should subscribe to our Tesla Complication
 		var iter = Complications.getComplications();
+		if (iter == null) {
+			return;
+		}
 		var complicationId = iter.next();
 
 		while (complicationId != null) {
 			//logMessage(complicationId.longLabel.toString());
-			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel.equals(complicationName))) {
+			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(complicationName))) {
 				//DEBUG*/ logMessage("Found complication " + complicationName + " with type " + complicationType);
 				break;
 			}
@@ -422,7 +425,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// I've seen this while in low power mode, so skip it
 		if (complicationValue == null) {
-			/*DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
+			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
 			return;
 		}
 
@@ -530,6 +533,7 @@ class CrystalView extends Ui.WatchFace {
 			//2022-04-10 logMessage("No weather data, returning null");
 		}
 		Storage.setValue("OpenWeatherMapCurrent", result);
+		Storage.setValue("NewOpenWeatherMapCurrent", true);
 	}	
 
 	// Select normal font, based on whether time zone feature is being used.
@@ -557,7 +561,7 @@ class CrystalView extends Ui.WatchFace {
 			}
 			catch (e) {
 			}
-			lightFlag = $.getStringProperty("ThemeLightOverride", "");
+			lightFlag = $.getBoolProperty("ThemeLightOverride", false);
 		}
 
 		if (gThemeColour == null) {
@@ -671,9 +675,6 @@ class CrystalView extends Ui.WatchFace {
 			setLayout(mIsBurnInProtection ? Rez.Layouts.AlwaysOn(dc) : Rez.Layouts.WatchFace(dc));
 			cacheDrawables();
 			mBurnInProtectionChangedSinceLastDraw = false;
-			if (!mIsBurnInProtection) {
-				return;
-			}
 		}
 
 		// Respond now to any settings change since last full draw, as we can now update the full screen.

@@ -144,12 +144,12 @@ class Indicators extends Ui.Drawable {
 
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
-			drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
+			$.drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
 			return;
 		}
 
 		if (indicatorType == 5 /* INDICATOR_TYPE_BATTERY_NUMERIC */) {
-			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 0);
+			$.writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 0);
 			return;
 		}
 
@@ -157,7 +157,7 @@ class Indicators extends Ui.Drawable {
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 		if (indicatorType == 6 /* INDICATOR_TYPE_TESLA */) { // We're reusing the watch batterie indicator to show the Tesla's batterie level
-			writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
+			$.writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
 			return;
 		}
 
