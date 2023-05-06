@@ -64,9 +64,6 @@ class BackgroundService extends Sys.ServiceDelegate {
 		if (_vehicle_id == null) {
 			/*DEBUG*/ logMessage("initialize:Getting vehicles");
 			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
-		} else {
-			/*DEBUG*/ logMessage("initialize:Getting vehicle data");
-			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
@@ -84,6 +81,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 			// 1. City local time.
 			if (pendingWebRequests["CityLocalTime"] != null) {
+				/*DEBUG*/ logMessage("onTemporalEvent: Doing city local time");
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
@@ -101,6 +99,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				var lon = $.getStringProperty("LastLocationLng","");
 
 				if (lat != null && lon != null) {
+					/*DEBUG*/ logMessage("onTemporalEvent: Doing OWM");
 					makeWebRequest(
 						"https://api.openweathermap.org/data/2.5/weather",
 						{
@@ -135,7 +134,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 					return;
 				}
 					
-				if (_vehicle_id) {
+				if (_token != null && _vehicle_id != null) {
+					/*DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
 					makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
 				}
 			}
@@ -176,6 +176,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		// HTTP failure: return responseCode.
 		// Otherwise, return data response.
+		/*DEBUG*/ logMessage("onReceiveCityLocalTime: " + responseCode);
 		if (responseCode != 200) {
 			data = {
 				"httpError" => responseCode
@@ -247,6 +248,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		// Useful data only available if result was successful.
 		// Filter and flatten data response for data that we actually need.
 		// Reduces runtime memory spike in main app.
+		/*DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent: " + responseCode);
 		if (responseCode == 200) {
 			result = {
 				"cod" => data["cod"],
@@ -289,7 +291,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		//2023-03-05 logMessage("onReceiveToken responseCode is " + responseCode);
 		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
         if (responseCode == 200) {
-        	result = { "Token" => data };
+        	result = { "AccessToken" => data["access_token"], "RefreshToken" => data["refresh_token"], "TokenExpiresIn" => data["expires_in"], "TokenCreatedAt" => Time.now().value() };
         } else {
 			result = { "httpErrorTesla" => responseCode };
 	    }

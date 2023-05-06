@@ -45,228 +45,6 @@ var mGarminToOWM = [ 1, 2, 3, 10, 13, 4, 11, 13, 50, 50, 10, 9, 11, 1, 9, 10, 13
 //const BATTERY_LEVEL_LOW = 20;
 //const BATTERY_LEVEL_CRITICAL = 10;
 
-// x, y are co-ordinates of centre point.
-// width and height are outer dimensions of battery "body".
-function drawBatteryMeter(dc, x, y, width, height) {
-	dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
-	dc.setPenWidth(/* BATTERY_LINE_WIDTH */ 2);
-
-	// Body.
-	// drawRoundedRectangle's x and y are top-left corner of middle of stroke.
-	// Bottom-right corner of middle of stroke will be (x + width - 1, y + height - 1).
-	dc.drawRoundedRectangle(
-		x - (width / 2) + /* (BATTERY_LINE_WIDTH / 2) */ 1,
-		y - (height / 2) + /* (BATTERY_LINE_WIDTH / 2) */ 1,
-		width - /* BATTERY_LINE_WIDTH + 1 */ 1,
-		height - /* BATTERY_LINE_WIDTH + 1 */ 1,
-		/* BATTERY_CORNER_RADIUS */ 2 * SCREEN_MULTIPLIER);
-
-	// Head.
-	// fillRectangle() works as expected.
-	dc.fillRectangle(
-		x + (width / 2) + BATTERY_MARGIN,
-		y - (BATTERY_HEAD_HEIGHT / 2),
-		/* BATTERY_HEAD_WIDTH */ 2,
-		BATTERY_HEAD_HEIGHT);
-
-	// Fill.
-	// #8: battery returned as float. Use floor() to match native. Must match getValueForFieldType().
-	var batteryLevel = Math.floor(Sys.getSystemStats().battery);		
-
-	// Fill colour based on battery level.
-	var fillColour;
-	if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
-		fillColour = Graphics.COLOR_RED;
-	} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
-		fillColour = Graphics.COLOR_YELLOW;
-	} else {
-		fillColour = gThemeColour;
-	}
-
-	dc.setColor(fillColour, Graphics.COLOR_TRANSPARENT);
-
-	var lineWidthPlusMargin = (/* BATTERY_LINE_WIDTH */ 2 + BATTERY_MARGIN);
-	var fillWidth = width - (2 * lineWidthPlusMargin);
-	dc.fillRectangle(
-		x - (width / 2) + lineWidthPlusMargin,
-		y - (height / 2) + lineWidthPlusMargin,
-		Math.ceil(fillWidth * (batteryLevel / 100)), 
-		height - (2 * lineWidthPlusMargin));
-}
-
-var gToggleCounter = 0; // Used to switch between charge and inside temp
-
-function writeBatteryLevel(dc, x, y, width, height, type) {
-	var batteryLevel;		
-	var textColour;
-	
-	if (type == 0) { // Standard watch battery is being shown
-		batteryLevel = Math.floor(Sys.getSystemStats().battery);
-
-		if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10) {
-			textColour = Graphics.COLOR_RED;
-		} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20) {
-			textColour = Graphics.COLOR_YELLOW;
-		} else {
-			textColour = gThemeColour;
-		}
-
-		dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-		dc.drawText(x - (width / 2), y - height, gNormalFont, batteryLevel.toNumber().format(INTEGER_FORMAT) + "%", Graphics.TEXT_JUSTIFY_LEFT);
-	}
-//****************************************************************
-//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
-//****************************************************************
-	else { // Tesla stuff
-		var value;
-		var batteryStale = false;
-		var chargingState = 0;
-		var error = null;
-		var showMode;
-
-		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
-		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
-		//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
-		batteryStale = Storage.getValue("TeslaBatterieStale");
-		chargingState = Storage.getValue("TeslaChargingState");
-		error = Storage.getValue("TeslaError");
-
-		if (chargingState != null) {
-			if (chargingState.equals("Charging")) {
-				chargingState = 1;
-			} else if (chargingState.equals("Sleeping")) {
-				chargingState = 2;
-				showMode /= 2; // Keep only 0 and 2.
-			} else {
-				chargingState = 0;
-			}
-		} else {
-			chargingState = 0;
-		}
-
-		var inText = null;
-		switch (showMode) {
-			case 0:
-				value = Storage.getValue("TeslaBatterieLevel");
-				break;
-			case 1:
-				value = Storage.getValue("TeslaPreconditioning");
-				if (value != null && value.equals("true")) {
-					inText = "P  on";
-				}
-				else if (value != null && value.equals("false")) {
-					inText = "P off";
-				}
-				else {
-					inText = "P ?";
-				}
-				break;
-			case 2:
-				value = Storage.getValue("TeslaSentryEnabled");
-				if (value != null && value.equals("true")) {
-					inText = "S on";
-				}
-				else if (value != null && value.equals("false")) {
-					inText = "S off";
-				}
-				else {
-					inText = "S ?";
-				}
-				break;
-			case 3:
-				value = Storage.getValue("TeslaInsideTemp");
-				break;
-		}
-
-		//logMessage("value=" + value);		
-		if (value == null) {
-			value = "N/A";
-		}
-		
-		if (inText != null && error == null) {
-			if (batteryStale == true) {
-				textColour = Graphics.COLOR_LT_GRAY;
-			} else {
-				textColour = gThemeColour;
-			}
-			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
-		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A")) && error == null) {
-			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, "???", Graphics.TEXT_JUSTIFY_LEFT);
-		} else {
-			var suffixe = "";
-
-			if (error != null) {
-				textColour = Graphics.COLOR_PINK;
-				value = error.toFloat();
-			} else {
-				value = value.toFloat();
-	
-				if (batteryStale == true) {
-					textColour = Graphics.COLOR_LT_GRAY;
-				} else if (value <= /* BATTERY_LEVEL_CRITICAL */ 10 && showMode == 0) {
-					textColour = Graphics.COLOR_RED;
-				} else if (value <= /* BATTERY_LEVEL_LOW */ 20 && showMode == 0) {
-					textColour = Graphics.COLOR_YELLOW;
-				} else {
-					textColour = gThemeColour;
-				}
-			
-				if (showMode == 0) {
-					suffixe = "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
-				} else {
-					suffixe = "°C";
-					if (Sys.getDeviceSettings().temperatureUnits == Sys. UNIT_STATUTE) {
-						suffixe = "°F";
-						value = value * 9.0 / 5.0 + 32;
-					}
-				}
-			}
-
-			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, value.toNumber().format(INTEGER_FORMAT) + suffixe, Graphics.TEXT_JUSTIFY_LEFT);
-		}
-	}
-//****************************************************************
-//******************** END OF REMVOVED SECTION *******************
-//****************************************************************
-}
-
-function updateComplications(complicationName, storageName, index, complicationType) {
-	if (Toybox has :Complications) {
-		// Check if we should subscribe to our Tesla Complication
-		var iter = Complications.getComplications();
-		if (iter == null) {
-			return;
-		}
-		var complicationId = iter.next();
-
-		while (complicationId != null) {
-			//logMessage(complicationId.longLabel.toString());
-			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(complicationName))) {
-				//DEBUG*/ logMessage("Found complication " + complicationName + " with type " + complicationType);
-				break;
-			}
-			complicationId = iter.next();
-		}
-
-		if (complicationId != null) {
-			if (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID) {
-				complicationId = complicationId.complicationId;
-			}
-			else {
-				complicationId = new Complications.Id(complicationType);
-			}
-			if (index != null) {
-				Storage.setValue(storageName + index, complicationId);
-				Complications.subscribeToUpdates(complicationId);
-			}
-		}
-	}
-}
-
-
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
@@ -277,6 +55,9 @@ class CrystalView extends Ui.WatchFace {
 	var mHasGarminWeather;
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
+
+	var mFieldTypes = new [3];
+	var mGoalTypes = new [2];
 
 	private var mUseComplications;
 
@@ -309,6 +90,13 @@ class CrystalView extends Ui.WatchFace {
 
 	function initialize() {
 		WatchFace.initialize();
+
+		mFieldTypes[0] = {};
+		mFieldTypes[1] = {};
+		mFieldTypes[2] = {};
+
+		mGoalTypes[0] = {};
+		mGoalTypes[1] = {};
 
 		rereadWeatherMethod();
 	}
@@ -376,6 +164,13 @@ class CrystalView extends Ui.WatchFace {
 	// update the full screen immediately. This is true on real hardware, but not in the simulator, which calls onUpdate()
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
+		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
+		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
+		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
+
+		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
+		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
+
 		mSettingsChangedSinceLastDraw = true;
 		//logMessage("onSettingsChanged called");
 
@@ -407,6 +202,17 @@ class CrystalView extends Ui.WatchFace {
 		}
 	}
 
+	function hasGoal(goalType) {
+		return ((mGoalTypes[0].get("type") == goalType) ||
+				(mGoalTypes[1].get("type") == goalType));
+	}
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0].get("type") == fieldType) ||
+				(mFieldTypes[1].get("type") == fieldType) ||
+				(mFieldTypes[2].get("type") == fieldType));
+	}
+
     function onComplicationUpdated(complicationId) {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
@@ -430,22 +236,18 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		// Do fields first
-		var app = App.getApp();
 		var fieldCount = $.getIntProperty("FieldCount", 3);
-		var fieldTypes = app.mFieldTypes;
 
 		for (var i = 0; i < fieldCount; i++) {
-			if (fieldTypes[i].get("ComplicationType") == complicationType) {
-				fieldTypes[i].put("ComplicationValue", complicationValue);
+			if (mFieldTypes[i].get("ComplicationType") == complicationType) {
+				mFieldTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
 
 		// Now do goals
-		var goalTypes = app.mGoalTypes;
-
 		for (var i = 0; i < 2; i++) {
-			if (goalTypes[i].get("ComplicationType") == complicationType) {
-				goalTypes[i].put("ComplicationValue", complicationValue);
+			if (mGoalTypes[i].get("ComplicationType") == complicationType) {
+				mGoalTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
     }
@@ -719,7 +521,7 @@ class CrystalView extends Ui.WatchFace {
 		};
 
 		var app = App.getApp();
-		var goalTypes = app.mGoalTypes;
+		var goalTypes = mGoalTypes;
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {

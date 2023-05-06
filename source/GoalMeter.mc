@@ -48,6 +48,8 @@ class GoalMeter extends Ui.Drawable {
 	private var mMaxValue;
 	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
 
+	private var mView;
+	
 	// private enum /* GOAL_METER_STYLES */ {
 	// 	ALL_SEGMENTS,
 	// 	ALL_SEGMENTS_MERGED,
@@ -112,6 +114,7 @@ class GoalMeter extends Ui.Drawable {
 
 	function onSettingsChanged(index) {
 		var app = App.getApp();
+		mView = app.getView();
 
 		mBuffersNeedRecreate = true;
 
@@ -144,7 +147,7 @@ class GoalMeter extends Ui.Drawable {
 								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
 								];
 
-			var goalTypes = app.mGoalTypes;
+			var goalTypes = mView.mGoalTypes;
 			var filled = false;
 
 			for (var i = 0; i < complications.size(); i++) {

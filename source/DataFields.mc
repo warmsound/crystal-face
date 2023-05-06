@@ -99,9 +99,9 @@ class DataFields extends Ui.Drawable {
 		// #116 Handle FieldCount = 0 correctly.
 		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
-		mHasLiveHR = app.hasField(FIELD_TYPE_HR_LIVE_5S);
+		mHasLiveHR = mView.hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		if (!app.hasField(FIELD_TYPE_WEATHER)) {
+		if (!mView.hasField(FIELD_TYPE_WEATHER)) {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
@@ -114,12 +114,12 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
 								];
 
-			var fieldTypes = app.mFieldTypes;
+			var fieldTypes = mView.mFieldTypes;
 			var filled = [false, false, false];
 			var i;
 
 			for (i = 0; i < complications.size(); i++) {
-				if (app.hasField(complications[i].get("type"))) {
+				if (mView.hasField(complications[i].get("type"))) {
 					for (var j = 0; j < mFieldCount; j++) {
 						if (fieldTypes[j].get("type") == complications[i].get("type")) {
 							$.updateComplications("", "Complication_F", j + 1, complications[i].get("complicationType"));
@@ -155,7 +155,7 @@ class DataFields extends Ui.Drawable {
 			return;
 		}
 
-		var fieldTypes = App.getApp().mFieldTypes;
+		var fieldTypes = mView.mFieldTypes;
 
 		/*var spacingX = Sys.getDeviceSettings().screenWidth / (2 * mFieldCount);
 		var spacingY = Sys.getDeviceSettings().screenHeight / 4;
@@ -455,7 +455,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_BODY_BATTERY:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = App.getApp().mFieldTypes;
+					var fieldTypes = mView.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -477,7 +477,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = App.getApp().mFieldTypes;
+					var fieldTypes = mView.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -520,7 +520,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = App.getApp().mFieldTypes;
+					var fieldTypes = mView.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString() + "%";
@@ -536,7 +536,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			case FIELD_TYPE_HEART_RATE:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = App.getApp().mFieldTypes;
+					var fieldTypes = mView.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -656,7 +656,7 @@ class DataFields extends Ui.Drawable {
 							temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 						}
 
-						value = temperature.format(INTEGER_FORMAT) + "°";
+						value = temperature.format(INTEGER_FORMAT) + "";
 					}
 				}
 				break;
@@ -710,7 +710,7 @@ class DataFields extends Ui.Drawable {
 					} else {
 						var hour = Math.floor(nextSunEvent).toLong() % 24;
 						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
-						value = App.getApp().getFormattedTime(hour, min);
+						value = $.getFormattedTime(hour, min);
 						value = value[:hour] + ":" + value[:min] + value[:amPm]; 
 					}
 
@@ -745,7 +745,7 @@ class DataFields extends Ui.Drawable {
 								weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
 							}
 
-							value = weatherValue.format(INTEGER_FORMAT) + "°";
+							value = weatherValue.format(INTEGER_FORMAT) + "";
 						}
 						catch (e) {
 							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
