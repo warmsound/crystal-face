@@ -102,6 +102,10 @@ class CrystalApp extends App.AppBase {
 				Storage.setValue(type, receivedData);
 			}
 
+			if (type.equals("OpenWeatherMapCurrent")) {
+				Storage.setValue("NewOpenWeatherMapCurrent", true);
+			}
+
 			checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		}
 

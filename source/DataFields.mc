@@ -57,6 +57,7 @@ class DataFields extends Ui.Drawable {
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
 	private var mBatteryWidth; // Width of battery meter.
+	private var storedWeather;
 	// private const CM_PER_KM = 100000;
 	// private const MI_PER_KM = 0.621371;
 	// private const FT_PER_M = 3.28084;
@@ -266,7 +267,7 @@ class DataFields extends Ui.Drawable {
 
 		// Battery.
 		if ((fieldType == FIELD_TYPE_BATTERY) || (fieldType == FIELD_TYPE_BATTERY_HIDE_PERCENT)) {
-			drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryWidth / 2);
+			$.drawBatteryMeter(dc, x, mTop, mBatteryWidth, mBatteryWidth / 2);
 
 		// #34 Live HR in low power mode.
 		} else if (isLiveHeartRate && isPartialUpdate) {
@@ -729,7 +730,15 @@ class DataFields extends Ui.Drawable {
 					result["weatherIcon"] = "01d";
 				}
 
-				weather = Storage.getValue("OpenWeatherMapCurrent");
+				// Only read that dictionnary from Storage if it has changed (or we don't have a local copy), otherwise read our stored weather data
+				if (storedWeather == null || Storage.getValue("NewOpenWeatherMapCurrent") != null) { 
+					weather = Storage.getValue("OpenWeatherMapCurrent");
+					Storage.setValue("NewOpenWeatherMapCurrent", null);
+					storedWeather = weather;
+				}
+				else {
+					weather = storedWeather;
+				}
 
 				// Awaiting location.
 				if (gLocationLat == null) {
