@@ -27,6 +27,9 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.17.5
+- Redid the Tesla code and added the reading of the Tesla-Link Complications to get Tesla Info insteading of querying Tesla's servers. No more Token handling 
+
 ### 2.17.4
 - One more attempt at fixing the crash because of the Settings change since 2.17.1
 
