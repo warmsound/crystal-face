@@ -20,51 +20,68 @@ class BackgroundService extends Sys.ServiceDelegate {
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		if (Storage.getValue("Tesla") == null) {
+		if (Storage.getValue("Tesla") == null || gTeslaComplication == true) {
 			return;
 		}
 
-		// Need to get a token since we can't OAUTH from a watch face :-(
-		// If someone can do it, be my guest. I spent too much time on this already
-		_token = $.getStringProperty("TeslaAccessToken","");
-
-		var createdAt = Storage.getValue("TeslaTokenCreatedAt");
-		if (createdAt == null) {
-			createdAt = 0;
+		var teslaInfo = Bg.getBackgroundData();
+		if (teslaInfo == null) {
+			teslaInfo = {};
+		}		
+		else {
+			/*DEDUG*/ var keys = teslaInfo.keys();
+			/*DEBUG*/ logMessage("onReceiveVehicleData: Buffer has keys " + keys);
 		}
 
-		var expiresIn = Storage.getValue("TeslaTokenExpiresIn");
-		if (expiresIn == null) {
-			expiresIn = 0;
+		var timeNow = Time.now().value();
+		var createdAt;
+		var expiresIn;
+
+		// Get the unexpired token from the buffer if we have one, otherwise from Properties/Storage
+		_token = teslaInfo.get("AccessToken");
+		createdAt = teslaInfo.get("TokenCreatedAt");
+		expiresIn = teslaInfo.get("TokenExpiresIn");
+		if (_token != null && createdAt != null && expiresIn != null) {
+			if (timeNow > createdAt + expiresIn) {
+				_token = null;
+			}
+		}
+		else {
+			_token = null;
+		}
+
+		if (_token == null) {
+			_token = $.getStringProperty("TeslaAccessToken","");
+			createdAt = Storage.getValue("TeslaTokenCreatedAt");
+			expiresIn = Storage.getValue("TeslaTokenExpiresIn");
+		}
+
+		if (_token != null && createdAt != null && expiresIn != null) {
+			if (timeNow > createdAt + expiresIn) {
+				_token = null;
+			}
+		}
+		else {
+			_token = null;
 		}
 		
-		var timeNow = Time.now().value();
-		var interval = 5 * 60;
-		var answer = (timeNow + interval < createdAt + expiresIn);
 
-		if (_token != null && _token.equals("") == false && answer == true) {
-//2023-03-05 var expireAt = new Time.Moment(createdAt + expiresIn);
-//2023-03-05 var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
-//2023-03-05 var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-//2023-03-05 logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
+		if (_token != null && _token.equals("") == false) {
+			//DEBUG*/ var expireAt = new Time.Moment(createdAt + expiresIn);
+			//DEBUG*/ var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
+			//DEBUG*/ var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
+			//DEBUG*/ logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
-			/*DEBUG*/ logMessage("initialize:Generating Access Token");
-			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
-			if (refreshToken != null) {
-				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
-			} else {
-				//2023-03-05 logMessage("initialize:No refresh token!");
-			}
-			return;
+			_token = null;
 		}
 
-        _vehicle_id = Storage.getValue("TeslaVehicleID");
+		_vehicle_id = teslaInfo.get("VehicleID");
 		if (_vehicle_id == null) {
-			/*DEBUG*/ logMessage("initialize:Getting vehicles");
-			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			_vehicle_id = Storage.getValue("TeslaVehicleID");
 		}
+
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
 //****************************************************************
@@ -131,13 +148,29 @@ class BackgroundService extends Sys.ServiceDelegate {
 			// 3. Tesla
 			if (pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null) {
 				if (!Sys.getDeviceSettings().phoneConnected) {
+					Bg.exit(null);
+				}
+
+				if (_token == null) {					
+					/*DEBUG*/ logMessage("onTemporalEvent:Generating Access Token");
+					var refreshToken = $.getStringProperty("TeslaRefreshToken","");
+					if (refreshToken != null) {
+						makeTeslaWebPost(refreshToken, method(:onReceiveToken));
+					} else {
+						/*DEBUG*/ logMessage("onTemporalEvent:No refresh token!");
+						Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 401, "httpInternalErrorTesla" => 401 } });
+					}
 					return;
 				}
-					
-				if (_token != null && _vehicle_id != null) {
-					/*DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
-					makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
+
+				if (_vehicle_id == null) {
+					/*DEBUG*/ logMessage("onTemporalEvent:Getting vehicles");
+					makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+					return;
 				}
+
+				/*DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
+				makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", null, method(:onReceiveVehicleData));
 			}
 		} /* else {
 			Sys.println("onTemporalEvent() called with no pending web requests!");
@@ -171,6 +204,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 	}
 	*/
+
 	(:background_method)
 	function onReceiveCityLocalTime(responseCode, data) {
 
@@ -276,93 +310,138 @@ class BackgroundService extends Sys.ServiceDelegate {
 			Sys.println(dateStr + " : httpError=" + responseCode);*/
 		}
 
-		Bg.exit({
-			"OpenWeatherMapCurrent" => result
-		});
+		Bg.exit({ "OpenWeatherMapCurrent" => result });
 	}
 
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 	(:background_method)
-    function onReceiveToken(responseCode, data) {
-		var result;
-
-		//2023-03-05 logMessage("onReceiveToken responseCode is " + responseCode);
+    function onReceiveToken(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
+
+		var teslaInfo = Bg.getBackgroundData();
+		if (teslaInfo == null) {
+			teslaInfo = {};
+		}		
+		else {
+			/*DEDUG*/ var keys = teslaInfo.keys();
+			/*DEBUG*/ logMessage("onReceiveToken: Buffer has keys " + keys);
+		}
+
         if (responseCode == 200) {
-        	result = { "AccessToken" => data["access_token"], "RefreshToken" => data["refresh_token"], "TokenExpiresIn" => data["expires_in"], "TokenCreatedAt" => Time.now().value() };
-        } else {
-			result = { "httpErrorTesla" => responseCode };
-	    }
-		Bg.exit({ "TeslaInfo" => result });
+			teslaInfo.put("AccessToken", responseData["access_token"]);
+			teslaInfo.put("RefreshToken", responseData["refresh_token"]);
+			teslaInfo.put("TokenExpiresIn", responseData["expires_in"]);
+			teslaInfo.put("TokenCreatedAt", Time.now().value());
+        }
+
+		teslaInfo.put("httpErrorTesla", 401);
+		teslaInfo.put("httpInternalErrorTesla", responseCode);
+
+		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
 	(:background_method)
-    function onReceiveVehicles(responseCode, data) {
-		var result;
-
+    function onReceiveVehicles(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveVehicles: " + responseCode);
+
+		var teslaInfo = Bg.getBackgroundData();
+		if (teslaInfo == null) {
+			teslaInfo = {};
+		}		
+		else {
+			/*DEDUG*/ var keys = teslaInfo.keys();
+			/*DEBUG*/ logMessage("onReceiveVehicles: Buffer has keys " + keys);
+		}
+
         if (responseCode == 200) {
-            var vehicles = data.get("response");
-            if (vehicles.size() > 0) {
-                _vehicle_id = vehicles[0].get("id");
-	        } else {
-	            _vehicle_id = 0;
-		    }
-			result = { "vehicle_id" => _vehicle_id};
+            var vehicles = responseData.get("response");
+			var vehice_state;
+			if (vehicles != null) {
+				if (vehicles.size() > 0) {
+					_vehicle_id = vehicles[0].get("id").toString();
+					vehice_state = vehicles[0].get("state");
+				} else {
+					_vehicle_id = null;
+					vehice_state = "NoVehicles";
+				}
+			}
+			else {
+				_vehicle_id = null;
+				vehice_state = "NoVehicleResponse";
+			}
+			teslaInfo.put("VehicleID", _vehicle_id);
+			teslaInfo.put("VehicleState",vehice_state);
+        }
 
-        } else {
-			result = { "httpErrorTesla" => responseCode };
-	    }
+		teslaInfo.put("httpErrorTesla", (_vehicle_id == null ? 404 : 408));
+		teslaInfo.put("httpInternalErrorTesla", responseCode);
 
-		Bg.exit({ "TeslaInfo" => result });
+		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
 	(:background_method)
-    function onReceiveVehicleData(responseCode, data) {
-		var results;
-		var result = "N/A";
-		var batterieLevel = "N/A";
-		var chargingState = "Disconnected";
-		var insideTemp = "N/A";
-		var precondEnabled = "N/A";
-		var sentryEnabled = "N/A";
-
+    function onReceiveVehicleData(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
         /*DEBUG*/ var myStats = Sys.getSystemStats();
         /*DEBUG*/ logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+
+		var teslaInfo = Bg.getBackgroundData();
+		if (teslaInfo == null) {
+			teslaInfo = {};
+		}		
+		else {
+			/*DEDUG*/ var keys = teslaInfo.keys();
+			/*DEBUG*/ logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+		}
+
+		teslaInfo.put("httpErrorTesla", responseCode);
+
         if (responseCode == 200) {
-        	results = data.get("response");
-        	if (results != null) {
-	        	result = results.get("charge_state");
+			teslaInfo.put("VehicleState", "online");
+
+        	var response = responseData.get("response");
+        	if (response != null) {
+	        	var result = response.get("charge_state");
 	        	if (result != null) {
-		        	batterieLevel = result.get("battery_level");
-		        	chargingState = result.get("charging_state");
-		        	precondEnabled = result.get("preconditioning_enabled");
+					teslaInfo.put("BatteryLevel", result.get("battery_level"));
+					teslaInfo.put("ChargingState", result.get("charging_state"));
+					teslaInfo.put("PrecondEnabled", result.get("preconditioning_enabled"));
 	        	}
-	        	result = results.get("climate_state");
+	        	result = response.get("climate_state");
 	        	if (result != null) {
-		        	insideTemp = result.get("inside_temp");
+					teslaInfo.put("InsideTemp", result.get("inside_temp"));
 				}	        	
 				
-	        	result = results.get("vehicle_state");
+	        	result = response.get("vehicle_state");
 	        	if (result != null) {
-		        	sentryEnabled = result.get("sentry_mode");
+					teslaInfo.put("SentryEnabled", result.get("sentry_mode"));
 				}	        	
-				
-				result = {
-					"battery_level" => batterieLevel,
-					"charging_state" => chargingState
-				};
         	}
-
-			result = { "battery_state" => result, "inside_temp" => insideTemp, "preconditioning" => precondEnabled, "sentry_enabled" => sentryEnabled, "vehicle_id" => _vehicle_id };
-        } else {
-			result = { "httpErrorTesla" => responseCode };
 	    }
+		// If no vehicle (rare) or can't contact (much more frequent) is received, try to get a new vehicle (404) or retrieve its state (408)
+		else if (responseCode == 404 || responseCode == 408) {
+			// If Tesla can't find our vehicle by its ID, reset it and maybe we'll have better luck next time
+			if (responseCode == 404) {
+				teslaInfo.put("VehicleID", null);
+				_vehicle_id = null;
+			}
+			/*DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
+			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			return;
+	    }
+		// Our access token has expired, ask for a new one
+		else if (responseCode == 401) {
+			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
+			if (refreshToken != null) {
+				/*DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
+				makeTeslaWebPost(refreshToken, method(:onReceiveToken));
+				return;
+			}
+		}
 
-		Bg.exit({ "TeslaInfo" => result });
+		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
 	(:background_method)

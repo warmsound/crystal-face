@@ -19,6 +19,7 @@ import Toybox.WatchUi;
 // location available.
 var gLocationLat = null;
 var gLocationLng = null;
+var gTeslaComplication = true;
 
 (:background)
 class CrystalApp extends App.AppBase {
@@ -211,7 +212,8 @@ class CrystalApp extends App.AppBase {
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		if (Storage.getValue("Tesla") != null) {
+//*******************checkPendingWebRequests**********************
+		if (Storage.getValue("Tesla") != null && gTeslaComplication == false) {
 			var teslaInfo = Storage.getValue("TeslaInfo");
 			if (teslaInfo == null) { // We're not doing Tesla stuff so why asking for it, clear that
 				pendingWebRequests["TeslaInfo"] = false;
@@ -233,11 +235,12 @@ class CrystalApp extends App.AppBase {
 				}
 
 				// We deal with specific errors here, leaving the good stuff to the battery indicator
-				var result = teslaInfo["httpErrorTesla"];
-				if (result != null) {
-					if (result == 401) { // Our token has expired and we were unable to get one from within onReceiveVehicleData, refresh it
+				var responseCode = teslaInfo["httpErrorTesla"];
+				var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
+				if (responseCode != null && internalResponseCode != null) {
+					if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
 						Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
-					} else if (result == 404) { // We got an vehicle not found error and we were unable to get one from within onReceiveVehicleData, reset our vehicle ID
+					} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
 						Storage.remove("VehicleID"); // Try to get a new vehicleID
 					}
 

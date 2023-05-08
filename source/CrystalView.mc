@@ -202,12 +202,10 @@ class CrystalView extends Ui.WatchFace {
 		}
 	}
 
-	function hasGoal(goalType) {
-		return ((mGoalTypes[0].get("type") == goalType) ||
-				(mGoalTypes[1].get("type") == goalType));
-	}
-
 	function hasField(fieldType) {
+		if (mFieldTypes[0] == null || mFieldTypes[1] == null || mFieldTypes[2] == null) {
+			return false;
+		}
 		return ((mFieldTypes[0].get("type") == fieldType) ||
 				(mFieldTypes[1].get("type") == fieldType) ||
 				(mFieldTypes[2].get("type") == fieldType));
@@ -216,12 +214,30 @@ class CrystalView extends Ui.WatchFace {
     function onComplicationUpdated(complicationId) {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
-		//DEBUG*/ var complicationLabel = complication.shortLabel;
+		/*DEBUG*/ var complicationShortLabel = complication.shortLabel;
+		/*DEBUG*/ var complicationLongLabel = complication.longLabel;
 		var complicationValue = complication.value;
 
-		//if (complicationType == Complications.COMPLICATION_TYPE_STRESS) {
-			//DEBUG*/ logMessage("Type: " + complicationType + " Label: " + complicationLabel + " Value:" + complicationValue + " burnIn active? " + mIsBurnInProtection);
-		//}
+		//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_STEPS) {
+			//DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
+		//DEBUG*/ }
+
+		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+			var teslaInfo = Storage.getValue("TeslaInfo");
+			if (teslaInfo == null){
+				teslaInfo = {};
+			}
+			var arrayInfo = $.to_array(complicationValue, "|");
+			teslaInfo.put("httpErrorTesla", $.validateNumber(arrayInfo[0], 0));
+			teslaInfo.put("BatteryLevel", $.validateNumber(arrayInfo[1], 0));
+			teslaInfo.put("ChargingState", $.validateString(arrayInfo[2], ""));
+			teslaInfo.put("InsideTemp", $.validateNumber(arrayInfo[3], 0));
+			teslaInfo.put("SentryEnabled", $.validateBoolean(arrayInfo[4], false));
+			teslaInfo.put("PrecondEnabled", $.validateBoolean(arrayInfo[5], false));
+			teslaInfo.put("VehicleState", $.validateString(arrayInfo[6], "asleep"));
+
+			Storage.setValue("TeslaInfo", teslaInfo);
+		}
 
 		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
 		if (!mUseComplications) {
@@ -530,6 +546,10 @@ class CrystalView extends Ui.WatchFace {
 				if (Toybox has :Complications && mUseComplications) {
 					var tmpValue = goalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
+						// For some stupid reason, above 10K, it becomes a float and divided by 1000, so 15,500 becomes 15.500. WTF?
+						if (tmpValue instanceof Lang.Float) {
+							tmpValue = tmpValue * 1000;
+						}
 						values[:current] = tmpValue.toNumber();
 						values[:isValid] = true;
 					}

@@ -90,115 +90,107 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 	else { // Tesla stuff
-		var value;
-		var batteryStale = false;
-		var chargingState = 0;
-		var error = null;
+		textColour = Graphics.COLOR_LT_GRAY; // Default in case we get nothing
+
+		var value = "???";
 		var showMode;
 
-		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached
+		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached. Called every second so incremented every second, giving a two second display of each value
 		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
 		//logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
-		batteryStale = Storage.getValue("TeslaBatterieStale");
-		chargingState = Storage.getValue("TeslaChargingState");
-		error = Storage.getValue("TeslaError");
 
-		if (chargingState != null) {
-			if (chargingState.equals("Charging")) {
-				chargingState = 1;
-			} else if (chargingState.equals("Sleeping")) {
-				chargingState = 2;
-				showMode /= 2; // Keep only 0 and 2.
-			} else {
-				chargingState = 0;
+		var teslaInfo = Storage.getValue("TeslaInfo");
+		if (teslaInfo != null) {
+			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
+			var vehicleState = teslaInfo.get("VehicleState");
+			var vehicleAsleep = (vehicleState != null && vehicleState.equals("asleep") == true);
+
+			// Only specific error are handled, the others are displayed 'as is' in pink
+			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
+				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
+					showMode = 0;
+				}
+				else if (vehicleAsleep || httpErrorTesla == 200) { // Vehicle confirmed asleep (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data
+					textColour = gThemeColour; // Defaults to theme's color
+				}
+
+				if (vehicleAsleep) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
+					showMode &= 2;
+				}
+
+				switch (showMode) {
+					case 0:
+						var suffix = "";
+
+						batteryLevel = teslaInfo.get("BatteryLevel");
+						if (batteryLevel != null) {
+							var chargingState = teslaInfo.get("ChargingState");
+							if (httpErrorTesla == 401 || (!vehicleAsleep && httpErrorTesla == 408)) { // Can't get or token (will be shown in gray) or we got a 408 while not asleep (will be shown in the theme's color)
+								suffix = "?";
+							}
+							else if (vehicleAsleep) {
+								suffix = "s";
+							}
+							else if (chargingState != null && chargingState.equals("Charging") == true) {
+								suffix = "+";
+							}
+
+							value = batteryLevel + "%" + suffix;
+
+							// If we're in theme's color, reset the color based on battery level, similar to the phone's battery
+							if (batteryLevel <= /* BATTERY_LEVEL_CRITICAL */ 10 && textColour == gThemeColour) {
+								textColour = Graphics.COLOR_RED;
+							} else if (batteryLevel <= /* BATTERY_LEVEL_LOW */ 20 && textColour == gThemeColour) {
+								textColour = Graphics.COLOR_YELLOW;
+							}
+						}
+						else {
+							value = "???%";
+						}
+						break;
+
+					case 1:
+						var sentryEnabled = teslaInfo.get("SentryEnabled");
+						if (sentryEnabled != null) {
+							value = (sentryEnabled ? "S on" : "S off");
+						}
+						else {
+							value = "S ???";
+						}
+						break;
+
+					case 2:
+						var precondEnabled = teslaInfo.get("PrecondEnabled");
+						if (precondEnabled != null) {
+							value = (sentryEnabled ? "P on" : "P off");
+						}
+						else {
+							value = "P ???";
+						}
+						break;
+
+					case 3:
+						var insideTemp = teslaInfo.get("InsideTemp");
+						if (insideTemp != null) {
+							value = (Sys.getDeviceSettings().temperatureUnits == Sys.UNIT_METRIC ? insideTemp.toNumber() + "°C" : ((insideTemp.toNumber() * 9) / 5 + 32).format("%d") + "°F"); 
+						}
+						else {
+							value = (Sys.getDeviceSettings().temperatureUnits == Sys.UNIT_METRIC ? "???°C" : "???°F");
+						}
+						break;
+				}
 			}
-		} else {
-			chargingState = 0;
-		}
-
-		var inText = null;
-		switch (showMode) {
-			case 0:
-				value = Storage.getValue("TeslaBatterieLevel");
-				break;
-			case 1:
-				value = Storage.getValue("TeslaPreconditioning");
-				if (value != null && value.equals("true")) {
-					inText = "P  on";
+			else {
+				if (httpErrorTesla != null) {
+					value = httpErrorTesla.toString();
 				}
-				else if (value != null && value.equals("false")) {
-					inText = "P off";
-				}
-				else {
-					inText = "P ?";
-				}
-				break;
-			case 2:
-				value = Storage.getValue("TeslaSentryEnabled");
-				if (value != null && value.equals("true")) {
-					inText = "S on";
-				}
-				else if (value != null && value.equals("false")) {
-					inText = "S off";
-				}
-				else {
-					inText = "S ?";
-				}
-				break;
-			case 3:
-				value = Storage.getValue("TeslaInsideTemp");
-				break;
+				textColour = Graphics.COLOR_PINK; // None handled error
+			} 
 		}
 
 		//logMessage("value=" + value);		
-		if (value == null) {
-			value = "N/A";
-		}
-		
-		if (inText != null && error == null) {
-			if (batteryStale == true) {
-				textColour = Graphics.COLOR_LT_GRAY;
-			} else {
-				textColour = gThemeColour;
-			}
-			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, inText, Graphics.TEXT_JUSTIFY_LEFT);
-		} else if (value == null || (value instanceof Toybox.Lang.String && value.equals("N/A")) && error == null) {
-			dc.setColor(Graphics.COLOR_LT_GRAY, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, "???", Graphics.TEXT_JUSTIFY_LEFT);
-		} else {
-			var suffixe = "";
-
-			if (error != null) {
-				textColour = Graphics.COLOR_PINK;
-				value = error.toFloat();
-			} else {
-				value = value.toFloat();
-	
-				if (batteryStale == true) {
-					textColour = Graphics.COLOR_LT_GRAY;
-				} else if (value <= /* BATTERY_LEVEL_CRITICAL */ 10 && showMode == 0) {
-					textColour = Graphics.COLOR_RED;
-				} else if (value <= /* BATTERY_LEVEL_LOW */ 20 && showMode == 0) {
-					textColour = Graphics.COLOR_YELLOW;
-				} else {
-					textColour = gThemeColour;
-				}
-			
-				if (showMode == 0) {
-					suffixe = "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
-				} else {
-					suffixe = "°C";
-					if (Sys.getDeviceSettings().temperatureUnits == Sys. UNIT_STATUTE) {
-						suffixe = "°F";
-						value = value * 9.0 / 5.0 + 32;
-					}
-				}
-			}
-
-			dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
-			dc.drawText(x - (width / 2), y - height, gNormalFont, value.toNumber().format(INTEGER_FORMAT) + suffixe, Graphics.TEXT_JUSTIFY_LEFT);
-		}
+		dc.setColor(textColour, Graphics.COLOR_TRANSPARENT);
+		dc.drawText(x - (width / 2), y - height, gNormalFont, value, Graphics.TEXT_JUSTIFY_LEFT );
 	}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
@@ -452,6 +444,29 @@ function validateBoolean(value, defaultValue) {
 		value = defaultValue;
 	}
 	return value;
+}
+
+function to_array(string, splitter) {
+	var array = new [30]; //Use maximum expected length
+	var index = 0;
+	var location;
+
+	do {
+		location = string.find(splitter);
+		if (location != null) {
+			array[index] = string.substring(0, location);
+			string = string.substring(location + 1, string.length());
+			index++;
+		}
+	} while (location != null);
+
+	array[index] = string;
+
+	var result = new [index + 1];
+	for (var i = 0; i <= index; i++) {
+		result[i] = array[i];
+	}
+	return result;
 }
 
 (:debug, :background)
