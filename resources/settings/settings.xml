@@ -260,6 +260,10 @@
 		<settingConfig type="alphaNumeric" maxLength="32"/>
 	</setting>
 
+	<setting propertyKey="@Properties.TeslaLink" title="@Strings.TeslaLink">
+		<settingConfig type="boolean"/>
+	</setting>
+
 	<setting propertyKey="@Properties.TeslaAccessToken" title="@Strings.TeslaAccessToken">
 		<settingConfig type="alphaNumeric" maxLength="2048"/>
 	</setting>

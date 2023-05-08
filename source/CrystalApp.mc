@@ -19,7 +19,7 @@ import Toybox.WatchUi;
 // location available.
 var gLocationLat = null;
 var gLocationLng = null;
-var gTeslaComplication = true;
+var gTeslaComplication = false;
 
 (:background)
 class CrystalApp extends App.AppBase {
@@ -27,6 +27,8 @@ class CrystalApp extends App.AppBase {
 
 	function initialize() {
 		AppBase.initialize();
+
+		gTeslaComplication = getBoolProperty("TeslaLink", false);
 	}
 
 	// Return the initial view of your application here
