@@ -208,16 +208,19 @@ class CrystalView extends Ui.WatchFace {
 			logMessage("Since sunrize " + sinceSunrise);
 			logMessage("Since sunset " + sinceSunset);*/
 
-			if (condition < 53) {
+			if (condition != null && condition < 53) {
 				icon = (mGarminToOWM[condition]).format("%02d") + day;
 				//logMessage("icon=" + icon); 
 			}
-			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => weather.observationTime.value() };
-			//2022-04-10 logMessage("Weather at " + weather.observationLocationName + " is " + result);
+			else {
+				/*DEBUG*/ logMessage("Icon index " + condition + " is out of range");
+			}
+			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
+			/*DEBUG*/ logMessage("Weather at " + mWeatherStationName + " is " + result);
 		}
 		else {
-			result = null;
-			//2022-04-10 logMessage("No weather data, returning null");
+			result = { "cod" => 404 };
+			/*DEBUG*/ logMessage("No weather data, returning cod = 404");
 		}
 		Storage.setValue("WeatherInfo", result);
 		Storage.setValue("NewWeatherInfo", true);

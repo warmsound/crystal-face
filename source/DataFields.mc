@@ -112,7 +112,9 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
 								 {"type" => FIELD_FLOOR_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
-								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
+								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE},
+								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_WEATHER}
+								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_TEMPERATURE}
 								];
 
 			var fieldTypes = mApp.mFieldTypes;
@@ -134,7 +136,23 @@ class DataFields extends Ui.Drawable {
 			// Now delete any fields that doesn't have a Complication
 			for (i = 1; i < 4; i++)	{
 				if (filled[i - 1] == false) {
-					Storage.deleteValue("Complication_F" + i);
+					var current = Storage.getValue("Complication_F" + i);
+					if (current != null && current instanceof Lang.Dictionary) {
+						var keys = current.keys();
+						for (var j = 0; j < keys.size(); j++) {
+							current.remove(keys[i]);
+						}
+						if (current.isEmpty()) {
+							Storage.deleteValue("Complication_F" + i);							
+						}
+						else {
+							Storage.setValue("Complication_F" + i, current);
+						}
+
+					}
+					else {
+						Storage.deleteValue("Complication_F" + i);
+					}
 				}
 			}
 		}
@@ -436,7 +454,6 @@ class DataFields extends Ui.Drawable {
 		var altitude;
 		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
-		var weatherValue;
 		var sunTimes;
 		var unit;
 		var info;
@@ -712,24 +729,30 @@ class DataFields extends Ui.Drawable {
 				if (mWeather != null) {
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
-						weatherValue = mWeather["temp"]; // Celcius.
-						try {
-							if (settings.temperatureUnits == System.UNIT_STATUTE) {
-								weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-							}
-
-							value = weatherValue.format(INTEGER_FORMAT) + "";
-						}
-						catch (e) {
-							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
+						value = $.validateNumber(mWeather["temp"], null); // Celcius.
+						if (value == null) {
 							value = "NaN";
 						}
-						result["weatherIcon"] = mWeather["icon"];
+						else {
+							if (settings.temperatureUnits == System.UNIT_STATUTE) {
+								value = (value * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							}
+
+							value = value.format(INTEGER_FORMAT) + "";
+						}
+
+						result["weatherIcon"] = $.validateString(mWeather["icon"], "01d");
 
 					// FIELD_TYPE_HUMIDITY.
 					} else {
-						weatherValue = mWeather["humidity"];
-						value = weatherValue.format(INTEGER_FORMAT) + "%";
+						value = mWeather["humidity"];
+						value = $.validateNumber(value, null);
+						if (value == null) {
+							value = "NaN";
+						}
+						else {
+							value = value.format(INTEGER_FORMAT) + "%";
+						}
 					}
 
 					if (mWeather["cod"] != 200 || !settings.phoneConnected) {

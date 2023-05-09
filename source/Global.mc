@@ -223,7 +223,12 @@ function updateComplications(complicationName, storageName, index, complicationT
 				complicationId = new Complications.Id(complicationType);
 			}
 			if (index != null) {
-				Storage.setValue(storageName + index, complicationId);
+				var current = Storage.getValue(storageName + index);
+				if (current == null || !(current instanceof Lang.Dictionary)) {
+					current = {};
+				}
+				current.put(complicationType.toString(), true);
+				Storage.setValue(storageName + index, current);
 				Complications.subscribeToUpdates(complicationId);
 			}
 		}

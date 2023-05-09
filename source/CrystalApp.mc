@@ -118,15 +118,15 @@ class CrystalApp extends App.AppBase {
 			Bg.deleteTemporalEvent();
 		}
 
-		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
-
 		// Reread our complications if we're allowed
 		if (Toybox has :Complications) {
 			// First we drop all our subscriptions before building a new list
 			Complications.unsubscribeFromAllUpdates();
 			// We listen for complications if we're allowed
-			Complications.registerComplicationChangeCallback(mView.useComplications() ? self.method(:onComplicationUpdated) : null);
+			Complications.registerComplicationChangeCallback($.getBoolProperty("UseComplications", false) ? self.method(:onComplicationUpdated) : null);
 		}
+
+		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
 
 		Ui.requestUpdate();
 	}
@@ -194,12 +194,12 @@ class CrystalApp extends App.AppBase {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
 		var complicationShortLabel = complication.shortLabel;
-		//DEBUG*/ var complicationLongLabel = complication.longLabel;
+		/*DEBUG*/ var complicationLongLabel = complication.longLabel;
 		var complicationValue = complication.value;
 
-		//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_STEPS) {
-			//DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
-		//DEBUG*/ }
+		/*DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_CURRENT_WEATHER) {
+			/*DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
+		/*DEBUG*/ }
 
 		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
 			$.doTeslaComplication(complicationValue);
