@@ -52,12 +52,12 @@ class CrystalView extends Ui.WatchFace {
 	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
 	private var mTime;
 	var mDataFields;
-	var mHasGarminWeather;
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
-
-	var mFieldTypes = new [3];
-	var mGoalTypes = new [2];
+	var mWeatherStationName;
+	var mLocalCityName;
+	var mLocalCityLat;
+	var mLocalCityLon;
 
 	private var mUseComplications;
 
@@ -91,38 +91,12 @@ class CrystalView extends Ui.WatchFace {
 	function initialize() {
 		WatchFace.initialize();
 
-		mFieldTypes[0] = {};
-		mFieldTypes[1] = {};
-		mFieldTypes[2] = {};
-
-		mGoalTypes[0] = {};
-		mGoalTypes[1] = {};
-
-		rereadWeatherMethod();
 	}
 
 	function burnInProtectionIsOrWasActive() {
 		return mIsBurnInProtection | mBurnInProtectionChangedSinceLastDraw;
 	}
 
-	// Reread Weather method
-	function rereadWeatherMethod() {
-		var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
-		//2022-04-10 logMessage("OWMKeyOverride is '" + owmKeyOverride + "'");
-		if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
-			if (Toybox has :Weather) {
-				mHasGarminWeather = true;
-				//2022-04-10 logMessage("Does support Weather");
-			} else {
-				mHasGarminWeather = false;
-				//2022-04-10 logMessage("Does not support Weather");
-			}
-		} else {
-				mHasGarminWeather = false;
-				//2022-04-10 logMessage("Using OpenWeatherMap");
-		}
-	}
-	
 	// Load your resources here
 	function onLayout(dc) {
 		gIconsFont = Ui.loadResource(Rez.Fonts.IconsFont);
@@ -155,26 +129,19 @@ class CrystalView extends Ui.WatchFace {
 	/*
 	// Called when this View is brought to the foreground. Restore
 	// the state of this View and prepare it to be shown. This includes
-	// loading resources into memory.
+	// loading resources into memory. */
 	function onShow() {
+		/* DEBUG*/ logMessage("View showing");
 	}
-	*/
 
 	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
 	// update the full screen immediately. This is true on real hardware, but not in the simulator, which calls onUpdate()
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
 	function onSettingsChanged() {
-		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
-		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
-		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
-
-		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
-		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
-
 		mSettingsChangedSinceLastDraw = true;
 		//logMessage("onSettingsChanged called");
 
-		updateNormalFont();
+		gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
 
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
@@ -182,91 +149,23 @@ class CrystalView extends Ui.WatchFace {
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
 
-		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-			App.getApp().checkPendingWebRequests();
-		}
-		
-		rereadWeatherMethod(); // Check if we changed from Garmin Weather or OWM
+		ReadWeather(false);
 
-		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
-			ReadWeather(false);
-		}	
+		// Get our 2nd local time if available
+		var localTimeInCity = $.getStringProperty("LocalTimeInCity", "");
+		var splitArray = $.to_array(localTimeInCity, ",");
+		if (splitArray.size() == 3) {
+			mLocalCityName = $.validateString(splitArray[0], "???");
+			mLocalCityLat = $.validateFloat(splitArray[1], null);
+			mLocalCityLon = $.validateFloat(splitArray[2], null);
+		}
+		else {
+			mLocalCityName = null;
+		}
 
 		// Reread our complications if we're allowed
 		mUseComplications = $.getBoolProperty("UseComplications", false);
-		if (Toybox has :Complications) {
-			// First we drop all our subscriptions before building a new list
-			Complications.unsubscribeFromAllUpdates();
-			// We listen for complications if we're allowed
-			Complications.registerComplicationChangeCallback(mUseComplications ? self.method(:onComplicationUpdated) : null);
-		}
 	}
-
-	function hasField(fieldType) {
-		if (mFieldTypes[0] == null || mFieldTypes[1] == null || mFieldTypes[2] == null) {
-			return false;
-		}
-		return ((mFieldTypes[0].get("type") == fieldType) ||
-				(mFieldTypes[1].get("type") == fieldType) ||
-				(mFieldTypes[2].get("type") == fieldType));
-	}
-
-    function onComplicationUpdated(complicationId) {
-		var complication = Complications.getComplication(complicationId);
-		var complicationType = complication.getType();
-		/*DEBUG*/ var complicationShortLabel = complication.shortLabel;
-		/*DEBUG*/ var complicationLongLabel = complication.longLabel;
-		var complicationValue = complication.value;
-
-		//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_STEPS) {
-			//DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
-		//DEBUG*/ }
-
-		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
-			var teslaInfo = Storage.getValue("TeslaInfo");
-			if (teslaInfo == null){
-				teslaInfo = {};
-			}
-			var arrayInfo = $.to_array(complicationValue, "|");
-			teslaInfo.put("httpErrorTesla", $.validateNumber(arrayInfo[0], 0));
-			teslaInfo.put("BatteryLevel", $.validateNumber(arrayInfo[1], 0));
-			teslaInfo.put("ChargingState", $.validateString(arrayInfo[2], ""));
-			teslaInfo.put("InsideTemp", $.validateNumber(arrayInfo[3], 0));
-			teslaInfo.put("SentryEnabled", $.validateBoolean(arrayInfo[4], false));
-			teslaInfo.put("PrecondEnabled", $.validateBoolean(arrayInfo[5], false));
-			teslaInfo.put("VehicleState", $.validateString(arrayInfo[6], "asleep"));
-
-			Storage.setValue("TeslaInfo", teslaInfo);
-		}
-
-		// If we were told to ignore complications, do so (but technicaly, we shouldn't get here as we shouldn't be listening in the first place!)
-		if (!mUseComplications) {
-			/*DEBUG*/ logMessage("How did we get here, we're not supposed to be listening!");
-			return;
-		}
-
-		// I've seen this while in low power mode, so skip it
-		if (complicationValue == null) {
-			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
-			return;
-		}
-
-		// Do fields first
-		var fieldCount = $.getIntProperty("FieldCount", 3);
-
-		for (var i = 0; i < fieldCount; i++) {
-			if (mFieldTypes[i].get("ComplicationType") == complicationType) {
-				mFieldTypes[i].put("ComplicationValue", complicationValue);
-			}
-		}
-
-		// Now do goals
-		for (var i = 0; i < 2; i++) {
-			if (mGoalTypes[i].get("ComplicationType") == complicationType) {
-				mGoalTypes[i].put("ComplicationValue", complicationValue);
-			}
-		}
-    }
 
 	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
 	function ReadWeather(fromComplication) {
@@ -284,86 +183,45 @@ class CrystalView extends Ui.WatchFace {
 			var icon = "01";
 			var day = "d";
 			
+			mWeatherStationName = weather.observationLocationName;
 			var myLocation = weather.observationLocationPosition;
-			var myLocationArray = myLocation.toDegrees();
 
-			// So the OWM code knows our location since it's background code won't run to fetch it
-			gLocationLat = myLocationArray[0];
-			gLocationLng = myLocationArray[1];
-			
 			var now = Time.now();
-			if (Toybox.Weather has :getSunrise) {
-				//logMessage("We have sunrise and sunset routines!");
-				var sunrise = Weather.getSunrise(myLocation, now);
-				var sunset = Weather.getSunset(myLocation, now);
+			var sunrise = Weather.getSunrise(myLocation, now);
+			var sunset = Weather.getSunset(myLocation, now);
 
-				var sinceSunrise = sunrise.compare(now);
-				var sinceSunset = now.compare(sunset);
-				if (sinceSunrise >= 0 || sinceSunset >= 0) {
-					day = "n";
-				}
-
-				/*var nowtime = Gregorian.info(now, Time.FORMAT_MEDIUM);
-				var nowStr = nowtime.day + " " + nowtime.hour + ":" + nowtime.min.format("%02d") + ":" + nowtime.sec.format("%02d");
-				var sunrisetime = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
-				var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
-				var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
-				var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
-				logMessage("For=" + nowStr);
-				logMessage("Sunrise=" + sunriseStr);
-				logMessage("Sunset=" + sunsetStr);
-				logMessage("Since sunrize " + sinceSunrise);
-				logMessage("Since sunset " + sinceSunset);*/
-
-			} else {
-				//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
-				
-				now = Gregorian.info(now, Time.FORMAT_SHORT);
-
-				// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
-				// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
-				now = now.hour + ((now.min + 1) / 60.0);
-				//logMessage(now);
-
-				// Get today's sunrise/sunset times in current time zone.
-				var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
-				//logMessage(sunTimes);
-				//logMessage("now=" + now); 
-				//logMessage("sunTimes=" + sunTimes); 
-				// If sunrise/sunset happens today.
-				var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
-				if (sunriseSunsetToday) {
-					if (now < sunTimes[0] || now > sunTimes[1]) {
-						day = "n";
-					}
-				}
-				
+			var sinceSunrise = sunrise.compare(now);
+			var sinceSunset = now.compare(sunset);
+			if (sinceSunrise >= 0 || sinceSunset >= 0) {
+				day = "n";
 			}
+
+			/*var nowtime = Gregorian.info(now, Time.FORMAT_MEDIUM);
+			var nowStr = nowtime.day + " " + nowtime.hour + ":" + nowtime.min.format("%02d") + ":" + nowtime.sec.format("%02d");
+			var sunrisetime = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
+			var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
+			var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
+			var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
+			logMessage("For=" + nowStr);
+			logMessage("Sunrise=" + sunriseStr);
+			logMessage("Sunset=" + sunsetStr);
+			logMessage("Since sunrize " + sinceSunrise);
+			logMessage("Since sunset " + sinceSunset);*/
 
 			if (condition < 53) {
 				icon = (mGarminToOWM[condition]).format("%02d") + day;
 				//logMessage("icon=" + icon); 
 			}
-			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => weather.observationTime.value(), "lat" => myLocationArray[0], "lon" => myLocationArray[1]};
+			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon, "dt" => weather.observationTime.value() };
 			//2022-04-10 logMessage("Weather at " + weather.observationLocationName + " is " + result);
-		} else {
+		}
+		else {
 			result = null;
 			//2022-04-10 logMessage("No weather data, returning null");
 		}
-		Storage.setValue("OpenWeatherMapCurrent", result);
-		Storage.setValue("NewOpenWeatherMapCurrent", true);
+		Storage.setValue("WeatherInfo", result);
+		Storage.setValue("NewWeatherInfo", true);
 	}	
-
-	// Select normal font, based on whether time zone feature is being used.
-	// Saves memory when cities are not in use.
-	// Update drawables that use normal font.
-	function updateNormalFont() {
-		var city = $.getStringProperty("LocalTimeInCity","");
-
-		// #78 Setting with value of empty string may cause corresponding property to be null.
-		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
-			Rez.Fonts.NormalFontCities : Rez.Fonts.NormalFont);
-	}
 
 	function updateThemeColours() {
 
@@ -537,7 +395,7 @@ class CrystalView extends Ui.WatchFace {
 		};
 
 		var app = App.getApp();
-		var goalTypes = mGoalTypes;
+		var goalTypes = app.mGoalTypes;
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
@@ -653,60 +511,17 @@ class CrystalView extends Ui.WatchFace {
 							values[:current] = stressLevel.toFloat();
 							values[:isValid] = true;
 							gStressLevel = stressLevel;
-
-							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
-							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
-							var dateStr = clockTime.day + " " + clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-							var logText = "stressLevel " + stressLevel + " stressLevelDate " + dateStr + " is GOOD";
-							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-								logMessage(logText);
-								gStressLevelLogText = logText;
-							}/**/
 	 					} else if (gStressLevel != null) {
 							values[:current] = gStressLevel.toFloat();
 							values[:isValid] = true;
 							values[:staled] = true;
-
-							/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
-							var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
-							var logText = "stressLevel " + stressLevel + "is over limit, ignoring";
-							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-								logMessage(logText);
-								gStressLevelLogText = logText;
-							}/**/
-						} else {
-							/*DEBUG var logText = "stressLevel " + stressLevel + "is over limit and no StressHistory data found yet";
-							if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-								logMessage(logText);
-								gStressLevelLogText = logText;
-							}/**/
 						}
  					} else if (gStressLevel != null) {
 						values[:current] = gStressLevel.toFloat();
 						values[:isValid] = true;
 						values[:staled] = true;
-
-						/*DEBUG var timeMoment = new Time.Moment(stressLevelDate);
-						var clockTime = Gregorian.info(timeMoment, Time.FORMAT_SHORT);
-						var logText = "stressLevel " + gStressLevel + " IS staled";
-						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-							logMessage(logText);
-							gStressLevelLogText = logText;
-						}/**/
-					} else {
-						/*DEBUG var logText = "No StressHistory data found yet";
-						if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-							logMessage(logText);
-							gStressLevelLogText = logText;
-						}/**/
 					}
 					//logMessage("stressLeve " + stressLevel + " count " + count + " keptCount " + keptCount + " stressLevelDate " + stressLevelDate);
-				} else {
-					/*DEBUG var logText = "No StressHistory Sensor found";
-					if (gStressLevelLogText == null || logText.equals(gStressLevelLogText) == false) {
-						logMessage(logText);
-						gStressLevelLogText = logText;
-					}/**/
 				}
 
 				break;
@@ -753,10 +568,10 @@ class CrystalView extends Ui.WatchFace {
 	/*
 	// Called when this View is removed from the screen. Save the
 	// state of this View here. This includes freeing resources from
-	// memory.
+	// memory */
 	function onHide() {
+		/* DEBUG*/ logMessage("View hidding");
 	}
-	*/
 
 	// The user has just looked at their watch. Timers and animations may be started here.
 	function onExitSleep() {
@@ -771,16 +586,7 @@ class CrystalView extends Ui.WatchFace {
 			setHideSeconds(false);
 		}
 
-		// Rather than checking the need for background requests on a timer, or on the hour, easier just to check when exiting
-		// sleep.
-		if (CrystalApp has :checkPendingWebRequests) { // checkPendingWebRequests() can be excluded to save memory.
-			//logMessage("onExitSleep:Wakeup and checkPendingWebRequests");
-			App.getApp().checkPendingWebRequests();
-		}
-		
-		if (mHasGarminWeather == true) { // Using the Garmin Weather stuff
-			ReadWeather(false);
-		}	
+		ReadWeather(false);
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
 		var settings = Sys.getDeviceSettings();

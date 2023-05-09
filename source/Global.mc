@@ -123,7 +123,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 						var suffix = "";
 
 						batteryLevel = teslaInfo.get("BatteryLevel");
-						if (batteryLevel != null) {
+						if (batteryLevel != null && batteryLevel != 999) {
 							var chargingState = teslaInfo.get("ChargingState");
 							if (httpErrorTesla == 401 || (!vehicleAsleep && httpErrorTesla == 408)) { // Can't get or token (will be shown in gray) or we got a 408 while not asleep (will be shown in the theme's color)
 								suffix = "?";
@@ -151,7 +151,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 					case 1:
 						var sentryEnabled = teslaInfo.get("SentryEnabled");
-						if (sentryEnabled != null) {
+						if (sentryEnabled != null && sentryEnabled instanceof Lang.Boolean) {
 							value = (sentryEnabled ? "S on" : "S off");
 						}
 						else {
@@ -161,7 +161,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 					case 2:
 						var precondEnabled = teslaInfo.get("PrecondEnabled");
-						if (precondEnabled != null) {
+						if (precondEnabled != null && precondEnabled instanceof Lang.Boolean) {
 							value = (sentryEnabled ? "P on" : "P off");
 						}
 						else {
@@ -171,7 +171,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 					case 3:
 						var insideTemp = teslaInfo.get("InsideTemp");
-						if (insideTemp != null) {
+						if (insideTemp != null && insideTemp != 999) {
 							value = (Sys.getDeviceSettings().temperatureUnits == Sys.UNIT_METRIC ? insideTemp.toNumber() + "°C" : ((insideTemp.toNumber() * 9) / 5 + 32).format("%d") + "°F"); 
 						}
 						else {
@@ -436,6 +436,17 @@ function validateBoolean(value, defaultValue) {
 			value = defaultValue;
 		}
 	}
+	else if (value instanceof Lang.String) {
+		if (value.equals("true")) {
+			value = true;
+		}
+		else if (value.equals("false")) {
+			value = false;
+		}
+		else {
+			value = defaultValue;
+		}
+	}
 	else {
 		value = defaultValue;
 	}
@@ -467,6 +478,26 @@ function to_array(string, splitter) {
 		result[i] = array[i];
 	}
 	return result;
+}
+
+function doTeslaComplication(complicationValue) {
+	/*DEBUG*/ logMessage("Complication read: " + complicationValue);
+	if (complicationValue instanceof Lang.String) { // Only handle the enhance data sent, not just the battery SoC (a Number)
+		var teslaInfo = Storage.getValue("TeslaInfo");
+		if (teslaInfo == null){
+			teslaInfo = {};
+		}
+		var arrayInfo = $.to_array(complicationValue, "|");
+		teslaInfo.put("httpErrorTesla", $.validateNumber(arrayInfo[0], 401)); // Defaults to need token
+		teslaInfo.put("BatteryLevel", $.validateNumber(arrayInfo[1], 999)); // 999 means in writeBatteryLevel that we didn't get any
+		teslaInfo.put("ChargingState", $.validateString(arrayInfo[2], ""));
+		teslaInfo.put("InsideTemp", $.validateNumber(arrayInfo[3], 999)); // 999 means in writeBatteryLevel that we didn't get any
+		teslaInfo.put("SentryEnabled", $.validateBoolean(arrayInfo[4], "")); // Yes, putting an empty string instead of a Boolean. The writeBatteryLevel will know it means I don't have one
+		teslaInfo.put("PrecondEnabled", $.validateBoolean(arrayInfo[5], "")); // Yes, putting an empty string instead of a Boolean. The writeBatteryLevel will know it means I don't have one
+		teslaInfo.put("VehicleState", $.validateString(arrayInfo[6], ""));
+
+		Storage.setValue("TeslaInfo", teslaInfo);
+	}
 }
 
 (:debug, :background)

@@ -18,7 +18,6 @@
 	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Скрывать нули перед часами</string>
 	<string id="AddColon">Add colon between hours and minutes</string><!-- TODO_TRANSLATE -->
-	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Количество полей данных</string>
 	<string id="DataField1Title">Поле данных 1</string>
@@ -121,8 +120,6 @@
 	<string id="ThemeOverride">RGB Theme override</string>
 	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
 	<string id="ThemeLightOverride">Light theme override</string>
-	<string id="latitude">Latitude</string>
-	<string id="longitude">Longitude</string>
 	<string id="StressLevel">Stress Level</string>
 	<string id="UseComplications">Use Complications if available</string>
 	<string id="TeslaLink">Get Tesla info from Tesla-Link Complications</string>

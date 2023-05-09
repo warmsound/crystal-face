@@ -217,9 +217,6 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 		}
-//****************************************************************
-//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
-//****************************************************************
 		else {
 			dc.drawText(
 				mDataLeft,
@@ -257,7 +254,6 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 			var text = value + " " + battery.format(INTEGER_FORMAT) + "%";
 			var widthText = dc.getTextWidthInPixels(text, mBatteryFont);
-			var widthTeslaT = dc.getTextWidthInPixels("T", mTeslaFont);
 
 			dc.drawText(
 				dc.getWidth() - mDataLeft - widthText,
@@ -274,8 +270,5 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 		}
-//****************************************************************
-//******************** END OF REMVOVED SECTION *******************
-//****************************************************************
 	}
 }

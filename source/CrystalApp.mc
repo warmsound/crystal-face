@@ -12,27 +12,65 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
-// In-memory current location.
-// Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
-// Current location retrieved/saved in checkPendingWebRequests().
-// Persistence allows weather and sunrise/sunset features to be used after watch face restart, even if watch no longer has current
-// location available.
-var gLocationLat = null;
-var gLocationLng = null;
 var gTeslaComplication = false;
 
 (:background)
 class CrystalApp extends App.AppBase {
 	var mView;
 
+	var mFieldTypes = new [3];
+	var mGoalTypes = new [2];
+
+	private var mUseComplications;
+
 	function initialize() {
 		AppBase.initialize();
 
+		mFieldTypes[0] = {};
+		mFieldTypes[1] = {};
+		mFieldTypes[2] = {};
+
+		mGoalTypes[0] = {};
+		mGoalTypes[1] = {};
+
 		gTeslaComplication = getBoolProperty("TeslaLink", false);
+
+		// This code check if the user selected a different vehicle index in its property. If so, we'll need to get a new vehicleID
+		var propVehicleIndex;
+		var storVehicleIndex;
+
+		try {
+			propVehicleIndex = Properties.getValue("TeslaVehicleIndex");
+		}
+		catch (e) {
+			propVehicleIndex = 1;
+		}
+
+		storVehicleIndex = Storage.getValue("TeslaVehiceIndex");
+		if (storVehicleIndex == null || propVehicleIndex != storVehicleIndex) {
+			storVehicleIndex = propVehicleIndex;
+			try {
+				Storage.setValue("TeslaVehiceIndex", storVehicleIndex);
+				Storage.setValue("TeslaVehiceIndex", storVehicleIndex);
+				Storage.setValue("TeslaVehicleID", null);
+			}
+			catch (e) {
+			}
+		}
 	}
+
+	// function onStart(state) {
+	// 	/* DEBUG*/ logMessage("App starting");
+	// }
+
+	// function onStop(state) {
+	// 	/* DEBUG*/ logMessage("App stopping");
+	// }
 
 	// Return the initial view of your application here
 	function getInitialView() {
+		/* DEBUG*/ logMessage("Getting initial view");
+
 		if (WatchUi has :WatchFaceDelegate) {
 			mView = new CrystalView();
 			onSettingsChanged(); // After creating view.
@@ -53,11 +91,42 @@ class CrystalApp extends App.AppBase {
 	// New app settings have been received so trigger a UI update
 	(:background_method)
 	function getServiceDelegate() {
+		/* DEBUG*/ logMessage("Getting service delegate");
 		return [new BackgroundService()];
 	}
 
 	function onSettingsChanged() {
+		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
+		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
+		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
+
+		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
+		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
+
+		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
+		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
+			var lastTime = Bg.getLastTemporalEventTime();
+			if (lastTime) {
+				// Events scheduled for a time in the past trigger immediately.
+				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+				Bg.registerForTemporalEvent(nextTime);
+			} else {
+				Bg.registerForTemporalEvent(Time.now());
+			}
+		}
+		else {
+			Bg.deleteTemporalEvent();
+		}
+
 		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
+
+		// Reread our complications if we're allowed
+		if (Toybox has :Complications) {
+			// First we drop all our subscriptions before building a new list
+			Complications.unsubscribeFromAllUpdates();
+			// We listen for complications if we're allowed
+			Complications.registerComplicationChangeCallback(mView.useComplications() ? self.method(:onComplicationUpdated) : null);
+		}
 
 		Ui.requestUpdate();
 	}
@@ -68,214 +137,95 @@ class CrystalApp extends App.AppBase {
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
-		//2022-04-10 logMessage("onBackgroundData:received '" + data + "'");
-		var pendingWebRequests = Storage.getValue("PendingWebRequests");
-		if (pendingWebRequests == null) {
-			pendingWebRequests = {};
+		var receivedData = data["TeslaInfo"]; // What we just received
+		
+		var teslaInfo = Storage.getValue("TeslaInfo"); // What we have in Storage
+		if (teslaInfo == null) {
+			teslaInfo = {};
 		}
 
-		var type = data.keys()[0]; // Type of received data.
-		var receivedData = data[type]; // The actual data received: strip away type key.
-		
-		// Do process the data if what we got was an error
-		if (receivedData["httpError"] == null) {
-			// New data received: clear pendingWebRequests flag and overwrite stored data.
-			pendingWebRequests.remove(type);
-			Storage.setValue("PendingWebRequests", pendingWebRequests);
+		// Update in TeslaInfo what has been received in receivedData
+		var keys = receivedData.keys();
+		var values = receivedData.values();
+		for (var i = 0; i < keys.size(); i++) {
+			teslaInfo.put(keys[i], values[i]);
+		}
 
-			if (type.equals("TeslaInfo")) {
-				// TeslaInfo is refeshed, not overwritten
-				var storedData = Storage.getValue(type);
-				if (storedData == null) {
-					storedData = {};
+		// Copy into their own name some of the entries in TeslaInfo, then delete from TeslaInfo
+		var arrayKey = ["RefreshToken", "AccessToken", "TokenCreatedAt", "TokenExpiresIn", "VehicleID"];
+		var arrayProp = [true, true, false, false, false ];
+		for (var i = 0; i < arrayKey.size(); i++) {
+			var value = teslaInfo.get(arrayKey[i]);
+			if (value != null) {
+				if (arrayProp[i]) {
+					Properties.setValue("Tesla" + arrayKey[i], value);
 				}
-
-                var keys = receivedData.keys();
-                var values = receivedData.values();
-
-				for (var i = 0; i < keys.size(); i++) {
-					storedData.put(keys[i], values[i]);
+				else {
+					Storage.setValue("Tesla" + arrayKey[i], value);
 				}
-				Storage.setValue(type, storedData);
+				teslaInfo.remove(arrayKey[i]);
 			}
-			else {
-				Storage.setValue(type, receivedData);
-			}
+		}
 
-			if (type.equals("OpenWeatherMapCurrent")) {
-				Storage.setValue("NewOpenWeatherMapCurrent", true);
-			}
+		// Now store our updated copy of TeslaInfo
+		Storage.setValue("TeslaInfo", teslaInfo);
 
-			checkPendingWebRequests(); // We just got new data, process them right away before displaying
+		// We deal with specific errors here, leaving the good stuff to the battery indicator
+		var responseCode = teslaInfo["httpErrorTesla"];
+		var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
+		if (responseCode != null && internalResponseCode != null) {
+			if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
+				Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
+			} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
+				Storage.remove("VehicleID"); // Try to get a new vehicleID
+			}
 		}
 
 		Ui.requestUpdate();
 	}
 
-	// Determine if any web requests are needed.
-	// If so, set approrpiate pendingWebRequests flag for use by BackgroundService, then register for
-	// temporal event.
-	// Currently called on layout initialisation, when settings change, and on exiting sleep.
-	(:background_method)
-	function checkPendingWebRequests() {
-		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
-		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
+	function hasField(fieldType) {
+		return ((mFieldTypes[0].get("type") == fieldType) ||
+				(mFieldTypes[1].get("type") == fieldType) ||
+				(mFieldTypes[2].get("type") == fieldType));
+	}
 
-		var location = Activity.getActivityInfo().currentLocation;
-		if (location) {
-			location = location.toDegrees(); // Array of Doubles.
-			if (location[0] != 0.0 && location[1] != 0.0) {
-				gLocationLat = location[0];
-				gLocationLng = location[1];
-				Properties.setValue("LastLocationLat", gLocationLat.format("%0.5f"));
-				Properties.setValue("LastLocationLng", gLocationLng.format("%0.5f"));
-			}
-		}
-		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
-		// in-memory value with an invalid stored one.
-		else {
-			var lat = $.getStringProperty("LastLocationLat","");
-			if (lat != null) {
-				gLocationLat = lat.toFloat();
-			}
+    function onComplicationUpdated(complicationId) {
+		var complication = Complications.getComplication(complicationId);
+		var complicationType = complication.getType();
+		var complicationShortLabel = complication.shortLabel;
+		//DEBUG*/ var complicationLongLabel = complication.longLabel;
+		var complicationValue = complication.value;
 
-			var lng = $.getStringProperty("LastLocationLng","");
-			if (lng != null) {
-				gLocationLng = lng.toFloat();
-			}
+		//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_STEPS) {
+			//DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
+		//DEBUG*/ }
+
+		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+			$.doTeslaComplication(complicationValue);
 		}
 
-		if (!(Sys has :ServiceDelegate)) {
+		// I've seen this while in low power mode, so skip it
+		if (complicationValue == null) {
+			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
 			return;
 		}
 
-		var pendingWebRequests = Storage.getValue("PendingWebRequests");
-		if (pendingWebRequests == null) {
-			pendingWebRequests = {};
-		}
+		// Do fields first
+		var fieldCount = $.getIntProperty("FieldCount", 3);
 
-		// 1. City local time:
-		// City has been specified.
-		var city = $.getStringProperty("LocalTimeInCity","");
-		
-		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null) && (city.length() > 0)) {
-
-			var cityLocalTime = Storage.getValue("CityLocalTime");
-
-			// No existing data.
-			if ((cityLocalTime == null) ||
-
-			// Existing data is old.
-			((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
-
-				pendingWebRequests["CityLocalTime"] = true;
-		
-			// Existing data not for this city: delete it.
-			// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
-			// city again.
-			} else if (!cityLocalTime["requestCity"].equals(city)) {
-
-				deleteProperty("CityLocalTime");
-				pendingWebRequests["CityLocalTime"] = true;
+		for (var i = 0; i < fieldCount; i++) {
+			if (mFieldTypes[i].get("ComplicationType") == complicationType) {
+				mFieldTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
 
-		// 2. Weather:
-		// Location must be available, weather or humidity (#113) data field must be shown.
-		if ((gLocationLat != null) &&
-			(mView.hasField(FIELD_TYPE_WEATHER) || mView.hasField(FIELD_TYPE_HUMIDITY))) {
-
-			var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
-			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
-				//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
-			} else {
-				//2022-04-10 logMessage("Using OpenWeatherMap");
-				var owmCurrent = Storage.getValue("OpenWeatherMapCurrent");
-	
-				// No existing data.
-				if (owmCurrent == null) {
-					pendingWebRequests["OpenWeatherMapCurrent"] = true;
-				// Successfully received weather data.
-				} else if (owmCurrent["cod"] == 200) {
-					// Existing data is older than 5 mins.
-					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
-					if ((Time.now().value() > (owmCurrent["dt"] + 300)) ||
-	
-					// Existing data not for this location.
-					// Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
-					// true distance calculation. 0.02 degree of latitude is just over a mile.
-					(((gLocationLat - owmCurrent["lat"]).abs() > 0.02) || ((gLocationLng - owmCurrent["lon"]).abs() > 0.02))) {
-						pendingWebRequests["OpenWeatherMapCurrent"] = true;
-					}
-				} else {
-					pendingWebRequests["OpenWeatherMapCurrent"] = true;
-				}
-			}
+		// Now do goals
+		if (mGoalTypes[0].get("ComplicationType") == complicationType) {
+			mGoalTypes[0].put("ComplicationValue", complicationValue);
 		}
-
-		// 3. Tesla:
-//****************************************************************
-//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
-//****************************************************************
-//*******************checkPendingWebRequests**********************
-		if (Storage.getValue("Tesla") != null && gTeslaComplication == false) {
-			var teslaInfo = Storage.getValue("TeslaInfo");
-			if (teslaInfo == null) { // We're not doing Tesla stuff so why asking for it, clear that
-				pendingWebRequests["TeslaInfo"] = false;
-			} else { // We're doing Tesla stuff
-				var arrayKey = ["RefreshToken", "AccessToken", "TokenCreatedAt", "TokenExpiresIn", "VehicleID"];
-				var arrayProp = [true, true, false, false, false ];
-
-				for (var i = 0; i < arrayKey.size(); i++) {
-					var value = teslaInfo.get(arrayKey[i]);
-					if (value != null) {
-						if (arrayProp[i]) {
-							Properties.setValue("Tesla" + arrayKey[i], value);
-						}
-						else {
-							Storage.setValue("Tesla" + arrayKey[i], value);
-						}
-						teslaInfo.remove(arrayKey[i]);
-					}
-				}
-
-				// We deal with specific errors here, leaving the good stuff to the battery indicator
-				var responseCode = teslaInfo["httpErrorTesla"];
-				var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
-				if (responseCode != null && internalResponseCode != null) {
-					if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
-						Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
-					} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
-						Storage.remove("VehicleID"); // Try to get a new vehicleID
-					}
-
-					Storage.setValue("TeslaInfo", teslaInfo);
-				}
-				
-				pendingWebRequests["TeslaInfo"] = true;
-			}
+		if (mGoalTypes[1].get("ComplicationType") == complicationType) {
+			mGoalTypes[1].put("ComplicationValue", complicationValue);
 		}
-		else {
-			pendingWebRequests.remove("TeslaInfo");
-		}
-//****************************************************************
-//******************** END OF REMVOVED SECTION *******************
-//****************************************************************
-		
-		// If there are any pending requests and we can do background process
-		if (Toybox.System has :ServiceDelegate && pendingWebRequests.keys().size() > 0) {
-			// Register for background temporal event as soon as possible.
-			var lastTime = Bg.getLastTemporalEventTime();
-			if (lastTime) {
-				// Events scheduled for a time in the past trigger immediately.
-				var nextTime = lastTime.add(new Time.Duration(5 * 60));
-				Bg.registerForTemporalEvent(nextTime);
-			} else {
-				Bg.registerForTemporalEvent(Time.now());
-			}
-		}
-
-		Storage.setValue("PendingWebRequests", pendingWebRequests);
-	}
+    }
 }

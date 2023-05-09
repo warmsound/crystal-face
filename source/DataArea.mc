@@ -75,19 +75,17 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconLeftX, mLeftGoalType, mLeftGoalIsValid, mLeftGoalstaled, Graphics.TEXT_JUSTIFY_LEFT);
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
-		var city = $.getStringProperty("LocalTimeInCity", "");
+		var view = App.getApp().getView();
+		var city = view.mLocalCityName;
+		var fromWeather = false;
+
+		if (city == null || city.length() == 0) {
+			city = view.mWeatherStationName;
+			fromWeather = true;
+		}
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null) && (city.length() != 0)) {
-			//drawTimeZone();
-			var cityLocalTime = Storage.getValue("CityLocalTime");
-
-			// If available, use city returned from web request; otherwise, use raw city from settings.
-			// N.B. error response will NOT contain city.
-			if ((cityLocalTime != null) && (cityLocalTime["city"] != null)) {
-				city = cityLocalTime["city"];
-			}
-
+		if ((city != null && city.length() > 0)) {
 			// Time zone 1 city.
 			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
@@ -100,50 +98,41 @@ class DataArea extends Ui.Drawable {
 			);
 
 			// Time zone 1 time.
-			var time;
-			if (cityLocalTime) {
+			if (!fromWeather) {
+				var time;
 
-				// Web request responded with server error e.g. unknown city.
-				if (cityLocalTime["error"] != null) {
+				if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -90.0 && view.mLocalCityLon <= 90.0) {
+					try {
+						var where = new Position.Location({
+							:latitude  => view.mLocalCityLat,
+							:longitude => view.mLocalCityLon,
+							:format    => :degrees
+						});
 
-					time = "???";
 
-				// Web request responded with time zone data for city.
-				} else {
-					var timeZoneGmtOffset;
+						var local = Gregorian.localMoment(where, Time.now());
+						local = Gregorian.info(local, Time.FORMAT_SHORT);
 
-					// Use next GMT offset if it's now applicable (new data will be requested shortly).
-					if ((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"])) {
-						timeZoneGmtOffset = cityLocalTime["next"]["gmtOffset"];
-					} else {
-						timeZoneGmtOffset = cityLocalTime["current"]["gmtOffset"];
+						time = $.getFormattedTime(local.hour, local.min);
+						time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 					}
-					timeZoneGmtOffset = new Time.Duration(timeZoneGmtOffset);
-					
-					var localGmtOffset = Sys.getClockTime().timeZoneOffset;
-					localGmtOffset = new Time.Duration(localGmtOffset);
-
-					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-					time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-					time = Gregorian.info(time, Time.FORMAT_SHORT);
-					time = $.getFormattedTime(time.hour, time.min);
-					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
+					catch (e) {
+						time = "???";
+					}
+				}
+				else {
+					time = "???";
 				}
 
-			// Awaiting response to web request sent by BackgroundService.
-			} else {
-				time = "...";
+				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					locX + (width / 2),
+					mRow2Y,
+					gNormalFont,
+					time,
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
 			}
-
-			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				locX + (width / 2),
-				mRow2Y,
-				gNormalFont,
-				time,
-				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
 		} else {
 			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
 			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);

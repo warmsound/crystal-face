@@ -27,8 +27,12 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
-### 2.17.5
-- Redid the Tesla code and added the reading of the Tesla-Link Complications to get Tesla Info insteading of querying Tesla's servers. No more Token handling 
+### 2.18.0
+- Removed Watch model that are not at least at CIQ 3.3.0. This is required for the new Sunrise/Sunset and Weather library by Garmin. From the stats Garmin shows me about the watch face, none of them had downloaded the watch face anyway.
+- Removed the OpenWeatherMap and rely solely on Garmin Weather. The OWN and GPS was giving too much problem.
+- The area on the screen allocated for alternate TimeZone will display the current weather station name if no alternate TimeZone was entered.
+- The "Local time in City" (ie, alternate TimeZone) has been redone, much simplier, doesn't require Background process anymore but will need some work on your side. The field in the setting is now a Comma Separated Value (CSV) with the first value being the city name, second the latitude of the city and third its longitude. The last two in decimal notation (with a period, not comma). You will have to enter these, which are easy to find in Google Map anyway. No type checking done, beside making sure the latitude and logitude are numbers. If invalid, '???' will be shown for the time.
+- Redid the Tesla code and added the reading of the Tesla-Link Complications to get Tesla data instead of querying Tesla's servers. No more Token handling if using Complications and Tesla-Link.
 
 ### 2.17.4
 - One more attempt at fixing the crash because of the Settings change since 2.17.1

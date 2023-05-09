@@ -48,6 +48,7 @@ class GoalMeter extends Ui.Drawable {
 	private var mMaxValue;
 	private var mIsOff = false; // #114 Should entire meter on this side be hidden?
 
+	private var mApp;
 	private var mView;
 	
 	// private enum /* GOAL_METER_STYLES */ {
@@ -113,8 +114,8 @@ class GoalMeter extends Ui.Drawable {
 	}
 
 	function onSettingsChanged(index) {
-		var app = App.getApp();
-		mView = app.getView();
+		mApp = App.getApp();
+		mView = mApp.getView();
 
 		mBuffersNeedRecreate = true;
 
@@ -140,14 +141,14 @@ class GoalMeter extends Ui.Drawable {
 			mSeparator = 0;
 		}
 
-		if (Toybox has :Complications && app.getView().useComplications()) {
+		if (Toybox has :Complications && mView.useComplications()) {
 			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => GOAL_TYPE_FLOORS_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => GOAL_TYPE_STEPS, "complicationType" => Complications.COMPLICATION_TYPE_STEPS},
 								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
 								];
 
-			var goalTypes = mView.mGoalTypes;
+			var goalTypes = mApp.mGoalTypes;
 			var filled = false;
 
 			for (var i = 0; i < complications.size(); i++) {

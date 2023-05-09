@@ -22,6 +22,7 @@ class Indicators extends Ui.Drawable {
 	// 	INDICATOR_TYPE_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BATTERY
+	// 	INDICATOR_TYPE_TESLA
 	// }
 
 	function initialize(params) {
@@ -47,6 +48,7 @@ class Indicators extends Ui.Drawable {
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 		var teslaIndicator;
+		
 		if (mIndicator1Type == 6) {
 			teslaIndicator = 1;
 		}

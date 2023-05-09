@@ -42,6 +42,7 @@ enum /* FIELD_TYPES */ {
 
 class DataFields extends Ui.Drawable {
 
+	private var mApp;
 	private var mView;
 	
 	var mLeft;
@@ -57,7 +58,7 @@ class DataFields extends Ui.Drawable {
 	private var mWasHRAvailable = false; // HR availability at last full draw (in high power mode).
 	private var mMaxFieldLength; // Maximum number of characters per field.
 	private var mBatteryWidth; // Width of battery meter.
-	private var storedWeather;
+	private var mWeather;
 	// private const CM_PER_KM = 100000;
 	// private const MI_PER_KM = 0.621371;
 	// private const FT_PER_M = 3.28084;
@@ -78,9 +79,8 @@ class DataFields extends Ui.Drawable {
 
 	// Cache FieldCount setting, and determine appropriate maximum field length.
 	function onSettingsChanged() {
-
-		var app = App.getApp();
-		mView = app.getView();
+		mApp = App.getApp();
+		mView = mApp.getView();
 
 		// #123 Protect against null or unexpected type e.g. String.
 		mFieldCount = $.getIntProperty("FieldCount", 3);
@@ -100,9 +100,9 @@ class DataFields extends Ui.Drawable {
 		// #116 Handle FieldCount = 0 correctly.
 		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
-		mHasLiveHR = mView.hasField(FIELD_TYPE_HR_LIVE_5S);
+		mHasLiveHR = mApp.hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		if (!mView.hasField(FIELD_TYPE_WEATHER)) {
+		if (!mApp.hasField(FIELD_TYPE_WEATHER)) {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
@@ -115,12 +115,12 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE}
 								];
 
-			var fieldTypes = mView.mFieldTypes;
+			var fieldTypes = mApp.mFieldTypes;
 			var filled = [false, false, false];
 			var i;
 
 			for (i = 0; i < complications.size(); i++) {
-				if (mView.hasField(complications[i].get("type"))) {
+				if (mApp.hasField(complications[i].get("type"))) {
 					for (var j = 0; j < mFieldCount; j++) {
 						if (fieldTypes[j].get("type") == complications[i].get("type")) {
 							$.updateComplications("", "Complication_F", j + 1, complications[i].get("complicationType"));
@@ -156,7 +156,7 @@ class DataFields extends Ui.Drawable {
 			return;
 		}
 
-		var fieldTypes = mView.mFieldTypes;
+		var fieldTypes = mApp.mFieldTypes;
 
 		/*var spacingX = Sys.getDeviceSettings().screenWidth / (2 * mFieldCount);
 		var spacingY = Sys.getDeviceSettings().screenHeight / 4;
@@ -436,7 +436,6 @@ class DataFields extends Ui.Drawable {
 		var altitude;
 		var pressure = null; // May never be initialised if no support for pressure (CIQ 1.x devices).
 		var temperature;
-		var weather;
 		var weatherValue;
 		var sunTimes;
 		var unit;
@@ -456,7 +455,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_BODY_BATTERY:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mView.mFieldTypes;
+					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -478,7 +477,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mView.mFieldTypes;
+					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -521,7 +520,7 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mView.mFieldTypes;
+					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString() + "%";
@@ -537,7 +536,7 @@ class DataFields extends Ui.Drawable {
 				break;
 			case FIELD_TYPE_HEART_RATE:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mView.mFieldTypes;
+					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -663,63 +662,36 @@ class DataFields extends Ui.Drawable {
 				break;
 
 			case FIELD_TYPE_SUNRISE_SUNSET:
-			
-				if (gLocationLat != null) {
-					var nextSunEvent = 0;
-					var now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+				var weather = Weather.getCurrentConditions();
+				if (weather != null) {
+					var now = Time.now();
+					var myLocation = weather.observationLocationPosition;
 
-					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
-					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
-					now = now.hour + ((now.min + 1) / 60.0);
-					//logMessage(now);
+					var sunrise = Weather.getSunrise(myLocation, now);
+					var sunset = Weather.getSunset(myLocation, now);
 
-					// Get today's sunrise/sunset times in current time zone.
-					sunTimes = getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ false);
-					//logMessage(sunTimes);
+					var sunriseTime = Gregorian.info(sunrise, Time.FORMAT_SHORT);
+					var sunsetTime = Gregorian.info(sunset, Time.FORMAT_SHORT);
 
-					// If sunrise/sunset happens today.
-					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
-					if (sunriseSunsetToday) {
+					var sinceSunrise = sunrise.compare(now);
+					var sinceSunset = now.compare(sunset);
 
-						// Before sunrise today: today's sunrise is next.
-						if (now < sunTimes[0]) {
-							nextSunEvent = sunTimes[0];
-							result["isSunriseNext"] = true;
-
-						// After sunrise today, before sunset today: today's sunset is next.
-						} else if (now < sunTimes[1]) {
-							nextSunEvent = sunTimes[1];
-
-						// After sunset today: tomorrow's sunrise (if any) is next.
-						} else {
-							sunTimes = getSunTimes(gLocationLat, gLocationLng, null, /* tomorrow */ true);
-							nextSunEvent = sunTimes[0];
-							result["isSunriseNext"] = true;
-						}
+					if (sinceSunrise >= 0 || sinceSunset >= 0) {
+						result["isSunriseNext"] = true;
+						value = $.getFormattedTime(sunriseTime.hour, sunriseTime.min);
 					}
-
-					// Sun never rises/sets today.
-					if (!sunriseSunsetToday) {
-						value = "---";
-
-						// Sun never rises: sunrise is next, but more than a day from now.
-						if (sunTimes[0] == null) {
-							result["isSunriseNext"] = true;
-						}
-
-					// We have a sunrise/sunset time.
-					} else {
-						var hour = Math.floor(nextSunEvent).toLong() % 24;
-						var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
-						value = $.getFormattedTime(hour, min);
-						value = value[:hour] + ":" + value[:min] + value[:amPm]; 
+					else {
+						value = $.getFormattedTime(sunsetTime.hour, sunsetTime.min);
 					}
-
-				// Waiting for location.
-				} else {
-					value = "gps?";
+					value = value[:hour] + ":" + value[:min] + value[:amPm]; 
 				}
+				else {
+					value = "???";
 
+					if (!settings.phoneConnected) {
+						stale = true;
+					}
+				}
 				break;
 
 			case FIELD_TYPE_WEATHER:
@@ -731,24 +703,16 @@ class DataFields extends Ui.Drawable {
 				}
 
 				// Only read that dictionnary from Storage if it has changed (or we don't have a local copy), otherwise read our stored weather data
-				if (storedWeather == null || Storage.getValue("NewOpenWeatherMapCurrent") != null) { 
-					weather = Storage.getValue("OpenWeatherMapCurrent");
-					Storage.setValue("NewOpenWeatherMapCurrent", null);
-					storedWeather = weather;
+				if (mWeather == null || Storage.getValue("NewWeatherInfo") != null) { 
+					mWeather = Storage.getValue("WeatherInfo");
+					Storage.setValue("NewWeatherInfo", null);
 				}
-				else {
-					weather = storedWeather;
-				}
-
-				// Awaiting location.
-				if (gLocationLat == null) {
-					value = "gps?";
 
 				// Stored weather data available.
-				} else if (weather != null) {
+				if (mWeather != null) {
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
-						weatherValue = weather["temp"]; // Celcius.
+						weatherValue = mWeather["temp"]; // Celcius.
 						try {
 							if (settings.temperatureUnits == System.UNIT_STATUTE) {
 								weatherValue = (weatherValue * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
@@ -758,26 +722,25 @@ class DataFields extends Ui.Drawable {
 						}
 						catch (e) {
 							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
-							value = "???";
+							value = "NaN";
 						}
-						result["weatherIcon"] = weather["icon"];
+						result["weatherIcon"] = mWeather["icon"];
 
 					// FIELD_TYPE_HUMIDITY.
 					} else {
-						weatherValue = weather["humidity"];
+						weatherValue = mWeather["humidity"];
 						value = weatherValue.format(INTEGER_FORMAT) + "%";
 					}
 
-					if (weather["cod"] != 200 || !settings.phoneConnected) {
+					if (mWeather["cod"] != 200 || !settings.phoneConnected) {
 						stale = true;
 					}
 
 				// Awaiting response.
-				} else if ((Storage.getValue("PendingWebRequests") != null) &&
-					Storage.getValue("PendingWebRequests")["OpenWeatherMapCurrent"] != null) {
+				}
+				else {
+					value = "???";
 
-					value = "...";
-					
 					if (!settings.phoneConnected) {
 						stale = true;
 					}
@@ -819,116 +782,3 @@ class DataFields extends Ui.Drawable {
 	}
 }
 
-
-/**
-* With thanks to ruiokada. Adapted, then translated to Monkey C, from:
-* https://gist.github.com/ruiokada/b28076d4911820ddcbbc
-*
-* Calculates sunrise and sunset in local time given latitude, longitude, and tz.
-*
-* Equations taken from:
-* https://en.wikipedia.org/wiki/Julian_day#Converting_Julian_or_Gregorian_calendar_date_to_Julian_Day_Number
-* https://en.wikipedia.org/wiki/Sunrise_equation#Complete_calculation_on_Earth
-*
-* @method getSunTimes
-* @param {Float} lat Latitude of location (South is negative)
-* @param {Float} lng Longitude of location (West is negative)
-* @param {Integer || null} tz Timezone hour offset. e.g. Pacific/Los Angeles is -8 (Specify null for system timezone)
-* @param {Boolean} tomorrow Calculate tomorrow's sunrise and sunset, instead of today's.
-* @return {Array} Returns array of length 2 with sunrise and sunset as floats.
-*                 Returns array with [null, -1] if the sun never rises, and [-1, null] if the sun never sets.
-*/
-function getSunTimes(lat, lng, tz, tomorrow) {
-
-	// Use double precision where possible, as floating point errors can affect result by minutes.
-	lat = lat.toDouble();
-	lng = lng.toDouble();
-
-	var now = Time.now();
-	if (tomorrow) {
-		now = now.add(new Time.Duration(24 * 60 * 60));
-	}
-	var d = Gregorian.info(now, Time.FORMAT_SHORT);
-	var rad = Math.PI / 180.0d;
-	var deg = 180.0d / Math.PI;
-	
-	// Calculate Julian date from Gregorian.
-	var a = Math.floor((14 - d.month) / 12);
-	var y = d.year + 4800 - a;
-	var m = d.month + (12 * a) - 3;
-	var jDate = d.day
-		+ Math.floor(((153 * m) + 2) / 5)
-		+ (365 * y)
-		+ Math.floor(y / 4)
-		- Math.floor(y / 100)
-		+ Math.floor(y / 400)
-		- 32045;
-
-	// Number of days since Jan 1st, 2000 12:00.
-	var n = jDate - 2451545.0d + 0.0008d;
-	//Sys.println("n " + n);
-
-	// Mean solar noon.
-	var jStar = n - (lng / 360.0d);
-	//Sys.println("jStar " + jStar);
-
-	// Solar mean anomaly.
-	var M = 357.5291d + (0.98560028d * jStar);
-	var MFloor = Math.floor(M);
-	var MFrac = M - MFloor;
-	M = MFloor.toLong() % 360;
-	M += MFrac;
-	//Sys.println("M " + M);
-
-	// Equation of the centre.
-	var C = 1.9148d * Math.sin(M * rad)
-		+ 0.02d * Math.sin(2 * M * rad)
-		+ 0.0003d * Math.sin(3 * M * rad);
-	//Sys.println("C " + C);
-
-	// Ecliptic longitude.
-	var lambda = (M + C + 180 + 102.9372d);
-	var lambdaFloor = Math.floor(lambda);
-	var lambdaFrac = lambda - lambdaFloor;
-	lambda = lambdaFloor.toLong() % 360;
-	lambda += lambdaFrac;
-	//Sys.println("lambda " + lambda);
-
-	// Solar transit.
-	var jTransit = 2451545.5d + jStar
-		+ 0.0053d * Math.sin(M * rad)
-		- 0.0069d * Math.sin(2 * lambda * rad);
-	//Sys.println("jTransit " + jTransit);
-
-	// Declination of the sun.
-	var delta = Math.asin(Math.sin(lambda * rad) * Math.sin(23.44d * rad));
-	//Sys.println("delta " + delta);
-
-	// Hour angle.
-	var cosOmega = (Math.sin(-0.83d * rad) - Math.sin(lat * rad) * Math.sin(delta))
-		/ (Math.cos(lat * rad) * Math.cos(delta));
-	//Sys.println("cosOmega " + cosOmega);
-
-	// Sun never rises.
-	if (cosOmega > 1) {
-		return [null, -1];
-	}
-	
-	// Sun never sets.
-	if (cosOmega < -1) {
-		return [-1, null];
-	}
-	
-	// Calculate times from omega.
-	var omega = Math.acos(cosOmega) * deg;
-	var jSet = jTransit + (omega / 360.0);
-	var jRise = jTransit - (omega / 360.0);
-	var deltaJSet = jSet - jDate;
-	var deltaJRise = jRise - jDate;
-
-	var tzOffset = (tz == null) ? (Sys.getClockTime().timeZoneOffset / 3600.0) : tz;
-	return [
-		/* localRise */ (deltaJRise * 24) + tzOffset,
-		/* localSet */ (deltaJSet * 24) + tzOffset
-	];
-}
