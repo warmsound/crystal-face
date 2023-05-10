@@ -113,8 +113,9 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_FLOOR_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE},
-								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_WEATHER}
-								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_TEMPERATURE}
+								 {"type" => FIELD_RECOVERY_TIME, "complicationType" => Complications.COMPLICATION_TYPE_RECOVERY_TIME},
+								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_WEATHER}, // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
+								 {"type" => FIELD_TYPE_SUNRISE_SUNSET, "complicationType" => Complications.COMPLICATION_TYPE_SUNRISE} // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
 								];
 
 			var fieldTypes = mApp.mFieldTypes;
@@ -136,23 +137,7 @@ class DataFields extends Ui.Drawable {
 			// Now delete any fields that doesn't have a Complication
 			for (i = 1; i < 4; i++)	{
 				if (filled[i - 1] == false) {
-					var current = Storage.getValue("Complication_F" + i);
-					if (current != null && current instanceof Lang.Dictionary) {
-						var keys = current.keys();
-						for (var j = 0; j < keys.size(); j++) {
-							current.remove(keys[i]);
-						}
-						if (current.isEmpty()) {
-							Storage.deleteValue("Complication_F" + i);							
-						}
-						else {
-							Storage.setValue("Complication_F" + i, current);
-						}
-
-					}
-					else {
-						Storage.deleteValue("Complication_F" + i);
-					}
+					Storage.deleteValue("Complication_F" + i);
 				}
 			}
 		}
@@ -461,8 +446,15 @@ class DataFields extends Ui.Drawable {
 		switch (type) {
 			// SG Addition
 			case FIELD_RECOVERY_TIME:
+				if (Toybox has :Complications && mView.useComplications()) {
+					var fieldTypes = mApp.mFieldTypes;
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = secondsToTimeString(tmpValue);
+					}
+				}
 				info = ActivityMonitor.getInfo();
-				if (info has :timeToRecovery) {
+				if (value.equals("") == true && (info has :timeToRecovery)) {
 					var recoveryTyime = info.timeToRecovery;
 					if (recoveryTyime != null) {
 						value = recoveryTyime.format(INTEGER_FORMAT);

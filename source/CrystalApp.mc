@@ -123,7 +123,8 @@ class CrystalApp extends App.AppBase {
 			// First we drop all our subscriptions before building a new list
 			Complications.unsubscribeFromAllUpdates();
 			// We listen for complications if we're allowed
-			Complications.registerComplicationChangeCallback($.getBoolProperty("UseComplications", false) ? self.method(:onComplicationUpdated) : null);
+//			Complications.registerComplicationChangeCallback($.getBoolProperty("UseComplications", false) ? self.method(:onComplicationUpdated) : null);
+			Complications.registerComplicationChangeCallback(self.method(:onComplicationUpdated));
 		}
 
 		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
@@ -197,7 +198,7 @@ class CrystalApp extends App.AppBase {
 		/*DEBUG*/ var complicationLongLabel = complication.longLabel;
 		var complicationValue = complication.value;
 
-		/*DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_CURRENT_WEATHER) {
+		/*DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_RECOVERY_TIME) {
 			/*DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
 		/*DEBUG*/ }
 

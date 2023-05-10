@@ -223,13 +223,7 @@ function updateComplications(complicationName, storageName, index, complicationT
 				complicationId = new Complications.Id(complicationType);
 			}
 			if (index != null) {
-				var current = Storage.getValue(storageName + index);
-				if (current == null || !(current instanceof Lang.Dictionary)) {
-					current = {};
-				}
-				current.put(complicationType.toString(), true);
-				Storage.setValue(storageName + index, current);
-				Complications.subscribeToUpdates(complicationId);
+				Storage.setValue(storageName + index, complicationId);
 			}
 		}
 	}
@@ -271,6 +265,17 @@ function getFormattedTime(hour, min) {
 		:min => min.format("%02d"),
 		:amPm => amPm
 	};
+}
+
+function secondsToTimeString(totalSeconds) {
+	var hours = (totalSeconds / 3600).toNumber();
+	var minutes = ((totalSeconds - hours * 3600) / 60).toNumber();
+	var seconds = totalSeconds - hours * 3600 - minutes * 60;
+	if (seconds != 0) {
+		minutes++;
+	}
+	var timeString = Lang.format("$1$:$2$", [hours.format("%d"), minutes.format("%02d") ]);
+ 	return timeString;
 }
 
 (:background)
