@@ -177,43 +177,52 @@ class CrystalView extends Ui.WatchFace {
 		}
 		var result;
 		if (weather != null) {
-			var temperature = weather.temperature;
-			var humidity = weather.relativeHumidity;
-			var condition = weather.condition;
-			var icon = "01";
-			var day = "d";
-			
-			mWeatherStationName = weather.observationLocationName;
-			var myLocation = weather.observationLocationPosition;
+			var temperature = $.validateNumber(weather.temperature, null); // In Celcius
+			if (temperature == null) {
+				temperature = "NaN";
+			}
+			else {
+				if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_STATUTE) {
+					temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+				}
 
-			var now = Time.now();
-			var sunrise = Weather.getSunrise(myLocation, now);
-			var sunset = Weather.getSunset(myLocation, now);
-
-			var sinceSunrise = sunrise.compare(now);
-			var sinceSunset = now.compare(sunset);
-			if (sinceSunrise >= 0 || sinceSunset >= 0) {
-				day = "n";
+				temperature = temperature.format(INTEGER_FORMAT) + "°";
+			}
+	
+			var humidity = $.validateNumber(weather.relativeHumidity, null);
+			if (humidity == null) {
+				humidity = "NaN";
+			}
+			else {
+				humidity = humidity.format(INTEGER_FORMAT) + "%";
 			}
 
-			/*var nowtime = Gregorian.info(now, Time.FORMAT_MEDIUM);
-			var nowStr = nowtime.day + " " + nowtime.hour + ":" + nowtime.min.format("%02d") + ":" + nowtime.sec.format("%02d");
-			var sunrisetime = Gregorian.info(sunrise, Time.FORMAT_MEDIUM);
-			var sunsettime = Gregorian.info(sunset, Time.FORMAT_MEDIUM);
-			var sunriseStr = sunrisetime.day + " " + sunrisetime.hour + ":" + sunrisetime.min.format("%02d") + ":" + sunrisetime.sec.format("%02d");
-			var sunsetStr = sunsettime.day + " " + sunsettime.hour + ":" + sunsettime.min.format("%02d") + ":" + sunsettime.sec.format("%02d");
-			logMessage("For=" + nowStr);
-			logMessage("Sunrise=" + sunriseStr);
-			logMessage("Sunset=" + sunsetStr);
-			logMessage("Since sunrize " + sinceSunrise);
-			logMessage("Since sunset " + sinceSunset);*/
+			mWeatherStationName = $.validateString(weather.observationLocationName, null);
 
+			var icon = "01";
+			var day = "d";
+			var myLocation = weather.observationLocationPosition;
+			if (myLocation != null) {
+				var now = Time.now();
+				var sunrise = Weather.getSunrise(myLocation, now);
+				var sunset = Weather.getSunset(myLocation, now);
+
+				if (sunrise != null and sunset != null) {
+					var sinceSunrise = sunrise.compare(now);
+					var sinceSunset = now.compare(sunset);
+					if (sinceSunrise >= 0 || sinceSunset >= 0) {
+						day = "n";
+					}
+				}
+			}
+
+			var condition = $.validateNumber(weather.condition, null);
 			if (condition != null && condition < 53) {
 				icon = (mGarminToOWM[condition]).format("%02d") + day;
 				//logMessage("icon=" + icon); 
 			}
 			else {
-				/*DEBUG*/ logMessage("Icon index " + condition + " is out of range");
+				/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
 			}
 			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
 			/*DEBUG*/ logMessage("Weather at " + mWeatherStationName + " is " + result);

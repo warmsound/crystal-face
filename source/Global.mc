@@ -222,8 +222,10 @@ function updateComplications(complicationName, storageName, index, complicationT
 			else {
 				complicationId = new Complications.Id(complicationType);
 			}
+
 			if (index != null) {
 				Storage.setValue(storageName + index, complicationId);
+				Complications.subscribeToUpdates(complicationId);
 			}
 		}
 	}

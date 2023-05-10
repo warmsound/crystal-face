@@ -718,41 +718,18 @@ class DataFields extends Ui.Drawable {
 				}
 
 				// Stored weather data available.
-				if (mWeather != null) {
+				if (mWeather != null && mWeather instanceof Lang.Dictionary && mWeather["cod"] == 200) {
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
-						value = $.validateNumber(mWeather["temp"], null); // Celcius.
-						if (value == null) {
-							value = "NaN";
-						}
-						else {
-							if (settings.temperatureUnits == System.UNIT_STATUTE) {
-								value = (value * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-							}
-
-							value = value.format(INTEGER_FORMAT) + "";
-						}
-
-						result["weatherIcon"] = $.validateString(mWeather["icon"], "01d");
+						value = mWeather["temp"];
+						result["weatherIcon"] = mWeather["icon"];
 
 					// FIELD_TYPE_HUMIDITY.
 					} else {
 						value = mWeather["humidity"];
-						value = $.validateNumber(value, null);
-						if (value == null) {
-							value = "NaN";
-						}
-						else {
-							value = value.format(INTEGER_FORMAT) + "%";
-						}
 					}
-
-					if (mWeather["cod"] != 200 || !settings.phoneConnected) {
-						stale = true;
-					}
-
-				// Awaiting response.
 				}
+				// Didn't receive weather from Garmin
 				else {
 					value = "???";
 
