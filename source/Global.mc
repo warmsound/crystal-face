@@ -104,6 +104,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
 			var vehicleState = teslaInfo.get("VehicleState");
 			var vehicleAsleep = (vehicleState != null && vehicleState.equals("asleep") == true);
+			var vehicleOffline = (vehicleState != null && vehicleState.equals("offline") == true);
 
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
@@ -114,7 +115,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 					textColour = gThemeColour; // Defaults to theme's color
 				}
 
-				if (vehicleAsleep || (vehicleState != null && vehicleState.equals("offline") == true)) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
+				if (vehicleAsleep || vehicleOffline) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
 					showMode &= 2;
 				}
 
@@ -125,7 +126,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 						batteryLevel = teslaInfo.get("BatteryLevel");
 						if (batteryLevel != null && batteryLevel != 999) {
 							var chargingState = teslaInfo.get("ChargingState");
-							if (httpErrorTesla == 401 || (!vehicleAsleep && httpErrorTesla == 408)) { // Can't get or token (will be shown in gray) or we got a 408 while not asleep (will be shown in the theme's color)
+							if (httpErrorTesla == 401 || (!vehicleAsleep && !vehicleOffline && httpErrorTesla == 408)) { // Can't get or token (will be shown in gray) or we got a 408 while not asleep (will be shown in the theme's color)
 								suffix = "?";
 							}
 							else if (vehicleAsleep) {
