@@ -110,11 +110,11 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
 					showMode = 0;
 				}
-				else if (vehicleAsleep || httpErrorTesla == 200) { // Vehicle confirmed asleep (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data
+				else if (vehicleAsleep || httpErrorTesla == 200) { // Vehicle confirmed asleep (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data. If the vehicle is offline, the line will show gray for stale data
 					textColour = gThemeColour; // Defaults to theme's color
 				}
 
-				if (vehicleAsleep) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
+				if (vehicleAsleep || (vehicleState != null && vehicleState.equals("offline") == true)) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
 					showMode &= 2;
 				}
 
@@ -269,13 +269,9 @@ function getFormattedTime(hour, min) {
 	};
 }
 
-function secondsToTimeString(totalSeconds) {
-	var hours = (totalSeconds / 3600).toNumber();
-	var minutes = ((totalSeconds - hours * 3600) / 60).toNumber();
-	var seconds = totalSeconds - hours * 3600 - minutes * 60;
-	if (seconds != 0) {
-		minutes++;
-	}
+function MinutesToTimeString(totalMinutes) {
+	var hours = (totalMinutes / 60).toNumber();
+	var minutes = (totalMinutes - (hours * 60)).toNumber();
 	var timeString = Lang.format("$1$:$2$", [hours.format("%d"), minutes.format("%02d") ]);
  	return timeString;
 }

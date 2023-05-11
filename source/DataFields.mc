@@ -450,7 +450,7 @@ class DataFields extends Ui.Drawable {
 					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
-						value = secondsToTimeString(tmpValue);
+						value = $.MinutesToTimeString(tmpValue);
 					}
 				}
 				info = ActivityMonitor.getInfo();
