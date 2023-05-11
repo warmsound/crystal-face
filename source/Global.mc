@@ -104,19 +104,19 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
 			var vehicleState = teslaInfo.get("VehicleState");
 			var vehicleAsleep = (vehicleState != null && vehicleState.equals("asleep") == true);
-			var vehicleOffline = (vehicleState != null && vehicleState.equals("offline") == true);
+			var vehicleOnline = (vehicleState != null && vehicleState.equals("online") == true);
 
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
+				if (!vehicleOnline) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
+					showMode &= 2;
+				}
+
 				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
 					showMode = 0;
 				}
 				else if (vehicleAsleep || httpErrorTesla == 200) { // Vehicle confirmed asleep (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data. If the vehicle is offline, the line will show gray for stale data
 					textColour = gThemeColour; // Defaults to theme's color
-				}
-
-				if (vehicleAsleep || vehicleOffline) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
-					showMode &= 2;
 				}
 
 				switch (showMode) {
@@ -126,7 +126,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 						batteryLevel = teslaInfo.get("BatteryLevel");
 						if (batteryLevel != null && batteryLevel != 999) {
 							var chargingState = teslaInfo.get("ChargingState");
-							if (httpErrorTesla == 401 || (!vehicleAsleep && !vehicleOffline && httpErrorTesla == 408)) { // Can't get or token (will be shown in gray) or we got a 408 while not asleep (will be shown in the theme's color)
+							if (httpErrorTesla != 200 && httpErrorTesla != 408) { // ResponseCode other than 200 and 408 will show a "?" beside thr battery level
 								suffix = "?";
 							}
 							else if (vehicleAsleep) {
