@@ -122,4 +122,5 @@
 	<string id="StressLevel">Niveau de stress</string>
 	<string id="UseComplications">Utilisez les complications, si disponible</string>
 	<string id="TeslaLink">Utilisez les Complications de Tesla-Link pour l'info Tesla</string>
+	<string id="TeslaVehicleIndex">Quel véhicle afficher?</string>
 </strings>

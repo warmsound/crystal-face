@@ -252,6 +252,10 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.TeslaVehicleIndex" title="@Strings.TeslaVehicleIndex">
+		<settingConfig type="numeric" min="1" max="16" required="true"/>
+	</setting>
+
 	<setting propertyKey="@Properties.TeslaAccessToken" title="@Strings.TeslaAccessToken">
 		<settingConfig type="alphaNumeric" maxLength="2048"/>
 	</setting>

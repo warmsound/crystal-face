@@ -32,31 +32,6 @@ class CrystalApp extends App.AppBase {
 
 		mGoalTypes[0] = {};
 		mGoalTypes[1] = {};
-
-		gTeslaComplication = getBoolProperty("TeslaLink", false);
-
-		// This code check if the user selected a different vehicle index in its property. If so, we'll need to get a new vehicleID
-		var propVehicleIndex;
-		var storVehicleIndex;
-
-		try {
-			propVehicleIndex = Properties.getValue("TeslaVehicleIndex");
-		}
-		catch (e) {
-			propVehicleIndex = 1;
-		}
-
-		storVehicleIndex = Storage.getValue("TeslaVehiceIndex");
-		if (storVehicleIndex == null || propVehicleIndex != storVehicleIndex) {
-			storVehicleIndex = propVehicleIndex;
-			try {
-				Storage.setValue("TeslaVehiceIndex", storVehicleIndex);
-				Storage.setValue("TeslaVehiceIndex", storVehicleIndex);
-				Storage.setValue("TeslaVehicleID", null);
-			}
-			catch (e) {
-			}
-		}
 	}
 
 	// function onStart(state) {
@@ -102,6 +77,25 @@ class CrystalApp extends App.AppBase {
 
 		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
 		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
+
+		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
+
+		// This code check if the user selected a different vehicle index in its property. If so, we'll need to get a new vehicleID
+		var propVehicleIndex;
+		var storVehicleIndex;
+
+		propVehicleIndex = $.getIntProperty("TeslaVehicleIndex", 1);
+
+		storVehicleIndex = Storage.getValue("TeslaVehicleIndex");
+		if (storVehicleIndex == null || propVehicleIndex != storVehicleIndex) {
+			storVehicleIndex = propVehicleIndex;
+			try {
+				Storage.setValue("TeslaVehicleIndex", storVehicleIndex);
+				Storage.setValue("TeslaVehicleID", null);
+			}
+			catch (e) {
+			}
+		}
 
 		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
 		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {

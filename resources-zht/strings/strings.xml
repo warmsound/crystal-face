@@ -123,4 +123,5 @@
 	<string id="StressLevel">Stress Level</string>
 	<string id="UseComplications">Use Complications if available</string>
 	<string id="TeslaLink">Get Tesla info from Tesla-Link Complications</string>
+	<string id="TeslaVehicleIndex">Which vehicle to show?</string>
 </strings>

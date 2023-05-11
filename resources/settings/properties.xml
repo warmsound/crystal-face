@@ -34,7 +34,7 @@
 	<property id="MoveBarStyle" type="number">0</property>
 
 	<property id="TeslaLink" type="boolean">false</property>
-
+	<property id="TeslaVehicleIndex" type="number">1</property>
 	<property id="TeslaAccessToken" type="string"></property>
 	<property id="TeslaRefreshToken" type="string"></property>
 	<property id="TeslaServerAPILocation" type="string">owner-api.teslamotors.com</property>

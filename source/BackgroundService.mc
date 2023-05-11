@@ -153,7 +153,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			if (vehicles != null) {
 				var storVehicleIndex = Storage.getValue("TeslaVehicleIndex");
 				if (storVehicleIndex == null || storVehicleIndex < 1) {
-					storVehicleIndex = 0;
+					storVehicleIndex = 0; // Base 0 so 0, not 1
 				}
 				else {
 					storVehicleIndex--; // Array are zero based but we want user to start numbering from 1 for ease of use

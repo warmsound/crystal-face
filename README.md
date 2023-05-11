@@ -35,7 +35,7 @@ Reviews:
 - Added Weather and Sunrise data fields as touch point (but not read from Complications)
 - The area on the screen allocated for "Local time in City" will display the current weather station name if no city was entered.
 - The "Local time in City" has been redone, much simplier, doesn't require Background process anymore but will need some work on your side. The field in the setting is now a Comma Separated Value (CSV) with the first value being the city name, second the latitude of the city and third its longitude. The last two in decimal notation (with a period, not comma). You will have to enter these, which are easy to find in Google Map anyway. No type checking done, beside making sure the latitude and longitude are numbers. If invalid, '???' will be shown for the time.
-- Redid the Tesla code and added the reading of the Tesla-Link Complications to get Tesla data instead of querying Tesla's servers internally. No more Token handling if using Complications and Tesla-Link.
+- Redid the Tesla code and added the reading of the Tesla-Link Complications to get Tesla data instead of querying Tesla's servers internally. No more Token handling if using Complications and Tesla-Link. Because of the size of the data returned when the vehicle is awake, a watch with just 32KB of background space will not be able to show that data and will show error -403 instead (network response out of memory). If it's your case and your watch support Complication, check the Tesla-Link checkbox in the Settings and install the Tesla-Link widget/app. That one has just enough room to download the data and will send it to Crystal-Tesla if asked to send Complication to it.
 
 ### 2.17.4
 - One more attempt at fixing the crash because of the Settings change since 2.17.1
