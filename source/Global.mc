@@ -490,7 +490,7 @@ function to_array(string, splitter) {
 }
 
 function doTeslaComplication(complicationValue) {
-	/*DEBUG*/ logMessage("Complication read: " + complicationValue);
+	//DEBUG*/ logMessage("Complication read: " + complicationValue);
 	if (complicationValue instanceof Lang.String) { // Only handle the enhance data sent, not just the battery SoC (a Number)
 		var teslaInfo = Storage.getValue("TeslaInfo");
 		if (teslaInfo == null){
@@ -519,3 +519,45 @@ function logMessage(message) {
 (:release, :background)
 function logMessage(message) {
 }
+
+/*
+function type_name(obj) {
+    if (obj instanceof Toybox.Lang.Number) {
+        return "Number";
+    } else if (obj instanceof Toybox.Lang.Long) {
+        return "Long";
+    } else if (obj instanceof Toybox.Lang.Float) {
+        return "Float";
+    } else if (obj instanceof Toybox.Lang.Double) {
+        return "Double";
+    } else if (obj instanceof Toybox.Lang.Boolean) {
+        return "Boolean";
+    } else if (obj instanceof Toybox.Lang.String) {
+        return "String";
+    } else if (obj instanceof Toybox.Lang.Array) {
+        var s = "Array [";
+        for (var i = 0; i < obj.size(); ++i) {
+            s += type_name(obj);
+            s += ", ";
+        }
+        s += "]";
+        return s;
+    } else if (obj instanceof Toybox.Lang.Dictionary) {
+        var s = "Dictionary{";
+        var keys = obj.keys();
+        var vals = obj.values();
+        for (var i = 0; i < keys.size(); ++i) {
+            s += keys;
+            s += ": ";
+            s += vals;
+            s += ", ";
+        }
+        s += "}";
+        return s;
+    } else if (obj instanceof Toybox.Time.Gregorian.Info) {
+        return "Gregorian.Info";
+    } else {
+        return "???";
+    }
+}
+*/

@@ -85,24 +85,12 @@ class DataFields extends Ui.Drawable {
 		// #123 Protect against null or unexpected type e.g. String.
 		mFieldCount = $.getIntProperty("FieldCount", 3);
 
-		/* switch (mFieldCount) {
-			case 3:
-				mMaxFieldLength = 4;
-				break;
-			case 2:
-				mMaxFieldLength = 6;
-				break;
-			case 1:
-				mMaxFieldLength = 8;
-				break;
-		} */
-
 		// #116 Handle FieldCount = 0 correctly.
 		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
 
-		mHasLiveHR = mApp.hasField(FIELD_TYPE_HR_LIVE_5S);
+		mHasLiveHR = mView.hasField(FIELD_TYPE_HR_LIVE_5S);
 
-		if (!mApp.hasField(FIELD_TYPE_WEATHER)) {
+		if (!mView.hasField(FIELD_TYPE_WEATHER)) {
 			mWeatherIconsFont = null;
 			mWeatherIconsSubset = null;
 		}
@@ -118,12 +106,12 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_TYPE_SUNRISE_SUNSET, "complicationType" => Complications.COMPLICATION_TYPE_SUNRISE} // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
 								];
 
-			var fieldTypes = mApp.mFieldTypes;
+			var fieldTypes = mView.mFieldTypes;
 			var filled = [false, false, false];
 			var i;
 
 			for (i = 0; i < complications.size(); i++) {
-				if (mApp.hasField(complications[i].get("type"))) {
+				if (mView.hasField(complications[i].get("type"))) {
 					for (var j = 0; j < mFieldCount; j++) {
 						if (fieldTypes[j].get("type") == complications[i].get("type")) {
 							$.updateComplications("", "Complication_F", j + 1, complications[i].get("complicationType"));
@@ -159,7 +147,7 @@ class DataFields extends Ui.Drawable {
 			return;
 		}
 
-		var fieldTypes = mApp.mFieldTypes;
+		var fieldTypes = mView.mFieldTypes;
 
 		/*var spacingX = Sys.getDeviceSettings().screenWidth / (2 * mFieldCount);
 		var spacingY = Sys.getDeviceSettings().screenHeight / 4;
@@ -442,12 +430,12 @@ class DataFields extends Ui.Drawable {
 		var sunTimes;
 		var unit;
 		var info;
+		var fieldTypes = mView.mFieldTypes;
 
 		switch (type) {
 			// SG Addition
 			case FIELD_RECOVERY_TIME:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = $.MinutesToTimeString(tmpValue);
@@ -464,7 +452,6 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_BODY_BATTERY:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -486,7 +473,6 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_STRESS_LEVEL:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();
@@ -529,7 +515,6 @@ class DataFields extends Ui.Drawable {
 			// SG Addition
 			case FIELD_TYPE_PULSE_OX:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString() + "%";
@@ -545,7 +530,6 @@ class DataFields extends Ui.Drawable {
 				break;
 			case FIELD_TYPE_HEART_RATE:
 				if (Toybox has :Complications && mView.useComplications()) {
-					var fieldTypes = mApp.mFieldTypes;
 					var tmpValue = fieldTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						value = tmpValue.toString();

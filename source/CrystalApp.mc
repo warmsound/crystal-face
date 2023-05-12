@@ -18,20 +18,8 @@ var gTeslaComplication = false;
 class CrystalApp extends App.AppBase {
 	var mView;
 
-	var mFieldTypes = new [3];
-	var mGoalTypes = new [2];
-
-	private var mUseComplications;
-
 	function initialize() {
 		AppBase.initialize();
-
-		mFieldTypes[0] = {};
-		mFieldTypes[1] = {};
-		mFieldTypes[2] = {};
-
-		mGoalTypes[0] = {};
-		mGoalTypes[1] = {};
 	}
 
 	// function onStart(state) {
@@ -71,15 +59,6 @@ class CrystalApp extends App.AppBase {
 	}
 
 	function onSettingsChanged() {
-		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
-		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
-		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
-
-		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
-		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
-
-		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
-
 		// This code check if the user selected a different vehicle index in its property. If so, we'll need to get a new vehicleID
 		var propVehicleIndex;
 		var storVehicleIndex;
@@ -95,29 +74,6 @@ class CrystalApp extends App.AppBase {
 			}
 			catch (e) {
 			}
-		}
-
-		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
-		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
-			var lastTime = Bg.getLastTemporalEventTime();
-			if (lastTime) {
-				// Events scheduled for a time in the past trigger immediately.
-				var nextTime = lastTime.add(new Time.Duration(5 * 60));
-				Bg.registerForTemporalEvent(nextTime);
-			} else {
-				Bg.registerForTemporalEvent(Time.now());
-			}
-		}
-		else {
-			Bg.deleteTemporalEvent();
-		}
-
-		// Reread our complications if we're allowed
-		if (Toybox has :Complications) {
-			// First we drop all our subscriptions before building a new list
-			Complications.unsubscribeFromAllUpdates();
-			// We listen for complications if we're allowed
-			Complications.registerComplicationChangeCallback($.getBoolProperty("UseComplications", false) ? self.method(:onComplicationUpdated) : null);
 		}
 
 		mView.onSettingsChanged(); // Calls checkPendingWebRequests().
@@ -177,49 +133,4 @@ class CrystalApp extends App.AppBase {
 
 		Ui.requestUpdate();
 	}
-
-	function hasField(fieldType) {
-		return ((mFieldTypes[0].get("type") == fieldType) ||
-				(mFieldTypes[1].get("type") == fieldType) ||
-				(mFieldTypes[2].get("type") == fieldType));
-	}
-
-    function onComplicationUpdated(complicationId) {
-		var complication = Complications.getComplication(complicationId);
-		var complicationType = complication.getType();
-		var complicationShortLabel = complication.shortLabel;
-		//DEBUG*/ var complicationLongLabel = complication.longLabel;
-		var complicationValue = complication.value;
-
-		//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_RECOVERY_TIME) {
-			//DEBUG*/ logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue);
-		//DEBUG*/ }
-
-		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
-			$.doTeslaComplication(complicationValue);
-		}
-
-		// I've seen this while in low power mode, so skip it
-		if (complicationValue == null) {
-			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
-			return;
-		}
-
-		// Do fields first
-		var fieldCount = $.getIntProperty("FieldCount", 3);
-
-		for (var i = 0; i < fieldCount; i++) {
-			if (mFieldTypes[i].get("ComplicationType") == complicationType) {
-				mFieldTypes[i].put("ComplicationValue", complicationValue);
-			}
-		}
-
-		// Now do goals
-		if (mGoalTypes[0].get("ComplicationType") == complicationType) {
-			mGoalTypes[0].put("ComplicationValue", complicationValue);
-		}
-		if (mGoalTypes[1].get("ComplicationType") == complicationType) {
-			mGoalTypes[1].put("ComplicationValue", complicationValue);
-		}
-    }
 }

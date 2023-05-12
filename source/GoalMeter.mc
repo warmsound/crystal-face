@@ -148,7 +148,7 @@ class GoalMeter extends Ui.Drawable {
 								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
 								];
 
-			var goalTypes = mApp.mGoalTypes;
+			var goalTypes = mView.mGoalTypes;
 			var filled = false;
 
 			for (var i = 0; i < complications.size(); i++) {

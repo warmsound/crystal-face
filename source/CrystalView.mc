@@ -1,4 +1,5 @@
 using Toybox.WatchUi as Ui;
+using Toybox.Background as Bg;
 using Toybox.Graphics as Graphics;
 using Toybox.System as Sys;
 using Toybox.Application as App;
@@ -52,8 +53,13 @@ class CrystalView extends Ui.WatchFace {
 	private var mSettingsChangedSinceLastDraw = true; // Have settings changed since last full update?
 	private var mTime;
 	var mDataFields;
+
+	var mFieldTypes = new [3];
+	var mGoalTypes = new [2];
+
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
+
 	var mWeatherStationName;
 	var mLocalCityName;
 	var mLocalCityLat;
@@ -91,6 +97,14 @@ class CrystalView extends Ui.WatchFace {
 	function initialize() {
 		WatchFace.initialize();
 
+		gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+
+		mFieldTypes[0] = {};
+		mFieldTypes[1] = {};
+		mFieldTypes[2] = {};
+
+		mGoalTypes[0] = {};
+		mGoalTypes[1] = {};
 	}
 
 	function burnInProtectionIsOrWasActive() {
@@ -141,7 +155,12 @@ class CrystalView extends Ui.WatchFace {
 		mSettingsChangedSinceLastDraw = true;
 		//logMessage("onSettingsChanged called");
 
-		gNormalFont = Ui.loadResource(Rez.Fonts.NormalFontCities);
+		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
+		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
+		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
+
+		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
+		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
 
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
@@ -165,6 +184,31 @@ class CrystalView extends Ui.WatchFace {
 
 		// Reread our complications if we're allowed
 		mUseComplications = $.getBoolProperty("UseComplications", false);
+		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
+
+
+		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
+		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
+			var lastTime = Bg.getLastTemporalEventTime();
+			if (lastTime) {
+				// Events scheduled for a time in the past trigger immediately.
+				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+				Bg.registerForTemporalEvent(nextTime);
+			} else {
+				Bg.registerForTemporalEvent(Time.now());
+			}
+		}
+		else {
+			Bg.deleteTemporalEvent();
+		}
+
+		// Reread our complications if we're allowed
+		if (Toybox has :Complications) {
+			// First we drop all our subscriptions before building a new list
+			Complications.unsubscribeFromAllUpdates();
+			// We listen for complications if we're allowed
+			Complications.registerComplicationChangeCallback($.getBoolProperty("UseComplications", false) ? self.method(:onComplicationUpdated) : null);
+		}
 	}
 
 	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
@@ -406,15 +450,13 @@ class CrystalView extends Ui.WatchFace {
 			:staled => false
 		};
 
-		var app = App.getApp();
-		var goalTypes = app.mGoalTypes;
 		var info = ActivityMonitor.getInfo();
 
 		switch(type) {
 			case GOAL_TYPE_STEPS:
 				values[:isValid] = false;
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = goalTypes[index].get("ComplicationValue");
+					var tmpValue = mGoalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						// For some stupid reason, above 10K, it becomes a float and divided by 1000, so 15,500 becomes 15.500. WTF?
 						if (tmpValue instanceof Lang.Float) {
@@ -434,7 +476,7 @@ class CrystalView extends Ui.WatchFace {
 			case GOAL_TYPE_FLOORS_CLIMBED:
 				values[:isValid] = false;
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = goalTypes[index].get("ComplicationValue");
+					var tmpValue = mGoalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toNumber();
 						values[:isValid] = true;
@@ -472,7 +514,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:max] = 100;
 
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = goalTypes[index].get("ComplicationValue");
+					var tmpValue = mGoalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
 						values[:isValid] = true;
@@ -500,7 +542,7 @@ class CrystalView extends Ui.WatchFace {
 				values[:max] = 100;
 
 				if (Toybox has :Complications && mUseComplications) {
-					var tmpValue = goalTypes[index].get("ComplicationValue");
+					var tmpValue = mGoalTypes[index].get("ComplicationValue");
 					if (tmpValue != null) {
 						values[:current] = tmpValue.toFloat();
 						values[:isValid] = true;
@@ -656,6 +698,48 @@ class CrystalView extends Ui.WatchFace {
 		mTime.setHideSeconds(hideSeconds);
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
+
+    function onComplicationUpdated(complicationId) {
+		var complication = Complications.getComplication(complicationId);
+		var complicationType = complication.getType();
+		var complicationShortLabel = complication.shortLabel;
+		var complicationValue = complication.value;
+
+		//DEBUG*/ var complicationLongLabel = complication.longLabel; if (complicationType == Complications.COMPLICATION_TYPE_RECOVERY_TIME) { logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue); }
+
+		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+			$.doTeslaComplication(complicationValue);
+		}
+
+		// I've seen this while in low power mode, so skip it
+		if (complicationValue == null) {
+			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
+			return;
+		}
+
+		// Do fields first
+		var fieldCount = $.getIntProperty("FieldCount", 3);
+
+		for (var i = 0; i < fieldCount; i++) {
+			if (mFieldTypes[i].get("ComplicationType") == complicationType) {
+				mFieldTypes[i].put("ComplicationValue", complicationValue);
+			}
+		}
+
+		// Now do goals
+		if (mGoalTypes[0].get("ComplicationType") == complicationType) {
+			mGoalTypes[0].put("ComplicationValue", complicationValue);
+		}
+		if (mGoalTypes[1].get("ComplicationType") == complicationType) {
+			mGoalTypes[1].put("ComplicationValue", complicationValue);
+		}
+    }
+
+	function hasField(fieldType) {
+		return ((mFieldTypes[0].get("type") == fieldType) ||
+				(mFieldTypes[1].get("type") == fieldType) ||
+				(mFieldTypes[2].get("type") == fieldType));
+	}
 }
 
 class CrystalDelegate extends Ui.WatchFaceDelegate {
@@ -798,45 +882,3 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		//mview.turnPartialUpdatesOff();
     }
 }
-
-/*
-function type_name(obj) {
-    if (obj instanceof Toybox.Lang.Number) {
-        return "Number";
-    } else if (obj instanceof Toybox.Lang.Long) {
-        return "Long";
-    } else if (obj instanceof Toybox.Lang.Float) {
-        return "Float";
-    } else if (obj instanceof Toybox.Lang.Double) {
-        return "Double";
-    } else if (obj instanceof Toybox.Lang.Boolean) {
-        return "Boolean";
-    } else if (obj instanceof Toybox.Lang.String) {
-        return "String";
-    } else if (obj instanceof Toybox.Lang.Array) {
-        var s = "Array [";
-        for (var i = 0; i < obj.size(); ++i) {
-            s += type_name(obj);
-            s += ", ";
-        }
-        s += "]";
-        return s;
-    } else if (obj instanceof Toybox.Lang.Dictionary) {
-        var s = "Dictionary{";
-        var keys = obj.keys();
-        var vals = obj.values();
-        for (var i = 0; i < keys.size(); ++i) {
-            s += keys;
-            s += ": ";
-            s += vals;
-            s += ", ";
-        }
-        s += "}";
-        return s;
-    } else if (obj instanceof Toybox.Time.Gregorian.Info) {
-        return "Gregorian.Info";
-    } else {
-        return "???";
-    }
-}
-*/
