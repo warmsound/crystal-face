@@ -623,12 +623,14 @@ function getSunTimes(lat, lng, tz, tomorrow) {
 	];
 }
 
+//DEBUG
 (:debug, :background)
 function logMessage(message) {
 	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
 	Sys.println(dateStr + " : " + message);
 }
+//DEBUG*/
 
 (:release, :background)
 function logMessage(message) {

@@ -26,8 +26,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys();
-			/*DEBUG*/ logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
 		}
 
 		var timeNow = Time.now().value();
@@ -63,10 +62,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 		
 		if (_token != null && _token.equals("") == false) {
-			//DEBUG*/ var expireAt = new Time.Moment(createdAt + expiresIn);
-			//DEBUG*/ var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM);
-			//DEBUG*/ var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");
-			//DEBUG*/ logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
+			//DEBUG*/ var expireAt = new Time.Moment(createdAt + expiresIn); var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM); var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d"); logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
 			_token = "Bearer " + _token;
 		}
 		else {
@@ -117,8 +113,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys();
-			/*DEBUG*/ logMessage("onReceiveToken: Buffer has keys " + keys);
+			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveToken: Buffer has keys " + keys);
 		}
 
         if (responseCode == 200) {
@@ -143,8 +138,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys();
-			/*DEBUG*/ logMessage("onReceiveVehicles: Buffer has keys " + keys);
+			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicles: Buffer has keys " + keys);
 		}
 
         if (responseCode == 200) {
@@ -189,16 +183,14 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
     function onReceiveVehicleData(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
-        /*DEBUG*/ var myStats = Sys.getSystemStats();
-        /*DEBUG*/ logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		var teslaInfo = Bg.getBackgroundData();
 		if (teslaInfo == null) {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys();
-			/*DEBUG*/ logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
 		}
 
 		teslaInfo.put("httpErrorTesla", responseCode);
