@@ -246,16 +246,41 @@ class CrystalView extends Ui.WatchFace {
 			var icon = "01";
 			var day = "d";
 			var myLocation = weather.observationLocationPosition;
+			var now = Time.now();
 			if (myLocation != null) {
-				var now = Time.now();
-				var sunrise = Weather.getSunrise(myLocation, now);
-				var sunset = Weather.getSunset(myLocation, now);
+				if (Toybox.Weather has :getSunrise) {
+					var sunrise = Weather.getSunrise(myLocation, now);
+					var sunset = Weather.getSunset(myLocation, now);
 
-				if (sunrise != null and sunset != null) {
-					var sinceSunrise = sunrise.compare(now);
-					var sinceSunset = now.compare(sunset);
-					if (sinceSunrise >= 0 || sinceSunset >= 0) {
-						day = "n";
+					if (sunrise != null and sunset != null) {
+						var sinceSunrise = sunrise.compare(now);
+						var sinceSunset = now.compare(sunset);
+						if (sinceSunrise >= 0 || sinceSunset >= 0) {
+							day = "n";
+						}
+					}
+				}
+				else {
+					//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+					var myLocationArray = myLocation.toDegrees();
+					now = Gregorian.info(now, Time.FORMAT_SHORT);
+
+					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+					now = now.hour + ((now.min + 1) / 60.0);
+					//logMessage(now);
+
+					// Get today's sunrise/sunset times in current time zone.
+					var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+					//logMessage(sunTimes);
+					//logMessage("now=" + now); 
+					//logMessage("sunTimes=" + sunTimes); 
+					// If sunrise/sunset happens today.
+					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+					if (sunriseSunsetToday) {
+						if (now < sunTimes[0] || now > sunTimes[1]) {
+							day = "n";
+						}
 					}
 				}
 			}

@@ -659,24 +659,77 @@ class DataFields extends Ui.Drawable {
 				if (weather != null) {
 					var now = Time.now();
 					var myLocation = weather.observationLocationPosition;
+					if (Toybox.Weather has :getSunrise) {
+						var sunrise = Weather.getSunrise(myLocation, now);
+						var sunset = Weather.getSunset(myLocation, now);
 
-					var sunrise = Weather.getSunrise(myLocation, now);
-					var sunset = Weather.getSunset(myLocation, now);
+						var sunriseTime = Gregorian.info(sunrise, Time.FORMAT_SHORT);
+						var sunsetTime = Gregorian.info(sunset, Time.FORMAT_SHORT);
 
-					var sunriseTime = Gregorian.info(sunrise, Time.FORMAT_SHORT);
-					var sunsetTime = Gregorian.info(sunset, Time.FORMAT_SHORT);
+						var sinceSunrise = sunrise.compare(now);
+						var sinceSunset = now.compare(sunset);
 
-					var sinceSunrise = sunrise.compare(now);
-					var sinceSunset = now.compare(sunset);
-
-					if (sinceSunrise >= 0 || sinceSunset >= 0) {
-						result["isSunriseNext"] = true;
-						value = $.getFormattedTime(sunriseTime.hour, sunriseTime.min);
+						if (sinceSunrise >= 0 || sinceSunset >= 0) {
+							result["isSunriseNext"] = true;
+							value = $.getFormattedTime(sunriseTime.hour, sunriseTime.min);
+						}
+						else {
+							value = $.getFormattedTime(sunsetTime.hour, sunsetTime.min);
+						}
+						value = value[:hour] + ":" + value[:min] + value[:amPm];
 					}
 					else {
-						value = $.getFormattedTime(sunsetTime.hour, sunsetTime.min);
+						var myLocationArray = myLocation.toDegrees();
+						var nextSunEvent = 0;
+						now = Gregorian.info(Time.now(), Time.FORMAT_SHORT);
+
+						// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+						// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+						now = now.hour + ((now.min + 1) / 60.0);
+						//logMessage(now);
+
+						// Get today's sunrise/sunset times in current time zone.
+						sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+						//logMessage(sunTimes);
+
+						// If sunrise/sunset happens today.
+						var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+						if (sunriseSunsetToday) {
+
+							// Before sunrise today: today's sunrise is next.
+							if (now < sunTimes[0]) {
+								nextSunEvent = sunTimes[0];
+								result["isSunriseNext"] = true;
+
+							// After sunrise today, before sunset today: today's sunset is next.
+							} else if (now < sunTimes[1]) {
+								nextSunEvent = sunTimes[1];
+
+							// After sunset today: tomorrow's sunrise (if any) is next.
+							} else {
+								sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ true);
+								nextSunEvent = sunTimes[0];
+								result["isSunriseNext"] = true;
+							}
+						}
+
+						// Sun never rises/sets today.
+						if (!sunriseSunsetToday) {
+							value = "---";
+
+							// Sun never rises: sunrise is next, but more than a day from now.
+							if (sunTimes[0] == null) {
+								result["isSunriseNext"] = true;
+							}
+
+						// We have a sunrise/sunset time.
+						} else {
+							var hour = Math.floor(nextSunEvent).toLong() % 24;
+							var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
+							value = App.getApp().getFormattedTime(hour, min);
+							value = value[:hour] + ":" + value[:min] + value[:amPm]; 
+						}
 					}
-					value = value[:hour] + ":" + value[:min] + value[:amPm]; 
 				}
 				else {
 					value = "???";
