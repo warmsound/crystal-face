@@ -23,16 +23,16 @@ class CrystalApp extends App.AppBase {
 	}
 
 	// function onStart(state) {
-	// 	/* DEBUG*/ logMessage("App starting");
+	// 	/*DEBUG*/ logMessage("App starting");
 	// }
 
 	// function onStop(state) {
-	// 	/* DEBUG*/ logMessage("App stopping");
+	// 	/*DEBUG*/ logMessage("App stopping");
 	// }
 
 	// Return the initial view of your application here
 	function getInitialView() {
-		/* DEBUG*/ logMessage("Getting initial view");
+		/*DEBUG*/ logMessage("Getting initial view");
 
 		if (WatchUi has :WatchFaceDelegate) {
 			mView = new CrystalView();
@@ -54,7 +54,7 @@ class CrystalApp extends App.AppBase {
 	// New app settings have been received so trigger a UI update
 	(:background_method)
 	function getServiceDelegate() {
-		/* DEBUG*/ logMessage("Getting service delegate");
+		/*DEBUG*/ logMessage("Getting service delegate");
 		return [new BackgroundService()];
 	}
 

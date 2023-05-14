@@ -145,7 +145,7 @@ class CrystalView extends Ui.WatchFace {
 	// the state of this View and prepare it to be shown. This includes
 	// loading resources into memory. */
 	function onShow() {
-		/* DEBUG*/ logMessage("View showing");
+		/*DEBUG*/ logMessage("View showing");
 	}
 
 	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
@@ -649,7 +649,7 @@ class CrystalView extends Ui.WatchFace {
 	// state of this View here. This includes freeing resources from
 	// memory */
 	function onHide() {
-		/* DEBUG*/ logMessage("View hidding");
+		/*DEBUG*/ logMessage("View hidding");
 	}
 
 	// The user has just looked at their watch. Timers and animations may be started here.
