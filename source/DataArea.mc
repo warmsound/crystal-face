@@ -51,7 +51,7 @@ class DataArea extends Ui.Drawable {
 			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY || mLeftGoalType == GOAL_TYPE_BODY_BATTERY || mLeftGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
 			if (leftValues[:isValid]) {
-				//DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
+				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
 			}
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
@@ -66,7 +66,7 @@ class DataArea extends Ui.Drawable {
 			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY || mRightGoalType == GOAL_TYPE_BODY_BATTERY || mRightGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
 			if (rightValues[:isValid]) {
-				//DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
+				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
 			}
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
