@@ -28,6 +28,12 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.1
+- Gave the weather station name its own line so it doesn't hide the Goals current/max fields. Local City Time will still hide these though. This is how it always was.
+- Added an option in Settings (Show weather station name) to show or not the weather station name, defaults to True.
+- Watches that although are at CIQ V3.2.0 and above but are still lacking Garmin Weather will display "N/A" for temperature/humidity/sunrise/sunset.
+- Trying to free some more room so watches with 98KB of watch face memory doesn't crash with Out of Memory errors.
+
 ### 2.18.0
 - Removed Watch model that are not at least at CIQ 3.3.0. This is required for the new Sunrise/Sunset and Weather library by Garmin. From the stats Garmin shows me about the watch face, none of them had downloaded the watch face anyway.
 - Removed the OpenWeatherMap and rely solely on Garmin Weather. The OWN and GPS was giving too much problem.

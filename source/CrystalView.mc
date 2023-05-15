@@ -66,6 +66,8 @@ class CrystalView extends Ui.WatchFace {
 	var mLocalCityLon;
 
 	private var mUseComplications;
+	var mDigitStyle;
+	var mShowWeatherStationName;
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -145,7 +147,7 @@ class CrystalView extends Ui.WatchFace {
 	// the state of this View and prepare it to be shown. This includes
 	// loading resources into memory. */
 	function onShow() {
-		/*DEBUG*/ logMessage("View showing");
+		//DEBUG*/ logMessage("View showing");
 	}
 
 	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
@@ -186,6 +188,9 @@ class CrystalView extends Ui.WatchFace {
 		mUseComplications = $.getBoolProperty("UseComplications", false);
 		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
 
+		mDigitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
+		mShowWeatherStationName = $.getBoolProperty("ShowWeatherStationName", true);
+
 
 		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
 		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
@@ -214,91 +219,95 @@ class CrystalView extends Ui.WatchFace {
 	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
 	function ReadWeather(fromComplication) {
 		var weather;
+		var result;
 		if (fromComplication) {
 		}
-		else {
+		else if (Toybox has :Weather && Toybox.Weather has :getCurrentConditions) {
 			weather = Weather.getCurrentConditions();
-		}
-		var result;
-		if (weather != null) {
-			var temperature = $.validateNumber(weather.temperature, null); // In Celcius
-			if (temperature == null) {
-				temperature = "NaN";
-			}
-			else {
-				if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_STATUTE) {
-					temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-				}
-
-				temperature = temperature.format(INTEGER_FORMAT) + "°";
-			}
-	
-			var humidity = $.validateNumber(weather.relativeHumidity, null);
-			if (humidity == null) {
-				humidity = "NaN";
-			}
-			else {
-				humidity = humidity.format(INTEGER_FORMAT) + "%";
-			}
-
-			mWeatherStationName = $.validateString(weather.observationLocationName, null);
-
-			var icon = "01";
-			var day = "d";
-			var myLocation = weather.observationLocationPosition;
-			var now = Time.now();
-			if (myLocation != null) {
-				if (Toybox.Weather has :getSunrise) {
-					var sunrise = Weather.getSunrise(myLocation, now);
-					var sunset = Weather.getSunset(myLocation, now);
-
-					if (sunrise != null and sunset != null) {
-						var sinceSunrise = sunrise.compare(now);
-						var sinceSunset = now.compare(sunset);
-						if (sinceSunrise >= 0 || sinceSunset >= 0) {
-							day = "n";
-						}
-					}
+			if (weather != null) {
+				var temperature = $.validateNumber(weather.temperature, null); // In Celcius
+				if (temperature == null) {
+					temperature = "NaN";
 				}
 				else {
-					//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
-					var myLocationArray = myLocation.toDegrees();
-					now = Gregorian.info(now, Time.FORMAT_SHORT);
+					if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_STATUTE) {
+						temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+					}
 
-					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
-					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
-					now = now.hour + ((now.min + 1) / 60.0);
-					//logMessage(now);
+					temperature = temperature.format(INTEGER_FORMAT) + "°";
+				}
+		
+				var humidity = $.validateNumber(weather.relativeHumidity, null);
+				if (humidity == null) {
+					humidity = "NaN";
+				}
+				else {
+					humidity = humidity.format(INTEGER_FORMAT) + "%";
+				}
 
-					// Get today's sunrise/sunset times in current time zone.
-					var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
-					//logMessage(sunTimes);
-					//logMessage("now=" + now); 
-					//logMessage("sunTimes=" + sunTimes); 
-					// If sunrise/sunset happens today.
-					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
-					if (sunriseSunsetToday) {
-						if (now < sunTimes[0] || now > sunTimes[1]) {
-							day = "n";
+				mWeatherStationName = $.validateString(weather.observationLocationName, null);
+
+				var icon = "01";
+				var day = "d";
+				var myLocation = weather.observationLocationPosition;
+				var now = Time.now();
+				if (myLocation != null) {
+					if (Toybox.Weather has :getSunrise) {
+						var sunrise = Weather.getSunrise(myLocation, now);
+						var sunset = Weather.getSunset(myLocation, now);
+
+						if (sunrise != null and sunset != null) {
+							var sinceSunrise = sunrise.compare(now);
+							var sinceSunset = now.compare(sunset);
+							if (sinceSunrise >= 0 || sinceSunset >= 0) {
+								day = "n";
+							}
+						}
+					}
+					else {
+						//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+						var myLocationArray = myLocation.toDegrees();
+						now = Gregorian.info(now, Time.FORMAT_SHORT);
+
+						// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+						// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+						now = now.hour + ((now.min + 1) / 60.0);
+						//logMessage(now);
+
+						// Get today's sunrise/sunset times in current time zone.
+						var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+						//logMessage(sunTimes);
+						//logMessage("now=" + now); 
+						//logMessage("sunTimes=" + sunTimes); 
+						// If sunrise/sunset happens today.
+						var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+						if (sunriseSunsetToday) {
+							if (now < sunTimes[0] || now > sunTimes[1]) {
+								day = "n";
+							}
 						}
 					}
 				}
-			}
 
-			var condition = $.validateNumber(weather.condition, null);
-			if (condition != null && condition < 53) {
-				icon = (mGarminToOWM[condition]).format("%02d") + day;
-				//logMessage("icon=" + icon); 
+				var condition = $.validateNumber(weather.condition, null);
+				if (condition != null && condition < 53) {
+					icon = (mGarminToOWM[condition]).format("%02d") + day;
+					//logMessage("icon=" + icon); 
+				}
+				else {
+					//DEBUG*/ logMessage("Icon index " + condition + " is invalid");
+				}
+				result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
+				//DEBUG*/ logMessage("Weather at " + mWeatherStationName + " is " + result);
 			}
 			else {
-				/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
+				result = { "cod" => 404 };
+				/*DEBUG*/ logMessage("No weather data, returning cod = 404");
 			}
-			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
-			/*DEBUG*/ logMessage("Weather at " + mWeatherStationName + " is " + result);
 		}
 		else {
-			result = { "cod" => 404 };
-			/*DEBUG*/ logMessage("No weather data, returning cod = 404");
+			result = { "cod" => 400 };
+			/*DEBUG*/ logMessage("No weather data, returning cod = 400");
 		}
 		Storage.setValue("WeatherInfo", result);
 		Storage.setValue("NewWeatherInfo", true);
@@ -423,6 +432,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update the view
 	function onUpdate(dc) {
 		//Sys.println("onUpdate()");
+        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
@@ -622,12 +632,12 @@ class CrystalView extends Ui.WatchFace {
 		// crash in GoalMeter.getSegmentScale().
 		// Sanity check. I've seen weird Invalid Value and "System Error" in DataArea.setGoalValues:48 and :61. Make sure the data is valid
 		if (values[:isValid] && (!(values[:max] instanceof Lang.Number || values[:max] instanceof Lang.Float) || values[:max] < 1)) {
-			/*DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
+			//DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
 			values[:max] = 1;
 			values[:isValid] = false;
 		}
 		if (values[:isValid] && (!(values[:current] instanceof Lang.Number || values[:current] instanceof Lang.Float))) {
-			/*DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
+			//DEBUG*/ logMessage("values[:current] is invalid=" + values[:current]);
 			values[:current] = 0;
 			values[:isValid] = false;
 		}
@@ -649,7 +659,7 @@ class CrystalView extends Ui.WatchFace {
 	// state of this View here. This includes freeing resources from
 	// memory */
 	function onHide() {
-		/*DEBUG*/ logMessage("View hidding");
+		//DEBUG*/ logMessage("View hidding");
 	}
 
 	// The user has just looked at their watch. Timers and animations may be started here.
@@ -779,7 +789,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
 		var co_ords = clickEvent.getCoordinates();
-        /*DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
+        //DEBUG*/ logMessage("onPress called with x:" + co_ords[0] + ", y:" + co_ords[1]);
 
 		// returns the complicationId within the boundingBoxes
 		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
@@ -886,11 +896,11 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 	function isWithin(x, y, startX, startY, spacingX, spacingY, field) {
 		if (x > startX && x < startX + spacingX && y > startY and y < startY + spacingY) {
-			/*DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
+			//DEBUG*/ logMessage("True:  " + x + "/" + y + " is within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return field;
 		}
 		else {
-			/*DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
+			//DEBUG*/ logMessage("False:  " + x + "/" + y + " is NOT within " + startX + "/" + startY + " and " + (startX + spacingX).toString() + "/" + (startY + spacingY).toString());
 			return "";
 		}
 	}

@@ -83,30 +83,30 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		if (_token == null) {					
-			/*DEBUG*/ logMessage("onTemporalEvent:Generating Access Token");
+			//DEBUG*/ logMessage("onTemporalEvent:Generating Access Token");
 			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
 				makeWebPost(refreshToken, method(:onReceiveToken));
 			} else {
-				/*DEBUG*/ logMessage("onTemporalEvent:No refresh token!");
+				//DEBUG*/ logMessage("onTemporalEvent:No refresh token!");
 				Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 401, "httpInternalErrorTesla" => 401 } });
 			}
 			return;
 		}
 
 		if (_vehicle_id == null) {
-			/*DEBUG*/ logMessage("onTemporalEvent:Getting vehicles");
+			//DEBUG*/ logMessage("onTemporalEvent:Getting vehicles");
 			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 			return;
 		}
 
-		/*DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
+		//DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
 		makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", null, method(:onReceiveVehicleData));
 	}
 
 	(:background_method)
     function onReceiveToken(responseCode, responseData) {
-		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
+		//DEBUG*/ logMessage("onReceiveToken: " + responseCode);
 
 		var teslaInfo = Bg.getBackgroundData();
 		if (teslaInfo == null) {
@@ -131,7 +131,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background_method)
     function onReceiveVehicles(responseCode, responseData) {
-		/*DEBUG*/ logMessage("onReceiveVehicles: " + responseCode);
+		//DEBUG*/ logMessage("onReceiveVehicles: " + responseCode);
 
 		var teslaInfo = Bg.getBackgroundData();
 		if (teslaInfo == null) {
@@ -182,8 +182,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background_method)
     function onReceiveVehicleData(responseCode, responseData) {
-		/*DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
-        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+		//DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
+        //DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		var teslaInfo = Bg.getBackgroundData();
 		if (teslaInfo == null) {
@@ -224,7 +224,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				teslaInfo.put("VehicleID", null);
 				_vehicle_id = null;
 			}
-			/*DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
+			//DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
 			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 			return;
 	    }
@@ -232,7 +232,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		else if (responseCode == 401) {
 			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
-				/*DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
+				//DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
 				makeWebPost(refreshToken, method(:onReceiveToken));
 				return;
 			}

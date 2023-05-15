@@ -123,4 +123,5 @@
 	<string id="UseComplications">Utilisez les complications, si disponible</string>
 	<string id="TeslaLink">Utilisez les Complications de Tesla-Link pour l'info Tesla</string>
 	<string id="TeslaVehicleIndex">Quel véhicle afficher?</string>
+	<string id="ShowWeatherStationName">Montrer le nom de la station météo?</string>
 </strings>

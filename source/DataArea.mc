@@ -9,6 +9,7 @@ using Toybox.Application.Properties;
 
 class DataArea extends Ui.Drawable {
 
+	private var mRow0Y;
 	private var mRow1Y;
 	private var mRow2Y;
 
@@ -31,6 +32,7 @@ class DataArea extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
+		mRow0Y = params[:row0Y];
 		mRow1Y = params[:row1Y];
 		mRow2Y = params[:row2Y];
 
@@ -49,7 +51,7 @@ class DataArea extends Ui.Drawable {
 			mLeftGoalMax = (mLeftGoalType == GOAL_TYPE_BATTERY || mLeftGoalType == GOAL_TYPE_BODY_BATTERY || mLeftGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : leftValues[:max].format(INTEGER_FORMAT);
 		} else {
 			if (leftValues[:isValid]) {
-				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
+				//DEBUG*/ logMessage("Should have been screened, why invalid? " + leftValues[:current] + " - " + leftValues[:max]);
 			}
 			mLeftGoalCurrent = null;
 			mLeftGoalMax = null;
@@ -64,7 +66,7 @@ class DataArea extends Ui.Drawable {
 			mRightGoalMax = (mRightGoalType == GOAL_TYPE_BATTERY || mRightGoalType == GOAL_TYPE_BODY_BATTERY || mRightGoalType == GOAL_TYPE_STRESS_LEVEL) ? "%" : rightValues[:max].format(INTEGER_FORMAT);
 		} else {
 			if (rightValues[:isValid]) {
-				/*DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
+				//DEBUG*/ logMessage("Should have been screened, why invalid? " + rightValues[:current] + " - " + rightValues[:max]);
 			}
 			mRightGoalCurrent = null;
 			mRightGoalMax = null;
@@ -76,16 +78,22 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
 		var view = App.getApp().getView();
-		var city = view.mLocalCityName;
-		var fromWeather = false;
-
-		if (city == null || city.length() == 0) {
-			city = view.mWeatherStationName;
-			fromWeather = true;
+		var city = view.mWeatherStationName;
+		if (view.mShowWeatherStationName && city != null && city.length() > 0) {
+			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				locX + (width / 2),
+				mRow0Y,
+				gNormalFont,
+				// Limit string length.
+				city.substring(0, 16),
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 		}
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
-		if ((city != null && city.length() > 0)) {
+		city = view.mLocalCityName;
+		if (city != null && city.length() > 0) {
 			// Time zone 1 city.
 			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
@@ -98,42 +106,40 @@ class DataArea extends Ui.Drawable {
 			);
 
 			// Time zone 1 time.
-			if (!fromWeather) {
-				var time;
-
-				if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -90.0 && view.mLocalCityLon <= 90.0) {
-					try {
-						var where = new Position.Location({
-							:latitude  => view.mLocalCityLat,
-							:longitude => view.mLocalCityLon,
-							:format    => :degrees
-						});
+			var time;
+			if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -90.0 && view.mLocalCityLon <= 90.0) {
+				try {
+					var where = new Position.Location({
+						:latitude  => view.mLocalCityLat,
+						:longitude => view.mLocalCityLon,
+						:format    => :degrees
+					});
 
 
-						var local = Gregorian.localMoment(where, Time.now());
-						local = Gregorian.info(local, Time.FORMAT_SHORT);
+					var local = Gregorian.localMoment(where, Time.now());
+					local = Gregorian.info(local, Time.FORMAT_SHORT);
 
-						time = $.getFormattedTime(local.hour, local.min);
-						time = time[:hour] + ":" + time[:min] + time[:amPm]; 
-					}
-					catch (e) {
-						time = "???";
-					}
+					time = $.getFormattedTime(local.hour, local.min);
+					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 				}
-				else {
+				catch (e) {
 					time = "???";
 				}
-
-				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
-				dc.drawText(
-					locX + (width / 2),
-					mRow2Y,
-					gNormalFont,
-					time,
-					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-				);
 			}
-		} else {
+			else {
+				time = "???";
+			}
+
+			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+			dc.drawText(
+				locX + (width / 2),
+				mRow2Y,
+				gNormalFont,
+				time,
+				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
+		else {
 			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
 			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
 		}
@@ -175,7 +181,7 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
-		var digitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
+		var digitStyle = App.getApp().getView().mDigitStyle;
 
 		// #107 Only draw values if digit style is not Hidden.
 		if (digitStyle != 2 /* HIDDEN */) {
