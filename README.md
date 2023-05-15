@@ -28,6 +28,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.2
+- Fixed a crash on a VenuSQ
+- Fixed a crash when invalid data is received from the background process
+
 ### 2.18.1
 - Gave the weather station name its own line so it doesn't hide the Goals current/max fields. Local City Time will still hide these though. This is how it always was.
 - Added an option in Settings (Show weather station name) to show or not the weather station name, defaults to True.

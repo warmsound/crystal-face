@@ -87,18 +87,22 @@ class CrystalApp extends App.AppBase {
 	// pendingWebRequests keys.
 	(:background_method)
 	function onBackgroundData(data) {
-		var receivedData = data["TeslaInfo"]; // What we just received
-		
 		var teslaInfo = Storage.getValue("TeslaInfo"); // What we have in Storage
 		if (teslaInfo == null) {
 			teslaInfo = {};
 		}
 
 		// Update in TeslaInfo what has been received in receivedData
-		var keys = receivedData.keys();
-		var values = receivedData.values();
-		for (var i = 0; i < keys.size(); i++) {
-			teslaInfo.put(keys[i], values[i]);
+		var receivedData = data["TeslaInfo"]; // What we just received
+		if (receivedData != null && receivedData instanceof Lang.Dictionary) {
+			var keys = receivedData.keys();
+			var values = receivedData.values();
+			for (var i = 0; i < keys.size(); i++) {
+				teslaInfo.put(keys[i], values[i]);
+			}
+		}
+		else {
+			//DEBUG*/ logMessage("Unexpected invalid receivedData: " + receivedData);
 		}
 
 		// Copy into their own name some of the entries in TeslaInfo, then delete from TeslaInfo
