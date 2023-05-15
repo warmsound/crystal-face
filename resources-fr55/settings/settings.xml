@@ -65,8 +65,8 @@
 			<!--listEntry value="12">@Strings.Pressure</listEntry-->
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
-			<!--listEntry value="11">@Strings.Weather</listEntry-->
-			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
 			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 			<listEntry value="19">@Strings.StressLevel</listEntry>
@@ -88,8 +88,8 @@
 			<!--listEntry value="12">@Strings.Pressure</listEntry-->
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
-			<!--listEntry value="11">@Strings.Weather</listEntry-->
-			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
 			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 			<listEntry value="19">@Strings.StressLevel</listEntry>
@@ -111,8 +111,8 @@
 			<!--listEntry value="12">@Strings.Pressure</listEntry-->
 			<!--listEntry value="7">@Strings.Temperature</listEntry-->
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
-			<!--listEntry value="11">@Strings.Weather</listEntry-->
-			<!--listEntry value="13">@Strings.Humidity</listEntry-->
+			<listEntry value="11">@Strings.Weather</listEntry>
+			<listEntry value="13">@Strings.Humidity</listEntry>
 			<listEntry value="17">@Strings.BodyBattery</listEntry>
 			<listEntry value="18">@Strings.RecoveryTime</listEntry>
 			<listEntry value="19">@Strings.StressLevel</listEntry>

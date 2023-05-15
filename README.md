@@ -33,6 +33,7 @@ Reviews:
 - Added an option in Settings (Show weather station name) to show or not the weather station name, defaults to True.
 - Watches that although are at CIQ V3.2.0 and above but are still lacking Garmin Weather will display "N/A" for temperature/humidity/sunrise/sunset.
 - Trying to free some more room so watches with 98KB of watch face memory doesn't crash with Out of Memory errors.
+- Gave the Forerunner 55 access to the weather and humidity since it supports Garmin Weather
 
 ### 2.18.0
 - Removed Watch model that are not at least at CIQ 3.3.0. This is required for the new Sunrise/Sunset and Weather library by Garmin. From the stats Garmin shows me about the watch face, none of them had downloaded the watch face anyway.
