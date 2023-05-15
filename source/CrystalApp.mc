@@ -32,7 +32,7 @@ class CrystalApp extends App.AppBase {
 
 	// Return the initial view of your application here
 	function getInitialView() {
-		//DEBUG*/ logMessage("Getting initial view");
+		/*DEBUG*/ logMessage("Getting initial view");
 
 		if (WatchUi has :WatchFaceDelegate) {
 			mView = new CrystalView();
@@ -54,7 +54,7 @@ class CrystalApp extends App.AppBase {
 	// New app settings have been received so trigger a UI update
 	(:background_method)
 	function getServiceDelegate() {
-		//DEBUG*/ logMessage("Getting service delegate");
+		/*DEBUG*/ logMessage("Getting service delegate");
 		return [new BackgroundService()];
 	}
 
@@ -102,7 +102,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 		else {
-			//DEBUG*/ logMessage("Unexpected invalid receivedData: " + receivedData);
+			/*DEBUG*/ logMessage("Unexpected invalid receivedData: " + receivedData);
 		}
 
 		// Copy into their own name some of the entries in TeslaInfo, then delete from TeslaInfo

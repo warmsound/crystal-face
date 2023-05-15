@@ -748,7 +748,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// I've seen this while in low power mode, so skip it
 		if (complicationValue == null) {
-			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
+			/*DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
 			return;
 		}
 
