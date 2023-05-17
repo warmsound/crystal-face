@@ -15,9 +15,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background)
 	function initialize() {
+		/*DEBUG*/ logMessage("In ServiceDelegate");
 		Sys.ServiceDelegate.initialize();
 
 		if (Storage.getValue("Tesla") == null || gTeslaComplication == true) {
+			/*DEBUG*/ logMessage("returning because Storage.getValue(\"Tesla\") is " + Storage.getValue("Tesla") + " or gTeslaComplication is " + gTeslaComplication);
 			return;
 		}
 
@@ -73,12 +75,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 		if (_vehicle_id == null) {
 			_vehicle_id = Storage.getValue("TeslaVehicleID");
 		}
-
 	}
 
 	(:background)
 	function onTemporalEvent() {
 		if (!Sys.getDeviceSettings().phoneConnected) {
+			/*DEBUG*/ logMessage("Our phone isn't connected, bailing out");
 			Bg.exit(null);
 		}
 

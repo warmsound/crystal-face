@@ -235,7 +235,8 @@ function updateComplications(complicationName, storageName, index, complicationT
 // Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
 // - hour: 0-23.
 // - min:  0-59.
-function getFormattedTime(hour, min) {
+// - sec: 0-59
+function getFormattedTime(hour, min, sec) {
 	var amPm = "";
 
 	if (!Sys.getDeviceSettings().is24Hour) {
@@ -266,6 +267,7 @@ function getFormattedTime(hour, min) {
 	return {
 		:hour => hour,
 		:min => min.format("%02d"),
+		:sec => sec.format("%02d"),
 		:amPm => amPm
 	};
 }

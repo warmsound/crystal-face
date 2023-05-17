@@ -668,10 +668,10 @@ class DataFields extends Ui.Drawable {
 
 						if (sinceSunrise >= 0 || sinceSunset >= 0) {
 							result["isSunriseNext"] = true;
-							value = $.getFormattedTime(sunriseTime.hour, sunriseTime.min);
+							value = $.getFormattedTime(sunriseTime.hour, sunriseTime.min, sunriseTime.sec);
 						}
 						else {
-							value = $.getFormattedTime(sunsetTime.hour, sunsetTime.min);
+							value = $.getFormattedTime(sunsetTime.hour, sunsetTime.min, sunsetTime.sec);
 						}
 						value = value[:hour] + ":" + value[:min] + value[:amPm];
 					}
@@ -723,7 +723,7 @@ class DataFields extends Ui.Drawable {
 						} else {
 							var hour = Math.floor(nextSunEvent).toLong() % 24;
 							var min = Math.floor((nextSunEvent - Math.floor(nextSunEvent)) * 60); // Math.floor(fractional_part * 60)
-							value = App.getApp().getFormattedTime(hour, min);
+							value = App.getApp().getFormattedTime(hour, min, 0);
 							value = value[:hour] + ":" + value[:min] + value[:amPm]; 
 						}
 					}

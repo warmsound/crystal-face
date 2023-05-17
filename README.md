@@ -32,6 +32,7 @@ Reviews:
 - Corrected invalid value for Stress read from sensor, not Complications
 - For performance, ignore Tesla-Link Complications if we're told not to use them
 - Changed the logic for when the background process should run next
+- Fixed Always On Display for Tesla Battery
 
 ### 2.18.2
 - Fixed a crash on a VenuSQ

@@ -20,6 +20,8 @@ class CrystalApp extends App.AppBase {
 
 	function initialize() {
 		AppBase.initialize();
+
+		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
 	}
 
 	// function onStart(state) {
@@ -133,6 +135,7 @@ class CrystalApp extends App.AppBase {
 			}
 		}
 
+		/*DEBUG*/ var nextTime = Time.now().add(new Time.Duration(5 * 60)); var local = Gregorian.info(nextTime, Time.FORMAT_SHORT); var time = $.getFormattedTime(local.hour, local.min, local.sec); 		logMessage("Next temporal event at " + time[:hour] + ":" + time[:min] + ":" + time[:sec] + time[:amPm]);
 		Bg.registerForTemporalEvent(new Time.Duration(5 * 60)); // Since onSettingsChanged go for a specific time, go for duration here once we get going, otherwise we'll get background data only once the view is shown
 
 		Ui.requestUpdate();

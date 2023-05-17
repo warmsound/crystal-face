@@ -119,7 +119,7 @@ class DataArea extends Ui.Drawable {
 					var local = Gregorian.localMoment(where, Time.now());
 					local = Gregorian.info(local, Time.FORMAT_SHORT);
 
-					time = $.getFormattedTime(local.hour, local.min);
+					time = $.getFormattedTime(local.hour, local.min, local.sec);
 					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
 				}
 				catch (e) {

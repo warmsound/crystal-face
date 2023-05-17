@@ -80,7 +80,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// TIME.
 		var clockTime = Sys.getClockTime();
-		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min, clockTime.sec);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		// Change vertical offset every minute.
@@ -227,9 +227,14 @@ class AlwaysOnDisplay extends Ui.Drawable {
 			);
 
 			// Batteries.
-			var battery = Math.floor(Sys.getSystemStats().battery);
-			var chargingState = Storage.getValue("TeslaChargingState");
-			var error = Storage.getValue("TeslaError");
+			var watchBattery = Math.floor(Sys.getSystemStats().battery);
+
+			var teslaInfo = Storage.getValue("TeslaInfo");
+			if (teslaInfo == null) {
+				teslaInfo = {};
+			}
+			var chargingState = teslaInfo.get("ChargingState");
+			var error = teslaInfo.get("httpErrorTesla");
 
 			if (chargingState != null) {
 				if (chargingState.equals("Charging")) {
@@ -243,16 +248,16 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				chargingState = 0;
 			}
 
-			var value = Storage.getValue("TeslaBatterieLevel");
-			if (error != null) {
-				value = error.toNumber().format(INTEGER_FORMAT);
-			} else if (value == null) {
-				value = "???";
+			var vehicleBattery = teslaInfo.get("BatteryLevel");
+			if (error != null && error != 200) {
+				vehicleBattery = error.toNumber().format(INTEGER_FORMAT);
+			} else if (vehicleBattery == null) {
+				vehicleBattery = "???";
 			} else {
-				value = value.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
+				vehicleBattery = vehicleBattery.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
 			}
 
-			var text = value + " " + battery.format(INTEGER_FORMAT) + "%";
+			var text = vehicleBattery + " " + watchBattery.format(INTEGER_FORMAT) + "%";
 			var widthText = dc.getTextWidthInPixels(text, mBatteryFont);
 
 			dc.drawText(
@@ -266,7 +271,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 				dc.getWidth() - mDataLeft,
 				y,
 				mBatteryFont,
-				value + " " + battery.format(INTEGER_FORMAT) + "%",
+				vehicleBattery + " " + watchBattery.format(INTEGER_FORMAT) + "%",
 				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 		}

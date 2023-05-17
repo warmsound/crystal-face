@@ -193,13 +193,15 @@ class CrystalView extends Ui.WatchFace {
 
 		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
 		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
-			/*DEBUG*/ logMessage("Registering for Temporal Events");
 			var lastTime = Bg.getLastTemporalEventTime();
 			if (lastTime) {
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+
+				/*DEBUG*/ var local = Gregorian.info(nextTime, Time.FORMAT_SHORT); var time = $.getFormattedTime(local.hour, local.min, local.sec); logMessage("Next temporal event at " + time[:hour] + ":" + time[:min] + ":" + time[:sec] + time[:amPm]);
 				Bg.registerForTemporalEvent(nextTime);
 			} else {
+				/*DEBUG*/ logMessage("Next Temporal Events should happen NOW");
 				Bg.registerForTemporalEvent(Time.now());
 			}
 		}

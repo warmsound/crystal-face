@@ -62,7 +62,7 @@ class ThickThinTime extends Ui.Drawable {
 
 	function drawHoursMinutes(dc) {
 		var clockTime = Sys.getClockTime();
-		var formattedTime = $.getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = $.getFormattedTime(clockTime.hour, clockTime.min, clockTime.sec);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		var hours = formattedTime[:hour];
