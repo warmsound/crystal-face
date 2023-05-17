@@ -28,6 +28,11 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.3
+- Corrected invalid value for Stress read from sensor, not Complications
+- For performance, ignore Tesla-Link Complications if we're told not to use them
+- Changed the logic for when the background process should run next
+
 ### 2.18.2
 - Fixed a crash on a VenuSQ
 - Fixed a crash when invalid data is received from the background process

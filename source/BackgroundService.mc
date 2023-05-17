@@ -13,7 +13,7 @@ class BackgroundService extends Sys.ServiceDelegate {
     var _token;
     var _vehicle_id;
 
-	(:background_method)
+	(:background)
 	function initialize() {
 		Sys.ServiceDelegate.initialize();
 
@@ -76,7 +76,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	}
 
-	(:background_method)
+	(:background)
 	function onTemporalEvent() {
 		if (!Sys.getDeviceSettings().phoneConnected) {
 			Bg.exit(null);
@@ -104,7 +104,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", null, method(:onReceiveVehicleData));
 	}
 
-	(:background_method)
+	(:background)
     function onReceiveToken(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
 
@@ -129,7 +129,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
-	(:background_method)
+	(:background)
     function onReceiveVehicles(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveVehicles: " + responseCode);
 
@@ -180,7 +180,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
-	(:background_method)
+	(:background)
     function onReceiveVehicleData(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveVehicleData: " + responseCode);
         /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
@@ -241,7 +241,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
     }
 
-	(:background_method)
+	(:background)
     function makeWebPost(token, notify) {
         var url = "https://" + $.getStringProperty("TeslaServerAUTHLocation","") + "/oauth2/v3/token";
         Comms.makeWebRequest(
@@ -260,7 +260,7 @@ class BackgroundService extends Sys.ServiceDelegate {
         );
     }
 
-	(:background_method)
+	(:background)
     function makeWebRequest(url, params, callback) {
 		var options = {
             :method => Comms.HTTP_REQUEST_METHOD_GET,

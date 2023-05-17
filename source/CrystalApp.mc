@@ -52,7 +52,7 @@ class CrystalApp extends App.AppBase {
 	}
 
 	// New app settings have been received so trigger a UI update
-	(:background_method)
+	(:background)
 	function getServiceDelegate() {
 		/*DEBUG*/ logMessage("Getting service delegate");
 		return [new BackgroundService()];
@@ -82,10 +82,8 @@ class CrystalApp extends App.AppBase {
 	}
 
 	// Handle data received from BackgroundService.
-	// On success, clear appropriate pendingWebRequests flag.
-	// data is Dictionary with single key that indicates the data type received. This corresponds with Object Store and
-	// pendingWebRequests keys.
-	(:background_method)
+	// data is Dictionary with single key that indicates the data type received.
+	(:background)
 	function onBackgroundData(data) {
 		var teslaInfo = Storage.getValue("TeslaInfo"); // What we have in Storage
 		if (teslaInfo == null) {
@@ -134,6 +132,8 @@ class CrystalApp extends App.AppBase {
 				Storage.remove("VehicleID"); // Try to get a new vehicleID
 			}
 		}
+
+		Bg.registerForTemporalEvent(new Time.Duration(5 * 60)); // Since onSettingsChanged go for a specific time, go for duration here once we get going, otherwise we'll get background data only once the view is shown
 
 		Ui.requestUpdate();
 	}

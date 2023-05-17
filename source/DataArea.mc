@@ -181,6 +181,7 @@ class DataArea extends Ui.Drawable {
 	}
 
 	function drawGoalValues(dc, x, currentValue, maxValue, align) {
+        //DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 		var digitStyle = App.getApp().getView().mDigitStyle;
 
 		// #107 Only draw values if digit style is not Hidden.

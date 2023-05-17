@@ -191,9 +191,9 @@ class CrystalView extends Ui.WatchFace {
 		mDigitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
 		mShowWeatherStationName = $.getBoolProperty("ShowWeatherStationName", true);
 
-
 		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
 		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
+			/*DEBUG*/ logMessage("Registering for Temporal Events");
 			var lastTime = Bg.getLastTemporalEventTime();
 			if (lastTime) {
 				// Events scheduled for a time in the past trigger immediately.
@@ -432,7 +432,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update the view
 	function onUpdate(dc) {
 		//Sys.println("onUpdate()");
-        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+        //DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
@@ -584,7 +584,7 @@ class CrystalView extends Ui.WatchFace {
 					}
 				}
 				if (values[:isValid] == false && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
-					var stressLevel = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
+					var stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
 					//DEBUG*/ var stressLevelDate = 0;
 
 					if (stressLevel != null) {
@@ -742,13 +742,13 @@ class CrystalView extends Ui.WatchFace {
 
 		//DEBUG*/ var complicationLongLabel = complication.longLabel; if (complicationType == Complications.COMPLICATION_TYPE_RECOVERY_TIME) { logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue); }
 
-		if (complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+		if (gTeslaComplication == true && complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
 			$.doTeslaComplication(complicationValue);
 		}
 
 		// I've seen this while in low power mode, so skip it
 		if (complicationValue == null) {
-			/*DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
+			//DEBUG*/ logMessage("We got a Complication value of null for " + complicationType);
 			return;
 		}
 
