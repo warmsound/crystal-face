@@ -859,36 +859,38 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 		if (indicatorCount > 0) {
 			var indicators = mview.mDrawables[:Indicators];
-			var locX = indicators[:locX];
-			var locY = indicators[:locY];
-			var batteryWidth = indicators[:mBatteryWidth];
+			if (indicators != null) {
+				var locX = indicators[:locX];
+				var locY = indicators[:locY];
+				var batteryWidth = indicators[:mBatteryWidth];
 
-			spacingY = indicators[:mSpacing];
-			spacingX = batteryWidth * 2;
-			locX -= (batteryWidth / 1.5).toNumber();
-			if (indicatorCount == 1) {
-				locY -= spacingY;
-				spacingY *= 2;
-			}
-			else {
-				locY -= spacingY / 2;
-			}
+				spacingY = indicators[:mSpacing];
+				spacingX = batteryWidth * 2;
+				locX -= (batteryWidth / 1.5).toNumber();
+				if (indicatorCount == 1) {
+					locY -= spacingY;
+					spacingY *= 2;
+				}
+				else {
+					locY -= spacingY / 2;
+				}
 
-			if (indicatorCount == 3) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY, spacingX, spacingY, "3");
-			} else if (indicatorCount == 2) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY / 2, spacingX, spacingY, "2");
-			} else if (indicatorCount == 1) {
-				complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "1");
-			}
+				if (indicatorCount == 3) {
+					complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY, spacingX, spacingY, "3");
+				} else if (indicatorCount == 2) {
+					complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], locX, locY + spacingY / 2, spacingX, spacingY, "2");
+				} else if (indicatorCount == 1) {
+					complicationIndex = "Complication_I" + isWithin(co_ords[0], co_ords[1], locX, locY, spacingX, spacingY, "1");
+				}
 
-			if (complicationIndex.equals("Complication_I") == false) {
-				complicationId = Storage.getValue(complicationIndex);
-			}
+				if (complicationIndex.equals("Complication_I") == false) {
+					complicationId = Storage.getValue(complicationIndex);
+				}
 
-			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
-			if (complicationId != null) {
-				return complicationId;
+				//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+				if (complicationId != null) {
+					return complicationId;
+				}
 			}
 		}
 		
@@ -903,21 +905,23 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 			var right = mview.mDataFields.mRight;
 			var top = mview.mDataFields.mTop;
 
-			if (fieldCount == 3) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY /2, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], right - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "3");
-			} else if (fieldCount == 2) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.15) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.85) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "2");
-			} else if (fieldCount == 1) {
-				complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1");
-			}
+			if (left != null && right != null && top != null) {
+				if (fieldCount == 3) {
+					complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY /2, spacingX, spacingY, "2") + isWithin(co_ords[0], co_ords[1], right - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "3");
+				} else if (fieldCount == 2) {
+					complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.15) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1") + isWithin(co_ords[0], co_ords[1], left + ((right - left) * 0.85) - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "2");
+				} else if (fieldCount == 1) {
+					complicationIndex = "Complication_F" + isWithin(co_ords[0], co_ords[1], (right + left) / 2 - spacingX / 2, top - spacingY / 2, spacingX, spacingY, "1");
+				}
 
-			if (complicationIndex.equals("Complication_F") == false) {
-				complicationId = Storage.getValue(complicationIndex);
-			}
+				if (complicationIndex.equals("Complication_F") == false) {
+					complicationId = Storage.getValue(complicationIndex);
+				}
 
-			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
-			if (complicationId != null) {
-				return complicationId;
+				//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+				if (complicationId != null) {
+					return complicationId;
+				}
 			}
 		}
 
@@ -929,15 +933,17 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		var right = mview.mDrawables[:DataArea].mGoalIconRightX + spacingX / 8;
 		var y = mview.mDrawables[:DataArea].mGoalIconY - spacingY / 8;
 
-		// spacing * 3 to give it more room so we can press on the text too.
-		complicationIndex = "Complication_G" + isWithin(co_ords[0], co_ords[1], left, y, spacingX * 3, spacingY, "1") + isWithin(co_ords[0], co_ords[1], right - spacingX * 3, y, spacingX * 3, spacingY, "2");
-		if (complicationIndex.equals("Complication_G") == false) {
-			complicationId = Storage.getValue(complicationIndex);
-		}
+		if (left != null && right != null && y != null) {
+			// spacing * 3 to give it more room so we can press on the text too.
+			complicationIndex = "Complication_G" + isWithin(co_ords[0], co_ords[1], left, y, spacingX * 3, spacingY, "1") + isWithin(co_ords[0], co_ords[1], right - spacingX * 3, y, spacingX * 3, spacingY, "2");
+			if (complicationIndex.equals("Complication_G") == false) {
+				complicationId = Storage.getValue(complicationIndex);
+			}
 
-		//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
-		if (complicationId != null) {
-			return complicationId;
+			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+			if (complicationId != null) {
+				return complicationId;
+			}
 		}
 
 		return null;

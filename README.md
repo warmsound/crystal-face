@@ -30,6 +30,7 @@ Reviews:
 
 ### 2.18.4
 - Made some conditional compiling so watches that don't support Complications do not include functions related to that. This is to help watches with low allocated watchface memory, like the Venu SQ, to run without crashing because of Out of Memory errors
+- Saw a weird crash in onPress so I added type checking to prevent it from happening again
 
 ### 2.18.3
 - Corrected invalid value for Stress read from sensor, not Complications
