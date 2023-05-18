@@ -75,6 +75,25 @@ class DataFields extends Ui.Drawable {
 	}
 
 	// Cache FieldCount setting, and determine appropriate maximum field length.
+	(:noComplications)
+	function onSettingsChanged() {
+		var view = App.getApp().getView();
+
+		// #123 Protect against null or unexpected type e.g. String.
+		mFieldCount = $.getIntProperty("FieldCount", 3);
+
+		// #116 Handle FieldCount = 0 correctly.
+		mMaxFieldLength = [0, 8, 6, 4][mFieldCount];
+
+		mHasLiveHR = view.hasField(FIELD_TYPE_HR_LIVE_5S);
+
+		if (!view.hasField(FIELD_TYPE_WEATHER)) {
+			mWeatherIconsFont = null;
+			mWeatherIconsSubset = null;
+		}
+	}
+	
+	(:hasComplications)
 	function onSettingsChanged() {
 		var view = App.getApp().getView();
 

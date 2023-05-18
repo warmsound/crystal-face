@@ -153,6 +153,40 @@ class CrystalView extends Ui.WatchFace {
 	// Set flag to respond to settings change on next full draw (onUpdate()), as we may be in 1Hz (lower power) mode, and cannot
 	// update the full screen immediately. This is true on real hardware, but not in the simulator, which calls onUpdate()
 	// immediately. Ui.requestUpdate() does not appear to work in 1Hz mode on real hardware.
+	(:noComplications)
+	function onSettingsChanged() {
+		mSettingsChangedSinceLastDraw = true;
+		//logMessage("onSettingsChanged called");
+
+		mFieldTypes[0].put("type", $.getIntProperty("Field1Type", 0));
+		mFieldTypes[1].put("type", $.getIntProperty("Field2Type", 1));
+		mFieldTypes[2].put("type", $.getIntProperty("Field3Type", 2));
+
+		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
+		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
+
+		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
+		updateThemeColours();
+
+		// Update hours/minutes colours after theme colours have been set.
+		updateHoursMinutesColours();
+
+		ReadWeather(false);
+
+		// Get our 2nd local time if available
+		var localTimeInCity = $.getStringProperty("LocalTimeInCity", "");
+		var splitArray = $.to_array(localTimeInCity, ",");
+		if (splitArray.size() == 3) {
+			mLocalCityName = $.validateString(splitArray[0], "???");
+			mLocalCityLat = $.validateFloat(splitArray[1], null);
+			mLocalCityLon = $.validateFloat(splitArray[2], null);
+		}
+		else {
+			mLocalCityName = null;
+		}
+	}
+
+	(:hasComplications)
 	function onSettingsChanged() {
 		mSettingsChangedSinceLastDraw = true;
 		//logMessage("onSettingsChanged called");
@@ -434,7 +468,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update the view
 	function onUpdate(dc) {
 		//Sys.println("onUpdate()");
-        //DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
@@ -736,6 +770,11 @@ class CrystalView extends Ui.WatchFace {
 		mDrawables[:MoveBar].setFullWidth(hideSeconds);
 	}
 
+	(:noComplications)
+    function onComplicationUpdated(complicationId) {
+	}
+
+	(:hasComplications)
     function onComplicationUpdated(complicationId) {
 		var complication = Complications.getComplication(complicationId);
 		var complicationType = complication.getType();
@@ -779,6 +818,14 @@ class CrystalView extends Ui.WatchFace {
 	}
 }
 
+(:noComplications)
+class CrystalDelegate extends Ui.WatchFaceDelegate {
+    public function initialize(view as CrystalView) {
+        WatchFaceDelegate.initialize();
+    }
+}
+
+(:hasComplications)
 class CrystalDelegate extends Ui.WatchFaceDelegate {
     private var mview as CrystalView;
 

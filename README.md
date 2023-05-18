@@ -28,6 +28,9 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.4
+- Made some conditional compiling so watches that don't support Complications do not include functions related to that. This is to help watches with low allocated watchface memory, like the Venu SQ, to run without crashing because of Out of Memory errors
+
 ### 2.18.3
 - Corrected invalid value for Stress read from sensor, not Complications
 - For performance, ignore Tesla-Link Complications if we're told not to use them

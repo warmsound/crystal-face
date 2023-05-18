@@ -198,6 +198,11 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 //****************************************************************
 }
 
+(:noComplications)
+function updateComplications(complicationName, storageName, index, complicationType) {
+}
+
+(:hasComplications)
 function updateComplications(complicationName, storageName, index, complicationType) {
 	if (Toybox has :Complications) {
 		// Check if we should subscribe to our Tesla Complication
@@ -491,6 +496,11 @@ function to_array(string, splitter) {
 	return result;
 }
 
+(:noComplications)
+function doTeslaComplication(complicationValue) {
+}
+
+(:hasComplications)
 function doTeslaComplication(complicationValue) {
 	/*DEBUG*/ logMessage("Complication read: " + complicationValue);
 	if (complicationValue instanceof Lang.String) { // Only handle the enhance data sent, not just the battery SoC (a Number)

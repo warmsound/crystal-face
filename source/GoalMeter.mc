@@ -110,6 +110,35 @@ class GoalMeter extends Ui.Drawable {
 		mIsOff = isOff;
 	}
 
+	(:noComplications)
+	function onSettingsChanged(index) {
+		mBuffersNeedRecreate = true;
+
+		// #18 Only read separator width from layout if multi segment style is selected.
+		// #62 Or if filled segment style is selected.
+		var goalMeterStyle = $.getIntProperty("GoalMeterStyle", 0);
+		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != mLayoutSeparator) {
+				mMaxValue = null;
+			}
+
+			mSeparator = mLayoutSeparator;
+			
+		} else {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != 0) {
+				mMaxValue = null;
+			}
+
+			mSeparator = 0;
+		}
+	}
+
+
+	(:hasComplications)
 	function onSettingsChanged(index) {
 		mBuffersNeedRecreate = true;
 
