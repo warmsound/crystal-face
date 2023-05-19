@@ -15,7 +15,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 	(:background)
 	function initialize() {
-		/*DEBUG*/ logMessage("In ServiceDelegate");
+		//DEBUG*/ logMessage("In ServiceDelegate");
 		Sys.ServiceDelegate.initialize();
 
 		if (Storage.getValue("Tesla") == null || gTeslaComplication == true) {
@@ -102,7 +102,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			return;
 		}
 
-		/*DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
+		//DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
 		makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", null, method(:onReceiveVehicleData));
 	}
 
@@ -226,7 +226,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				teslaInfo.put("VehicleID", null);
 				_vehicle_id = null;
 			}
-			/*DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
+			//DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
 			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
 			return;
 	    }
@@ -234,7 +234,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		else if (responseCode == 401) {
 			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
-				/*DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
+				//DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
 				makeWebPost(refreshToken, method(:onReceiveToken));
 				return;
 			}
@@ -270,7 +270,7 @@ class BackgroundService extends Sys.ServiceDelegate {
               		"Authorization" => _token,
 					"User-Agent" => "Crystal-Tesla for Garmin",
 					},
-            :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
+            :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN
         };
 		//2023-03-05 logMessage("makeWebRequest url: '" + url + "'");
 		Comms.makeWebRequest(url, params, options, callback);

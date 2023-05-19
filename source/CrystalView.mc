@@ -468,7 +468,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update the view
 	function onUpdate(dc) {
 		//Sys.println("onUpdate()");
-        /*DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
+        //DEBUG*/ var myStats = Sys.getSystemStats(); logMessage("Total memory: " + myStats.totalMemory + " Used memory: " + myStats.usedMemory + " Free memory: " + myStats.freeMemory);
 
 		// If burn-in protection has changed, set layout appropriate to new burn-in protection state.
 		// If turning on burn-in protection, free memory for regular watch face drawables by clearing references. This means that
