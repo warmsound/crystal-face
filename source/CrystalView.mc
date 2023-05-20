@@ -184,6 +184,9 @@ class CrystalView extends Ui.WatchFace {
 		else {
 			mLocalCityName = null;
 		}
+
+		mDigitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
+		mShowWeatherStationName = $.getBoolProperty("ShowWeatherStationName", true);
 	}
 
 	(:hasComplications)
@@ -218,12 +221,12 @@ class CrystalView extends Ui.WatchFace {
 			mLocalCityName = null;
 		}
 
+		mDigitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
+		mShowWeatherStationName = $.getBoolProperty("ShowWeatherStationName", true);
+
 		// Reread our complications if we're allowed
 		mUseComplications = $.getBoolProperty("UseComplications", false);
 		gTeslaComplication = $.getBoolProperty("TeslaLink", false);
-
-		mDigitStyle = $.getIntProperty("GoalMeterDigitsStyle", 0);
-		mShowWeatherStationName = $.getBoolProperty("ShowWeatherStationName", true);
 
 		// We're not looking at the Complication sent by Tesla-Link and we have a refesh token, register for temporal events
 		if (gTeslaComplication == false && $.getStringProperty("TeslaRefreshToken", "").length() > 0) {
