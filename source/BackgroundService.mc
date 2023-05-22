@@ -128,7 +128,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 		teslaInfo.put("httpErrorTesla", 401);
 		teslaInfo.put("httpInternalErrorTesla", responseCode);
 
+		try {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
+    }
+		catch (e) {
+			Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 413, "httpInternalErrorTesla" => 413 } });
+		}
     }
 
 	(:background)
@@ -179,7 +184,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 		teslaInfo.put("httpErrorTesla", (_vehicle_id == null ? 404 : 408));
 		teslaInfo.put("httpInternalErrorTesla", responseCode);
 
+		try {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
+    }
+		catch (e) {
+			Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 413, "httpInternalErrorTesla" => 413 } });
+		}
     }
 
 	(:background)
@@ -198,6 +208,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		teslaInfo.put("httpErrorTesla", responseCode);
 
         if (responseCode == 200) {
+			teslaInfo.remove("httpInternalErrorTesla");
 			teslaInfo.put("VehicleState", "online");
 
         	var response = responseData.get("response");
@@ -240,7 +251,12 @@ class BackgroundService extends Sys.ServiceDelegate {
 			}
 		}
 
+		try {
 		Bg.exit({ "TeslaInfo" => teslaInfo });
+    }
+		catch (e) {
+			Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 413, "httpInternalErrorTesla" => 413 } });
+		}
     }
 
 	(:background)
@@ -270,7 +286,7 @@ class BackgroundService extends Sys.ServiceDelegate {
               		"Authorization" => _token,
 					"User-Agent" => "Crystal-Tesla for Garmin",
 					},
-            :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN
+            :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
 		//2023-03-05 logMessage("makeWebRequest url: '" + url + "'");
 		Comms.makeWebRequest(url, params, options, callback);
