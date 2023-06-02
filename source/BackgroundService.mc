@@ -185,8 +185,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 		teslaInfo.put("httpInternalErrorTesla", responseCode);
 
 		try {
-		Bg.exit({ "TeslaInfo" => teslaInfo });
-    }
+			Bg.exit({ "TeslaInfo" => teslaInfo });
+	    }
 		catch (e) {
 			Bg.exit({ "TeslaInfo" => { "httpErrorTesla" => 413, "httpInternalErrorTesla" => 413 } });
 		}

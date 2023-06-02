@@ -34,6 +34,10 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.ComplicationName" title="@Strings.ComplicationName">
+		<settingConfig type="alphaNumeric" maxLength="64"/>
+	</setting>
+
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>

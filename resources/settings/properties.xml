@@ -6,6 +6,7 @@
 	<property id="ThemeLightOverride" type="boolean">false</property>
 
 	<property id="UseComplications" type="boolean">false</property>
+	<property id="ComplicationName" type="string">Flashlight</property>
 
 	<property id="LeftGoalType" type="number">0</property>
 	<property id="RightGoalType" type="number">1</property>

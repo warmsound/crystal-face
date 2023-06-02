@@ -830,13 +830,13 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 (:hasComplications)
 class CrystalDelegate extends Ui.WatchFaceDelegate {
-    private var mview as CrystalView;
+    private var mView as CrystalView;
 
     //! Constructor
     //! @param view The analog view
     public function initialize(view as CrystalView) {
         WatchFaceDelegate.initialize();
-        mview = view;
+        mView = view;
     }
 
 	public function onPress(clickEvent as Ui.ClickEvent) as Lang.Boolean {
@@ -845,9 +845,31 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 
 		// returns the complicationId within the boundingBoxes
 		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
-			var complicationId = checkBoundingBoxes(co_ords);
-			if (complicationId != null) {
-	            Complications.exitTo(complicationId);
+			if (mView != null && mView.mDrawables != null && mView.mDataFields != null) { // Saw an unexpected error because one of these were null, although it shouldn't have happened
+				var defComplicationName = $.getStringProperty("ComplicationName", "");
+				var complicationId = checkBoundingBoxes(co_ords);
+				if (complicationId != null) {
+					Complications.exitTo(complicationId);
+				}
+				else if (defComplicationName.length() > 0 ) {
+					// We're outside our hotspots, see if we can launch our Flashlight
+					var iter = Complications.getComplications();
+					if (iter == null) {
+						return;
+					}
+					complicationId = iter.next();
+
+					while (complicationId != null) {
+						//logMessage(complicationId.longLabel.toString());
+						if ((complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(defComplicationName))) {
+							//DEBUG*/ logMessage("Found our flashlight complication");
+							complicationId = complicationId.complicationId;
+							Complications.exitTo(complicationId);
+							return;
+						}
+						complicationId = iter.next();
+					}
+				}
 			}
 		}
 	}
@@ -861,7 +883,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		var complicationId;
 
 		if (indicatorCount > 0) {
-			var indicators = mview.mDrawables[:Indicators];
+			var indicators = mView.mDrawables[:Indicators];
 			if (indicators != null) {
 				var locX = indicators[:locX];
 				var locY = indicators[:locY];
@@ -904,9 +926,9 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 			spacingX = Sys.getDeviceSettings().screenWidth / (2 * fieldCount);
 			spacingY = Sys.getDeviceSettings().screenHeight / 4;
 
-			var left = mview.mDataFields.mLeft;
-			var right = mview.mDataFields.mRight;
-			var top = mview.mDataFields.mTop;
+			var left = mView.mDataFields.mLeft;
+			var right = mView.mDataFields.mRight;
+			var top = mView.mDataFields.mTop;
 
 			if (left != null && right != null && top != null) {
 				if (fieldCount == 3) {
@@ -932,9 +954,9 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 		spacingX = Sys.getDeviceSettings().screenWidth / 11;
 		spacingY = Sys.getDeviceSettings().screenHeight / 6;
 
-		var left = mview.mDrawables[:DataArea].mGoalIconLeftX - spacingX / 8;
-		var right = mview.mDrawables[:DataArea].mGoalIconRightX + spacingX / 8;
-		var y = mview.mDrawables[:DataArea].mGoalIconY - spacingY / 8;
+		var left = mView.mDrawables[:DataArea].mGoalIconLeftX - spacingX / 8;
+		var right = mView.mDrawables[:DataArea].mGoalIconRightX + spacingX / 8;
+		var y = mView.mDrawables[:DataArea].mGoalIconY - spacingY / 8;
 
 		if (left != null && right != null && y != null) {
 			// spacing * 3 to give it more room so we can press on the text too.
@@ -972,6 +994,6 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
     public function onPowerBudgetExceeded(powerInfo as WatchFacePowerInfo) as Void {
         //DEBUG*/ logMessage("Average execution time: " + powerInfo.executionTimeAverage);
         //DEBUG*/ logMessage("Allowed execution time: " + powerInfo.executionTimeLimit);
-		//mview.turnPartialUpdatesOff();
+		//mView.turnPartialUpdatesOff();
     }
 }

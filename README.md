@@ -28,6 +28,14 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.6
+- Added a default custom Complication to launch when pressing anywhere that's it's not a field, indicator or goal configured as a complication. By Default, this field is set to "Flashlight" (new Widget I created), which if installed on the watch, will transform the screen into a flashlight with three intensity, with the launched one being the dimmest
+- Fixed a crash in onPress
+
+### 2.18.5
+- Fixed for crashing when too much data in the background buffer
+- Fixed for not showing goal's max value on watches not having Complications
+
 ### 2.18.4
 - Made some conditional compiling so watches that don't support Complications do not include functions related to that. This is to help watches with low allocated watchface memory, like the Venu SQ, to run without crashing because of Out of Memory errors
 - Saw a weird crash in onPress so I added type checking to prevent it from happening again
