@@ -28,6 +28,9 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.7
+- Added support for the Venu3 and Venu3S
+
 ### 2.18.6
 - Added a default custom Complication to launch when pressing anywhere that's it's not a field, indicator or goal configured as a complication. By Default, this field is set to "Flashlight" (new Widget I created), which if installed on the watch, will transform the screen into a flashlight with three intensity, with the launched one being the dimmest
 - Fixed a crash in onPress
