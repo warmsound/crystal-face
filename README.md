@@ -28,6 +28,9 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.8
+- Added support for the VivoActive5
+
 ### 2.18.7
 - Added support for the Venu3 and Venu3S
 

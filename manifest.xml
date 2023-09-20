@@ -68,6 +68,7 @@
             <iq:product id="venusqm"/>
             <iq:product id="vivoactive4"/>
             <iq:product id="vivoactive4s"/>
+            <iq:product id="vivoactive5"/>
         </iq:products>
         <iq:permissions>
             <iq:uses-permission id="Background"/>
