@@ -31,12 +31,12 @@
 			<param name="left">87</param>
 			<param name="right">234</param>
 			<param name="top">30</param>
-			<param name="bottom">62</param>
+			<param name="bottom">53</param>
 			<param name="batteryWidth">37</param>
 		</drawable>
 
 		<drawable id="Date" class="DateLine">
-			<param name="y">108</param>
+			<param name="y">104</param>
 		</drawable>
 
 		<drawable id="Indicators" class="Indicators">

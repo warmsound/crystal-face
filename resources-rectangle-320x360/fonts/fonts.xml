@@ -1,9 +1,12 @@
-<!-- rectangle-240x240 uses same fonts as round-280x280 -->
+<!-- rectangle-320x360 uses same fonts as round-416x416 -->
 <fonts>
-	<font id="HoursFont" filename="../../resources-round-280x280/fonts/titillium-web-bold-80-tall.fnt" antialias="true"/>
-	<font id="MinutesFont" filename="../../resources-round-280x280/fonts/titillium-web-light-80-tall.fnt" antialias="true"/>
-	<font id="SecondsFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter="0123456789AP"/>
-	<font id="DateFont" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
+	<font id="HoursFont" filename="../../resources-round-416x416/fonts/titillium-web-bold-85-tall.fnt" antialias="true"/>
+	<font id="MinutesFont" filename="../../resources-round-416x416/fonts/titillium-web-light-85-tall.fnt" antialias="true"/>
+	<font id="SecondsFont" filename="../../resources-round-416x416/fonts/titillium-web-semibold-42.fnt" antialias="true" filter="0123456789AP"/>
+	<font id="DateFont" filename="../../resources-round-416x416/fonts/titillium-web-semibold-42.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
+
+	<!-- Manually symlinked from resources-round-280x280/fonts. -->
+	<font id="NormalFontCities" filename="../../resources-round-280x280/fonts/titillium-web-semibold-28.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzÂ°Ã?Ã?Ã?Ã?Ã¡Ã£Ã¤Ã¥Ã¦Ã¨Ã©Ã­Ã°Ã±Ã³Ã´Ã¶Ã¸Ã»Ã¼Å¾+/"/>
 
 	<!-- Locale-specific manual date font overrides, because fonts cannot automatically be overridden by locale -->
 	<font id="DateFontOverrideZHS" filename="../../resources-round-280x280/fonts/noto-sans-cjk-sc-medium-28.fnt" antialias="true"/>

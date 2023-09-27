@@ -28,6 +28,9 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.9
+- Adjusted the fonts for the Venu Sq2
+
 ### 2.18.8
 - Added support for the VivoActive5
 
