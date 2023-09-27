@@ -28,7 +28,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
 		}
 
 		var timeNow = Time.now().value();
@@ -115,7 +115,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveToken: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveToken: Buffer has keys " + keys);
 		}
 
         if (responseCode == 200) {
@@ -145,7 +145,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicles: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicles: Buffer has keys " + keys);
 		}
 
         if (responseCode == 200) {
@@ -202,7 +202,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo = {};
 		}		
 		else {
-			/*DEDUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = teslaInfo.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
 		}
 
 		teslaInfo.put("httpErrorTesla", responseCode);
