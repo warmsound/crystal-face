@@ -107,7 +107,7 @@ class DataArea extends Ui.Drawable {
 
 			// Time zone 1 time.
 			var time;
-			if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -90.0 && view.mLocalCityLon <= 90.0) {
+			if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -180.0 && view.mLocalCityLon <= 180.0) {
 				try {
 					var where = new Position.Location({
 						:latitude  => view.mLocalCityLat,
