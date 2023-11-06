@@ -117,6 +117,7 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_TYPE_PULSE_OX, "complicationType" => Complications.COMPLICATION_TYPE_PULSE_OX},
 								 {"type" => FIELD_TYPE_HEART_RATE, "complicationType" => Complications.COMPLICATION_TYPE_HEART_RATE},
 								 {"type" => FIELD_RECOVERY_TIME, "complicationType" => Complications.COMPLICATION_TYPE_RECOVERY_TIME},
+								 {"type" => FIELD_TYPE_ALTITUDE, "complicationType" => Complications.COMPLICATION_TYPE_ALTITUDE},
 								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_WEATHER}, // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
 								 {"type" => FIELD_TYPE_SUNRISE_SUNSET, "complicationType" => Complications.COMPLICATION_TYPE_SUNRISE} // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
 								];
@@ -619,9 +620,14 @@ class DataFields extends Ui.Drawable {
 				// #67 Try to retrieve altitude from current activity, before falling back on elevation history.
 				// Note that Activity::Info.altitude is supported by CIQ 1.x, but elevation history only on select CIQ 2.x
 				// devices.
-				activityInfo = Activity.getActivityInfo();
-				altitude = activityInfo.altitude;
-				
+				if (Toybox has :Complications && view.useComplications()) { // Try Complication first
+					altitude = fieldTypes[index].get("ComplicationValue");
+				}
+				if (altitude == null) {
+					activityInfo = Activity.getActivityInfo();
+					altitude = activityInfo.altitude;
+				}
+
 				if ((altitude == null) && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getElevationHistory)) {
 					sample = SensorHistory.getElevationHistory({ :period => 1, :order => SensorHistory.ORDER_NEWEST_FIRST }).next();
 					if ((sample != null) && (sample.data != null)) {

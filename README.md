@@ -28,6 +28,10 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.19.0
+- Added Altitude as a Complication
+- Fixed bug in longitude typechecking for second time (thanks AdrienChenu)
+
 ### 2.18.9
 - Adjusted the fonts for the Venu Sq2
 
