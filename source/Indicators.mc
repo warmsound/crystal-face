@@ -22,6 +22,7 @@ class Indicators extends Ui.Drawable {
 	// 	INDICATOR_TYPE_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BATTERY
+	//  INDICATOR_TYPE_BATTERY_NUMERIC
 	// 	INDICATOR_TYPE_TESLA
 	// }
 
@@ -44,39 +45,62 @@ class Indicators extends Ui.Drawable {
 		mIndicator2Type = $.getIntProperty("Indicator2Type", 3);
 		mIndicator3Type = $.getIntProperty("Indicator3Type", 0);
 
+		var indicator;
+		var filled = [false, false, false];
+
+		if (App.getApp().getView().useComplications()) {
+			indicator = findIndicator(4); // INDICATOR_TYPE_BATTERY
+			if (indicator != null)  {
+				$.updateComplications("", "Complication_I", indicator, Complications.COMPLICATION_TYPE_BATTERY);
+				filled[indicator - 1] = true;
+			}
+
+			indicator = findIndicator(5); // INDICATOR_TYPE_BATTERY_NUMERIC
+			if (indicator != null)  {
+				$.updateComplications("", "Complication_I", indicator, Complications.COMPLICATION_TYPE_BATTERY);
+				filled[indicator - 1] = true;
+			}
+		}
+
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-		var teslaIndicator;
-		
-		if (mIndicator1Type == 6) {
-			teslaIndicator = 1;
-		}
-		if (mIndicator2Type == 6) {
-			teslaIndicator = 2;
-		}
-		if (mIndicator3Type == 6) {
-			teslaIndicator = 3;
-		}
-		if (teslaIndicator != null) {
+		indicator = findIndicator(6); // INDICATOR_TYPE_TESLA
+		if (indicator != null) {
 			//DEBUG*/ logMessage("onSettingsChanged:Doing Tesla!");
 			Storage.setValue("Tesla", true);
 			if (App.getApp().getView().useComplications()) {
-				$.updateComplications("Tesla-Link", "Complication_I", teslaIndicator, Complications.COMPLICATION_TYPE_INVALID);
+				$.updateComplications("Tesla-Link", "Complication_I", indicator, Complications.COMPLICATION_TYPE_INVALID);
+				filled[indicator - 1] = true;
 			}
 		} else {
 			Storage.deleteValue("Tesla");
-			teslaIndicator = 0;
-		}
-
-		for (var i = 1; i < 4; i++) {
-			if (i != teslaIndicator) {
-				Storage.deleteValue("Complication_I" + i);
-			}
 		}
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
 //****************************************************************
+
+		for (var i = 1; i < 4; i++) {
+			if (filled[i - 1] == false) {
+				Storage.deleteValue("Complication_I" + i);
+			}
+		}
+	}
+
+	function findIndicator(complicationType) {
+		var indicator = null;
+		
+		if (mIndicator1Type == complicationType) {
+			indicator = 1;
+		}
+		if (mIndicator2Type == complicationType) {
+			indicator = 2;
+		}
+		if (mIndicator3Type == complicationType) {
+			indicator = 3;
+		}
+
+		return indicator;
 	}
 
 	function draw(dc) {

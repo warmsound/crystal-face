@@ -864,8 +864,10 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 						if ((complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(defComplicationName))) {
 							//DEBUG*/ logMessage("Found our flashlight complication");
 							complicationId = complicationId.complicationId;
-							Complications.exitTo(complicationId);
-							return;
+							if (complicationId != null) { // Got a crash caused by a null complicationId (while holding over 'Steps' while in a indoor walk activity)
+								Complications.exitTo(complicationId);
+								return;
+							}
 						}
 						complicationId = iter.next();
 					}

@@ -28,9 +28,16 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
-### 2.19.0
-- Added Altitude as a Complication
+### 2.18.12
+- Fixed crash when complicationId is unexpectedly null
+- Added Battery as a complication (to launch the battery widget)
+
+### 2.18.11
 - Fixed bug in longitude typechecking for second time (thanks AdrienChenu)
+- Altitude reads from Complication if available
+
+### 2.18.10
+- Added Altitude as a Complication
 
 ### 2.18.9
 - Adjusted the fonts for the Venu Sq2
