@@ -29,7 +29,7 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.18.12
-- Fixed crash when complicationId is unexpectedly null
+- Fixed crash when calling a complication while there is already one running
 - Added Battery as a complication (to launch the battery widget)
 
 ### 2.18.11
