@@ -849,7 +849,10 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 				var defComplicationName = $.getStringProperty("ComplicationName", "");
 				var complicationId = checkBoundingBoxes(co_ords);
 				if (complicationId != null) {
-					Complications.exitTo(complicationId);
+					try {
+						Complications.exitTo(complicationId);
+					}
+					catch (e) {}
 				}
 				else if (defComplicationName.length() > 0 ) {
 					// We're outside our hotspots, see if we can launch our Flashlight
@@ -864,8 +867,13 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 						if ((complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(defComplicationName))) {
 							//DEBUG*/ logMessage("Found our flashlight complication");
 							complicationId = complicationId.complicationId;
+							/*DEBUG*/ logMessage("complicationId is '" + complicationId + "'");
 							if (complicationId != null) { // Got a crash caused by a null complicationId (while holding over 'Steps' while in a indoor walk activity)
-								Complications.exitTo(complicationId);
+								try {
+									Complications.exitTo(complicationId);
+								}
+								catch (e) {}
+
 								return;
 							}
 						}
