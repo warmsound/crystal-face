@@ -4,6 +4,36 @@ using Toybox.System as Sys;
 using Toybox.WatchUi as Ui;
 using Toybox.Time;
 
+import Toybox.Lang;
+
+typedef PendingWebRequests as Dictionary<String, Boolean>;
+
+typedef CityLocalTimeResponse as Dictionary<
+	String,
+	Number or
+		String or
+		Dictionary<
+			String,
+			String or Number or Boolean
+		>
+>;
+
+typedef OpenWeatherMapCurrentResponse as Dictionary<
+	String,
+	Number or
+		String or
+		Array<
+			Dictionary<
+				String,
+				Number or String
+			>
+		> or
+		Dictionary<
+			String,
+			Number or String
+		>
+>;
+
 // In-memory current location.
 // Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
 // Current location retrieved/saved in checkPendingWebRequests().
@@ -108,7 +138,7 @@ class CrystalApp extends App.AppBase {
 			return;
 		}
 
-		var pendingWebRequests = getProperty("PendingWebRequests");
+		var pendingWebRequests = getProperty("PendingWebRequests") as PendingWebRequests?;
 		if (pendingWebRequests == null) {
 			pendingWebRequests = {};
 		}
@@ -120,7 +150,7 @@ class CrystalApp extends App.AppBase {
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() > 0)) {
 
-			var cityLocalTime = getProperty("CityLocalTime");
+			var cityLocalTime = getProperty("CityLocalTime") as CityLocalTimeResponse?;
 
 			// No existing data.
 			if ((cityLocalTime == null) ||
@@ -145,7 +175,7 @@ class CrystalApp extends App.AppBase {
 		if ((gLocationLat != null) &&
 			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmCurrent = getProperty("OpenWeatherMapCurrent");
+			var owmCurrent = getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentResponse?;
 
 			// No existing data.
 			if (owmCurrent == null) {
@@ -205,7 +235,7 @@ class CrystalApp extends App.AppBase {
 
 		var type = data.keys()[0]; // Type of received data.
 		var storedData = getProperty(type);
-		var receivedData = data[type]; // The actual data received: strip away type key.
+		var receivedData = data[type] as CityLocalTimeResponse or OpenWeatherMapCurrentResponse; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
 		// Leave pendingWebRequests flag set, and simply return early.

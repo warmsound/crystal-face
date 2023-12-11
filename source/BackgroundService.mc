@@ -2,6 +2,7 @@ using Toybox.Background as Bg;
 using Toybox.System as Sys;
 using Toybox.Communications as Comms;
 using Toybox.Application as App;
+import Toybox.Lang;
 
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
@@ -17,7 +18,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests") as PendingWebRequests?;
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
