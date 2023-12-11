@@ -8,6 +8,12 @@ import Toybox.Lang;
 
 typedef PendingWebRequests as Dictionary<String, Boolean>;
 
+typedef FormattedTime as {
+	:hour as String,
+	:min as String,
+	:amPm as String
+};
+
 // In-memory current location.
 // Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
 // Current location retrieved/saved in checkPendingWebRequests().
@@ -20,7 +26,7 @@ var gLocationLng = null;
 class CrystalApp extends App.AppBase {
 
 	var mView;
-	var mFieldTypes = new [3];
+	var mFieldTypes as Array<Number> = new [3];
 
 	function initialize() {
 		AppBase.initialize();
@@ -84,7 +90,7 @@ class CrystalApp extends App.AppBase {
 		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
 		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
 		var location = Activity.getActivityInfo().currentLocation;
-		if (location) {
+		if (location != null) {
 			// Sys.println("Saving location");
 			location = location.toDegrees(); // Array of Doubles.
 			gLocationLat = location[0].toFloat();
@@ -130,7 +136,7 @@ class CrystalApp extends App.AppBase {
 			if ((cityLocalTime == null) ||
 
 			// Existing data is old.
-			((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
+			(((cityLocalTime as CityLocalTimeSuccessResponse)["next"] != null) && (Time.now().value() >= (cityLocalTime as CityLocalTimeSuccessResponse)["next"]["when"]))) {
 
 				pendingWebRequests["CityLocalTime"] = true;
 		
@@ -178,7 +184,7 @@ class CrystalApp extends App.AppBase {
 
 			// Register for background temporal event as soon as possible.
 			var lastTime = Bg.getLastTemporalEventTime();
-			if (lastTime) {
+			if (lastTime != null) {
 				// Events scheduled for a time in the past trigger immediately.
 				var nextTime = lastTime.add(new Time.Duration(5 * 60));
 				Bg.registerForTemporalEvent(nextTime);
@@ -209,7 +215,7 @@ class CrystalApp extends App.AppBase {
 
 		var type = data.keys()[0]; // Type of received data.
 		var storedData = getProperty(type);
-		var receivedData = data[type] as CityLocalTimeData or OpenWeatherMapCurrentData or HttpErrorData; // The actual data received: strip away type key.
+		var receivedData = (data as Dictionary<String, CityLocalTimeData or OpenWeatherMapCurrentData or HttpErrorData>)[type]; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
 		// Leave pendingWebRequests flag set, and simply return early.
@@ -229,7 +235,7 @@ class CrystalApp extends App.AppBase {
 	// Return a formatted time dictionary that respects is24Hour and HideHoursLeadingZero settings.
 	// - hour: 0-23.
 	// - min:  0-59.
-	function getFormattedTime(hour, min) {
+	function getFormattedTime(hour, min) as FormattedTime {
 		var amPm = "";
 
 		if (!Sys.getDeviceSettings().is24Hour) {

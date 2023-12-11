@@ -4,6 +4,8 @@ using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+import Toybox.Lang;
+
 class DateLine extends Ui.Drawable {
 
 	private var mX;
@@ -18,7 +20,13 @@ class DateLine extends Ui.Drawable {
 
 	private var mFont;
 
-	function initialize(params) {
+	typedef DateLineParams as {
+		:x as Number,
+		:y as Number,
+		:yLine2 as Number
+	};
+
+	function initialize(params as DateLineParams) {
 		Drawable.initialize(params);
 
 		var rezFonts = Rez.Fonts;

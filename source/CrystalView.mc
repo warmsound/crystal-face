@@ -6,6 +6,9 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 
 using Toybox.Math;
 
+import Toybox.Lang;
+import Toybox.WatchUi;
+
 const INTEGER_FORMAT = "%d";
 
 var gThemeColour;
@@ -76,6 +79,12 @@ function drawBatteryMeter(dc, x, y, width, height) {
 		height - (2 * lineWidthPlusMargin));
 }
 
+typedef GoalValues as {
+	:current as Number,
+	:max as Number,
+	:isValid as Boolean
+};
+
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
 	private var mIsBurnInProtection = false; // Is burn-in protection required and active?
@@ -86,7 +95,7 @@ class CrystalView extends Ui.WatchFace {
 	var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
-	private var mDrawables = {};
+	private var mDrawables as Dictionary<Symbol, Drawable> = {};
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -268,14 +277,14 @@ class CrystalView extends Ui.WatchFace {
 		if (!mIsBurnInProtection) {
 
 			// Recreate background buffers for each meter, in case theme colour has changed.	
-			mDrawables[:LeftGoalMeter].onSettingsChanged();	
-			mDrawables[:RightGoalMeter].onSettingsChanged();	
+			(mDrawables[:LeftGoalMeter] as GoalMeter).onSettingsChanged();	
+			(mDrawables[:RightGoalMeter] as GoalMeter).onSettingsChanged();	
 
-			mDrawables[:MoveBar].onSettingsChanged();	
+			(mDrawables[:MoveBar] as MoveBar).onSettingsChanged();	
 
 			mDataFields.onSettingsChanged();	
 
-			mDrawables[:Indicators].onSettingsChanged();
+			(mDrawables[:Indicators] as Indicators).onSettingsChanged();
 		}
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
@@ -325,16 +334,16 @@ class CrystalView extends Ui.WatchFace {
 
 		var leftType = App.getApp().getProperty("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
-		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
+		(mDrawables[:LeftGoalMeter] as GoalMeter).setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
 		var rightType = App.getApp().getProperty("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
-		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
+		(mDrawables[:RightGoalMeter] as GoalMeter).setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
-		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
+		(mDrawables[:DataArea] as DataArea).setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
 
-	function getValuesForGoalType(type) {
+	function getValuesForGoalType(type) as GoalValues  {
 		var values = {
 			:current => 0,
 			:max => 1,
@@ -480,6 +489,6 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		mTime.setHideSeconds(hideSeconds);
-		mDrawables[:MoveBar].setFullWidth(hideSeconds);
+		(mDrawables[:MoveBar] as MoveBar).setFullWidth(hideSeconds);
 	}
 }

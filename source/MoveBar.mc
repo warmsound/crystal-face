@@ -4,6 +4,8 @@ using Toybox.Application as App;
 using Toybox.ActivityMonitor as ActivityMonitor;
 using Toybox.Graphics;
 
+import Toybox.Lang;
+
 class MoveBar extends Ui.Drawable {
 
 	private var mX, mY, mBaseWidth, mHeight, mSeparator;
@@ -28,7 +30,15 @@ class MoveBar extends Ui.Drawable {
 	// 	HIDDEN
 	// };
 
-	function initialize(params) {
+	typedef MoveBarParams as {
+		:x as Number,
+		:y as Number,
+		:width as Number,
+		:height as Number,
+		:separator as Number
+	};
+
+	function initialize(params as MoveBarParams) {
 		Drawable.initialize(params);
 		
 		mX = params[:x];

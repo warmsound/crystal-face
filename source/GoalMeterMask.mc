@@ -2,12 +2,18 @@ using Toybox.WatchUi as Ui;
 using Toybox.Application as App;
 using Toybox.Graphics as Gfx;
 
+import Toybox.Lang;
+
 // Circular mask, filled with background colour, to hide goal meter rectangles.
 class GoalMeterMask extends Ui.Drawable {
 
 	private var mStroke;
 
-	function initialize(params) {
+	typedef GoalMeterMaskParams as {
+		:stroke as Number
+	};
+
+	function initialize(params as GoalMeterMaskParams) {
 		Drawable.initialize(params);
 
 		mStroke = params[:stroke];

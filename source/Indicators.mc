@@ -3,6 +3,8 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+import Toybox.Lang;
+
 class Indicators extends Ui.Drawable {
 
 	private var mSpacing;
@@ -21,7 +23,15 @@ class Indicators extends Ui.Drawable {
 	// 	INDICATOR_TYPE_BATTERY
 	// }
 
-	function initialize(params) {
+	typedef IndicatorsParams as {
+		:locX as Number,
+		:locY as Number,
+		:spacingX as Number,
+		:spacingY as Number,
+		:batteryWidth as Number
+	};
+
+	function initialize(params as IndicatorsParams) {
 		Drawable.initialize(params);
 
 		if (params[:spacingX] != null) {

@@ -258,6 +258,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		// Filter and flatten data response for data that we actually need.
 		// Reduces runtime memory spike in main app.
 		if (responseCode == 200) {
+			data = (data as OpenWeatherMapCurrentSuccessResponse);
 			result = {
 				"cod" => data["cod"],
 				"lat" => data["coord"]["lat"],

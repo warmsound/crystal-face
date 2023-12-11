@@ -9,6 +9,8 @@ using Toybox.SensorHistory as SensorHistory;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+import Toybox.Lang;
+
 enum /* FIELD_TYPES */ {
 	// Pseudo-fields.	
 	FIELD_TYPE_SUNRISE = -1,	
@@ -31,6 +33,10 @@ enum /* FIELD_TYPES */ {
 	FIELD_TYPE_HUMIDITY
 }
 
+typedef FieldTypeValue as {
+	:value as String
+};
+
 class DataFields extends Ui.Drawable {
 
 	private var mLeft;
@@ -51,7 +57,15 @@ class DataFields extends Ui.Drawable {
 	// private const MI_PER_KM = 0.621371;
 	// private const FT_PER_M = 3.28084;
 
-	function initialize(params) {
+	typedef DataFieldsParams as {
+		:left as Number,
+		:right as Number,
+		:top as Number,
+		:bottom as Number,
+		:batteryWidth as Number
+	};
+
+	function initialize(params as DataFieldsParams) {
 		Drawable.initialize(params);
 
 		mLeft = params[:left];
@@ -211,7 +225,7 @@ class DataFields extends Ui.Drawable {
 				mWasHRAvailable = isHRAvailable;
 
 				// Clip full heart, then draw.
-				var heartDims = dc.getTextDimensions("3", gIconsFont); // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
+				var heartDims = dc.getTextDimensions("3", gIconsFont) as Array<Number>; // getIconFontCharForField(FIELD_TYPE_HR_LIVE_5S)
 				dc.setClip(
 					x - (heartDims[0] / 2),
 					mTop - (heartDims[1] / 2),
@@ -268,7 +282,7 @@ class DataFields extends Ui.Drawable {
 
 				// #83 Dynamic loading/unloading of day/night weather icons font, to save memory.
 				// If subset has changed since last draw, save new subset, and load appropriate font for it.
-				var weatherIconsSubset = result["weatherIcon"].substring(2, 3);
+				var weatherIconsSubset = (result["weatherIcon"] as String).substring(2, 3);
 				if (!weatherIconsSubset.equals(mWeatherIconsSubset)) {
 					mWeatherIconsSubset = weatherIconsSubset;
 					mWeatherIconsFont = Ui.loadResource((mWeatherIconsSubset.equals("d")) ?
@@ -351,7 +365,7 @@ class DataFields extends Ui.Drawable {
 	// Return empty result["value"] string if value cannot be retrieved (e.g. unavailable, or unsupported).
 	// result["isSunriseNext"] indicates that sunrise icon should be shown for FIELD_TYPE_SUNRISE_SUNSET, rather than default
 	// sunset icon.
-	private function getValueForFieldType(type) {
+	private function getValueForFieldType(type) as FieldTypeValue {
 		var result = {};
 		var value = "";
 
@@ -633,7 +647,7 @@ class DataFields extends Ui.Drawable {
 	* @return {Array} Returns array of length 2 with sunrise and sunset as floats.
 	*                 Returns array with [null, -1] if the sun never rises, and [-1, null] if the sun never sets.
 	*/
-	private function getSunTimes(lat, lng, tz, tomorrow) {
+	private function getSunTimes(lat, lng, tz, tomorrow) as Array<Number> {
 
 		// Use double precision where possible, as floating point errors can affect result by minutes.
 		lat = lat.toDouble();

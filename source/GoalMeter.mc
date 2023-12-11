@@ -3,6 +3,8 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Graphics;
 
+import Toybox.Lang;
+
 // const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
 enum /* GOAL_TYPES */ {
@@ -51,7 +53,14 @@ class GoalMeter extends Ui.Drawable {
 	// 	FILLED_SEGMENTS_MERGED
 	// }
 
-	function initialize(params) {
+	typedef GoalMeterParams as {
+		:side as Symbol,
+		:stroke as Number,
+		:height as Number,
+		:separator as Number
+	};
+
+	function initialize(params as GoalMeterParams) {
 		Drawable.initialize(params);
 
 		mSide = params[:side];
@@ -276,7 +285,7 @@ class GoalMeter extends Ui.Drawable {
 	// dc can be screen or buffer DC, depending on drawing mode.
 	// x and y are co-ordinates of top-left corner of meter.
 	// start/endFillHeight are pixel fill heights including separators, starting from zero at bottom.
-	function drawSegments(dc, x, y, fillColour, segments, startFillHeight, endFillHeight) {
+	function drawSegments(dc, x, y, fillColour, segments as Array<Number>, startFillHeight, endFillHeight) {
 		var segmentStart = 0;
 		var segmentEnd;
 
@@ -360,7 +369,7 @@ class GoalMeter extends Ui.Drawable {
 		return segments;
 	}
 
-	function getFillHeight(segments) {
+	function getFillHeight(segments as Array<Number>) {
 		var fillHeight;
 
 		var i;
