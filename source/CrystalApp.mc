@@ -149,7 +149,7 @@ class CrystalApp extends App.AppBase {
 		if ((gLocationLat != null) &&
 			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
 
-			var owmCurrent = getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentResponse?;
+			var owmCurrent = getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentData?;
 
 			// No existing data.
 			if (owmCurrent == null) {
@@ -209,7 +209,7 @@ class CrystalApp extends App.AppBase {
 
 		var type = data.keys()[0]; // Type of received data.
 		var storedData = getProperty(type);
-		var receivedData = data[type] as CityLocalTimeResponse or OpenWeatherMapCurrentResponse; // The actual data received: strip away type key.
+		var receivedData = data[type] as CityLocalTimeData or OpenWeatherMapCurrentData or HttpErrorData; // The actual data received: strip away type key.
 		
 		// No value in showing any HTTP error to the user, so no need to modify stored data.
 		// Leave pendingWebRequests flag set, and simply return early.

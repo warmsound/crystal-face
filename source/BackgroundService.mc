@@ -5,7 +5,7 @@ using Toybox.Application as App;
 
 import Toybox.Lang;
 
-typedef HttpErrorRespone as {
+typedef HttpErrorData as {
 	"httpError" as Number
 };
 
@@ -31,7 +31,9 @@ typedef CityLocalTimeErrorResponse as {
 	}
 };
 
-typedef CityLocalTimeResponse as CityLocalTimeSuccessResponse or CityLocalTimeErrorResponse or HttpErrorRespone;
+typedef CityLocalTimeResponse as CityLocalTimeSuccessResponse or CityLocalTimeErrorResponse;
+
+typedef CityLocalTimeData as CityLocalTimeResponse;
 
 typedef OpenWeatherMapCurrentSuccessResponse as {
 	"coord" as {
@@ -79,7 +81,17 @@ typedef OpenWeatherMapCurrentErrorResponse as {
 	"message" as String
 };
 
-typedef OpenWeatherMapCurrentResponse as OpenWeatherMapCurrentSuccessResponse or OpenWeatherMapCurrentErrorResponse or HttpErrorRespone;
+typedef OpenWeatherMapCurrentResponse as OpenWeatherMapCurrentSuccessResponse or OpenWeatherMapCurrentErrorResponse;
+
+typedef OpenWeatherMapCurrentData as {
+	"cod" as Number,
+	"lat" as Number,
+	"lon" as Number,
+	"dt" as Number,
+	"temp" as Number,
+	"humidity" as Number,
+	"icon" as String
+};
 
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
@@ -170,7 +182,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 	*/
 	(:background_method)
-	function onReceiveCityLocalTime(responseCode, data) {
+	function onReceiveCityLocalTime(responseCode as Number, data as CityLocalTimeResponse?) {
 
 		// HTTP failure: return responseCode.
 		// Otherwise, return data response.
@@ -181,7 +193,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		Bg.exit({
-			"CityLocalTime" => data
+			"CityLocalTime" => data as CityLocalTimeData or HttpErrorData
 		});
 	}
 
@@ -239,7 +251,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 	*/
 	(:background_method)
-	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
+	function onReceiveOpenWeatherMapCurrent(responseCode as Number, data as OpenWeatherMapCurrentResponse?) {
 		var result;
 		
 		// Useful data only available if result was successful.
@@ -264,7 +276,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		Bg.exit({
-			"OpenWeatherMapCurrent" => result
+			"OpenWeatherMapCurrent" => result as OpenWeatherMapCurrentData or HttpErrorData
 		});
 	}
 

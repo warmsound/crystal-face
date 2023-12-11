@@ -548,7 +548,7 @@ class DataFields extends Ui.Drawable {
 					result["weatherIcon"] = "01d";
 				}
 
-				weather = App.getApp().getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentResponse;
+				weather = App.getApp().getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentData?;
 
 				// Awaiting location.
 				if (gLocationLat == null) {
