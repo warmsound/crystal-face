@@ -8,32 +8,6 @@ import Toybox.Lang;
 
 typedef PendingWebRequests as Dictionary<String, Boolean>;
 
-typedef CityLocalTimeResponse as Dictionary<
-	String,
-	Number or
-		String or
-		Dictionary<
-			String,
-			String or Number or Boolean
-		>
->;
-
-typedef OpenWeatherMapCurrentResponse as Dictionary<
-	String,
-	Number or
-		String or
-		Array<
-			Dictionary<
-				String,
-				Number or String
-			>
-		> or
-		Dictionary<
-			String,
-			Number or String
-		>
->;
-
 // In-memory current location.
 // Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
 // Current location retrieved/saved in checkPendingWebRequests().
