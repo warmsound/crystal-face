@@ -1,7 +1,6 @@
 <strings>
 
 	<string id="AppName">Crystal</string>
-	<string id="AppVersionTitle">App-version</string>
 
 	<string id="ThemeTitle">Tema</string>
 	<string id="HoursColourTitle">Färg timme</string>
@@ -14,8 +13,11 @@
 	<string id="LocalTimeInCityTitle">Lägg till lokal tid för stad (Beta)</string>
 	<string id="MoveBarStyleTitle">Rörelsemätarstil</string>
 	<string id="HideSecondsTitle">Dölj sekunder</string>
+	<string id="HideSecondsOff">Show seconds</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsLowPower">Hide seconds when inactive</string><!-- TODO_TRANSLATE -->
+	<string id="HideSecondsAlways">Always hide seconds</string><!-- TODO_TRANSLATE -->
 	<string id="HideHoursLeadingZeroTitle">Dölj inledande nollor</string>
-	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string><!-- TODO_TRANSLATE -->
+	<string id="AddColon">Add colon between hours and minutes</string><!-- TODO_TRANSLATE -->
 
 	<string id="FieldCountTitle">Antal datafält</string>
 	<string id="DataField1Title">Datafält 1</string>
@@ -57,6 +59,9 @@
 
 	<string id="Steps">Steg</string>
 	<string id="FloorsClimbed">Våningar</string>
+	<string id="SolarIntensity">Solar Intensity</string><!-- TODO_TRANSLATE -->
+	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
+	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
 	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
@@ -102,4 +107,23 @@
 	<string id="Nov">nov</string>
 	<string id="Dec">dec</string>
 
+	<!-- TODO_TRANSLATE -->
+	<string id="BatteryNumeric">Battery Numeric</string>
+	<string id="PulseOx">Pulse Ox</string>
+	<string id="Tesla">Tesla Info</string>
+	<string id="TeslaAccessToken">Tesla Access Token</string>
+	<string id="TeslaRefreshToken">Tesla Refresh Token</string>
+    <string id="Tesla_api_server_location_label">Location of Tesla's API servers?</string>
+    <string id="Tesla_auth_server_location_label">Location of Tesla's Auth servers?</string>
+    <string id="Tesla_server_location_prompt">Enter the server domain name</string>
+	<string id="DND">Do Not Disturb</string>
+	<string id="ThemeOverride">RGB Theme override</string>
+	<string id="ThemeOverridePrompt">In hexadecimal using this format RRGGBB. If this is other than 0, it's this color combination that will be used instead of the theme</string>
+	<string id="ThemeLightOverride">Light theme override</string>
+	<string id="StressLevel">Stress Level</string>
+	<string id="UseComplications">Use Complications if available</string>
+	<string id="TeslaLink">Get Tesla info from Tesla-Link Complications</string>
+	<string id="TeslaVehicleIndex">Which vehicle to show?</string>
+	<string id="ShowWeatherStationName">Show weather station name?</string>
+	<string id="ComplicationName">Complication Long Name</string>
 </strings>

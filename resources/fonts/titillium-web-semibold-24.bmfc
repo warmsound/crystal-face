@@ -18,6 +18,9 @@ dontIncludeKerningPairs=0
 useHinting=1
 renderFromOutline=0
 useClearType=1
+autoFitNumPages=0
+autoFitFontSizeMin=0
+autoFitFontSizeMax=0
 
 # character alignment
 paddingDown=0
@@ -28,6 +31,7 @@ spacingHoriz=1
 spacingVert=1
 useFixedHeight=0
 forceZero=0
+widthPaddingFactor=0.00
 
 # output file
 outWidth=256
@@ -50,7 +54,7 @@ invB=0
 outlineThickness=0
 
 # selected chars
-chars=32-33,37,39,44-46,48-58,63,65-90,97-122,176,192-223,225,227-230,232-233,237,240-241,243-244,246
+chars=32-33,37,39,43-46,48-58,63,65-90,97-122,176,192-223,225,227-230,232-233,237,240-241,243-244,246
 chars=248,251-252,256,258,260,262,264,266,268,270,272,274,276,278,280,282,284,286,288,290,292,294,296
 chars=298,300,302,304,308,310,313,315,317,321,323,325,327,330,332,334,336,338,340,342,344,346,348,350
 chars=352,356,358,360,362,364,366,368,370,372,374,376-377,379,381-382

@@ -1,11 +1,12 @@
 <properties>
-
-	<property id="AppVersion" type="string">2.5.0</property>
+	<property id="AppVersion" type="string"></property>
 
 	<property id="Theme" type="number">0</property>
+	<property id="ThemeOverride" type="string"></property>
+	<property id="ThemeLightOverride" type="boolean">false</property>
 
-	<property id="HoursColourOverride" type="number">0</property>
-	<property id="MinutesColourOverride" type="number">0</property>
+	<property id="UseComplications" type="boolean">false</property>
+	<property id="ComplicationName" type="string">Flashlight</property>
 
 	<property id="LeftGoalType" type="number">0</property>
 	<property id="RightGoalType" type="number">1</property>
@@ -15,21 +16,30 @@
 
 	<property id="FieldCount" type="number">3</property>
 	<property id="Field1Type" type="number">0</property>
-	<property id="Field2Type" type="number">1</property>
-	<property id="Field3Type" type="number">2</property>
+	<property id="Field2Type" type="number">14</property>
+	<property id="Field3Type" type="number">11</property>
 
-	<property id="IndicatorCount" type="number">1</property>
-	<property id="Indicator1Type" type="number">0</property>
-	<property id="Indicator2Type" type="number">1</property>
-	<property id="Indicator3Type" type="number">2</property>
+	<property id="IndicatorCount" type="number">2</property>
+	<property id="Indicator1Type" type="number">5</property>
+	<property id="Indicator2Type" type="number">3</property>
+	<property id="Indicator3Type" type="number">0</property>
+
+	<property id="HoursColourOverride" type="number">0</property>
+	<property id="MinutesColourOverride" type="number">0</property>
+	<property id="HideHoursLeadingZero" type="boolean">true</property>
+	<property id="AddColon" type="boolean">false</property>
+	<property id="HideSeconds" type="number">0</property>
+
+	<property id="ShowWeatherStationName" type="boolean">true</property>
 
 	<property id="LocalTimeInCity" type="string"></property>
 
 	<property id="MoveBarStyle" type="number">0</property>
-	
-	<property id="HideSeconds" type="boolean">false</property>
-	<property id="HideHoursLeadingZero" type="boolean">true</property>
 
-	<property id="OWMKeyOverride" type="string"></property>
-
+	<property id="TeslaLink" type="boolean">false</property>
+	<property id="TeslaVehicleIndex" type="number">1</property>
+	<property id="TeslaAccessToken" type="string"></property>
+	<property id="TeslaRefreshToken" type="string"></property>
+	<property id="TeslaServerAPILocation" type="string">owner-api.teslamotors.com</property>
+	<property id="TeslaServerAUTHLocation" type="string">auth.tesla.com</property>
 </properties>

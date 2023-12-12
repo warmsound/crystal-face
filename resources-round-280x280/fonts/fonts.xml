@@ -2,9 +2,9 @@
 	<font id="HoursFont" filename="titillium-web-bold-80-tall.fnt" antialias="true"/>
 	<font id="MinutesFont" filename="titillium-web-light-80-tall.fnt" antialias="true"/>
 	<font id="SecondsFont" filename="titillium-web-semibold-28.fnt" antialias="true" filter="0123456789AP"/>
-	<font id="DateFont" filename="titillium-web-semibold-28.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚČĚŘŚŠŹŽ"/>
-	<font id="NormalFont" filename="titillium-web-semibold-18.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°"/>
-	<font id="NormalFontCities" filename="titillium-web-semibold-18.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž"/>
+	<font id="DateFont" filename="titillium-web-semibold-28.fnt" antialias="true" filter=" 0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZÁÄÅÉÍÖØÚÛČĚŘŚŠŹŽ"/>
+	<font id="NormalFont" filename="titillium-web-semibold-18.fnt" antialias="true" filter="%-.0123456789!:?CFabefgikmpsty°+PSon /"/>
+	<font id="NormalFontCities" filename="titillium-web-semibold-18.fnt" antialias="true" filter=" %',-.0123456789!:?ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz°ÅÍÎÖáãäåæèéíðñóôöøûüž+/"/>
 	<font id="IconsFont" filename="crystal-icons-large.fnt" antialias="true"/>
 
 	<!-- Font size chosen such that height of sunshine icon is 28px -->

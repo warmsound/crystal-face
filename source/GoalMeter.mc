@@ -2,13 +2,18 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Graphics;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
+using Toybox.Complications;
 
 // const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
 enum /* GOAL_TYPES */ {
 	GOAL_TYPE_BATTERY = -1,
 	GOAL_TYPE_CALORIES = -2,
-	GOAL_TYPE_OFF = -3,
+	GOAL_TYPE_BODY_BATTERY = -3, // SG Addition
+	GOAL_TYPE_STRESS_LEVEL = -4, // SG Addition
+	GOAL_TYPE_OFF = -5,
 
 	GOAL_TYPE_STEPS = 0, // App.GOAL_TYPE_STEPS
 	GOAL_TYPE_FLOORS_CLIMBED, // App.GOAL_TYPE_FLOORS_CLIMBED
@@ -60,7 +65,7 @@ class GoalMeter extends Ui.Drawable {
 		mLayoutSeparator = params[:separator];
 
 		// Read meter style setting to determine current separator width.
-		onSettingsChanged();
+		onSettingsChanged(mSide == :left ? 0 : 1);
 
 		mWidth = getWidth();
 	}
@@ -105,12 +110,13 @@ class GoalMeter extends Ui.Drawable {
 		mIsOff = isOff;
 	}
 
-	function onSettingsChanged() {
+	(:noComplications)
+	function onSettingsChanged(index) {
 		mBuffersNeedRecreate = true;
 
 		// #18 Only read separator width from layout if multi segment style is selected.
 		// #62 Or if filled segment style is selected.
-		var goalMeterStyle = App.getApp().getProperty("GoalMeterStyle");
+		var goalMeterStyle = $.getIntProperty("GoalMeterStyle", 0);
 		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
@@ -131,6 +137,57 @@ class GoalMeter extends Ui.Drawable {
 		}
 	}
 
+
+	(:hasComplications)
+	function onSettingsChanged(index) {
+		mBuffersNeedRecreate = true;
+
+		// #18 Only read separator width from layout if multi segment style is selected.
+		// #62 Or if filled segment style is selected.
+		var goalMeterStyle = $.getIntProperty("GoalMeterStyle", 0);
+		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != mLayoutSeparator) {
+				mMaxValue = null;
+			}
+
+			mSeparator = mLayoutSeparator;
+			
+		} else {
+
+			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
+			if (mSeparator != 0) {
+				mMaxValue = null;
+			}
+
+			mSeparator = 0;
+		}
+
+		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
+								 {"type" => GOAL_TYPE_FLOORS_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
+								 {"type" => GOAL_TYPE_STEPS, "complicationType" => Complications.COMPLICATION_TYPE_STEPS},
+								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
+								];
+
+			var goalTypes = App.getApp().getView().mGoalTypes;
+			var filled = false;
+
+			for (var i = 0; i < complications.size(); i++) {
+				if (goalTypes[index].get("type") == complications[i].get("type")) {
+					$.updateComplications("", "Complication_G", index + 1, complications[i].get("complicationType"));
+					goalTypes[index].put("ComplicationType", complications[i].get("complicationType"));
+					filled = true;
+				}
+			}
+
+			if (filled == false) {
+				Storage.deleteValue("Complication_G" + (index + 1).toString());
+			}
+		}
+	}
+
 	// Different draw algorithms have been tried:
 	// 1. Draw each segment as a circle, clipped to a rectangle of the desired height, direct to screen DC.
 	//    Intuitive, but expensive.
@@ -143,7 +200,7 @@ class GoalMeter extends Ui.Drawable {
 	function draw(dc) {
 
 		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
-		if ((App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
+		if (($.getIntProperty("GoalMeterStyle", 0) == 2 /* HIDDEN */) || mIsOff) {
 			return;
 		}
 
@@ -165,7 +222,7 @@ class GoalMeter extends Ui.Drawable {
 
 			// Unfilled segments: fill height --> height.
 			// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-			if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+			if ($.getIntProperty("GoalMeterStyle", 0) <= 1) {
 				drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
 			}
 		}
@@ -241,7 +298,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// Draw unfilled segments.
 		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-		if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+		if ($.getIntProperty("GoalMeterStyle", 0) <= 1) {
 			clipBottom = clipTop;
 			clipTop = top;
 			clipHeight = clipBottom - clipTop;

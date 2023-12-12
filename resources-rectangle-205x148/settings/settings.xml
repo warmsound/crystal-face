@@ -1,8 +1,0 @@
-<settings>
-
-	<!-- Limit wide rectangle watches to 2 indicators, rather than 3. Insufficient space for vertical layout. -->
-	<setting propertyKey="@Properties.IndicatorCount" title="@Strings.IndicatorCountTitle">
-		<settingConfig type="numeric" min="0" max="2" required="true"/>
-	</setting>
-
-</settings>

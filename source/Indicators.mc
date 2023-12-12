@@ -2,16 +2,19 @@ using Toybox.WatchUi as Ui;
 using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
+using Toybox.Complications;
 
 class Indicators extends Ui.Drawable {
 
-	private var mSpacing;
-	private var mIsHorizontal = false;
-	private var mBatteryWidth;
+	var mSpacing;
+	var mIsHorizontal = false;
+	var mBatteryWidth;
 
-	private var mIndicator1Type;
-	private var mIndicator2Type;
-	private var mIndicator3Type;
+	var mIndicator1Type;
+	var mIndicator2Type;
+	var mIndicator3Type;
 
 	// private enum /* INDICATOR_TYPES */ {
 	// 	INDICATOR_TYPE_BLUETOOTH,
@@ -19,6 +22,8 @@ class Indicators extends Ui.Drawable {
 	// 	INDICATOR_TYPE_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BLUETOOTH_OR_NOTIFICATIONS,
 	// 	INDICATOR_TYPE_BATTERY
+	//  INDICATOR_TYPE_BATTERY_NUMERIC
+	// 	INDICATOR_TYPE_TESLA
 	// }
 
 	function initialize(params) {
@@ -36,15 +41,72 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function onSettingsChanged() {
-		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
-		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
-		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+		mIndicator1Type = $.getIntProperty("Indicator1Type", 5);
+		mIndicator2Type = $.getIntProperty("Indicator2Type", 3);
+		mIndicator3Type = $.getIntProperty("Indicator3Type", 0);
+
+		var indicator;
+		var filled = [false, false, false];
+
+		if (App.getApp().getView().useComplications()) {
+			indicator = findIndicator(4); // INDICATOR_TYPE_BATTERY
+			if (indicator != null)  {
+				$.updateComplications("", "Complication_I", indicator, Complications.COMPLICATION_TYPE_BATTERY);
+				filled[indicator - 1] = true;
+			}
+
+			indicator = findIndicator(5); // INDICATOR_TYPE_BATTERY_NUMERIC
+			if (indicator != null)  {
+				$.updateComplications("", "Complication_I", indicator, Complications.COMPLICATION_TYPE_BATTERY);
+				filled[indicator - 1] = true;
+			}
+		}
+
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
+		indicator = findIndicator(6); // INDICATOR_TYPE_TESLA
+		if (indicator != null) {
+			//DEBUG*/ logMessage("onSettingsChanged:Doing Tesla!");
+			Storage.setValue("Tesla", true);
+			if (App.getApp().getView().useComplications()) {
+				$.updateComplications("Tesla-Link", "Complication_I", indicator, Complications.COMPLICATION_TYPE_INVALID);
+				filled[indicator - 1] = true;
+			}
+		} else {
+			Storage.deleteValue("Tesla");
+		}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
+
+		for (var i = 1; i < 4; i++) {
+			if (filled[i - 1] == false) {
+				Storage.deleteValue("Complication_I" + i);
+			}
+		}
+	}
+
+	function findIndicator(complicationType) {
+		var indicator = null;
+		
+		if (mIndicator1Type == complicationType) {
+			indicator = 1;
+		}
+		if (mIndicator2Type == complicationType) {
+			indicator = 2;
+		}
+		if (mIndicator3Type == complicationType) {
+			indicator = 3;
+		}
+
+		return indicator;
 	}
 
 	function draw(dc) {
 
 		// #123 Protect against null or unexpected type e.g. String.
-		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
+		var indicatorCount = $.getIntProperty("IndicatorCount", 1);
 
 		// Horizontal layout for rectangle-148x205.
 		if (mIsHorizontal) {
@@ -72,15 +134,35 @@ class Indicators extends Ui.Drawable {
 
 	(:vertical_indicators)
 	function drawVertical(dc, indicatorCount) {
+
+		/*var spacingY = mSpacing;
+		var spacingX = mBatteryWidth * 2;
+
+		var xlocX = locX - (mBatteryWidth / 1.5).toNumber();
+		var ylocY;
+		if (indicatorCount == 1) {
+			ylocY = locY - spacingY;
+			spacingY *= 2;
+		}
+		else {
+			ylocY = locY - spacingY / 2;
+		}*/
+
 		if (indicatorCount == 3) {
 			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacing);
 			drawIndicator(dc, mIndicator2Type, locX, locY);
 			drawIndicator(dc, mIndicator3Type, locX, locY + mSpacing);
+			// dc.drawRectangle(xlocX, ylocY - spacingY, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY + spacingY, spacingX, spacingY);
 		} else if (indicatorCount == 2) {
 			drawIndicator(dc, mIndicator1Type, locX, locY - (mSpacing / 2));
 			drawIndicator(dc, mIndicator2Type, locX, locY + (mSpacing / 2));
+			// dc.drawRectangle(xlocX, ylocY - spacingY / 2, spacingX, spacingY);
+			// dc.drawRectangle(xlocX, ylocY + spacingY / 2, spacingX, spacingY);
 		} else if (indicatorCount == 1) {
 			drawIndicator(dc, mIndicator1Type, locX, locY);
+			// dc.drawRectangle(xlocX, ylocY, spacingX, spacingY);
 		}
 	}
 
@@ -88,9 +170,26 @@ class Indicators extends Ui.Drawable {
 
 		// Battery indicator.
 		if (indicatorType == 4 /* INDICATOR_TYPE_BATTERY */) {
-			drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
+			$.drawBatteryMeter(dc, x, y, mBatteryWidth, mBatteryWidth / 2);
 			return;
 		}
+
+		if (indicatorType == 5 /* INDICATOR_TYPE_BATTERY_NUMERIC */) {
+			$.writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 0);
+			return;
+		}
+
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
+		if (indicatorType == 6 /* INDICATOR_TYPE_TESLA */) { // We're reusing the watch batterie indicator to show the Tesla's batterie level
+			$.writeBatteryLevel(dc, x, y, mBatteryWidth, mBatteryWidth / 2, 1); 
+			return;
+		}
+
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
 
 		// Show notifications icon if connected and there are notifications, bluetoothicon otherwise.
 		var settings = Sys.getDeviceSettings();
@@ -101,12 +200,16 @@ class Indicators extends Ui.Drawable {
 				indicatorType = 0; // INDICATOR_TYPE_BLUETOOTH
 			}
 		}
+		else if (indicatorType == 7) {
+			indicatorType = 3;
+		}
 
 		// Get value for indicator type.
 		var value = [
 			/* INDICATOR_TYPE_BLUETOOTH */ settings.phoneConnected,
 			/* INDICATOR_TYPE_ALARMS */ settings.alarmCount > 0,
-			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0
+			/* INDICATOR_TYPE_NOTIFICATIONS */ settings.notificationCount > 0,
+			/* Do Not Disturb */ settings has :doNotDisturb && settings.doNotDisturb
 		][indicatorType];
 
 		dc.setColor(value ? gThemeColour : gMeterBackgroundColour, Graphics.COLOR_TRANSPARENT);
@@ -116,7 +219,7 @@ class Indicators extends Ui.Drawable {
 			x,
 			y,
 			gIconsFont,
-			["8", ":", "5"][indicatorType], // Get icon font char for indicator type.
+			["8", ":", "5", "C"][indicatorType], // Get icon font char for indicator type.
 			Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 	}

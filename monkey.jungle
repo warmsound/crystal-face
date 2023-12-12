@@ -7,73 +7,79 @@ base.sourcePath = source
 fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
 fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
 
+# Needs BodyBattery
+fr55.resourcePath = $(fr55.resourcePath);resources-small-time;resources-small-icons
+
 # Smaller round watches use small time font.
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 
 # Flat tyre watches use small time font and small icons.
 # Ditto smallest round watches.
-semiround-215x180.resourcePath = $(semiround-215x180.resourcePath);resources-small-time;resources-small-icons
 round-208x208.resourcePath = $(round-208x208.resourcePath);resources-small-time;resources-small-icons
 
 # Rectangle watches generally same as flat tyre, but have some overrides.
 rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resources-small-icons
 
-# CIQ 1.x watches only have 16 colours, so cannot support all themes.
-# No Floors or Active Minutes support, so default to showing Battery in right meter, and Calories in the centre field.
-# If a watch also has no HR support, show Distance in left field.
-# No BufferedBitmap support, so exclude buffer-specific variables/functions.
-# No clip support, so goal meter mask required for round/semiround watches.
-
-d2bravo.resourcePath = $(d2bravo.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
-d2bravo.excludeAnnotations = buffered
-
-d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
-d2bravo_titanium.excludeAnnotations = buffered
-
-fenix3.resourcePath = $(fenix3.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
-fenix3.excludeAnnotations = buffered
-
-fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
-fenix3_hr.excludeAnnotations = buffered
-
-fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
-fr230.excludeAnnotations = buffered
-
-fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
-fr235.excludeAnnotations = buffered
-
-fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
-fr630.excludeAnnotations = buffered
-
-fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
-fr920xt.excludeAnnotations = buffered
-
-# Reverse order of resources so that 64-colour themes are permitted.
-# #25: Repeat ciq_1.x-no_hr properties within resources-vivoactive, as properties were not correctly inherited.
-#vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
-vivoactive.excludeAnnotations = buffered
-
-# #21: Treat fr735xt as CIQ 1.x i.e. unbuffered drawing, due to insufficient memory.
-# Continue to use fr735xt-specific properties and settings, however, as does support active minutes.
-fr735xt.resourcePath = $(fr735xt.resourcePath);resources-semiround-215x180-ciq_1.x
-fr735xt.excludeAnnotations = buffered
-
-# Exclude unused date/indicator code from 60kB devices (extend to other devices as necessary).
-fr735xt.excludeAnnotations = $(fr735xt.excludeAnnotations);double_line_date;horizontal_indicators
-vivoactive_hr.excludeAnnotations = $(vivoactive_hr.excludeAnnotations);double_line_date;vertical_indicators
-
-# #124: fr45's settings.xml repeats whole of resources-ciq_1.x, then overrides, as settings were not correct inherited.
-#       Exclude background methods as memory is very limited (extend to other devices as necessary).
-fr45.excludeAnnotations = $(fr45.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
-
-# garminswim2 has same limitations as fr45 (CIQ 1.x, low memory, low colours).
-garminswim2.excludeAnnotations = $(garminswim2.excludeAnnotations);buffered;background_method;double_line_date;horizontal_indicators
-
 # #144: Always on display.
 venu.sourcePath = $(venu.sourcePath);always-on-source
 venu2.sourcePath = $(venu2.sourcePath);always-on-source
 venu2s.sourcePath = $(venu2s.sourcePath);always-on-source
+venu2plus.sourcePath = $(venu2plus.sourcePath);always-on-source
+venusq2.sourcePath = $(venusq2.sourcePath);always-on-source
+venusq2m.sourcePath = $(venusq2m.sourcePath);always-on-source
 venud.sourcePath = $(venud.sourcePath);always-on-source
 venusq.sourcePath = $(venusq.sourcePath);always-on-source
 venusqm.sourcePath = $(venusqm.sourcePath);always-on-source
+venu3.sourcePath = $(venu3.sourcePath);always-on-source
+venu3s.sourcePath = $(venu3s.sourcePath);always-on-source
 d2air.sourcePath = $(d2air.sourcePath);always-on-source
+d2mach1.sourcePath = $(d2mach1.sourcePath);always-on-source
+d2airx10.sourcePath = $(d2airx10.sourcePath);always-on-source
+epix2.sourcePath = $(epix2.sourcePath);always-on-source
+fr965.sourcePath = $(fr965.sourcePath);always-on-source
+fr265.sourcePath = $(fr265.sourcePath);always-on-source
+fr265s.sourcePath = $(fr265s.sourcePath);always-on-source
+marq2.sourcePath = $(marq2.sourcePath);always-on-source
+marq2aviator.sourcePath = $(marq2aviator.sourcePath);always-on-source
+approachs7042mm.sourcePath = $(approachs7042mm.sourcePath);always-on-source
+approachs7047mm.sourcePath = $(approachs7047mm.sourcePath);always-on-source
+epix2pro42mm.sourcePath = $(epix2pro42mm.sourcePath);always-on-source
+epix2pro47mm.sourcePath = $(epix2pro47mm.sourcePath);always-on-source
+epix2pro51mm.sourcePath = $(epix2pro51mm.sourcePath);always-on-source
+vivoactive5.sourcePath = $(vivoactive5.sourcePath);always-on-source
+
+base.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;noComplications
+descentmk2.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+descentmk2s.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+enduro.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+fenix5plus.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fenix5splus.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fenix5xplus.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fenix6.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+fenix6pro.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+fenix6s.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fenix6spro.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fenix6xpro.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+fr245.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fr245m.excludeAnnotations = highMemoryWatchface;bkgnd32kb;hasComplications
+fr55.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+fr745.excludeAnnotations = highMemoryWatchface;bkgnd32kb;hasComplications
+fr945.excludeAnnotations = highMemoryWatchface;bkgnd32kb;hasComplications
+fr945lte.excludeAnnotations = highMemoryWatchface;bkgnd32kb;hasComplications
+legacyherocaptainmarvel.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications
+legacyherofirstavenger.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications
+legacysagadarthvader.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications
+legacysagarey.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications
+marqadventurer.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqathlete.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqaviator.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqcaptain.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqcommander.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqdriver.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqexpedition.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+marqgolfer.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+venu.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+venusq.excludeAnnotations = highMemoryWatchface;bkgnd64kb;hasComplications
+venusqm.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
+vivoactive4.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications
+vivoactive4s.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;hasComplications

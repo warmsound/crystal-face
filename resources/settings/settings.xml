@@ -1,6 +1,5 @@
 <settings>
-
-	<setting propertyKey="@Properties.AppVersion" title="@Strings.AppVersionTitle">
+	<setting propertyKey="@Properties.AppVersion" title="@Strings.AppNameVersion">
 		<settingConfig type="alphaNumeric" readonly="true"/>
 	</setting>
 
@@ -24,6 +23,21 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.ThemeOverride" title="@Strings.ThemeOverride" prompt="@Strings.ThemeOverridePrompt">
+		<settingConfig type="alphaNumeric" maxLength="6"/>
+	</setting>
+	<setting propertyKey="@Properties.ThemeLightOverride" title="@Strings.ThemeLightOverride">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.UseComplications" title="@Strings.UseComplications">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.ComplicationName" title="@Strings.ComplicationName">
+		<settingConfig type="alphaNumeric" maxLength="64"/>
+	</setting>
+
 	<setting propertyKey="@Properties.LeftGoalType" title="@Strings.LeftGoalMeterTitle">
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.Steps</listEntry>
@@ -31,7 +45,9 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
-			<listEntry value="-3">@Strings.Off</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
+			<listEntry value="-4">@Strings.StressLevel</listEntry>
+			<listEntry value="-5">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -42,7 +58,9 @@
 			<listEntry value="2">@Strings.ActiveMinutes</listEntry>
 			<listEntry value="-1">@Strings.Battery</listEntry>
 			<listEntry value="-2">@Strings.CaloriesManualGoal</listEntry>
-			<listEntry value="-3">@Strings.Off</listEntry>
+			<listEntry value="-3">@Strings.BodyBattery</listEntry>
+			<listEntry value="-4">@Strings.StressLevel</listEntry>
+			<listEntry value="-5">@Strings.Off</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -88,6 +106,12 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
+			<listEntry value="19">@Strings.StressLevel</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -107,6 +131,12 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
+			<listEntry value="19">@Strings.StressLevel</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -126,6 +156,12 @@
 			<listEntry value="10">@Strings.SunriseSunset</listEntry>
 			<listEntry value="11">@Strings.Weather</listEntry>
 			<listEntry value="13">@Strings.Humidity</listEntry>
+			<listEntry value="14">@Strings.PulseOx</listEntry>
+			<listEntry value="15">@Strings.FloorsClimbed</listEntry>
+			<listEntry value="16">@Strings.SolarIntensity</listEntry>
+			<listEntry value="17">@Strings.BodyBattery</listEntry>
+			<listEntry value="18">@Strings.RecoveryTime</listEntry>
+			<listEntry value="19">@Strings.StressLevel</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -140,6 +176,9 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
+			<listEntry value="7">@Strings.DND</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -150,6 +189,9 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
+			<listEntry value="7">@Strings.DND</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -160,6 +202,9 @@
 			<listEntry value="2">@Strings.Notifications</listEntry>
 			<listEntry value="3">@Strings.BluetoothOrNotifications</listEntry>
 			<listEntry value="4">@Strings.Battery</listEntry>
+			<listEntry value="5">@Strings.BatteryNumeric</listEntry>
+			<listEntry value="6">@Strings.Tesla</listEntry>
+			<listEntry value="7">@Strings.DND</listEntry>
 		</settingConfig>
 	</setting>
 
@@ -183,7 +228,19 @@
 		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.AddColon" title="@Strings.AddColon">
+		<settingConfig type="boolean"/>
+	</setting>
+
 	<setting propertyKey="@Properties.HideSeconds" title="@Strings.HideSecondsTitle">
+        <settingConfig type="list">
+            <listEntry value="0">@Strings.HideSecondsOff</listEntry>
+            <listEntry value="1">@Strings.HideSecondsLowPower</listEntry>
+            <listEntry value="2">@Strings.HideSecondsAlways</listEntry>
+        </settingConfig>
+	</setting>
+
+	<setting propertyKey="@Properties.ShowWeatherStationName" title="@Strings.ShowWeatherStationName">
 		<settingConfig type="boolean"/>
 	</setting>
 
@@ -199,8 +256,26 @@
 		</settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.OWMKeyOverride" title="@Strings.OWMKeyOverride">
-		<settingConfig type="alphaNumeric" maxLength="32"/>
+	<setting propertyKey="@Properties.TeslaLink" title="@Strings.TeslaLink">
+		<settingConfig type="boolean"/>
 	</setting>
 
+	<setting propertyKey="@Properties.TeslaVehicleIndex" title="@Strings.TeslaVehicleIndex">
+		<settingConfig type="numeric" min="1" max="16" required="true"/>
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaAccessToken" title="@Strings.TeslaAccessToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaRefreshToken" title="@Strings.TeslaRefreshToken">
+		<settingConfig type="alphaNumeric" maxLength="2048"/>
+	</setting>
+	<setting propertyKey="@Properties.TeslaServerAPILocation" title="@Strings.Tesla_api_server_location_label" prompt="@Strings.Tesla_server_location_prompt">
+		<settingConfig type="alphaNumeric" />
+	</setting>
+
+	<setting propertyKey="@Properties.TeslaServerAUTHLocation" title="@Strings.Tesla_auth_server_location_label" prompt="@Strings.Tesla_server_location_prompt">
+		<settingConfig type="alphaNumeric" />
+	</setting>
 </settings>

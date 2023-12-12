@@ -3,6 +3,7 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
+using Toybox.Application.Storage;
 
 // Draw time, line, date, battery.
 // Combine stripped down versions of ThickThinTime and DateLine.
@@ -10,7 +11,7 @@ using Toybox.Time.Gregorian;
 class AlwaysOnDisplay extends Ui.Drawable {
 
 	private var mBurnInYOffsets;
-	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont;
+	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont, mTeslaFont;
 
 	// Wide rectangle: time should be moved up slightly to centre within available space.
 	private var mAdjustY = 0;
@@ -68,13 +69,18 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var dateFontOverride = Ui.loadResource(Rez.Strings.DATE_FONT_OVERRIDE);
 		var dateFont = (resourceMap.hasKey(dateFontOverride)) ? resourceMap[dateFontOverride] : rezFonts.AlwaysOnDateFont;
 		mDateFont = Ui.loadResource(dateFont);
+
+		if (Storage.getValue("Tesla") != null) {
+			mTeslaFont = Ui.loadResource(Rez.Fonts.IconsFont);
+		}
+
 	}
 	
 	function draw(dc) {
 
 		// TIME.
 		var clockTime = Sys.getClockTime();
-		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min, clockTime.sec);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		// Change vertical offset every minute.
@@ -83,13 +89,14 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		var hours = formattedTime[:hour];
 		var minutes = formattedTime[:min];
 		var amPmText = formattedTime[:amPm];
+		var colon = ":"; // SG Addition
 
 		var halfDCWidth = dc.getWidth() / 2;		
 
 		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
 		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
 		// minutes font is used to calculate total width. 
-		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
+		var totalWidth = dc.getTextWidthInPixels(hours + colon + minutes, mHoursFont); // SG Added colon
 		var x = halfDCWidth - (totalWidth / 2);
 		var y = mTimeY + mAdjustY + burnInYOffset;
 
@@ -104,6 +111,16 @@ class AlwaysOnDisplay extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
+
+		// SG Addition - Colon.
+		dc.drawText(
+			x,
+			y,
+			mHoursFont,
+			colon,
+			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+		);
+		x += dc.getTextWidthInPixels(colon, mHoursFont);
 
 		// Minutes.
 		dc.drawText(
@@ -128,7 +145,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// LINE.
 		y = mLineY + burnInYOffset;
-		dc.setPenWidth(/* mLineStroke */ 2);		
+		dc.setPenWidth(/* mLineStroke */ 1); // SG From 2 to 1
 		dc.drawLine(halfDCWidth - (mLineWidth / 2), y, halfDCWidth + (mLineWidth / 2), y);
 
 		// DATA.
@@ -181,22 +198,82 @@ class AlwaysOnDisplay extends Ui.Drawable {
 
 		// Date.
 		y = mDataY + burnInYOffset;	
-		dc.drawText(
-			mDataLeft,
-			y,
-			mDateFont,
-			Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
-			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+		if (Storage.getValue("Tesla") == null) {
+			dc.drawText(
+				mDataLeft,
+				y,
+				mDateFont,
+				Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]),
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
 
-		// Battery.
-		var battery = Math.floor(Sys.getSystemStats().battery);
-		dc.drawText(
-			dc.getWidth() - mDataLeft,
-			y,
-			mBatteryFont,
-			battery.format(INTEGER_FORMAT) + "%",
-			Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
-		);
+			// Battery.
+			var battery = Math.floor(Sys.getSystemStats().battery);
+			dc.drawText(
+				dc.getWidth() - mDataLeft,
+				y,
+				mBatteryFont,
+				battery.format(INTEGER_FORMAT) + "%",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
+		else {
+			dc.drawText(
+				mDataLeft,
+				y,
+				mDateFont,
+				Lang.format("$1$ $2$", [day, mMonthString]),
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+
+			// Batteries.
+			var watchBattery = Math.floor(Sys.getSystemStats().battery);
+
+			var teslaInfo = Storage.getValue("TeslaInfo");
+			if (teslaInfo == null) {
+				teslaInfo = {};
+			}
+			var chargingState = teslaInfo.get("ChargingState");
+			var error = teslaInfo.get("httpErrorTesla");
+
+			if (chargingState != null) {
+				if (chargingState.equals("Charging")) {
+					chargingState = 1;
+				} else if (chargingState.equals("Sleeping")) {
+					chargingState = 2;
+				} else {
+					chargingState = 0;
+				}
+			} else {
+				chargingState = 0;
+			}
+
+			var vehicleBattery = teslaInfo.get("BatteryLevel");
+			if (error != null && error != 200) {
+				vehicleBattery = error.toNumber().format(INTEGER_FORMAT);
+			} else if (vehicleBattery == null) {
+				vehicleBattery = "???";
+			} else {
+				vehicleBattery = vehicleBattery.toNumber().format(INTEGER_FORMAT) + "%" + (chargingState == 1 ? "+" : (chargingState == 2 ? "s" : ""));
+			}
+
+			var text = vehicleBattery + " " + watchBattery.format(INTEGER_FORMAT) + "%";
+			var widthText = dc.getTextWidthInPixels(text, mBatteryFont);
+
+			dc.drawText(
+				dc.getWidth() - mDataLeft - widthText,
+				y,
+				mTeslaFont,
+				"T",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			dc.drawText(
+				dc.getWidth() - mDataLeft,
+				y,
+				mBatteryFont,
+				vehicleBattery + " " + watchBattery.format(INTEGER_FORMAT) + "%",
+				Graphics.TEXT_JUSTIFY_RIGHT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+		}
 	}
 }

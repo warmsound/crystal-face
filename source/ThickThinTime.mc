@@ -1,6 +1,8 @@
 using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
+using Toybox.Application.Storage;
+using Toybox.Application.Properties;
 
 class ThickThinTime extends Ui.Drawable {
 
@@ -60,7 +62,7 @@ class ThickThinTime extends Ui.Drawable {
 
 	function drawHoursMinutes(dc) {
 		var clockTime = Sys.getClockTime();
-		var formattedTime = App.getApp().getFormattedTime(clockTime.hour, clockTime.min);
+		var formattedTime = $.getFormattedTime(clockTime.hour, clockTime.min, clockTime.sec);
 		formattedTime[:amPm] = formattedTime[:amPm].toUpper();
 
 		var hours = formattedTime[:hour];
@@ -86,6 +88,24 @@ class ThickThinTime extends Ui.Drawable {
 			Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
+
+		var addColon;
+		try {
+        	addColon = $.getBoolProperty("AddColon", false);
+		}
+		catch (e) {
+			addColon = false;
+		}
+		if (addColon != null && addColon == true) {
+			dc.drawText(
+				x,
+				halfDCHeight,
+				mMinutesFont,
+				":",
+				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+			);
+			x += dc.getTextWidthInPixels(":", mMinutesFont);
+		}
 
 		// Draw minutes.
 		dc.setColor(gMinutesColour, Graphics.COLOR_TRANSPARENT);
@@ -118,11 +138,14 @@ class ThickThinTime extends Ui.Drawable {
 		if (mHideSeconds) {
 			return;
 		}
-		
+
 		var clockTime = Sys.getClockTime();
 		var seconds = clockTime.sec.format("%02d");
 
 		if (isPartialUpdate) {
+			if (mSecondsClipRectX == null || mSecondsClipXAdjust == null || mSecondsClipRectY == null || mSecondsClipRectWidth == null || mSecondsClipRectHeight == null) { // Fixes a crash when null value are found. WHy it get there first, I don't kmow.
+				return;
+			}
 
 			dc.setClip(
 				mSecondsClipRectX + mSecondsClipXAdjust,
