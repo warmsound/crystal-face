@@ -4,12 +4,14 @@ using Toybox.Application as App;
 using Toybox.Time;
 using Toybox.Time.Gregorian;
 
+import Toybox.Lang;
+
 // Draw time, line, date, battery.
 // Combine stripped down versions of ThickThinTime and DateLine.
 // Change vertical offset every minute to comply with burn-in protection requirements.
 class AlwaysOnDisplay extends Ui.Drawable {
 
-	private var mBurnInYOffsets;
+	private var mBurnInYOffsets as Array<Number>;
 	private var mHoursFont, mMinutesFont, mSecondsFont, mDateFont, mBatteryFont;
 
 	// Wide rectangle: time should be moved up slightly to centre within available space.
@@ -18,7 +20,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 	private var mTimeY;
 	private var mLineY;
 	private var mLineWidth;
-	private var mLineStroke;
+	// private var mLineStroke;
 	private var mDataY;
 	private var mDataLeft;
 
@@ -30,7 +32,17 @@ class AlwaysOnDisplay extends Ui.Drawable {
 	private var mMonth;
 	private var mMonthString;
 
-	function initialize(params) {
+	typedef AlwaysOnDisplayParams as {
+		:burnInYOffsets as Array<Number>,
+		:adjustY as Number,
+		:timeY as Number,
+		:lineY as Number,
+		:lineWidth as Number,
+		:dataY as Number,
+		:dataLeft as Number
+	};
+
+	function initialize(params as AlwaysOnDisplayParams) {
 		Drawable.initialize(params);
 
 		mBurnInYOffsets = params[:burnInYOffsets];
@@ -46,7 +58,7 @@ class AlwaysOnDisplay extends Ui.Drawable {
 		mTimeY = params[:timeY];
 		mLineY = params[:lineY];
 		mLineWidth = params[:lineWidth];
-		//mLineStroke = params[:lineStroke];
+		// mLineStroke = params[:lineStroke];
 		mDataY = params[:dataY];
 		mDataLeft = params[:dataLeft];
 
