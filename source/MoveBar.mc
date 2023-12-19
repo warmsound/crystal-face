@@ -74,7 +74,8 @@ class MoveBar extends Ui.Drawable {
 		// Balance head/tail positions in full width mode.
 		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
 
-		//drawUnbuffered(dc, currentMoveBarLevel);
+		// drawUnbuffered(dc, currentMoveBarLevel);
+		mBufferNeedsRecreate; // Prevent compiler warning.
 
 		// Draw bars vertically centred on mY.
 		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);

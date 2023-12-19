@@ -161,6 +161,7 @@ class GoalMeter extends Ui.Drawable {
 		var top = (dc.getHeight() - mHeight) / 2;
 
 		// drawUnbuffered(dc, left, top);
+		mBuffersNeedRecreate; mBuffersNeedRedraw; // Prevent compiler warnings.
 
 		// Filled segments: 0 --> fill height.
 		drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
