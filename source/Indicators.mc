@@ -46,9 +46,9 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function onSettingsChanged() {
-		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
-		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
-		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+		mIndicator1Type = getPropertyValue("Indicator1Type");
+		mIndicator2Type = getPropertyValue("Indicator2Type");
+		mIndicator3Type = getPropertyValue("Indicator3Type");
 	}
 
 	function draw(dc) {

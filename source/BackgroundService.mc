@@ -107,7 +107,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests") as PendingWebRequests?;
+		var pendingWebRequests = getStorageValue("PendingWebRequests") as PendingWebRequests?;
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -115,19 +115,19 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
-						"city" => App.getApp().getProperty("LocalTimeInCity")
+						"city" => getPropertyValue("LocalTimeInCity")
 					},
 					method(:onReceiveCityLocalTime)
 				);
 
 			// 2. Weather.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+				var owmKeyOverride = getPropertyValue("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
-						"lat" => App.getApp().getProperty("LastLocationLat"),
-						"lon" => App.getApp().getProperty("LastLocationLng"),
+						"lat" => getStorageValue("LastLocationLat"),
+						"lon" => getStorageValue("LastLocationLng"),
 
 						// Polite request from Vince, developer of the Crystal Watch Face:
 						//

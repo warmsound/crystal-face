@@ -562,7 +562,7 @@ class DataFields extends Ui.Drawable {
 					result["weatherIcon"] = "01d";
 				}
 
-				weather = App.getApp().getProperty("OpenWeatherMapCurrent") as OpenWeatherMapCurrentData?;
+				weather = getStorageValue("OpenWeatherMapCurrent") as OpenWeatherMapCurrentData?;
 
 				// Awaiting location.
 				if (gLocationLat == null) {
@@ -589,8 +589,8 @@ class DataFields extends Ui.Drawable {
 					}
 
 				// Awaiting response.
-				} else if (((App.getApp().getProperty("PendingWebRequests") as PendingWebRequests?) != null) &&
-					(App.getApp().getProperty("PendingWebRequests") as PendingWebRequests)["OpenWeatherMapCurrent"]) {
+				} else if (((getStorageValue("PendingWebRequests") as PendingWebRequests?) != null) &&
+					(getStorageValue("PendingWebRequests") as PendingWebRequests)["OpenWeatherMapCurrent"]) {
 
 					value = "...";
 				}

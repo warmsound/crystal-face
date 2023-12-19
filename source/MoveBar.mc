@@ -63,7 +63,7 @@ class MoveBar extends Ui.Drawable {
 
 	(:unbuffered)
 	function draw(dc) {
-		if (App.getApp().getProperty("MoveBarStyle") == 2 /* HIDDEN */) {
+		if (getPropertyValue("MoveBarStyle") == 2 /* HIDDEN */) {
 			return;
 		}
 
@@ -82,7 +82,7 @@ class MoveBar extends Ui.Drawable {
 	
 	(:buffered)
 	function draw(dc) {
-		if (App.getApp().getProperty("MoveBarStyle") == 2 /* HIDDEN */) {
+		if (getPropertyValue("MoveBarStyle") == 2 /* HIDDEN */) {
 			return;
 		}
 
@@ -154,7 +154,7 @@ class MoveBar extends Ui.Drawable {
 		var thisBarWidth;
 		var thisBarColour = 0;
 		var barX = x + mTailWidth;
-		var moveBarStyle = App.getApp().getProperty("MoveBarStyle");
+		var moveBarStyle = getPropertyValue("MoveBarStyle");
 
 		// One-based, to correspond with move bar level (zero means no bars).
 		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {

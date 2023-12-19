@@ -154,7 +154,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 
-		setHideSeconds(App.getApp().getProperty("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
+		setHideSeconds(getPropertyValue("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
 	}
 
 	/*
@@ -189,7 +189,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update drawables that use normal font.
 	function updateNormalFont() {
 
-		var city = App.getApp().getProperty("LocalTimeInCity");
+		var city = getPropertyValue("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
@@ -290,7 +290,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
-			setHideSeconds(App.getApp().getProperty("HideSeconds")); 
+			setHideSeconds(getPropertyValue("HideSeconds")); 
 		} 
 
 		mSettingsChangedSinceLastDraw = false;
@@ -332,11 +332,11 @@ class CrystalView extends Ui.WatchFace {
 			return;
 		}
 
-		var leftType = App.getApp().getProperty("LeftGoalType");
+		var leftType = getPropertyValue("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
 		(mDrawables[:LeftGoalMeter] as GoalMeter).setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
-		var rightType = App.getApp().getProperty("RightGoalType");
+		var rightType = getPropertyValue("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
 		(mDrawables[:RightGoalMeter] as GoalMeter).setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
@@ -431,7 +431,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		if (!PER_SECOND_UPDATES_SUPPORTED && !getPropertyValue("HideSeconds")) {
 			setHideSeconds(false);
 		}
 
@@ -459,7 +459,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		if (!PER_SECOND_UPDATES_SUPPORTED && !getPropertyValue("HideSeconds")) {
 			setHideSeconds(true);
 		}
 
