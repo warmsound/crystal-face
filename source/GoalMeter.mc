@@ -149,6 +149,7 @@ class GoalMeter extends Ui.Drawable {
 	// 3. Unbuffered drawing: no buffer, and no clip support. Want common drawBuffer() function, so draw each segment as
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
+	(:unbuffered)
 	function draw(dc) {
 
 		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
@@ -159,31 +160,34 @@ class GoalMeter extends Ui.Drawable {
 		var left = (mSide == :left) ? 0 : (dc.getWidth() - mWidth);
 		var top = (dc.getHeight() - mHeight) / 2;
 
-		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
-		// Now changed to use buffered drawing only on round watches.
-		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)
-			&& (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND)) {
+		// drawUnbuffered(dc, left, top);
 
-			drawBuffered(dc, left, top);
-		
-		} else {
-			// drawUnbuffered(dc, left, top);
+		// Filled segments: 0 --> fill height.
+		drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
 
-			// Filled segments: 0 --> fill height.
-			drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
-
-			// Unfilled segments: fill height --> height.
-			// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-			if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
-				drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
-			}
+		// Unfilled segments: fill height --> height.
+		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
+		if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+			drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
 		}
 	}
 
-	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
-	// remaining height.
 	(:buffered)
-	function drawBuffered(dc, left, top) {
+	function draw(dc) {
+
+		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
+		if ((App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
+			return;
+		}
+
+		var left = (mSide == :left) ? 0 : (dc.getWidth() - mWidth);
+		var top = (dc.getHeight() - mHeight) / 2;
+
+		// drawBuffered(dc, left, top);
+
+		// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer
+		// for remaining height.
+		
 		var emptyBufferDc;
 		var filledBufferDc;
 

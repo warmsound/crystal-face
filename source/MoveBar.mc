@@ -60,7 +60,8 @@ class MoveBar extends Ui.Drawable {
 			mBufferNeedsRecreate = true;
 		}
 	}
-	
+
+	(:unbuffered)
 	function draw(dc) {
 		if (App.getApp().getProperty("MoveBarStyle") == 2 /* HIDDEN */) {
 			return;
@@ -73,19 +74,27 @@ class MoveBar extends Ui.Drawable {
 		// Balance head/tail positions in full width mode.
 		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
 
-		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
-		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
-			drawBuffered(dc, currentMoveBarLevel);
-		} else {
-			//drawUnbuffered(dc, currentMoveBarLevel);
+		//drawUnbuffered(dc, currentMoveBarLevel);
 
-			// Draw bars vertically centred on mY.
-			drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);
-		}		
+		// Draw bars vertically centred on mY.
+		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);
 	}
-
+	
 	(:buffered)
-	function drawBuffered(dc, currentMoveBarLevel) {
+	function draw(dc) {
+		if (App.getApp().getProperty("MoveBarStyle") == 2 /* HIDDEN */) {
+			return;
+		}
+
+		var info = ActivityMonitor.getInfo();
+		var currentMoveBarLevel = info.moveBarLevel;
+
+		// Calculate current width here, now that DC is accessible.
+		// Balance head/tail positions in full width mode.
+		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
+
+		// drawBuffered(dc, currentMoveBarLevel);
+
 		// Recreate buffers if this is the very first draw(), if optimised colour palette has changed e.g. theme colour change, or
 		// move bar width changes from base width to full width.
 		if (mBufferNeedsRecreate) {
