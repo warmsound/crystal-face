@@ -5,6 +5,7 @@
         <iq:products>
             <iq:product id="approachs60"/>
             <iq:product id="approachs62"/>
+            <iq:product id="approachs7042mm"/>
             <iq:product id="d2air"/>
             <iq:product id="d2bravo"/>
             <iq:product id="d2bravo_titanium"/>
@@ -15,7 +16,9 @@
             <iq:product id="descentmk1"/>
             <iq:product id="descentmk2"/>
             <iq:product id="descentmk2s"/>
+            <iq:product id="descentmk343mm"/>
             <iq:product id="enduro"/>
+            <iq:product id="epix2pro42mm"/>
             <iq:product id="fenix3"/>
             <iq:product id="fenix3_hr"/>
             <iq:product id="fenix5"/>
@@ -64,6 +67,8 @@
             <iq:product id="legacyherofirstavenger"/>
             <iq:product id="legacysagadarthvader"/>
             <iq:product id="legacysagarey"/>
+            <iq:product id="marq2"/>
+            <iq:product id="marq2aviator"/>
             <iq:product id="marqadventurer"/>
             <iq:product id="marqathlete"/>
             <iq:product id="marqaviator"/>
@@ -75,6 +80,7 @@
             <iq:product id="venu"/>
             <iq:product id="venu2"/>
             <iq:product id="venu2s"/>
+            <iq:product id="venu3s"/>
             <iq:product id="venud"/>
             <iq:product id="venusq"/>
             <iq:product id="venusqm"/>
@@ -85,6 +91,7 @@
             <iq:product id="vivoactive3mlte"/>
             <iq:product id="vivoactive4"/>
             <iq:product id="vivoactive4s"/>
+            <iq:product id="vivoactive5"/>
             <iq:product id="vivoactive_hr"/>
             <iq:product id="vivolife"/>
         </iq:products>
