@@ -3,7 +3,7 @@ project.manifest = manifest.xml
 # Exclude other source directories (default behaviour is to include).
 base.sourcePath = source
 
-base.excludeAnnotations = unbuffered;object_store
+base.excludeAnnotations = unbuffered;object_store;double_line_date;horizontal_indicators
 
 # #122: fr245/fr245m are CIQ 3.x, but do not support floors climbed.
 fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
@@ -32,32 +32,32 @@ rectangle.resourcePath = $(rectangle.resourcePath);resources-small-time;resource
 # No clip support, so goal meter mask required for round/semiround watches.
 
 d2bravo.resourcePath = $(d2bravo.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
-d2bravo.excludeAnnotations = buffered;properties_and_storage
+d2bravo.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 d2bravo_titanium.resourcePath = $(d2bravo_titanium.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
-d2bravo_titanium.excludeAnnotations = buffered;properties_and_storage
+d2bravo_titanium.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 fenix3.resourcePath = $(fenix3.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x-no_hr
-fenix3.excludeAnnotations = buffered;properties_and_storage
+fenix3.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 fenix3_hr.resourcePath = $(fenix3_hr.resourcePath);resources-round-218x218-ciq_1.x;resources-ciq_1.x
-fenix3_hr.excludeAnnotations = buffered;properties_and_storage
+fenix3_hr.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 fr230.resourcePath = $(fr230.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
-fr230.excludeAnnotations = buffered;properties_and_storage
+fr230.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 fr235.resourcePath = $(fr235.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x
-fr235.excludeAnnotations = buffered;properties_and_storage
+fr235.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 # #124: fr45's settings.xml repeats whole of resources-ciq_1.x, then overrides, as settings were not correct inherited.
 #       Exclude background methods as memory is very limited (extend to other devices as necessary).
-fr45.excludeAnnotations = buffered;background_method;double_line_date;horizontal_indicators
+fr45.excludeAnnotations = buffered;properties_and_storage;background_method;double_line_date;horizontal_indicators
 
 fr630.resourcePath = $(fr630.resourcePath);resources-semiround-215x180-ciq_1.x;resources-ciq_1.x-no_hr
-fr630.excludeAnnotations = buffered;properties_and_storage
+fr630.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 fr920xt.resourcePath = $(fr920xt.resourcePath);resources-ciq_1.x-no_hr
-fr920xt.excludeAnnotations = buffered;properties_and_storage
+fr920xt.excludeAnnotations = buffered;properties_and_storage;single_line_date;horizontal_indicators
 
 # garminswim2 has same limitations as fr45 (CIQ 1.x, low memory, low colours).
 garminswim2.excludeAnnotations = buffered;background_method;double_line_date;horizontal_indicators
@@ -65,16 +65,14 @@ garminswim2.excludeAnnotations = buffered;background_method;double_line_date;hor
 # Reverse order of resources so that 64-colour themes are permitted.
 # #25: Repeat ciq_1.x-no_hr properties within resources-vivoactive, as properties were not correctly inherited.
 #vivoactive.resourcePath = resources-ciq_1.x-no_hr;$(vivoactive.resourcePath)
-vivoactive.excludeAnnotations = buffered;properties_and_storage
+vivoactive.excludeAnnotations = buffered;properties_and_storage;double_line_date;horizontal_indicators
 
 # #21: Treat fr735xt as CIQ 1.x i.e. unbuffered drawing, due to insufficient memory.
 # Continue to use fr735xt-specific properties and settings, however, as does support active minutes.
 fr735xt.resourcePath = $(fr735xt.resourcePath);resources-semiround-215x180-ciq_1.x
-fr735xt.excludeAnnotations = buffered
+fr735xt.excludeAnnotations = buffered;object_store;double_line_date;horizontal_indicators
 
-# Exclude unused date/indicator code from 60kB devices (extend to other devices as necessary).
-fr735xt.excludeAnnotations = double_line_date;horizontal_indicators
-vivoactive_hr.excludeAnnotations = double_line_date;vertical_indicators
+vivoactive_hr.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators
 
 # #144: Always on display.
 venu.sourcePath = $(venu.sourcePath);always-on-source
@@ -100,3 +98,5 @@ fr265.sourcePath = $(fr265.sourcePath);always-on-source
 venu2plus.sourcePath = $(venu2plus.sourcePath);always-on-source
 venusq2.sourcePath = $(venusq2.sourcePath);always-on-source
 venusq2m.sourcePath = $(venusq2m.sourcePath);always-on-source
+
+rectangle-320x360.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators

@@ -96,15 +96,17 @@ class DateLine extends Ui.Drawable {
 		}
 
 		var day = now.day.format(INTEGER_FORMAT);
-		if (mYLine2 != null) {
-			drawDoubleLine(dc, day);
-		} else {
-			drawSingleLine(dc, day);
-		}
+		// if (mYLine2 != null) {
+		// 	drawDoubleLine(dc, day);
+		// } else {
+		// 	drawSingleLine(dc, day);
+		// }
+		drawDate(dc, day);
 	}
 
 	(:double_line_date)
-	function drawDoubleLine(dc, day) {
+	// function drawDoubleLine(dc, day) {
+	function drawDate(dc, day) {
 		// Draw day of week, left-aligned at (mX, mY).
 		dc.setColor(gMonoDarkColour, Graphics.COLOR_TRANSPARENT);
 		dc.drawText(
@@ -135,7 +137,11 @@ class DateLine extends Ui.Drawable {
 		);
 	}
 
-	function drawSingleLine(dc, day) {
+	(:single_line_date)
+	// function drawSingleLine(dc, day) {
+	function drawDate(dc, day) {
+		mX; mYLine2; // Prevent compiler warning.
+
 		var dateString = Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]);
 		var length = dc.getTextWidthInPixels(dateString, mFont);
 		var x = (dc.getWidth() / 2) - (length / 2);
