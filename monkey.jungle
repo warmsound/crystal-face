@@ -9,6 +9,11 @@ base.excludeAnnotations = unbuffered;object_store
 fr245.resourcePath = $(fr245.resourcePath);resources-no_floors
 fr245m.resourcePath = $(fr245m.resourcePath);resources-no_floors
 
+# Some newer watches also do not support floors climbed.
+vivoactive5.resourcePath = $(vivoactive5.resourcePath);resources-no_floors
+venusq2.resourcePath = $(venusq2.resourcePath);resources-no_floors
+venusq2m.resourcePath = $(venusq2m.resourcePath);resources-no_floors
+
 # Smaller round watches use small time font.
 round-218x218.resourcePath = $(round-218x218.resourcePath);resources-small-time
 
@@ -93,3 +98,5 @@ epix2.sourcePath = $(epix2.sourcePath);always-on-source
 epix2pro47mm.sourcePath = $(epix2pro47mm.sourcePath);always-on-source
 fr265.sourcePath = $(fr265.sourcePath);always-on-source
 venu2plus.sourcePath = $(venu2plus.sourcePath);always-on-source
+venusq2.sourcePath = $(venusq2.sourcePath);always-on-source
+venusq2m.sourcePath = $(venusq2m.sourcePath);always-on-source
