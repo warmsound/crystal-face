@@ -79,3 +79,4 @@ venud.sourcePath = $(venud.sourcePath);always-on-source
 venusq.sourcePath = $(venusq.sourcePath);always-on-source
 venusqm.sourcePath = $(venusqm.sourcePath);always-on-source
 d2air.sourcePath = $(d2air.sourcePath);always-on-source
+fr265s.sourcePath = $(d2air.sourcePath);always-on-source
