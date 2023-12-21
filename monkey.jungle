@@ -98,6 +98,10 @@ fr265.sourcePath = $(fr265.sourcePath);always-on-source
 venu2plus.sourcePath = $(venu2plus.sourcePath);always-on-source
 venusq2.sourcePath = $(venusq2.sourcePath);always-on-source
 venusq2m.sourcePath = $(venusq2m.sourcePath);always-on-source
+approachs7047mm.sourcePath = $(approachs7047mm.sourcePath);always-on-source
+descentmk351mm.sourcePath = $(descentmk351mm.sourcePath);always-on-source
+epix2pro51mm.sourcePath = $(epix2pro51mm.sourcePath);always-on-source
+fr965.sourcePath = $(fr965.sourcePath);always-on-source
 venu3.sourcePath = $(venu3.sourcePath);always-on-source
 
 rectangle-320x360.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators

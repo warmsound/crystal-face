@@ -42,13 +42,14 @@
 			<param name="locX">57</param>
 			<param name="locY">227</param>
 			<param name="spacingY">59</param>
-			<param name="batteryWidth">41</param>
+			<param name="batteryWidth">39</param>
 		</drawable>
 
 		<drawable id="Time" class="ThickThinTime">
 			<param name="adjustY">-4</param>
 			<param name="secondsX">320</param>
 			<param name="secondsY">277</param>
+            <param name="amPmOffset">6</param>
 		</drawable>
 
 		<drawable id="MoveBar" class="MoveBar">
