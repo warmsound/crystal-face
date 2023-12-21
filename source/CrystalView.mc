@@ -75,8 +75,10 @@ function drawBatteryMeter(dc, x, y, width, height) {
 	dc.fillRectangle(
 		x - (width / 2) + lineWidthPlusMargin,
 		y - (height / 2) + lineWidthPlusMargin,
-		Math.ceil(fillWidth * (batteryLevel / 100)), 
-		height - (2 * lineWidthPlusMargin));
+		Math.ceil(fillWidth * (batteryLevel / 100)),
+		// Pixel alignment of stroke seems to be different on screens 360px or wider (so it's not just related to AMOLED colour
+		// depth). Increase fill height by 1px on such screens.
+		height - (2 * lineWidthPlusMargin) + (SCREEN_MULTIPLIER - 1));
 }
 
 typedef GoalValues as {
