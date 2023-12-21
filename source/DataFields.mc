@@ -333,7 +333,7 @@ class DataFields extends Ui.Drawable {
 				}[fieldType];
 			}
 
-			dc.setColor(colour, gBackgroundColour);
+			dc.setColor(colour, Graphics.COLOR_TRANSPARENT);
 			dc.drawText(
 				x,
 				mTop,
