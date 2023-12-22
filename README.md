@@ -27,6 +27,11 @@ Reviews:
 
 ## What's New
 
+### 2.6.0
+- Add support for latest watches, including vívoactive® 5 and Venu® 3.
+- Fix gap in battery meter on AMOLED screens.
+- Technical update to CIQ 6.4.1. Use Properties/Storage instead of Object Store for supporting watches. Fix most compiler warnings.
+
 ### 2.5.0
 - Add support for Venu® 2 and Venu® 2S (thanks to fallingrock for testing help). Thank you for your patience!
 - Technical update to CIQ 4.0.3.
