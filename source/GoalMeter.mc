@@ -3,6 +3,8 @@ using Toybox.System as Sys;
 using Toybox.Application as App;
 using Toybox.Graphics;
 
+import Toybox.Lang;
+
 // const MIN_WHOLE_SEGMENT_HEIGHT = 5;
 
 enum /* GOAL_TYPES */ {
@@ -51,7 +53,14 @@ class GoalMeter extends Ui.Drawable {
 	// 	FILLED_SEGMENTS_MERGED
 	// }
 
-	function initialize(params) {
+	typedef GoalMeterParams as {
+		:side as Symbol,
+		:stroke as Number,
+		:height as Number,
+		:separator as Number
+	};
+
+	function initialize(params as GoalMeterParams) {
 		Drawable.initialize(params);
 
 		mSide = params[:side];
@@ -110,7 +119,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// #18 Only read separator width from layout if multi segment style is selected.
 		// #62 Or if filled segment style is selected.
-		var goalMeterStyle = App.getApp().getProperty("GoalMeterStyle");
+		var goalMeterStyle = getPropertyValue("GoalMeterStyle");
 		if ((goalMeterStyle == 0 /* ALL_SEGMENTS */) || (goalMeterStyle == 3 /* FILLED_SEGMENTS */)) {
 
 			// Force recalculation of mSegments in setValues() if mSeparator is about to change.
@@ -140,41 +149,46 @@ class GoalMeter extends Ui.Drawable {
 	// 3. Unbuffered drawing: no buffer, and no clip support. Want common drawBuffer() function, so draw each segment as
 	//    rectangle, then draw circular background colour mask between both meters. This requires an extra drawable in the layout,
 	//    expensive, so only use this strategy for unbuffered drawing. For buffered, the mask can be drawn into each buffer.
+	(:unbuffered)
 	function draw(dc) {
 
 		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
-		if ((App.getApp().getProperty("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
+		if ((getPropertyValue("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
 			return;
 		}
 
 		var left = (mSide == :left) ? 0 : (dc.getWidth() - mWidth);
 		var top = (dc.getHeight() - mHeight) / 2;
 
-		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
-		// Now changed to use buffered drawing only on round watches.
-		if ((Graphics has :BufferedBitmap) && (Graphics.Dc has :setClip)
-			&& (Sys.getDeviceSettings().screenShape == Sys.SCREEN_SHAPE_ROUND)) {
+		// drawUnbuffered(dc, left, top);
+		mBuffersNeedRecreate; mBuffersNeedRedraw; // Prevent compiler warnings.
 
-			drawBuffered(dc, left, top);
-		
-		} else {
-			// drawUnbuffered(dc, left, top);
+		// Filled segments: 0 --> fill height.
+		drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
 
-			// Filled segments: 0 --> fill height.
-			drawSegments(dc, left, top, gThemeColour, mSegments, 0, mFillHeight);
-
-			// Unfilled segments: fill height --> height.
-			// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-			if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
-				drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
-			}
+		// Unfilled segments: fill height --> height.
+		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
+		if (getPropertyValue("GoalMeterStyle") <= 1) {
+			drawSegments(dc, left, top, gMeterBackgroundColour, mSegments, mFillHeight, mHeight);
 		}
 	}
 
-	// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer for
-	// remaining height.
 	(:buffered)
-	function drawBuffered(dc, left, top) {
+	function draw(dc) {
+
+		// #114 TODO: Any buffers not yet reclaimed if goal meter set to off.
+		if ((getPropertyValue("GoalMeterStyle") == 2 /* HIDDEN */) || mIsOff) {
+			return;
+		}
+
+		var left = (mSide == :left) ? 0 : (dc.getWidth() - mWidth);
+		var top = (dc.getHeight() - mHeight) / 2;
+
+		// drawBuffered(dc, left, top);
+
+		// Redraw buffers if dirty, then draw from buffer to screen: from filled buffer up to fill height, then from empty buffer
+		// for remaining height.
+		
 		var emptyBufferDc;
 		var filledBufferDc;
 
@@ -241,7 +255,7 @@ class GoalMeter extends Ui.Drawable {
 
 		// Draw unfilled segments.
 		// #62 ALL_SEGMENTS or ALL_SEGMENTS_MERGED.
-		if (App.getApp().getProperty("GoalMeterStyle") <= 1) {
+		if (getPropertyValue("GoalMeterStyle") <= 1) {
 			clipBottom = clipTop;
 			clipTop = top;
 			clipHeight = clipBottom - clipTop;
@@ -276,7 +290,7 @@ class GoalMeter extends Ui.Drawable {
 	// dc can be screen or buffer DC, depending on drawing mode.
 	// x and y are co-ordinates of top-left corner of meter.
 	// start/endFillHeight are pixel fill heights including separators, starting from zero at bottom.
-	function drawSegments(dc, x, y, fillColour, segments, startFillHeight, endFillHeight) {
+	function drawSegments(dc, x, y, fillColour, segments as Array<Number>, startFillHeight, endFillHeight) {
 		var segmentStart = 0;
 		var segmentEnd;
 
@@ -360,7 +374,7 @@ class GoalMeter extends Ui.Drawable {
 		return segments;
 	}
 
-	function getFillHeight(segments) {
+	function getFillHeight(segments as Array<Number>) {
 		var fillHeight;
 
 		var i;

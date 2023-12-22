@@ -2,6 +2,8 @@ using Toybox.WatchUi as Ui;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+import Toybox.Lang;
+
 class ThickThinTime extends Ui.Drawable {
 
 	private var mHoursFont, mMinutesFont, mSecondsFont;
@@ -26,7 +28,17 @@ class ThickThinTime extends Ui.Drawable {
 	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
 	private var mSecondsClipXAdjust = 0;
 
-	function initialize(params) {
+	typedef ThickThinTimeParams as {
+		:secondsX as Number,
+		:secondsY as Number,
+		:secondsClipY as Number,
+		:secondsClipWidth as Number,
+		:secondsClipheight as Number,
+		:adjustY as Number?,
+		:amPmOffset as Number?
+	};
+
+	function initialize(params as ThickThinTimeParams) {
 		Drawable.initialize(params);
 
 		if (params[:adjustY] != null) {

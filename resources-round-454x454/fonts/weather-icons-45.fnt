@@ -1,0 +1,21 @@
+info face="Weather Icons" size=-45 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=2 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=66 base=50 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="weather-icons-45_0.png"
+chars count=17
+char id=65  x=64    y=65    width=69    height=57    xoffset=0     yoffset=0     xadvance=68    page=0  chnl=15
+char id=66  x=53    y=130   width=64    height=50    xoffset=0     yoffset=0     xadvance=63    page=0  chnl=15
+char id=67  x=0     y=0     width=63    height=65    xoffset=0     yoffset=0     xadvance=63    page=0  chnl=15
+char id=68  x=64    y=0     width=64    height=64    xoffset=0     yoffset=0     xadvance=63    page=0  chnl=15
+char id=69  x=129   y=0     width=63    height=63    xoffset=0     yoffset=0     xadvance=63    page=0  chnl=15
+char id=70  x=0     y=66    width=63    height=63    xoffset=0     yoffset=0     xadvance=63    page=0  chnl=15
+char id=71  x=187   y=64    width=57    height=52    xoffset=0     yoffset=1     xadvance=56    page=0  chnl=15
+char id=72  x=118   y=123   width=50    height=50    xoffset=0     yoffset=8     xadvance=50    page=0  chnl=15
+char id=73  x=153   y=174   width=52    height=35    xoffset=0     yoffset=15    xadvance=52    page=0  chnl=15
+char id=97  x=0     y=183   width=60    height=46    xoffset=0     yoffset=11    xadvance=59    page=0  chnl=15
+char id=98  x=169   y=118   width=51    height=48    xoffset=0     yoffset=11    xadvance=51    page=0  chnl=15
+char id=99  x=193   y=0     width=52    height=53    xoffset=0     yoffset=10    xadvance=51    page=0  chnl=15
+char id=100 x=134   y=64    width=52    height=53    xoffset=0     yoffset=11    xadvance=51    page=0  chnl=15
+char id=101 x=0     y=130   width=52    height=52    xoffset=0     yoffset=11    xadvance=51    page=0  chnl=15
+char id=102 x=221   y=117   width=34    height=34    xoffset=0     yoffset=15    xadvance=33    page=0  chnl=15
+char id=103 x=113   y=181   width=39    height=37    xoffset=0     yoffset=16    xadvance=38    page=0  chnl=15
+char id=014 x=61    y=181   width=51    height=39    xoffset=0     yoffset=11    xadvance=51    page=0  chnl=15

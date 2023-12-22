@@ -3,10 +3,11 @@ using Toybox.Graphics as Gfx;
 using Toybox.System as Sys;
 using Toybox.Application as App;
 
+import Toybox.Lang;
+
 class Indicators extends Ui.Drawable {
 
 	private var mSpacing;
-	private var mIsHorizontal = false;
 	private var mBatteryWidth;
 
 	private var mIndicator1Type;
@@ -21,12 +22,19 @@ class Indicators extends Ui.Drawable {
 	// 	INDICATOR_TYPE_BATTERY
 	// }
 
-	function initialize(params) {
+	typedef IndicatorsParams as {
+		:locX as Number,
+		:locY as Number,
+		:spacingX as Number,
+		:spacingY as Number,
+		:batteryWidth as Number
+	};
+
+	function initialize(params as IndicatorsParams) {
 		Drawable.initialize(params);
 
 		if (params[:spacingX] != null) {
 			mSpacing = params[:spacingX];
-			mIsHorizontal = true;
 		} else {
 			mSpacing = params[:spacingY];
 		}
@@ -36,9 +44,9 @@ class Indicators extends Ui.Drawable {
 	}
 
 	function onSettingsChanged() {
-		mIndicator1Type = App.getApp().getProperty("Indicator1Type");
-		mIndicator2Type = App.getApp().getProperty("Indicator2Type");
-		mIndicator3Type = App.getApp().getProperty("Indicator3Type");
+		mIndicator1Type = getPropertyValue("Indicator1Type");
+		mIndicator2Type = getPropertyValue("Indicator2Type");
+		mIndicator3Type = getPropertyValue("Indicator3Type");
 	}
 
 	function draw(dc) {
@@ -46,18 +54,20 @@ class Indicators extends Ui.Drawable {
 		// #123 Protect against null or unexpected type e.g. String.
 		var indicatorCount = App.getApp().getIntProperty("IndicatorCount", 1);
 
-		// Horizontal layout for rectangle-148x205.
-		if (mIsHorizontal) {
-			drawHorizontal(dc, indicatorCount);
+		// // Horizontal layout for rectangle-148x205, rectangle-320x360
+		// if (mIsHorizontal) {
+		// 	drawHorizontal(dc, indicatorCount);
 
-		// Vertical layout for others.
-		} else {
-			drawVertical(dc, indicatorCount);
-		}
+		// // Vertical layout for others.
+		// } else {
+		// 	drawVertical(dc, indicatorCount);
+		// }
+		drawIndicators(dc, indicatorCount);
 	}
 
 	(:horizontal_indicators)
-	function drawHorizontal(dc, indicatorCount) {
+	// function drawHorizontal(dc, indicatorCount) {
+	function drawIndicators(dc, indicatorCount) {
 		if (indicatorCount == 3) {
 			drawIndicator(dc, mIndicator1Type, locX - mSpacing, locY);
 			drawIndicator(dc, mIndicator2Type, locX, locY);
@@ -71,7 +81,8 @@ class Indicators extends Ui.Drawable {
 	}
 
 	(:vertical_indicators)
-	function drawVertical(dc, indicatorCount) {
+	// function drawVertical(dc, indicatorCount) {
+	function drawIndicators(dc, indicatorCount) {
 		if (indicatorCount == 3) {
 			drawIndicator(dc, mIndicator1Type, locX, locY - mSpacing);
 			drawIndicator(dc, mIndicator2Type, locX, locY);

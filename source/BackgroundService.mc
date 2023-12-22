@@ -3,6 +3,96 @@ using Toybox.System as Sys;
 using Toybox.Communications as Comms;
 using Toybox.Application as App;
 
+import Toybox.Lang;
+
+typedef HttpErrorData as {
+	"httpError" as Number
+};
+
+typedef CityLocalTimeSuccessResponse as {
+	"requestCity" as String,
+	"city" as String,
+	"current" as {
+		"gmtOffset" as Number,
+		"dst" as Boolean
+	},
+	"next" as {
+		"when" as Number,
+		"gmtOffset" as Number,
+		"dst" as Boolean
+	}
+};
+
+typedef CityLocalTimeErrorResponse as {
+	"requestCity" as String,
+	"error" as {
+		"code" as Number,
+		"message" as String
+	}
+};
+
+typedef CityLocalTimeResponse as CityLocalTimeSuccessResponse or CityLocalTimeErrorResponse;
+
+typedef CityLocalTimeData as CityLocalTimeResponse;
+
+typedef OpenWeatherMapCurrentSuccessResponse as {
+	"coord" as {
+		"lon" as Number,
+		"lat" as Number
+	},
+	"weather" as Array<{
+		"id" as Number,
+		"main" as String,
+		"description" as String,
+		"icon" as String
+	}>,
+	"base" as String,
+	"main" as {
+		"temp" as Number,
+		"pressure" as Number,
+		"humidity" as Number,
+		"temp_min" as Number,
+		"temp_max" as Number
+	},
+	"visibility" as Number,
+	"wind" as {
+		"speed" as Number,
+		"deg" as Number
+	},
+	"clouds" as {
+		"all" as Number
+	},
+	"dt" as Number,
+	"sys" as {
+		"type" as Number,
+		"id" as Number,
+		"message" as Number,
+		"country" as String,
+		"sunrise" as Number,
+		"sunset" as Number,
+	},
+	"id" as Number,
+	"name" as String,
+	"cod" as Number
+};
+
+typedef OpenWeatherMapCurrentErrorResponse as {
+	"cod" as Number,
+	"message" as String
+};
+
+typedef OpenWeatherMapCurrentResponse as OpenWeatherMapCurrentSuccessResponse or OpenWeatherMapCurrentErrorResponse;
+
+typedef OpenWeatherMapCurrentData as {
+	"cod" as Number,
+	"lat" as Number,
+	"lon" as Number,
+	"dt" as Number,
+	"temp" as Number,
+	"humidity" as Number,
+	"icon" as String
+};
+
 (:background)
 class BackgroundService extends Sys.ServiceDelegate {
 	
@@ -17,7 +107,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background_method)
 	function onTemporalEvent() {
 		//Sys.println("onTemporalEvent");
-		var pendingWebRequests = App.getApp().getProperty("PendingWebRequests");
+		var pendingWebRequests = getStorageValue("PendingWebRequests") as PendingWebRequests?;
 		if (pendingWebRequests != null) {
 
 			// 1. City local time.
@@ -25,19 +115,19 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeWebRequest(
 					"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
 					{
-						"city" => App.getApp().getProperty("LocalTimeInCity")
+						"city" => getPropertyValue("LocalTimeInCity")
 					},
 					method(:onReceiveCityLocalTime)
 				);
 
 			// 2. Weather.
 			} else if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-				var owmKeyOverride = App.getApp().getProperty("OWMKeyOverride");
+				var owmKeyOverride = getPropertyValue("OWMKeyOverride");
 				makeWebRequest(
 					"https://api.openweathermap.org/data/2.5/weather",
 					{
-						"lat" => App.getApp().getProperty("LastLocationLat"),
-						"lon" => App.getApp().getProperty("LastLocationLng"),
+						"lat" => getStorageValue("LastLocationLat"),
+						"lon" => getStorageValue("LastLocationLng"),
 
 						// Polite request from Vince, developer of the Crystal Watch Face:
 						//
@@ -92,7 +182,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 	*/
 	(:background_method)
-	function onReceiveCityLocalTime(responseCode, data) {
+	function onReceiveCityLocalTime(responseCode as Number, data as CityLocalTimeResponse?) {
 
 		// HTTP failure: return responseCode.
 		// Otherwise, return data response.
@@ -103,7 +193,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		Bg.exit({
-			"CityLocalTime" => data
+			"CityLocalTime" => data as CityLocalTimeData or HttpErrorData
 		});
 	}
 
@@ -161,13 +251,14 @@ class BackgroundService extends Sys.ServiceDelegate {
 	}
 	*/
 	(:background_method)
-	function onReceiveOpenWeatherMapCurrent(responseCode, data) {
+	function onReceiveOpenWeatherMapCurrent(responseCode as Number, data as OpenWeatherMapCurrentResponse?) {
 		var result;
 		
 		// Useful data only available if result was successful.
 		// Filter and flatten data response for data that we actually need.
 		// Reduces runtime memory spike in main app.
 		if (responseCode == 200) {
+			data = (data as OpenWeatherMapCurrentSuccessResponse);
 			result = {
 				"cod" => data["cod"],
 				"lat" => data["coord"]["lat"],
@@ -186,7 +277,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
 		Bg.exit({
-			"OpenWeatherMapCurrent" => result
+			"OpenWeatherMapCurrent" => result as OpenWeatherMapCurrentData or HttpErrorData
 		});
 	}
 

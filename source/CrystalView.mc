@@ -6,6 +6,9 @@ using Toybox.ActivityMonitor as ActivityMonitor;
 
 using Toybox.Math;
 
+import Toybox.Lang;
+import Toybox.WatchUi;
+
 const INTEGER_FORMAT = "%d";
 
 var gThemeColour;
@@ -72,9 +75,17 @@ function drawBatteryMeter(dc, x, y, width, height) {
 	dc.fillRectangle(
 		x - (width / 2) + lineWidthPlusMargin,
 		y - (height / 2) + lineWidthPlusMargin,
-		Math.ceil(fillWidth * (batteryLevel / 100)), 
-		height - (2 * lineWidthPlusMargin));
+		Math.ceil(fillWidth * (batteryLevel / 100)),
+		// Pixel alignment of stroke seems to be different on screens 360px or wider (so it's not just related to AMOLED colour
+		// depth). Increase fill height by 1px on such screens.
+		height - (2 * lineWidthPlusMargin) + (SCREEN_MULTIPLIER - 1));
 }
+
+typedef GoalValues as {
+	:current as Number,
+	:max as Number,
+	:isValid as Boolean
+};
 
 class CrystalView extends Ui.WatchFace {
 	private var mIsSleeping = false;
@@ -86,7 +97,7 @@ class CrystalView extends Ui.WatchFace {
 	var mDataFields;
 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
-	private var mDrawables = {};
+	private var mDrawables as Dictionary<Symbol, Drawable> = {};
 
 	// N.B. Not all watches that support SDK 2.3.0 support per-second updates e.g. 735xt.
 	private const PER_SECOND_UPDATES_SUPPORTED = Ui.WatchFace has :onPartialUpdate;
@@ -145,7 +156,7 @@ class CrystalView extends Ui.WatchFace {
 
 		mDrawables[:MoveBar] = View.findDrawableById("MoveBar");
 
-		setHideSeconds(App.getApp().getProperty("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
+		setHideSeconds(getPropertyValue("HideSeconds")); // Requires mTime, mDrawables[:MoveBar];
 	}
 
 	/*
@@ -180,7 +191,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update drawables that use normal font.
 	function updateNormalFont() {
 
-		var city = App.getApp().getProperty("LocalTimeInCity");
+		var city = getPropertyValue("LocalTimeInCity");
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		gNormalFont = Ui.loadResource(((city != null) && (city.length() > 0)) ?
@@ -268,20 +279,20 @@ class CrystalView extends Ui.WatchFace {
 		if (!mIsBurnInProtection) {
 
 			// Recreate background buffers for each meter, in case theme colour has changed.	
-			mDrawables[:LeftGoalMeter].onSettingsChanged();	
-			mDrawables[:RightGoalMeter].onSettingsChanged();	
+			(mDrawables[:LeftGoalMeter] as GoalMeter).onSettingsChanged();	
+			(mDrawables[:RightGoalMeter] as GoalMeter).onSettingsChanged();	
 
-			mDrawables[:MoveBar].onSettingsChanged();	
+			(mDrawables[:MoveBar] as MoveBar).onSettingsChanged();	
 
 			mDataFields.onSettingsChanged();	
 
-			mDrawables[:Indicators].onSettingsChanged();
+			(mDrawables[:Indicators] as Indicators).onSettingsChanged();
 		}
 
 		// If watch does not support per-second updates, and watch is sleeping, do not show seconds immediately, as they will not 
 		// update. Instead, wait for next onExitSleep(). 
 		if (PER_SECOND_UPDATES_SUPPORTED || !mIsSleeping) { 
-			setHideSeconds(App.getApp().getProperty("HideSeconds")); 
+			setHideSeconds(getPropertyValue("HideSeconds")); 
 		} 
 
 		mSettingsChangedSinceLastDraw = false;
@@ -323,18 +334,18 @@ class CrystalView extends Ui.WatchFace {
 			return;
 		}
 
-		var leftType = App.getApp().getProperty("LeftGoalType");
+		var leftType = getPropertyValue("LeftGoalType");
 		var leftValues = getValuesForGoalType(leftType);
-		mDrawables[:LeftGoalMeter].setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
+		(mDrawables[:LeftGoalMeter] as GoalMeter).setValues(leftValues[:current], leftValues[:max], /* isOff */ leftType == GOAL_TYPE_OFF);
 
-		var rightType = App.getApp().getProperty("RightGoalType");
+		var rightType = getPropertyValue("RightGoalType");
 		var rightValues = getValuesForGoalType(rightType);
-		mDrawables[:RightGoalMeter].setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
+		(mDrawables[:RightGoalMeter] as GoalMeter).setValues(rightValues[:current], rightValues[:max], /* isOff */ rightType == GOAL_TYPE_OFF);
 
-		mDrawables[:DataArea].setGoalValues(leftType, leftValues, rightType, rightValues);
+		(mDrawables[:DataArea] as DataArea).setGoalValues(leftType, leftValues, rightType, rightValues);
 	}
 
-	function getValuesForGoalType(type) {
+	function getValuesForGoalType(type) as GoalValues  {
 		var values = {
 			:current => 0,
 			:max => 1,
@@ -422,7 +433,7 @@ class CrystalView extends Ui.WatchFace {
 
 		// If watch does not support per-second updates, AND HideSeconds property is false,
 		// show seconds, and make move bar original width.
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		if (!PER_SECOND_UPDATES_SUPPORTED && !getPropertyValue("HideSeconds")) {
 			setHideSeconds(false);
 		}
 
@@ -450,7 +461,7 @@ class CrystalView extends Ui.WatchFace {
 		// If watch does not support per-second updates, then hide seconds, and make move bar full width.
 		// onUpdate() is about to be called one final time before entering sleep.
 		// If HideSeconds property is true, do not wastefully hide seconds again (they should already be hidden).
-		if (!PER_SECOND_UPDATES_SUPPORTED && !App.getApp().getProperty("HideSeconds")) {
+		if (!PER_SECOND_UPDATES_SUPPORTED && !getPropertyValue("HideSeconds")) {
 			setHideSeconds(true);
 		}
 
@@ -480,6 +491,6 @@ class CrystalView extends Ui.WatchFace {
 		}
 
 		mTime.setHideSeconds(hideSeconds);
-		mDrawables[:MoveBar].setFullWidth(hideSeconds);
+		(mDrawables[:MoveBar] as MoveBar).setFullWidth(hideSeconds);
 	}
 }
