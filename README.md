@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.6.1
+- Fix "night scattered clouds" weather icon on round-454x454 watches.
+
 ### 2.6.0
 - Add support for latest watches, including vívoactive® 5 and Venu® 3.
 - Fix gap in battery meter on AMOLED screens.
