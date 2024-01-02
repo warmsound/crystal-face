@@ -10,6 +10,7 @@
 	<font id="DateFontOverrideZHT" filename="../../resources-round-260x260/fonts/noto-sans-cjk-tc-medium-26.fnt" antialias="true"/>
 	<font id="DateFontOverrideRUS" filename="../../resources-round-260x260/fonts/noto-sans-rus-bold-26.fnt" antialias="true"/>
 	<font id="DateFontOverrideKOR" filename="../../resources-round-260x260/fonts/namum-gothic-kor-26.fnt" antialias="true"/>
+	<font id="DateFontOverrideHEB" filename="../../resources-round-260x260/fonts/namum-gothic-heb-26.fnt" antialias="true"/>
 
 	<!-- Always on fonts -->
 	<font id="AlwaysOnHoursFont" filename="../../resources-rectangle-205x148/fonts/titillium-web-bold-54.fnt" antialias="true"/>
@@ -20,5 +21,6 @@
 	<font id="AlwaysOnDateFontOverrideZHT" filename="../../resources-rectangle-205x148/fonts/noto-sans-cjk-tc-medium-16.fnt" antialias="true"/>
 	<font id="AlwaysOnDateFontOverrideRUS" filename="../../resources-rectangle-205x148/fonts/noto-sans-rus-bold-16.fnt" antialias="true"/>
 	<font id="AlwaysOnDateFontOverrideKOR" filename="../../resources-rectangle-205x148/fonts/namum-gothic-kor-16.fnt" antialias="true"/>
+	<font id="AlwaysOnDateFontOverrideHEB" filename="../../resources-rectangle-205x148/fonts/namum-gothic-heb-16.fnt" antialias="true"/>
 	<font id="AlwaysOnBatteryFont" filename="../../resources/fonts/titillium-web-semibold-16.fnt" antialias="true" filter="%0123456789"/>
 </fonts>

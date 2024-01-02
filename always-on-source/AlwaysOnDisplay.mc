@@ -72,7 +72,8 @@ class AlwaysOnDisplay extends Ui.Drawable {
 			"ZHS" => rezFonts.AlwaysOnDateFontOverrideZHS,
 			"ZHT" => rezFonts.AlwaysOnDateFontOverrideZHT,
 			"RUS" => rezFonts.AlwaysOnDateFontOverrideRUS,
-			"KOR" => rezFonts.AlwaysOnDateFontOverrideKOR
+			"KOR" => rezFonts.AlwaysOnDateFontOverrideKOR,
+			"HEB" => rezFonts.AlwaysOnDateFontOverrideHEB
 		};
 
 		// Unfortunate: because fonts can't be overridden based on locale, we have to read in current locale as manually-specified

@@ -1,0 +1,37 @@
+info face="NanumGothicExtraBold" size=26 bold=0 italic=0 charset="" unicode=1 stretchH=100 smooth=1 aa=2 padding=0,0,0,0 spacing=1,1 outline=0
+common lineHeight=27 base=22 scaleW=256 scaleH=256 pages=1 packed=0 alphaChnl=1 redChnl=0 greenChnl=0 blueChnl=0
+page id=0 file="namum-gothic-heb-26_0.png"
+chars count=31
+char id=32   x=104   y=18    width=2     height=1     xoffset=0     yoffset=26    xadvance=6     page=0  chnl=15
+char id=39   x=100   y=18    width=3     height=5     xoffset=1     yoffset=5     xadvance=4     page=0  chnl=15
+char id=48   x=38    y=0     width=12    height=17    xoffset=0     yoffset=5     xadvance=13    page=0  chnl=15
+char id=49   x=77    y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=50   x=89    y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=51   x=101   y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=52   x=51    y=0     width=12    height=17    xoffset=0     yoffset=5     xadvance=13    page=0  chnl=15
+char id=53   x=64    y=0     width=12    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=54   x=113   y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=55   x=125   y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=56   x=137   y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=57   x=149   y=0     width=11    height=17    xoffset=1     yoffset=5     xadvance=13    page=0  chnl=15
+char id=1488 x=178   y=0     width=14    height=15    xoffset=0     yoffset=7     xadvance=15    page=0  chnl=15
+char id=1489 x=238   y=0     width=13    height=15    xoffset=0     yoffset=7     xadvance=14    page=0  chnl=15
+char id=1490 x=78    y=18    width=9     height=15    xoffset=0     yoffset=7     xadvance=10    page=0  chnl=15
+char id=1491 x=14    y=20    width=12    height=15    xoffset=0     yoffset=7     xadvance=13    page=0  chnl=15
+char id=1492 x=27    y=20    width=12    height=15    xoffset=1     yoffset=7     xadvance=15    page=0  chnl=15
+char id=1493 x=252   y=0     width=3     height=15    xoffset=2     yoffset=7     xadvance=6     page=0  chnl=15
+char id=1496 x=0     y=21    width=13    height=15    xoffset=1     yoffset=7     xadvance=15    page=0  chnl=15
+char id=1497 x=96    y=18    width=3     height=8     xoffset=2     yoffset=7     xadvance=6     page=0  chnl=15
+char id=1500 x=0     y=0     width=11    height=20    xoffset=0     yoffset=2     xadvance=12    page=0  chnl=15
+char id=1502 x=193   y=0     width=14    height=15    xoffset=0     yoffset=7     xadvance=16    page=0  chnl=15
+char id=1504 x=88    y=18    width=7     height=15    xoffset=0     yoffset=7     xadvance=9     page=0  chnl=15
+char id=1505 x=208   y=0     width=14    height=15    xoffset=0     yoffset=7     xadvance=15    page=0  chnl=15
+char id=1508 x=40    y=18    width=12    height=15    xoffset=1     yoffset=7     xadvance=14    page=0  chnl=15
+char id=1509 x=12    y=0     width=12    height=19    xoffset=0     yoffset=7     xadvance=12    page=0  chnl=15
+char id=1510 x=53    y=18    width=12    height=15    xoffset=0     yoffset=7     xadvance=13    page=0  chnl=15
+char id=1511 x=25    y=0     width=12    height=19    xoffset=1     yoffset=7     xadvance=14    page=0  chnl=15
+char id=1512 x=66    y=18    width=11    height=15    xoffset=0     yoffset=7     xadvance=12    page=0  chnl=15
+char id=1513 x=161   y=0     width=16    height=15    xoffset=0     yoffset=7     xadvance=17    page=0  chnl=15
+char id=1514 x=223   y=0     width=14    height=15    xoffset=0     yoffset=7     xadvance=16    page=0  chnl=15
+kernings count=1
+kerning first=49  second=49  amount=-2  
