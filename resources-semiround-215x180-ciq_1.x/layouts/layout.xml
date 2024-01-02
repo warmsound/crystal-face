@@ -50,8 +50,8 @@
 	</drawable>
 
 	<drawable id="Time" class="ThickThinTime">
-		<param name="secondsX">147</param>
-		<param name="secondsY">109</param>
+		<param name="secondsX">174</param>
+		<param name="secondsY">88</param>
 		
 		<!-- Partial updates not supported -->		
 		<!-- param name="secondsClipY">117</param-->
@@ -59,12 +59,13 @@
 		<!-- param name="secondsClipHeight">15</param-->
 
 		<param name="adjustY">1</param>
+		<param name="amPmOffsetY">1</param>
 	</drawable>
 
 	<drawable id="MoveBar" class="MoveBar">
 		<param name="x">46</param>
 		<param name="y">126</param>
-		<param name="width">93</param>
+		<param name="width">127</param>
 		<param name="height">7</param>
 		<param name="separator">3</param>
 	</drawable>
