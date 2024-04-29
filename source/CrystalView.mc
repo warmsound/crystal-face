@@ -334,6 +334,7 @@ class CrystalView extends Ui.WatchFace {
 					//logMessage("icon=" + icon); 
 				}
 				else {
+					icon = icon + day;
 					/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
 				}
 				result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };

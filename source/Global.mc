@@ -104,7 +104,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
 			var vehicleState = teslaInfo.get("VehicleState");
 			var vehicleAsleep = (vehicleState != null && vehicleState.equals("asleep") == true);
-			var vehicleOnline = (vehicleState != null && vehicleState.equals("online") == true);
+			var vehicleOnline = (vehicleState != null && vehicleState.equals("awake") == true);
 
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {

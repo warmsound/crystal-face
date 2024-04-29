@@ -28,6 +28,12 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 
+### 2.18.13
+- Compiled with CIQ 7.1.1
+- Added Forerunner 165 and 165m
+- Updated the Tesla status when the car is asleep to match the returned data from Tessie
+- Fixed a broken weather icon
+
 ### 2.18.12
 - Fixed crash when calling a complication while there is already one running
 - Added Battery as a complication (to launch the battery widget)
