@@ -49,6 +49,8 @@ epix2pro42mm.sourcePath = $(epix2pro42mm.sourcePath);always-on-source
 epix2pro47mm.sourcePath = $(epix2pro47mm.sourcePath);always-on-source
 epix2pro51mm.sourcePath = $(epix2pro51mm.sourcePath);always-on-source
 vivoactive5.sourcePath = $(vivoactive5.sourcePath);always-on-source
+descentmk343mm.sourcePath = $(descentmk343mm.sourcePath);always-on-source
+descentmk351mm.sourcePath = $(descentmk351mm.sourcePath);always-on-source
 
 base.excludeAnnotations = lowMemoryWatchface;bkgnd32kb;noComplications
 descentmk2.excludeAnnotations = lowMemoryWatchface;bkgnd64kb;hasComplications
