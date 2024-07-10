@@ -644,6 +644,8 @@ function logMessage(message) {
 }
 //DEBUG*/
 
+
+
 (:release, :background)
 function logMessage(message) {
 }

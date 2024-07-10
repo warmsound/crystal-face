@@ -19,25 +19,26 @@ enum /* FIELD_TYPES */ {
 
 	// Real fields (used by properties).
 	FIELD_TYPE_HEART_RATE = 0,
-	FIELD_TYPE_BATTERY,
-	FIELD_TYPE_NOTIFICATIONS,
-	FIELD_TYPE_CALORIES,
-	FIELD_TYPE_DISTANCE,
-	FIELD_TYPE_ALARMS,
-	FIELD_TYPE_ALTITUDE,
-	FIELD_TYPE_TEMPERATURE,
-	FIELD_TYPE_BATTERY_HIDE_PERCENT,
-	FIELD_TYPE_HR_LIVE_5S,
-	FIELD_TYPE_SUNRISE_SUNSET,
-	FIELD_TYPE_WEATHER,
-	FIELD_TYPE_PRESSURE,
-	FIELD_TYPE_HUMIDITY,
-	FIELD_TYPE_PULSE_OX,
-	FIELD_FLOOR_CLIMBED,
-	FIELD_SOLAR_INTENSITY,
-	FIELD_BODY_BATTERY,
-	FIELD_RECOVERY_TIME,
-	FIELD_STRESS_LEVEL
+	FIELD_TYPE_BATTERY, // 1
+	FIELD_TYPE_NOTIFICATIONS, // 2
+	FIELD_TYPE_CALORIES, // 3
+	FIELD_TYPE_DISTANCE, // 4
+	FIELD_TYPE_ALARMS, // 5
+	FIELD_TYPE_ALTITUDE, // 6
+	FIELD_TYPE_TEMPERATURE, // 7
+	FIELD_TYPE_BATTERY_HIDE_PERCENT, // 8
+	FIELD_TYPE_HR_LIVE_5S, // 9
+	FIELD_TYPE_SUNRISE_SUNSET, // 10
+	FIELD_TYPE_WEATHER, // 11
+	FIELD_TYPE_PRESSURE, // 12
+	FIELD_TYPE_HUMIDITY, // 13
+	FIELD_TYPE_PULSE_OX, // 14
+	FIELD_FLOOR_CLIMBED, // 15
+	FIELD_SOLAR_INTENSITY,  // 16
+	FIELD_BODY_BATTERY, // 17
+	FIELD_RECOVERY_TIME, // 18
+	FIELD_STRESS_LEVEL, // 19
+	FIELD_TYPE_ACTIVE_CALORIES, // 20
 }
 
 class DataFields extends Ui.Drawable {
@@ -119,7 +120,9 @@ class DataFields extends Ui.Drawable {
 								 {"type" => FIELD_RECOVERY_TIME, "complicationType" => Complications.COMPLICATION_TYPE_RECOVERY_TIME},
 								 {"type" => FIELD_TYPE_ALTITUDE, "complicationType" => Complications.COMPLICATION_TYPE_ALTITUDE},
 								 {"type" => FIELD_TYPE_WEATHER, "complicationType" => Complications.COMPLICATION_TYPE_CURRENT_WEATHER}, // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
-								 {"type" => FIELD_TYPE_SUNRISE_SUNSET, "complicationType" => Complications.COMPLICATION_TYPE_SUNRISE} // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
+								 {"type" => FIELD_TYPE_SUNRISE_SUNSET, "complicationType" => Complications.COMPLICATION_TYPE_SUNRISE}, // Only for onPress. We do nothing with what is returned since it's missing the temperature. Adding it would require a too big change and extra space in App class for basically no gain
+								 {"type" => FIELD_TYPE_CALORIES, "complicationType" => Complications.COMPLICATION_TYPE_CALORIES},
+								 {"type" => FIELD_TYPE_ACTIVE_CALORIES, "complicationType" => Complications.COMPLICATION_TYPE_CALORIES}
 								];
 
 			var fieldTypes = view.mFieldTypes;
@@ -395,7 +398,8 @@ class DataFields extends Ui.Drawable {
 					FIELD_SOLAR_INTENSITY => "D", // SG Addition
 					FIELD_BODY_BATTERY => "E", // SG Addition
 					FIELD_RECOVERY_TIME => "F", // SG Addition
-					FIELD_STRESS_LEVEL => "G" // SG Addition
+					FIELD_STRESS_LEVEL => "G", // SG Addition
+					FIELD_TYPE_ACTIVE_CALORIES => "H" // SG Addition
 				}[fieldType];
 			}
 
@@ -585,9 +589,43 @@ class DataFields extends Ui.Drawable {
 				}
 				break;
 
+			// SG Addition
+			case FIELD_TYPE_ACTIVE_CALORIES:
 			case FIELD_TYPE_CALORIES:
-				activityInfo = ActivityMonitor.getInfo();
-				value = activityInfo.calories.format(INTEGER_FORMAT);
+				var fromComplication = false;
+				var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);		
+				var profile = UserProfile.getProfile();
+				var age    = today.year - profile.birthYear;
+				var weight = profile.weight / 1000.0;
+				var restCalories = ((profile.gender == UserProfile.GENDER_MALE) ? 5.2 : -197.6) - 6.116 * age + 7.628 * profile.height + 12.2 * weight;
+				restCalories   = Math.round((today.hour * 60 + today.min) * restCalories / 1440 ).toNumber();
+
+				if (Toybox has :Complications && view.useComplications()) {
+					var tmpValue = fieldTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						value = tmpValue;
+						fromComplication = true;
+					}
+				}
+
+				if (!fromComplication) {
+					activityInfo = ActivityMonitor.getInfo();
+					value = activityInfo.calories;
+				}
+
+				if (type == FIELD_TYPE_CALORIES) {
+					if (fromComplication) {
+						value += restCalories;
+					}
+				}
+				else {
+					if (!fromComplication) {
+						value -= restCalories;
+					}
+				}
+
+				value = value.format(INTEGER_FORMAT);
+
 				break;
 
 			case FIELD_TYPE_DISTANCE:

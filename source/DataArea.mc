@@ -163,6 +163,7 @@ class DataArea extends Ui.Drawable {
 		var icon = {
 			GOAL_TYPE_BATTERY => "9",
 			GOAL_TYPE_CALORIES => "6",
+			GOAL_TYPE_ACTIVE_CALORIES => "H",
 			GOAL_TYPE_STEPS => "0",
 			GOAL_TYPE_FLOORS_CLIMBED => "1",
 			GOAL_TYPE_ACTIVE_MINUTES => "2",

@@ -1,6 +1,6 @@
 <strings>
     <string id="AppName">Crystal</string>
-    <string id="AppNameVersion">Crystal-Tesla V2.18.13</string>
+    <string id="AppNameVersion">Crystal-Tesla V2.19.0</string>
 
 	<string id="ThemeTitle">Theme</string>
 	<string id="HoursColourTitle">Hours Colour</string>
@@ -64,6 +64,7 @@
 	<string id="RecoveryTime">Recovery Time</string>
 	<string id="ActiveMinutes">Active Minutes (Weekly)</string>
 	<string id="CaloriesManualGoal">Calories (Manual Goal)</string>
+	<string id="ActiveCaloriesManualGoal">Active Calories (Manual Goal)</string>
 	<string id="Off">Off</string>
 
 	<string id="HeartRate">Heart Rate</string>
@@ -72,6 +73,7 @@
 	<string id="BatteryHidePercentage">Battery (Hide Percentage)</string>
 	<string id="Notifications">Notifications</string>
 	<string id="Calories">Calories</string>
+	<string id="ActiveCalories">Active Calories</string>
 	<string id="Distance">Distance</string>
 	<string id="Alarms">Alarms</string>
 	<string id="Altitude">Altitude</string>

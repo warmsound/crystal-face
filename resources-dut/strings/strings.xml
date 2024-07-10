@@ -64,6 +64,7 @@
 	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Actieve Minuten (Wekelijks)</string>
 	<string id="CaloriesManualGoal">Calorieën (Manueel Doel)</string>
+	<string id="ActiveCaloriesManualGoal">Active Calories (Manual Goal)</string><!-- TODO_TRANSLATE -->
 	<string id="Off">Uit</string>
 
 	<string id="HeartRate">Hartslag</string>
@@ -72,6 +73,7 @@
 	<string id="BatteryHidePercentage">Batterij (Verberg Percentage)</string>
 	<string id="Notifications">Notificaties</string>
 	<string id="Calories">Calorieën</string>
+	<string id="ActiveCalories">Active Calories</string><!-- TODO_TRANSLATE -->
 	<string id="Distance">Afstand</string>
 	<string id="Alarms">Alarmen</string>
 	<string id="Altitude">Hoogte</string>

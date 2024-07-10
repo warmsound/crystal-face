@@ -11,9 +11,10 @@ using Toybox.Complications;
 enum /* GOAL_TYPES */ {
 	GOAL_TYPE_BATTERY = -1,
 	GOAL_TYPE_CALORIES = -2,
-	GOAL_TYPE_BODY_BATTERY = -3, // SG Addition
-	GOAL_TYPE_STRESS_LEVEL = -4, // SG Addition
-	GOAL_TYPE_OFF = -5,
+	GOAL_TYPE_ACTIVE_CALORIES = -3, // SG Addition
+	GOAL_TYPE_BODY_BATTERY = -4, // SG Addition
+	GOAL_TYPE_STRESS_LEVEL = -5, // SG Addition
+	GOAL_TYPE_OFF = -6,
 
 	GOAL_TYPE_STEPS = 0, // App.GOAL_TYPE_STEPS
 	GOAL_TYPE_FLOORS_CLIMBED, // App.GOAL_TYPE_FLOORS_CLIMBED
@@ -168,7 +169,9 @@ class GoalMeter extends Ui.Drawable {
 			var complications = [{"type" => GOAL_TYPE_BODY_BATTERY, "complicationType" => Complications.COMPLICATION_TYPE_BODY_BATTERY},
 								 {"type" => GOAL_TYPE_FLOORS_CLIMBED, "complicationType" => Complications.COMPLICATION_TYPE_FLOORS_CLIMBED},
 								 {"type" => GOAL_TYPE_STEPS, "complicationType" => Complications.COMPLICATION_TYPE_STEPS},
-								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS}
+								 {"type" => GOAL_TYPE_STRESS_LEVEL, "complicationType" => Complications.COMPLICATION_TYPE_STRESS},
+								 {"type" => GOAL_TYPE_CALORIES, "complicationType" => Complications.COMPLICATION_TYPE_CALORIES},
+								 {"type" => GOAL_TYPE_ACTIVE_CALORIES, "complicationType" => Complications.COMPLICATION_TYPE_CALORIES}
 								];
 
 			var goalTypes = App.getApp().getView().mGoalTypes;

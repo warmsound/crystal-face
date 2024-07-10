@@ -64,6 +64,7 @@
 	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Aktiva minuter (Vecka)</string>
 	<string id="CaloriesManualGoal">Kalorier (Manuellt mål)</string>
+	<string id="ActiveCaloriesManualGoal">Active Calories (Manual Goal)</string><!-- TODO_TRANSLATE -->
 	<string id="Off">Off</string><!-- TODO_TRANSLATE -->
 
 	<string id="HeartRate">Puls</string>
@@ -72,6 +73,7 @@
 	<string id="BatteryHidePercentage">Batteri (Dölj procent)</string>
 	<string id="Notifications">Notifieringar</string>
 	<string id="Calories">Kalorier</string>
+	<string id="ActiveCalories">Active Calories</string><!-- TODO_TRANSLATE -->
 	<string id="Distance">Distans</string>
 	<string id="Alarms">Alarm</string>
 	<string id="Altitude">Altitud</string>

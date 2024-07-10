@@ -63,6 +63,7 @@
 	<string id="BodyBattery">Body Battery</string><!-- TODO_TRANSLATE -->
 	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Время интенсивной активности (минуты за неделю)</string>
+	<string id="ActiveCaloriesManualGoal">Active Calories (Manual Goal)</string><!-- TODO_TRANSLATE -->
 	<string id="CaloriesManualGoal">Калории (ручной ввод цели)</string>
 	<string id="Off">Выключено</string>
 
@@ -72,6 +73,7 @@
 	<string id="BatteryHidePercentage">Заряд аккумулятора (скрывать проценты)</string>
 	<string id="Notifications">Уведомления</string>
 	<string id="Calories">Калории</string>
+	<string id="ActiveCalories">Active Calories</string><!-- TODO_TRANSLATE -->
 	<string id="Distance">Расстояние</string>
 	<string id="Alarms">Будильники</string>
 	<string id="Altitude">Высота</string>

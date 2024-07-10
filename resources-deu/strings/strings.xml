@@ -64,6 +64,7 @@
 	<string id="RecoveryTime">Recovery Time</string><!-- TODO_TRANSLATE -->
 	<string id="ActiveMinutes">Aktive Minuten (Wöchentlich)</string><!-- TODO_TRANSLATE -->
 	<string id="CaloriesManualGoal">Kalorien (manuelles Ziel)</string>
+	<string id="ActiveCaloriesManualGoal">Active Calories (Manual Goal)</string><!-- TODO_TRANSLATE -->
 	<string id="Off">Aus</string>
 
 	<string id="HeartRate">Herzfrequenz</string>
@@ -72,6 +73,7 @@
 	<string id="BatteryHidePercentage">Batterie (Prozente ausgeblendet)</string>
 	<string id="Notifications">Hinweise</string>
 	<string id="Calories">Kalorien</string>
+	<string id="ActiveCalories">Active Calories</string><!-- TODO_TRANSLATE -->
 	<string id="Distance">Distanz</string>
 	<string id="Alarms">Alarme</string>
 	<string id="Altitude">Höhe</string>	

@@ -503,7 +503,7 @@ class CrystalView extends Ui.WatchFace {
 	// Update each goal meter separately, then also pass types and values to data area to draw goal icons.
 	function updateGoalMeters() {
 		if (mIsBurnInProtection) {
-			return;
+			return; 
 		}
 
 		var leftType = $.getIntProperty("LeftGoalType", 0);
@@ -655,8 +655,46 @@ class CrystalView extends Ui.WatchFace {
 
 				break;
 
+			// SG Addition
+			case GOAL_TYPE_ACTIVE_CALORIES:
 			case GOAL_TYPE_CALORIES:
-				values[:current] = info.calories;
+				var fromComplication = false;
+				var today = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);		
+				var profile = UserProfile.getProfile();
+				var age    = today.year - profile.birthYear;
+				var weight = profile.weight / 1000.0;
+				var restCalories = ((profile.gender == UserProfile.GENDER_MALE) ? 5.2 : -197.6) - 6.116 * age + 7.628 * profile.height + 12.2 * weight;
+				restCalories = Math.round((today.hour * 60 + today.min) * restCalories / 1440 ).toNumber();
+
+				values[:isValid] = false;
+				if (Toybox has :Complications && mUseComplications) {
+					var tmpValue = mGoalTypes[index].get("ComplicationValue");
+					if (tmpValue != null) {
+						values[:current] = tmpValue.toFloat();
+						values[:isValid] = true;
+						fromComplication = true;
+						/*DEBUG*/ logMessage("From Complications");
+					}
+				}
+
+				if (values[:isValid] == false) {
+					values[:current] = info.calories;
+					values[:isValid] = true;
+					/*DEBUG*/ logMessage("From activityInfo");
+				}
+
+				/*DEBUG*/ logMessage("calories: " + values[:current] + " rest: " + restCalories + " isValid: " + values[:isValid]);
+				// Now deal with either total calories and active calories (activityInfo returns Total while Complications returns Active)
+				if (type == GOAL_TYPE_CALORIES) {
+					if (fromComplication) {
+						values[:current] += restCalories;
+					}
+				}
+				else {
+					if (!fromComplication) {
+						values[:current] -= restCalories;
+					}
+				}
 
 				// #123 Protect against null value returned by getProperty(). Trigger invalid goal handling code below.
 				// Protect against unexpected type e.g. String.
@@ -805,7 +843,7 @@ class CrystalView extends Ui.WatchFace {
 				mFieldTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
-
+/* DEBUG */ if (complicationType == Complications.COMPLICATION_TYPE_CALORIES || true) { logMessage("longLabel=" + complication.longLabel + ", unit=" + complication.unit + ", value=" + complication.value); }
 		// Now do goals
 		if (mGoalTypes[0].get("ComplicationType") == complicationType) {
 			mGoalTypes[0].put("ComplicationValue", complicationValue);
