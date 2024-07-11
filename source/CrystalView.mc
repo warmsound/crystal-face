@@ -673,17 +673,17 @@ class CrystalView extends Ui.WatchFace {
 						values[:current] = tmpValue.toFloat();
 						values[:isValid] = true;
 						fromComplication = true;
-						/*DEBUG*/ logMessage("From Complications");
+						//DEBUG*/ logMessage("From Complications");
 					}
 				}
 
 				if (values[:isValid] == false) {
 					values[:current] = info.calories;
 					values[:isValid] = true;
-					/*DEBUG*/ logMessage("From activityInfo");
+					//DEBUG*/ logMessage("From activityInfo");
 				}
 
-				/*DEBUG*/ logMessage("calories: " + values[:current] + " rest: " + restCalories + " isValid: " + values[:isValid]);
+				//DEBUG*/ logMessage("calories: " + values[:current] + " rest: " + restCalories + " isValid: " + values[:isValid]);
 				// Now deal with either total calories and active calories (activityInfo returns Total while Complications returns Active)
 				if (type == GOAL_TYPE_CALORIES) {
 					if (fromComplication) {
@@ -843,7 +843,7 @@ class CrystalView extends Ui.WatchFace {
 				mFieldTypes[i].put("ComplicationValue", complicationValue);
 			}
 		}
-/* DEBUG */ if (complicationType == Complications.COMPLICATION_TYPE_CALORIES || true) { logMessage("longLabel=" + complication.longLabel + ", unit=" + complication.unit + ", value=" + complication.value); }
+//DEBUG*/ if (complicationType == Complications.COMPLICATION_TYPE_CALORIES || true) { logMessage("longLabel=" + complication.longLabel + ", unit=" + complication.unit + ", value=" + complication.value); }
 		// Now do goals
 		if (mGoalTypes[0].get("ComplicationType") == complicationType) {
 			mGoalTypes[0].put("ComplicationValue", complicationValue);
@@ -906,7 +906,7 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 						if ((complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(defComplicationName))) {
 							//DEBUG*/ logMessage("Found our flashlight complication");
 							complicationId = complicationId.complicationId;
-							/*DEBUG*/ logMessage("complicationId is '" + complicationId + "'");
+							//DEBUG*/ logMessage("complicationId is '" + complicationId + "'");
 							if (complicationId != null) { // Got a crash caused by a null complicationId (while holding over 'Steps' while in a indoor walk activity)
 								try {
 									Complications.exitTo(complicationId);
