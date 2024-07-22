@@ -205,33 +205,45 @@ function updateComplications(complicationName, storageName, index, complicationT
 (:hasComplications)
 function updateComplications(complicationName, storageName, index, complicationType) {
 	if (Toybox has :Complications) {
-		// Check if we should subscribe to our Tesla Complication
 		var iter = Complications.getComplications();
 		if (iter == null) {
 			return;
 		}
+
+		if (index == null) {
+			return;
+		}
+		
 		var complicationId = iter.next();
+		var found = false;
 
 		while (complicationId != null) {
-			//logMessage(complicationId.longLabel.toString());
-			if (complicationId.getType() == complicationType || (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(complicationName))) {
-				//DEBUG*/ logMessage("Found complication " + complicationName + " with type " + complicationType);
+			//DEBUG*/logMessage(complicationId.longLabel.toString());
+			var type = complicationId.getType();
+			if (type == Complications.COMPLICATION_TYPE_HIGH_LOW_TEMPERATURE) {
+				/*DEBUG*/logMessage("Last one before us");
+			}
+			if (type == complicationType && type != Complications.COMPLICATION_TYPE_INVALID) {
+				/*DEBUG*/logMessage(complicationId.longLabel.toString() + " available");
+				complicationId = new Complications.Id(complicationType);
 				break;
 			}
+			else if (type == Complications.COMPLICATION_TYPE_INVALID && complicationId.longLabel != null && complicationId.longLabel.equals(complicationName)) {
+				/*DEBUG*/logMessage(complicationId.longLabel.toString() + " available");
+				complicationId = complicationId.complicationId;
+				break;
+			}
+
 			complicationId = iter.next();
 		}
 
 		if (complicationId != null) {
-			if (complicationId.getType() == Complications.COMPLICATION_TYPE_INVALID) {
-				complicationId = complicationId.complicationId;
-			}
-			else {
-				complicationId = new Complications.Id(complicationType);
-			}
-
-			if (index != null) {
-				Storage.setValue(storageName + index, complicationId);
+			Storage.setValue(storageName + index, complicationId);
+			try {
 				Complications.subscribeToUpdates(complicationId);
+			}
+			catch (e) {
+				logMessage("Error subscribing to complication " + complicationName);
 			}
 		}
 	}

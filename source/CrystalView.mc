@@ -823,10 +823,13 @@ class CrystalView extends Ui.WatchFace {
 		var complicationShortLabel = complication.shortLabel;
 		var complicationValue = complication.value;
 
-		//DEBUG*/ var complicationLongLabel = complication.longLabel; if (complicationType == Complications.COMPLICATION_TYPE_RECOVERY_TIME) { logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue); }
+		/*DEBUG*/ var complicationLongLabel = complication.longLabel; if (complicationType == Complications.COMPLICATION_TYPE_INVALID) { logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue); }
 
-		if (gTeslaComplication == true && complicationType == Complications.COMPLICATION_TYPE_INVALID && complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
-			$.doTeslaComplication(complicationValue);
+		if (gTeslaComplication == true && complicationType == Complications.COMPLICATION_TYPE_INVALID) {
+			if (complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+				/*DEBUG*/ logMessage("Doing Tesla Complication!");
+				$.doTeslaComplication(complicationValue);
+			}
 		}
 
 		// I've seen this while in low power mode, so skip it

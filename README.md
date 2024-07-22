@@ -29,7 +29,7 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.19.0
-- Compiled with CIQ 7.1.1
+- Compiled with CIQ 6.4.2 as 7.x currently breaks custom complications (used by Tesla-Info).
 - Added Active calories as a data fiel and goal. This value is calculated and not provided by Garmin so it might be off to what Garmin is showing. On Complication enabled watches, since it shows only Active calories, the calculated rested calories are added to the Calories fields and goals. To get the previous active calories, select Active Calories field or goal.
 
 ### 2.18.13
