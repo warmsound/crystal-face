@@ -103,8 +103,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 		if (teslaInfo != null) {
 			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
 			var vehicleState = teslaInfo.get("VehicleState");
-			var vehicleAsleep = (vehicleState != null && vehicleState.equals("asleep") == true);
-			var vehicleOnline = (vehicleState != null && vehicleState.equals("awake") == true);
+			var vehicleOnline = (vehicleState != null && vehicleState.equals("online") == true);
 
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
@@ -115,7 +114,7 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
 					showMode = 0;
 				}
-				else if (vehicleAsleep || httpErrorTesla == 200) { // Vehicle confirmed asleep (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data. If the vehicle is offline, the line will show gray for stale data
+				else if (httpErrorTesla == 200 || (!vehicleOnline && httpErrorTesla == 408 )) { // We got our vehicle data or we're sleeping ('not online' and error 408)
 					textColour = gThemeColour; // Defaults to theme's color
 				}
 
@@ -129,11 +128,11 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 							if (httpErrorTesla != 200 && httpErrorTesla != 408) { // ResponseCode other than 200 and 408 will show a "?" beside thr battery level
 								suffix = "?";
 							}
-							else if (vehicleAsleep) {
-								suffix = "s";
-							}
 							else if (chargingState != null && chargingState.equals("Charging") == true) {
 								suffix = "+";
+							}
+							else if (!vehicleOnline) {
+								suffix = "s";
 							}
 
 							value = batteryLevel + "%" + suffix;
@@ -215,7 +214,6 @@ function updateComplications(complicationName, storageName, index, complicationT
 		}
 		
 		var complicationId = iter.next();
-		var found = false;
 
 		while (complicationId != null) {
 			//DEBUG*/logMessage(complicationId.longLabel.toString());

@@ -288,7 +288,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 					},
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
-		//2023-03-05 logMessage("makeWebRequest url: '" + url + "'");
+		/*DEBUG*/ logMessage("makeWebRequest url: '" + url + "'");
+		/*DEBUG*/ logMessage("makeWebRequest options: '" + options + "'");
 		Comms.makeWebRequest(url, params, options, callback);
     }
 }

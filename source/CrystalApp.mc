@@ -131,7 +131,7 @@ class CrystalApp extends App.AppBase {
 			if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
 				Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
 			} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
-				Storage.remove("VehicleID"); // Try to get a new vehicleID
+				Storage.deleteValue("VehicleID"); // Try to get a new vehicleID
 			}
 		}
 
