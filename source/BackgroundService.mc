@@ -98,7 +98,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 
 		if (_vehicle_id == null) {
 			/*DEBUG*/ logMessage("onTemporalEvent:Getting vehicles");
-			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", null, method(:onReceiveVehicles));
 			return;
 		}
 
@@ -238,7 +238,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				_vehicle_id = null;
 			}
 			//DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
-			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles", null, method(:onReceiveVehicles));
+			makeWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", null, method(:onReceiveVehicles));
 			return;
 	    }
 		// Our access token has expired, ask for a new one
@@ -288,8 +288,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 					},
             :responseType => Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON
         };
-		/*DEBUG*/ logMessage("makeWebRequest url: '" + url + "'");
-		/*DEBUG*/ logMessage("makeWebRequest options: '" + options + "'");
+		//DEBUG*/ logMessage("makeWebRequest url: '" + url + "'");
+		//DEBUG*/ logMessage("makeWebRequest options: '" + options + "'");
 		Comms.makeWebRequest(url, params, options, callback);
     }
 }
