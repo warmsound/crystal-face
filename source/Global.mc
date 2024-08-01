@@ -107,14 +107,14 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
-				if (!vehicleOnline) { // If confirnmed asleep, only show battery and preconditionning (0 and 2)
+				if (!vehicleOnline) { // If not online, only show battery and preconditionning (0 and 2)
 					showMode &= 2;
 				}
 
 				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
 					showMode = 0;
 				}
-				else if (httpErrorTesla == 200 || (!vehicleOnline && httpErrorTesla == 408 )) { // We got our vehicle data or we're sleeping ('not online' and error 408)
+				else if (!vehicleOnline || httpErrorTesla == 200) { // Vehicle not online (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data. If the vehicle is offline, the line will show gray for stale data
 					textColour = gThemeColour; // Defaults to theme's color
 				}
 
@@ -128,11 +128,11 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 							if (httpErrorTesla != 200 && httpErrorTesla != 408) { // ResponseCode other than 200 and 408 will show a "?" beside thr battery level
 								suffix = "?";
 							}
-							else if (chargingState != null && chargingState.equals("Charging") == true) {
-								suffix = "+";
-							}
 							else if (!vehicleOnline) {
 								suffix = "s";
+							}
+							else if (chargingState != null && chargingState.equals("Charging") == true) {
+								suffix = "+";
 							}
 
 							value = batteryLevel + "%" + suffix;
@@ -203,24 +203,25 @@ function updateComplications(complicationName, storageName, index, complicationT
 
 (:hasComplications)
 function updateComplications(complicationName, storageName, index, complicationType) {
+	if (index == null) {
+		return;
+	}
+
 	if (Toybox has :Complications) {
 		var iter = Complications.getComplications();
 		if (iter == null) {
 			return;
 		}
 
-		if (index == null) {
-			return;
-		}
 		
 		var complicationId = iter.next();
 
 		while (complicationId != null) {
 			//DEBUG*/logMessage(complicationId.longLabel.toString());
 			var type = complicationId.getType();
-			if (type == Complications.COMPLICATION_TYPE_HIGH_LOW_TEMPERATURE) {
-				/*DEBUG*/logMessage("Last one before us");
-			}
+
+			// DEBUG */ if (type == Complications.COMPLICATION_TYPE_HIGH_LOW_TEMPERATURE) { logMessage("Last one before us"); }
+
 			if (type == complicationType && type != Complications.COMPLICATION_TYPE_INVALID) {
 				/*DEBUG*/logMessage(complicationId.longLabel.toString() + " available");
 				complicationId = new Complications.Id(complicationType);
@@ -241,7 +242,7 @@ function updateComplications(complicationName, storageName, index, complicationT
 				Complications.subscribeToUpdates(complicationId);
 			}
 			catch (e) {
-				logMessage("Error subscribing to complication " + complicationName);
+				/*DEBUG*/ logMessage("Error subscribing to complication " + complicationName);
 			}
 		}
 	}
