@@ -9,6 +9,7 @@ using Toybox.Application.Properties;
 
 class DataArea extends Ui.Drawable {
 
+	private var mRowMY;
 	private var mRow0Y;
 	private var mRow1Y;
 	private var mRow2Y;
@@ -32,6 +33,7 @@ class DataArea extends Ui.Drawable {
 	function initialize(params) {
 		Drawable.initialize(params);
 
+		mRowMY = params[:rowMY];
 		mRow0Y = params[:row0Y];
 		mRow1Y = params[:row1Y];
 		mRow2Y = params[:row2Y];
@@ -79,33 +81,33 @@ class DataArea extends Ui.Drawable {
 
 		var view = App.getApp().getView();
 		var city = view.mWeatherStationName;
+		var linePos = [ mRowMY, mRow0Y, mRow1Y, mRow2Y ];
+		var linePosIndex = 0;
+		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
+
+		if (moveBarStyle != 2) {
+			linePosIndex++;
+		}
+		var showWeatherCityName = false;
 		if (view.mShowWeatherStationName && city != null && city.length() > 0) {
+			showWeatherCityName = true;
 			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 			dc.drawText(
 				locX + (width / 2),
-				mRow0Y,
+				linePos[linePosIndex],
 				gNormalFont,
 				// Limit string length.
 				city.substring(0, 16),
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
+
+			linePosIndex++;
 		}
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		city = view.mLocalCityName;
 		if (city != null && city.length() > 0) {
-			// Time zone 1 city.
-			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				locX + (width / 2),
-				mRow1Y,
-				gNormalFont,
-				// Limit string length.
-				city.substring(0, 10),
-				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-			);
-
-			// Time zone 1 time.
+			// Get Time based on Lat/Long
 			var time;
 			if (view.mLocalCityLat != null && view.mLocalCityLat >= -90.0 && view.mLocalCityLat <= 90.0 && view.mLocalCityLon != null && view.mLocalCityLon >= -180.0 && view.mLocalCityLon <= 180.0) {
 				try {
@@ -130,19 +132,55 @@ class DataArea extends Ui.Drawable {
 				time = "???";
 			}
 
-			dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				locX + (width / 2),
-				mRow2Y,
-				gNormalFont,
-				time,
-				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-			);
+			if (showWeatherCityName && moveBarStyle != 2 || !showWeatherCityName && moveBarStyle == 2) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there
+				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					locX + (width / 2),
+					linePos[linePosIndex],
+					gNormalFont,
+					// Limit string length.
+					city.substring(0, 10),
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+
+				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					locX + (width / 2),
+					linePos[linePosIndex + 1],
+					gNormalFont,
+					time,
+					Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
+			else { // Have both name and time on same line, just below move bar
+				var cityName = city.substring(0, 10) + " ";
+				var line = cityName + time;
+				var sizeFull = dc.getTextWidthInPixels(line, gNormalFont);
+				var sizeName = dc.getTextWidthInPixels(cityName, gNormalFont);
+				var pos1 = locX + (width / 2) - (sizeFull / 2);
+				var pos2 = pos1 + sizeName;
+
+				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					pos1,
+					linePos[linePosIndex],
+					gNormalFont,
+					cityName,
+					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+				dc.setColor(gMonoLightColour, Gfx.COLOR_TRANSPARENT);
+				dc.drawText(
+					pos2,
+					linePos[linePosIndex],
+					gNormalFont,
+					time,
+					Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
+				);
+			}
 		}
-		else {
-			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
-			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
-		}
+
+		drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
+		drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
 
 		/*var spacingX = Sys.getDeviceSettings().screenWidth / 11;
 		var spacingY = Sys.getDeviceSettings().screenHeight / 6;

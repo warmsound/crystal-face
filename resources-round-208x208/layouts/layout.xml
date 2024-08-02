@@ -23,6 +23,7 @@
 	<drawable id="DataArea" class="DataArea">
 		<param name="locX">63</param>
 		<param name="width">81</param>
+		<param name="rowMY">139</param>
 		<param name="row0Y">152</param>
 		<param name="row1Y">165</param>
 		<param name="row2Y">181</param>
