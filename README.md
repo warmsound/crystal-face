@@ -29,10 +29,10 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 
 ### 2.19.0
-- Compiled with CIQ 6.4.2 as 7.x currently breaks custom complications (used by Tesla-Info).
+- Compiled with CIQ 6.4.2 as 7.x currently breaks custom complications (used by Tesla-Info). Has no impact on features and supported watches.
 - Updated the Tesla status when the car is asleep to match the returned data from the new version of Tesla-Link app.
 - Fixes the 412 error introduced by Tesla with the change to the API
-- Weather city name and "local time in city" locations are dependant on what's showing in the data area
+- Weather city name and "local time in city" locations on screen are dependant on what's showing in the data area
 - Added Active calories as a data fiel and goal. This value is calculated and not provided by Garmin so it might be off to what Garmin is showing. On Complication enabled watches, since it shows only Active calories, the calculated rested calories are added to the Calories fields and goals. To get the previous active calories, select Active Calories field or goal.
 
 ### 2.18.13
