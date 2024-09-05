@@ -129,7 +129,7 @@ class DataArea extends Ui.Drawable {
 				}
 			}
 			else {
-				time = "???";
+				time = "INV";
 			}
 
 			if (showWeatherCityName && moveBarStyle != 2 || !showWeatherCityName && moveBarStyle == 2) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there

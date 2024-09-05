@@ -826,7 +826,7 @@ class CrystalView extends Ui.WatchFace {
 		/*DEBUG*/ var complicationLongLabel = complication.longLabel; if (complicationType == Complications.COMPLICATION_TYPE_INVALID) { logMessage("Type: " + complicationType + " short label: " + complicationShortLabel + " long label: " + complicationLongLabel + " Value:" + complicationValue); }
 
 		if (gTeslaComplication == true && complicationType == Complications.COMPLICATION_TYPE_INVALID) {
-			if (complicationShortLabel != null && complicationShortLabel.equals("TESLA")) {
+			if (complicationShortLabel != null && complicationShortLabel.equals("TeslaLink")) {
 				/*DEBUG*/ logMessage("Doing Tesla Complication!");
 				$.doTeslaComplication(complicationValue);
 			}

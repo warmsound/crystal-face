@@ -97,28 +97,28 @@ function writeBatteryLevel(dc, x, y, width, height, type) {
 
 		gToggleCounter = (gToggleCounter + 1) & 7; // Increase by one, reset to 0 once 8 is reached. Called every second so incremented every second, giving a two second display of each value
 		showMode = gToggleCounter / 2;  // 0-1 is battery, 2-3 Sentry, 4-5 preconditionning, 6-7 is inside temp changed to 0 to 3
-		/*DEBUG*/ logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
+		//DEBUG*/ logMessage("gToggleCounter=" + gToggleCounter + " showMode=" + showMode);
 
 		var teslaInfo = Storage.getValue("TeslaInfo");
 		if (teslaInfo != null) {
 			var httpErrorTesla = teslaInfo.get("httpErrorTesla");
 			var vehicleState = teslaInfo.get("VehicleState");
 			var vehicleOnline = (vehicleState != null && vehicleState.equals("online") == true);
-			/*DEBUG*/ logMessage("httpErrorTesla=" + httpErrorTesla + " vehicleState=" + vehicleState + " vehicleOnline=" + vehicleOnline);
-			/*DEBUG*/ logMessage("TeslaInfo=" + teslaInfo);
+			//DEBUG*/ logMessage("httpErrorTesla=" + httpErrorTesla + " vehicleState=" + vehicleState + " vehicleOnline=" + vehicleOnline);
+			//DEBUG*/ logMessage("TeslaInfo=" + teslaInfo);
 			// Only specific error are handled, the others are displayed 'as is' in pink
 			if (httpErrorTesla != null && (httpErrorTesla == 200 || httpErrorTesla == 401 || httpErrorTesla == 408)) {
 				if (!vehicleOnline) { // If not online, only show battery and preconditionning (0 and 2)
 					showMode &= 2;
-					/*DEBUG*/ logMessage("Not online, showing Bat et P");
+					//DEBUG*/ logMessage("Not online, showing Bat et P");
 				}
 
 				if (httpErrorTesla == 401) { // No access token, only show the battery (in gray, default above)
-					/*DEBUG*/ logMessage("401, sticking to Bat");
+					//DEBUG*/ logMessage("401, sticking to Bat");
 					showMode = 0;
 				}
 				else if (!vehicleOnline || httpErrorTesla == 200) { // Vehicle not online (even if we got a 408, we'll add a "?" after the battery level to show this) or we got valid data. If the vehicle is offline, the line will show gray for stale data
-					/*DEBUG*/ logMessage("Showing in theme color");
+					//DEBUG*/ logMessage("Showing in theme color");
 					textColour = gThemeColour; // Defaults to theme's color
 				}
 
@@ -652,7 +652,7 @@ function getSunTimes(lat, lng, tz, tomorrow) {
 
 //DEBUG
 //(:debug, :background)
-//(:background)
+(:background)
 function logMessage(message) {
 	var clockTime = Gregorian.info(Time.now(), Time.FORMAT_MEDIUM);
 	var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d");

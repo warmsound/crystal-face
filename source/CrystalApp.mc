@@ -56,7 +56,7 @@ class CrystalApp extends App.AppBase {
 	// New app settings have been received so trigger a UI update
 	(:background)
 	function getServiceDelegate() {
-		/*DEBUG*/ logMessage("Getting service delegate");
+		//DEBUG*/ logMessage("Getting service delegate");
 		return [new BackgroundService()];
 	}
 
