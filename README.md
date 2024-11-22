@@ -27,6 +27,13 @@ Reviews:
 - Video review in Spanish, by Sergio: https://www.youtube.com/watch?v=TZFhnm_y1MM.
 
 ## Below is what has been added by me (SylvainGa).
+### 2.20.0
+- Added recovery time as an option to the move bar. Once it's cleared, recovery is done.
+
+### 2.19.2
+- Compiled with CIQ 7.3.0. Now works with custom complications (used by Tesla-Info)
+- Added Enduro3 and new Fenix8 watches (including Fenix E).
+- Small code optimisation for Telsa's complications. If you also use Tesla-Link and receive complications from it, update that one too!
 
 ### 2.19.0
 - Compiled with CIQ 6.4.2 as 7.x currently breaks custom complications (used by Tesla-Info). Has no impact on features and supported watches.

@@ -257,7 +257,8 @@
 		<settingConfig type="list">
 			<listEntry value="0">@Strings.AllSegments</listEntry>
 			<listEntry value="1">@Strings.FilledSegments</listEntry>
-			<listEntry value="2">@Strings.Hidden</listEntry>
+			<listEntry value="2">@Strings.RecoveryTime</listEntry>
+			<listEntry value="3">@Strings.Hidden</listEntry>
 		</settingConfig>
 	</setting>
 

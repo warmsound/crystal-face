@@ -85,7 +85,7 @@ class DataArea extends Ui.Drawable {
 		var linePosIndex = 0;
 		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
 
-		if (moveBarStyle != 2) {
+		if (moveBarStyle != 3) {
 			linePosIndex++;
 		}
 		var showWeatherCityName = false;
@@ -132,7 +132,7 @@ class DataArea extends Ui.Drawable {
 				time = "INV";
 			}
 
-			if (showWeatherCityName && moveBarStyle != 2 || !showWeatherCityName && moveBarStyle == 2) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there
+			if (showWeatherCityName && moveBarStyle != 3 || !showWeatherCityName && moveBarStyle == 3) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there
 				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 				dc.drawText(
 					locX + (width / 2),

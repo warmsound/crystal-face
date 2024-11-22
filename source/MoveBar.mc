@@ -54,12 +54,32 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		if ($.getIntProperty("MoveBarStyle", 0) == 2 /* HIDDEN */) {
+		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
+		if (moveBarStyle == 3 /* HIDDEN */) {
 			return;
 		}
 
+		var view = App.getApp().getView();
+		var fieldTypes = view.mFieldTypes;
+		var currentMoveBarLevel;
 		var info = ActivityMonitor.getInfo();
-		var currentMoveBarLevel = info.moveBarLevel;
+		if (moveBarStyle == 2) { /* recovery time */
+			var value;
+			/*if (Toybox has :Complications && view.useComplications()) {
+				value = fieldTypes[index].get("ComplicationValue");
+			}
+			else {*/
+				value = info.timeToRecovery;
+			//}
+
+			currentMoveBarLevel = ((value == null || value < 0) ? 0 : value) / 10;
+			if (currentMoveBarLevel > 5) {
+				currentMoveBarLevel = 5;
+			}
+		}
+		else {
+			currentMoveBarLevel = info.moveBarLevel;
+		}
 
 		// Calculate current width here, now that DC is accessible.
 		// Balance head/tail positions in full width mode.
@@ -150,7 +170,7 @@ class MoveBar extends Ui.Drawable {
 				thisBarColour = gThemeColour;
 
 			// Move bar below this level, so only show if MoveBarStyle setting is ALL_SEGMENTS.
-			} else if (moveBarStyle == 0 /* ALL_SEGMENTS */) {
+			} else if (moveBarStyle != 1 /* FILLED_SEGMENTS */) {
 				thisBarColour = gMeterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.
