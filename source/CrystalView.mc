@@ -56,7 +56,7 @@ class CrystalView extends Ui.WatchFace {
 
 	var mFieldTypes = new [3];
 	var mGoalTypes = new [2];
-
+	var mMoveBarType; 
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
 
@@ -107,6 +107,8 @@ class CrystalView extends Ui.WatchFace {
 
 		mGoalTypes[0] = {};
 		mGoalTypes[1] = {};
+
+		mMoveBarType = {};
 	}
 
 	function burnInProtectionIsOrWasActive() {
@@ -165,6 +167,8 @@ class CrystalView extends Ui.WatchFace {
 		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
 		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
 
+		mMoveBarType.put("type", $.getIntProperty("MoveBarType", 0));
+
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
 
@@ -200,6 +204,8 @@ class CrystalView extends Ui.WatchFace {
 
 		mGoalTypes[0].put("type", $.getIntProperty("LeftGoalType", 0));
 		mGoalTypes[1].put("type", $.getIntProperty("RightGoalType", 0));
+
+		mMoveBarType.put("type", $.getIntProperty("MoveBarType", 0));
 
 		// Themes: explicitly set *Colour properties that have no corresponding (user-facing) setting.
 		updateThemeColours();
@@ -854,6 +860,13 @@ class CrystalView extends Ui.WatchFace {
 		if (mGoalTypes[1].get("ComplicationType") == complicationType) {
 			mGoalTypes[1].put("ComplicationValue", complicationValue);
 		}
+
+		// Now do the MoveBar
+		if ($.getIntProperty("MoveBarStyle", 0) == 2) {
+			if (mMoveBarType.get("ComplicationType") == complicationType) {
+				mMoveBarType.put("ComplicationValue", complicationValue);
+			}
+		}
     }
 
 	function hasField(fieldType) {
@@ -1023,6 +1036,24 @@ class CrystalDelegate extends Ui.WatchFaceDelegate {
 			}
 		}
 
+		// Check Movebar
+		if ($.getIntProperty("MoveBarStyle", 0) == 2) { // Only matters if we're showing the recovery time
+			var x = mView.mDrawables[:MoveBar];
+			x = x.mX;
+			y = mView.mDrawables[:MoveBar].mY;
+			var width = mView.mDrawables[:MoveBar].width;
+			var height = mView.mDrawables[:MoveBar].height;
+			y -= height * 2;
+			complicationIndex = "Complication_MB" + isWithin(co_ords[0], co_ords[1], x, y, width, height * 4, "1");
+			if (complicationIndex.equals("Complication_MB") == false) {
+				complicationId = Storage.getValue(complicationIndex);
+			}
+
+			//DEBUG*/ logMessage(complicationIndex + " = " + complicationId);
+			if (complicationId != null) {
+				return complicationId;
+			}
+		}	
 		return null;
 	}
 
