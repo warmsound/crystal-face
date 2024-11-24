@@ -29,7 +29,8 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 ### 2.20.0
 - Added recovery time as an option to the move bar. Once it's cleared, recovery is done.
-- If move bar is showing recovery time and complications are enabled and available, touching that field will launch the recovery time widget
+- If the move bar is showing the recovery time and complications are enabled/available, touching that field will launch the recovery time widget
+- Fixed the centering of the time when the AddColon option is active (thanks blueberry-bytes)
 
 ### 2.19.2
 - Compiled with CIQ 7.3.0. Now works with custom complications (used by Tesla-Info)
