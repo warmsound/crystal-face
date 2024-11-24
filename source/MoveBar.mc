@@ -8,7 +8,7 @@ using Toybox.Application.Properties;
 
 class MoveBar extends Ui.Drawable {
 
-	private var mX, mY, mBaseWidth, mHeight, mSeparator;
+	/*private*/ var mX, mY, mBaseWidth, mHeight, mSeparator;
 	private var mTailWidth;	
 
 	(:buffered) private var mBuffer;	
@@ -23,6 +23,8 @@ class MoveBar extends Ui.Drawable {
 
 	// Either mBaseWidth, or a calculated full width.
 	private var mCurrentWidth;
+
+	private var mMoveBarStyle;
 
 	// private enum /* MOVE_BAR_STYLE */ {
 	// 	ALL_SEGMENTS,
@@ -42,8 +44,30 @@ class MoveBar extends Ui.Drawable {
 		mTailWidth = mHeight / 2;
 	}
 
+	(:noComplications)
 	function onSettingsChanged() {
 		mBufferNeedsRecreate = true;
+		mMoveBarStyle = $.getIntProperty("MoveBarStyle", 0);
+	}
+
+	(:hasComplications)
+	function onSettingsChanged() {
+		mBufferNeedsRecreate = true;
+		mMoveBarStyle = $.getIntProperty("MoveBarStyle", 0);
+
+		if (Toybox has :Complications && App.getApp().getView().useComplications()) {
+			if (mMoveBarStyle == 2) {
+				$.updateComplications("", "Complication_MB", 1, Complications.COMPLICATION_TYPE_RECOVERY_TIME);
+				App.getApp().getView().mMoveBarType.put("ComplicationType", Complications.COMPLICATION_TYPE_RECOVERY_TIME);
+			}
+			else {
+				Storage.deleteValue("Complication_MB1");
+			}
+		}
+		else {
+			Storage.deleteValue("Complication_MB1");
+		}
+
 	}
 
 	function setFullWidth(fullWidth) {
@@ -54,28 +78,42 @@ class MoveBar extends Ui.Drawable {
 	}
 	
 	function draw(dc) {
-		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
-		if (moveBarStyle == 3 /* HIDDEN */) {
+		if (mMoveBarStyle == 3 /* HIDDEN */) {
 			return;
 		}
 
 		var view = App.getApp().getView();
-		var fieldTypes = view.mFieldTypes;
+		var moveBarType = view.mMoveBarType;
 		var currentMoveBarLevel;
 		var info = ActivityMonitor.getInfo();
-		if (moveBarStyle == 2) { /* recovery time */
-			var value;
-			/*if (Toybox has :Complications && view.useComplications()) {
-				value = fieldTypes[index].get("ComplicationValue");
+		if (mMoveBarStyle == 2) { /* recovery time */
+			var value = null;
+			if (Toybox has :Complications && view.useComplications()) {
+				value = moveBarType.get("ComplicationValue");
+				if (value != null) {
+					value /= 60; // Complication Time to Recovery is in minutes
+					value = value.toNumber();
+				}
 			}
-			else {*/
-				value = info.timeToRecovery;
-			//}
 
-			currentMoveBarLevel = ((value == null || value < 0) ? 0 : value) / 10;
+			if (value == null) {
+				value = info.timeToRecovery; // Info time to recovery is in hours
+			}
+
+			//value = 12;
+			currentMoveBarLevel = ((value == null || value < 0) ? 0 : value) / 12; // Each bar (up to 5 bars) is 12 hours
+			if (value > 0) {
+				currentMoveBarLevel++; // So only when the recovery time is zero does it display no move bars.
+			}
 			if (currentMoveBarLevel > 5) {
 				currentMoveBarLevel = 5;
 			}
+			// 0 Move bar : Times up!
+			// 1 Move bar : Between 1 and 11 hours
+			// 2 Move bar : Between 12 and 23 hours
+			// 3 Move bar : Between 24 and 35 hours
+			// 4 Move bar : Between 36 and 47 hours
+			// 5 Move bar : 48 and more hours
 		}
 		else {
 			currentMoveBarLevel = info.moveBarLevel;
@@ -157,7 +195,6 @@ class MoveBar extends Ui.Drawable {
 		var thisBarWidth;
 		var thisBarColour = 0;
 		var barX = x + mTailWidth;
-		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
 
 		// One-based, to correspond with move bar level (zero means no bars).
 		for (var i = 1; i <= ActivityMonitor.MOVE_BAR_LEVEL_MAX; ++i) {
@@ -170,7 +207,7 @@ class MoveBar extends Ui.Drawable {
 				thisBarColour = gThemeColour;
 
 			// Move bar below this level, so only show if MoveBarStyle setting is ALL_SEGMENTS.
-			} else if (moveBarStyle != 1 /* FILLED_SEGMENTS */) {
+			} else if (mMoveBarStyle != 1 /* FILLED_SEGMENTS */) {
 				thisBarColour = gMeterBackgroundColour;
 
 			// Otherwise, do not show this, or any higher level.

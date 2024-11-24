@@ -72,10 +72,15 @@ class ThickThinTime extends Ui.Drawable {
 		var halfDCWidth = dc.getWidth() / 2;
 		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
 
+		var addColon = $.getBoolProperty("AddColon", false);
+
 		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
 		// Font has tabular figures (monospaced numbers) even across different weights, so does not matter which of hours or
 		// minutes font is used to calculate total width. 
 		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
+		if (addColon) {
+			totalWidth += dc.getTextWidthInPixels(":", mMinutesFont);
+		}
 		var x = halfDCWidth - (totalWidth / 2);
 
 		// Draw hours.
@@ -89,13 +94,6 @@ class ThickThinTime extends Ui.Drawable {
 		);
 		x += dc.getTextWidthInPixels(hours, mHoursFont);
 
-		var addColon;
-		try {
-        	addColon = $.getBoolProperty("AddColon", false);
-		}
-		catch (e) {
-			addColon = false;
-		}
 		if (addColon != null && addColon == true) {
 			dc.drawText(
 				x,
