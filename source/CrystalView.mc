@@ -60,7 +60,7 @@ class CrystalView extends Ui.WatchFace {
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
 
-	var mWeatherStationName;
+	//var mWeatherStationName; // Weather Station name removed from firmware
 	var mLocalCityName;
 	var mLocalCityLat;
 	var mLocalCityLon;
@@ -290,7 +290,8 @@ class CrystalView extends Ui.WatchFace {
 					humidity = humidity.format(INTEGER_FORMAT) + "%";
 				}
 
-				mWeatherStationName = $.validateString(weather.observationLocationName, null);
+				// Weather Station name removed from firmware
+				// mWeatherStationName = $.validateString(weather.observationLocationName, null);
 
 				var icon = "01";
 				var day = "d";
@@ -344,7 +345,7 @@ class CrystalView extends Ui.WatchFace {
 					/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
 				}
 				result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
-				/*DEBUG*/ logMessage("Weather at " + mWeatherStationName + " is " + result);
+				/*DEBUG*/ logMessage("Weather is " + result);
 			}
 			else {
 				result = { "cod" => 404 };

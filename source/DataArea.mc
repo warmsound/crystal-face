@@ -80,7 +80,7 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, mRightGoalstaled, Graphics.TEXT_JUSTIFY_RIGHT);
 
 		var view = App.getApp().getView();
-		var city = view.mWeatherStationName;
+		var city = null; //view.mWeatherStationName; // Weather Station name removed from firmware
 		var linePos = [ mRowMY, mRow0Y, mRow1Y, mRow2Y ];
 		var linePosIndex = 0;
 		var moveBarStyle = $.getIntProperty("MoveBarStyle", 0);
@@ -88,21 +88,23 @@ class DataArea extends Ui.Drawable {
 		if (moveBarStyle != 3) {
 			linePosIndex++;
 		}
-		var showWeatherCityName = false;
-		if (view.mShowWeatherStationName && city != null && city.length() > 0) {
-			showWeatherCityName = true;
-			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				locX + (width / 2),
-				linePos[linePosIndex],
-				gNormalFont,
-				// Limit string length.
-				city.substring(0, 16),
-				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-			);
 
-			linePosIndex++;
-		}
+		// Weather Station name removed from firmware
+		// var showWeatherCityName = false;
+		// if (view.mShowWeatherStationName && city != null && city.length() > 0) {
+		// 	showWeatherCityName = true;
+		// 	dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+		// 	dc.drawText(
+		// 		locX + (width / 2),
+		// 		linePos[linePosIndex],
+		// 		gNormalFont,
+		// 		// Limit string length.
+		// 		city.substring(0, 16),
+		// 		Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+		// 	);
+
+		// 	linePosIndex++;
+		// }
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		city = view.mLocalCityName;
@@ -132,7 +134,7 @@ class DataArea extends Ui.Drawable {
 				time = "INV";
 			}
 
-			if (showWeatherCityName && moveBarStyle != 3 || !showWeatherCityName && moveBarStyle == 3) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there
+			if (/*showWeatherCityName && moveBarStyle != 3 || !showWeatherCityName &&*/ moveBarStyle == 3) { // Need to do two lines since we'll overflow too much on our goals' value or use two lines if it's only us drawing there
 				dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
 				dc.drawText(
 					locX + (width / 2),

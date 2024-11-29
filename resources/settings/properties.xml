@@ -30,8 +30,6 @@
 	<property id="AddColon" type="boolean">false</property>
 	<property id="HideSeconds" type="number">0</property>
 
-	<property id="ShowWeatherStationName" type="boolean">true</property>
-
 	<property id="LocalTimeInCity" type="string"></property>
 
 	<property id="MoveBarStyle" type="number">0</property>

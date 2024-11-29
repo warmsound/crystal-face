@@ -28,9 +28,11 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 ### 2.20.0
+- Compiled with CIQ 7.3.1
 - Added recovery time as an option to the move bar. Once it's cleared, recovery is done.
-- If the move bar is showing the recovery time and complications are enabled/available, touching that field will launch the recovery time widget
-- Fixed the centering of the time when the AddColon option is active (thanks blueberry-bytes)
+- If the move bar is showing the recovery time and complications are enabled/available, touching that field will launch the recovery time widget.
+- Fixed the centering of the time when the AddColon option is active (thanks blueberry-bytes).
+- Removed references to weather city name since Garmin disabled that feature in their latest firmware.
 
 ### 2.19.2
 - Compiled with CIQ 7.3.0. Now works with custom complications (used by Tesla-Info)

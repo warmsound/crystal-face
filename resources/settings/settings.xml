@@ -245,10 +245,6 @@
         </settingConfig>
 	</setting>
 
-	<setting propertyKey="@Properties.ShowWeatherStationName" title="@Strings.ShowWeatherStationName">
-		<settingConfig type="boolean"/>
-	</setting>
-
 	<setting propertyKey="@Properties.LocalTimeInCity" title="@Strings.LocalTimeInCityTitle">
 		<settingConfig type="alphaNumeric"/>
 	</setting>
