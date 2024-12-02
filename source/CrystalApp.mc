@@ -12,6 +12,14 @@ import Toybox.Application;
 import Toybox.Lang;
 import Toybox.WatchUi;
 
+// In-memory current location.
+// Previously persisted in App.Storage, but now persisted in Object Store due to #86 workaround for App.Storage firmware bug.
+// Current location retrieved/saved in checkPendingWebRequests().
+// Persistence allows weather and sunrise/sunset features to be used after watch face restart, even if watch no longer has current
+// location available.
+var gLocationLat = null;
+var gLocationLng = null;
+
 var gTeslaComplication = false;
 
 (:background)
@@ -83,61 +91,100 @@ class CrystalApp extends App.AppBase {
 		Ui.requestUpdate();
 	}
 
-	// Handle data received from BackgroundService.
-	// data is Dictionary with single key that indicates the data type received.
+
 	(:background)
 	function onBackgroundData(data) {
-		var teslaInfo = Storage.getValue("TeslaInfo"); // What we have in Storage
-		if (teslaInfo == null) {
-			teslaInfo = {};
+		/*DEBUG*/ logMessage("onBackgroundData:received '" + data + "'");
+		var pendingWebRequests = Storage.getValue("PendingWebRequests");
+		if (pendingWebRequests == null) {
+			pendingWebRequests = {};
 		}
 
-		// Update in TeslaInfo what has been received in receivedData
-		var receivedData = data["TeslaInfo"]; // What we just received
-		if (receivedData != null && receivedData instanceof Lang.Dictionary) {
+		var type = data.keys()[0]; // Type of received data.
+		var storedData = Storage.getValue(type);
+		if (storedData == null) {
+			storedData = {};
+		}
+		var receivedData = data[type]; // The actual data received: strip away type key.
+		
+		// Do process the data if what we got was an error
+		if (receivedData["httpError"] == null) {
+			// New data received: clear pendingWebRequests flag and overwrite stored data that with what we received, leaving others intact.
+			// storedData = receivedData;
 			var keys = receivedData.keys();
 			var values = receivedData.values();
 			for (var i = 0; i < keys.size(); i++) {
-				teslaInfo.put(keys[i], values[i]);
+				storedData.put(keys[i], values[i]);
 			}
-		}
-		else {
-			/*DEBUG*/ logMessage("Unexpected invalid receivedData: " + receivedData);
-		}
+			storedData.put("NewData", true);
 
-		// Copy into their own name some of the entries in TeslaInfo, then delete from TeslaInfo
-		var arrayKey = ["RefreshToken", "AccessToken", "TokenCreatedAt", "TokenExpiresIn", "VehicleID"];
-		var arrayProp = [true, true, false, false, false ];
-		for (var i = 0; i < arrayKey.size(); i++) {
-			var value = teslaInfo.get(arrayKey[i]);
-			if (value != null) {
-				if (arrayProp[i]) {
-					Properties.setValue("Tesla" + arrayKey[i], value);
-				}
-				else {
-					Storage.setValue("Tesla" + arrayKey[i], value);
-				}
-				teslaInfo.remove(arrayKey[i]);
-			}
+			pendingWebRequests.remove(type);
+
+			Storage.setValue("PendingWebRequests", pendingWebRequests);
+			Storage.setValue(type, storedData);
+	
+			// Don't do this now as it adds too much code to the background process
+			// checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		}
 
-		// Now store our updated copy of TeslaInfo
-		Storage.setValue("TeslaInfo", teslaInfo);
-
-		// We deal with specific errors here, leaving the good stuff to the battery indicator
-		var responseCode = teslaInfo["httpErrorTesla"];
-		var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
-		if (responseCode != null && internalResponseCode != null) {
-			if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
-				Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
-			} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
-				Storage.deleteValue("VehicleID"); // Try to get a new vehicleID
-			}
-		}
-
-		/*DEBUG*/ var nextTime = Time.now().add(new Time.Duration(5 * 60)); var local = Gregorian.info(nextTime, Time.FORMAT_SHORT); var time = $.getFormattedTime(local.hour, local.min, local.sec); 		logMessage("Next event: " + time[:hour] + ":" + time[:min] + ":" + time[:sec] + time[:amPm]);
-		Bg.registerForTemporalEvent(new Time.Duration(5 * 60)); // Since onSettingsChanged go for a specific time, go for duration here once we get going, otherwise we'll get background data only once the view is shown
-
+		Storage.setValue("RequestsPending", true);
 		Ui.requestUpdate();
 	}
+	// Handle data received from BackgroundService.
+	// data is Dictionary with single key that indicates the data type received.
+	// (:background)
+	// function onBackgroundData(data) {
+	// 	var teslaInfo = Storage.getValue("TeslaInfo"); // What we have in Storage
+	// 	if (teslaInfo == null) {
+	// 		teslaInfo = {};
+	// 	}
+
+	// 	// Update in TeslaInfo what has been received in receivedData
+	// 	var receivedData = data["TeslaInfo"]; // What we just received
+	// 	if (receivedData != null && receivedData instanceof Lang.Dictionary) {
+	// 		var keys = receivedData.keys();
+	// 		var values = receivedData.values();
+	// 		for (var i = 0; i < keys.size(); i++) {
+	// 			teslaInfo.put(keys[i], values[i]);
+	// 		}
+	// 	}
+	// 	else {
+	// 		/*DEBUG*/ logMessage("Unexpected invalid receivedData: " + receivedData);
+	// 	}
+
+	// 	// Copy into their own name some of the entries in TeslaInfo, then delete from TeslaInfo
+	// 	var arrayKey = ["RefreshToken", "AccessToken", "TokenCreatedAt", "TokenExpiresIn", "VehicleID"];
+	// 	var arrayProp = [true, true, false, false, false ];
+	// 	for (var i = 0; i < arrayKey.size(); i++) {
+	// 		var value = teslaInfo.get(arrayKey[i]);
+	// 		if (value != null) {
+	// 			if (arrayProp[i]) {
+	// 				Properties.setValue("Tesla" + arrayKey[i], value);
+	// 			}
+	// 			else {
+	// 				Storage.setValue("Tesla" + arrayKey[i], value);
+	// 			}
+	// 			teslaInfo.remove(arrayKey[i]);
+	// 		}
+	// 	}
+
+	// 	// Now store our updated copy of TeslaInfo
+	// 	Storage.setValue("TeslaInfo", teslaInfo);
+
+	// 	// We deal with specific errors here, leaving the good stuff to the battery indicator
+	// 	var responseCode = teslaInfo["httpErrorTesla"];
+	// 	var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
+	// 	if (responseCode != null && internalResponseCode != null) {
+	// 		if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
+	// 			Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
+	// 		} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
+	// 			Storage.deleteValue("VehicleID"); // Try to get a new vehicleID
+	// 		}
+	// 	}
+
+	// 	/*DEBUG*/ var nextTime = Time.now().add(new Time.Duration(5 * 60)); var local = Gregorian.info(nextTime, Time.FORMAT_SHORT); var time = $.getFormattedTime(local.hour, local.min, local.sec); 		logMessage("Next event: " + time[:hour] + ":" + time[:min] + ":" + time[:sec] + time[:amPm]);
+	// 	Bg.registerForTemporalEvent(new Time.Duration(5 * 60)); // Since onSettingsChanged go for a specific time, go for duration here once we get going, otherwise we'll get background data only once the view is shown
+
+	// 	Ui.requestUpdate();
+	// }
 }

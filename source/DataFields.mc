@@ -463,7 +463,7 @@ class DataFields extends Ui.Drawable {
 					}
 				}
 				info = ActivityMonitor.getInfo();
-				if (value.equals("") == true && (info has :timeToRecovery)) {
+				if (value.length() == 0 && (info has :timeToRecovery)) {
 					var recoveryTyime = info.timeToRecovery;
 					if (recoveryTyime != null) {
 						value = recoveryTyime.format(INTEGER_FORMAT);
@@ -478,7 +478,7 @@ class DataFields extends Ui.Drawable {
 						value = tmpValue.toString();
 					}
 				}
-				if (value.equals("") == true && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
+				if (value.length() == 0 && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getBodyBatteryHistory)) {
 					var bodyBattery = Toybox.SensorHistory.getBodyBatteryHistory({:period=>1});
 					if (bodyBattery != null) {
 						bodyBattery = bodyBattery.next();
@@ -499,7 +499,7 @@ class DataFields extends Ui.Drawable {
 						value = tmpValue.toString();
 					}
 				}
-				if (value.equals("") == true && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
+				if (value.length() == 0 && (Toybox has :SensorHistory) && (Toybox.SensorHistory has :getStressHistory)) {
 					var stressLevel = Toybox.SensorHistory.getStressHistory({:period=>1});
 					if (stressLevel != null) {
 						stressLevel = stressLevel.next();
@@ -541,7 +541,7 @@ class DataFields extends Ui.Drawable {
 						value = tmpValue.toString() + "%";
 					}
 				}
-				if (value.equals("") == true) {
+				if (value.length() == 0) {
 					activityInfo = Activity.getActivityInfo();
 					sample = activityInfo != null and activityInfo has :currentOxygenSaturation ? activityInfo.currentOxygenSaturation : null;
 					if (sample != null) {
@@ -559,7 +559,7 @@ class DataFields extends Ui.Drawable {
 				// Yes, no break. We flow through in case with don't have Complication. FIELD_TYPE_HEART_RATE and FIELD_TYPE_HR_LIVE_5S were doing the same thing
 			case FIELD_TYPE_HR_LIVE_5S:
 				// #34 Try to retrieve live HR from Activity::Info, before falling back to historical HR from ActivityMonitor.
-				if (value.equals("") == true) {
+				if (value.length() == 0) {
 					activityInfo = Activity.getActivityInfo();
 					sample = activityInfo.currentHeartRate;
 					if (sample != null) {
@@ -810,8 +810,8 @@ class DataFields extends Ui.Drawable {
 
 				// Only read that dictionnary from Storage if it has changed (or we don't have a local copy), otherwise read our stored weather data
 				if (mWeather == null || Storage.getValue("NewWeatherInfo") != null) { 
-					mWeather = Storage.getValue("WeatherInfo");
-					Storage.setValue("NewWeatherInfo", null);
+					mWeather = Storage.getValue("OpenWeatherMapCurrent");
+					Storage.deleteValue("NewWeatherInfo");
 				}
 
 				// Stored weather data available.
@@ -819,6 +819,17 @@ class DataFields extends Ui.Drawable {
 					// FIELD_TYPE_WEATHER.
 					if (type == FIELD_TYPE_WEATHER) {
 						value = mWeather["temp"];
+						try {
+							if (settings.temperatureUnits == System.UNIT_STATUTE) {
+								value = (value * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+							}
+
+							value = value.format(INTEGER_FORMAT) + "°";
+						}
+						catch (e) {
+							/*DEBUG*/ logMessage("getValueForFieldType: Caught exception " + e);
+							value = "???";
+						}
 						result["weatherIcon"] = mWeather["icon"];
 
 					// FIELD_TYPE_HUMIDITY.

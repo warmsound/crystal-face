@@ -34,6 +34,13 @@
 
 	<property id="MoveBarStyle" type="number">0</property>
 
+	<property id="LastLocationLat" type="string"></property>
+	<property id="LastLocationLng" type="string"></property>
+
+	<property id="ShowWeatherStationName" type="boolean">true</property>
+
+	<property id="OWMKeyOverride" type="string">2651f49cb20de925fc57590709b86ce6</property>
+    
 	<property id="TeslaLink" type="boolean">false</property>
 	<property id="TeslaVehicleIndex" type="number">1</property>
 	<property id="TeslaAccessToken" type="string"></property>

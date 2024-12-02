@@ -60,7 +60,7 @@ class CrystalView extends Ui.WatchFace {
 	// Cache references to drawables immediately after layout, to avoid expensive findDrawableById() calls in onUpdate();
 	var mDrawables = {};
 
-	//var mWeatherStationName; // Weather Station name removed from firmware
+	var mWeatherStationName; // Weather Station name removed from firmware
 	var mLocalCityName;
 	var mLocalCityLat;
 	var mLocalCityLon;
@@ -175,7 +175,8 @@ class CrystalView extends Ui.WatchFace {
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
 
-		ReadWeather(false);
+		// ReadWeather(false);
+		checkPendingWebRequests();
 
 		// Get our 2nd local time if available
 		var localTimeInCity = $.getStringProperty("LocalTimeInCity", "");
@@ -213,7 +214,8 @@ class CrystalView extends Ui.WatchFace {
 		// Update hours/minutes colours after theme colours have been set.
 		updateHoursMinutesColours();
 
-		ReadWeather(false);
+		// ReadWeather(false);
+		checkPendingWebRequests();
 
 		// Get our 2nd local time if available
 		var localTimeInCity = $.getStringProperty("LocalTimeInCity", "");
@@ -261,104 +263,274 @@ class CrystalView extends Ui.WatchFace {
 		}
 	}
 
-	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
-	function ReadWeather(fromComplication) {
-		var weather;
-		var result;
-		if (fromComplication) {
+	// Determine if any web requests are needed.
+	// If so, set approrpiate pendingWebRequests flag for use by BackgroundService, then register for
+	// temporal event.
+	// Currently called on layout initialisation, when settings change, and on exiting sleep.
+	(:background_method)
+	function checkPendingWebRequests() {
+		// Attempt to update current location, to be used by Sunrise/Sunset, and Weather.
+		// If current location available from current activity, save it in case it goes "stale" and can not longer be retrieved.
+
+		var location = Activity.getActivityInfo().currentLocation;
+		if (location) {
+			location = location.toDegrees(); // Array of Doubles.
+			if (location[0] != 0.0 && location[1] != 0.0) {
+				gLocationLat = location[0];
+				gLocationLng = location[1];
+				Properties.setValue("LastLocationLat", gLocationLat.format("%0.5f"));
+				Properties.setValue("LastLocationLng", gLocationLng.format("%0.5f"));
+			}
 		}
-		else if (Toybox has :Weather && Toybox.Weather has :getCurrentConditions) {
-			weather = Weather.getCurrentConditions();
-			if (weather != null) {
-				var temperature = $.validateNumber(weather.temperature, null); // In Celcius
-				if (temperature == null) {
-					temperature = "NaN";
-				}
-				else {
-					if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_STATUTE) {
-						temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
-					}
+		// If current location is not available, read stored value from Object Store, being careful not to overwrite a valid
+		// in-memory value with an invalid stored one.
+		else {
+			var lat = $.getStringProperty("LastLocationLat","");
+			if (lat != null) {
+				gLocationLat = lat.toFloat();
+			}
 
-					temperature = temperature.format(INTEGER_FORMAT) + "°";
-				}
+			var lng = $.getStringProperty("LastLocationLng","");
+			if (lng != null) {
+				gLocationLng = lng.toFloat();
+			}
+		}
+
+		if (!(Sys has :ServiceDelegate)) {
+			return;
+		}
+
+		var pendingWebRequests = Storage.getValue("PendingWebRequests");
+		if (pendingWebRequests == null) {
+			pendingWebRequests = {};
+		}
+
+		//// 1. City local time:
+		//// City has been specified.
+		//var city = $.getStringProperty("LocalTimeInCity","");
 		
-				var humidity = $.validateNumber(weather.relativeHumidity, null);
-				if (humidity == null) {
-					humidity = "NaN";
-				}
-				else {
-					humidity = humidity.format(INTEGER_FORMAT) + "%";
-				}
+		// #78 Setting with value of empty string may cause corresponding property to be null.
+		// if ((city != null) && (city.length() > 0)) {
 
-				// Weather Station name removed from firmware
-				// mWeatherStationName = $.validateString(weather.observationLocationName, null);
+		// 	var cityLocalTime = Storage.getValue("CityLocalTime");
 
-				var icon = "01";
-				var day = "d";
-				var myLocation = weather.observationLocationPosition;
-				var now = Time.now();
-				if (myLocation != null) {
-					if (Toybox.Weather has :getSunrise) {
-						var sunrise = Weather.getSunrise(myLocation, now);
-						var sunset = Weather.getSunset(myLocation, now);
+		// 	// No existing data.
+		// 	if ((cityLocalTime == null) ||
 
-						if (sunrise != null and sunset != null) {
-							var sinceSunrise = sunrise.compare(now);
-							var sinceSunset = now.compare(sunset);
-							if (sinceSunrise >= 0 || sinceSunset >= 0) {
-								day = "n";
-							}
-						}
+		// 	// Existing data is old.
+		// 	((cityLocalTime["next"] != null) && (Time.now().value() >= cityLocalTime["next"]["when"]))) {
+
+		// 		pendingWebRequests["CityLocalTime"] = true;
+		
+		// 	// Existing data not for this city: delete it.
+		// 	// Error response from server: contains requestCity. Likely due to unrecognised city. Prevent requesting this
+		// 	// city again.
+		// 	} else if (!cityLocalTime["requestCity"].equals(city)) {
+
+		// 		deleteProperty("CityLocalTime");
+		// 		pendingWebRequests["CityLocalTime"] = true;
+		// 	}
+		// }
+
+		// 2. Weather:
+		// Location must be available, weather or humidity (#113) data field must be shown.
+		if ((gLocationLat != null) &&
+			(hasField(FIELD_TYPE_WEATHER) || hasField(FIELD_TYPE_HUMIDITY))) {
+
+			var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
+			if (owmKeyOverride == null || owmKeyOverride.length() == 0) {
+				//2022-04-10 logMessage("Using Garmin Weather so skipping OWM code");
+			} else {
+				//2022-04-10 logMessage("Using OpenWeatherMap");
+				var owmCurrent = Storage.getValue("OpenWeatherMapCurrent");
+	
+				// No existing data.
+				if (owmCurrent == null) {
+					pendingWebRequests["OpenWeatherMapCurrent"] = true;
+				// Successfully received weather data.
+				} else if (owmCurrent["cod"] == 200) {
+					if (owmCurrent["NewData"] != null) { // true if we have new data, otherwise null
+						Storage.setValue("NewWeatherInfo", true);
+						owmCurrent.remove("NewData");
+						Storage.setValue("OpenWeatherMapCurrent", owmCurrent);
+						mWeatherStationName = owmCurrent["name"];
 					}
-					else {
-						//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
-						var myLocationArray = myLocation.toDegrees();
-						now = Gregorian.info(now, Time.FORMAT_SHORT);
+					// Existing data is older than 5 mins.
+					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
+					if ((Time.now().value() > (owmCurrent["dt"] + 300)) ||
+					  true ||	
+  					  // Existing data not for this location.
+					  // Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
+					  // true distance calculation. 0.02 degree of latitude is just over a mile.
+					  (((gLocationLat - owmCurrent["lat"]).abs() > 0.02) || ((gLocationLng - owmCurrent["lon"]).abs() > 0.02))) {
+						pendingWebRequests["OpenWeatherMapCurrent"] = true;
+					}
+				} else {
+					pendingWebRequests["OpenWeatherMapCurrent"] = true;
+				}
+			}
+		}
 
-						// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
-						// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
-						now = now.hour + ((now.min + 1) / 60.0);
-						//logMessage(now);
-
-						// Get today's sunrise/sunset times in current time zone.
-						var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
-						//logMessage(sunTimes);
-						//logMessage("now=" + now); 
-						//logMessage("sunTimes=" + sunTimes); 
-						// If sunrise/sunset happens today.
-						var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
-						if (sunriseSunsetToday) {
-							if (now < sunTimes[0] || now > sunTimes[1]) {
-								day = "n";
-							}
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
+		// 3. Tesla:
+		if (Storage.getValue("Tesla") != null) {
+			var teslaInfo = Storage.getValue("TeslaInfo");
+			if (teslaInfo != null) { // We got Tesla data, process it
+				var arrayKey = ["RefreshToken", "AccessToken", "TokenCreatedAt", "TokenExpiresIn", "VehicleID"];
+				var arrayProp = [true, true, false, false, false ];
+				for (var i = 0; i < arrayKey.size(); i++) {
+					var value = teslaInfo.get(arrayKey[i]);
+					if (value != null) {
+						if (arrayProp[i]) {
+							Properties.setValue("Tesla" + arrayKey[i], value);
 						}
+						else {
+							Storage.setValue("Tesla" + arrayKey[i], value);
+						}
+						teslaInfo.remove(arrayKey[i]);
 					}
 				}
 
-				var condition = $.validateNumber(weather.condition, null);
-				if (condition != null && condition < 53) {
-					icon = (mGarminToOWM[condition]).format("%02d") + day;
-					//logMessage("icon=" + icon); 
+				// Now store our updated copy of TeslaInfo
+				Storage.setValue("TeslaInfo", teslaInfo);
+
+				// We deal with specific errors here, leaving the good stuff to the battery indicator
+				var responseCode = teslaInfo["httpErrorTesla"];
+				var internalResponseCode = teslaInfo["httpInternalErrorTesla"];
+				if (responseCode != null && internalResponseCode != null) {
+					if (responseCode == 401 && internalResponseCode != 200) { // Our token has expired and we were unable to get one, refresh it
+						Properties.setValue("TeslaAccessToken", null); // Try to get a new vehicleID
+					} else if (responseCode == 404 && internalResponseCode != 200) { // We got a vehicle not found error and we were unable to get one, reset our vehicle ID
+						Storage.deleteValue("VehicleID"); // Try to get a new vehicleID
+					}
 				}
-				else {
-					icon = icon + day;
-					/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
-				}
-				result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
-				/*DEBUG*/ logMessage("Weather is " + result);
+
 			}
-			else {
-				result = { "cod" => 404 };
-				/*DEBUG*/ logMessage("No weather data, returning cod = 404");
-			}
+			pendingWebRequests["TeslaInfo"] = true;
 		}
 		else {
-			result = { "cod" => 400 };
-			/*DEBUG*/ logMessage("No weather data, returning cod = 400");
+			pendingWebRequests.remove("TeslaInfo");
 		}
-		Storage.setValue("WeatherInfo", result);
-		Storage.setValue("NewWeatherInfo", true);
-	}	
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
+		
+		// If there are any pending requests and we can do background process
+		if (Toybox.System has :ServiceDelegate && pendingWebRequests.keys().size() > 0) {
+			// Register for background temporal event as soon as possible.
+			var lastTime = Bg.getLastTemporalEventTime();
+			if (lastTime) {
+				// Events scheduled for a time in the past trigger immediately.
+				var nextTime = lastTime.add(new Time.Duration(5 * 60));
+				Bg.registerForTemporalEvent(nextTime);
+			} else {
+				Bg.registerForTemporalEvent(Time.now());
+			}
+		}
+
+		Storage.setValue("PendingWebRequests", pendingWebRequests);
+	}
+
+	// Read the weather from the Garmin API and store it into the same format OpenWeatherMap expects to see
+	// function ReadWeather(fromComplication) {
+	// 	var weather;
+	// 	var result;
+	// 	if (fromComplication) {
+	// 	}
+	// 	else if (Toybox has :Weather && Toybox.Weather has :getCurrentConditions) {
+	// 		weather = Weather.getCurrentConditions();
+	// 		if (weather != null) {
+	// 			var temperature = $.validateNumber(weather.temperature, null); // In Celcius
+	// 			if (temperature == null) {
+	// 				temperature = "NaN";
+	// 			}
+	// 			else {
+	// 				// if (Sys.getDeviceSettings().temperatureUnits == System.UNIT_STATUTE) {
+	// 				//	temperature = (temperature * (9.0 / 5)) + 32; // Convert to Farenheit: ensure floating point division.
+	// 				// }
+
+	// 				// temperature = temperature.format(INTEGER_FORMAT) + "°";
+	// 			}
+		
+	// 			var humidity = $.validateNumber(weather.relativeHumidity, null);
+	// 			if (humidity == null) {
+	// 				humidity = "NaN";
+	// 			}
+	// 			else {
+	// 				humidity = humidity.format(INTEGER_FORMAT) + "%";
+	// 			}
+
+	// 			// Weather Station name removed from firmware
+	// 			// mWeatherStationName = $.validateString(weather.observationLocationName, null);
+
+	// 			var icon = "01";
+	// 			var day = "d";
+	// 			var myLocation = weather.observationLocationPosition;
+	// 			var now = Time.now();
+	// 			if (myLocation != null) {
+	// 				if (Toybox.Weather has :getSunrise) {
+	// 					var sunrise = Weather.getSunrise(myLocation, now);
+	// 					var sunset = Weather.getSunset(myLocation, now);
+
+	// 					if (sunrise != null and sunset != null) {
+	// 						var sinceSunrise = sunrise.compare(now);
+	// 						var sinceSunset = now.compare(sunset);
+	// 						if (sinceSunrise >= 0 || sinceSunset >= 0) {
+	// 							day = "n";
+	// 						}
+	// 					}
+	// 				}
+	// 				else {
+	// 					//logMessage("Sucks, We DON'T have sunrise and sunset routines, do it the old way then");
+	// 					var myLocationArray = myLocation.toDegrees();
+	// 					now = Gregorian.info(now, Time.FORMAT_SHORT);
+
+	// 					// Convert to same format as sunTimes, for easier comparison. Add a minute, so that e.g. if sun rises at
+	// 					// 07:38:17, then 07:38 is already consided daytime (seconds not shown to user).
+	// 					now = now.hour + ((now.min + 1) / 60.0);
+	// 					//logMessage(now);
+
+	// 					// Get today's sunrise/sunset times in current time zone.
+	// 					var sunTimes = getSunTimes(myLocationArray[0], myLocationArray[1], null, /* tomorrow */ false);
+	// 					//logMessage(sunTimes);
+	// 					//logMessage("now=" + now); 
+	// 					//logMessage("sunTimes=" + sunTimes); 
+	// 					// If sunrise/sunset happens today.
+	// 					var sunriseSunsetToday = ((sunTimes[0] != null) && (sunTimes[1] != null));
+	// 					if (sunriseSunsetToday) {
+	// 						if (now < sunTimes[0] || now > sunTimes[1]) {
+	// 							day = "n";
+	// 						}
+	// 					}
+	// 				}
+	// 			}
+
+	// 			var condition = $.validateNumber(weather.condition, null);
+	// 			if (condition != null && condition < 53) {
+	// 				icon = (mGarminToOWM[condition]).format("%02d") + day;
+	// 				//logMessage("icon=" + icon); 
+	// 			}
+	// 			else {
+	// 				icon = icon + day;
+	// 				/*DEBUG*/ logMessage("Icon index " + condition + " is invalid");
+	// 			}
+	// 			result = { "cod" => 200, "temp" => temperature, "humidity" => humidity, "icon" => icon };
+	// 			/*DEBUG*/ logMessage("Weather is " + result);
+	// 		}
+	// 		else {
+	// 			result = { "cod" => 404 };
+	// 			/*DEBUG*/ logMessage("No weather data, returning cod = 404");
+	// 		}
+	// 	}
+	// 	else {
+	// 		result = { "cod" => 400 };
+	// 		/*DEBUG*/ logMessage("No weather data, returning cod = 400");
+	// 	}
+	// 	Storage.setValue("OpenWeatherMapCurrent", result);
+	// 	Storage.setValue("NewWeatherInfo", true);
+	// }	
 
 	function updateThemeColours() {
 
@@ -368,7 +540,7 @@ class CrystalView extends Ui.WatchFace {
 		var themeOverride = $.getStringProperty("ThemeOverride","");
 
 		gThemeColour = null; // Will still be null if our override is invalid
-		if (themeOverride.equals("") == false) {
+		if (themeOverride.length() > 0) {
 			try {
 				gThemeColour = themeOverride.toNumberWithBase(16);
 			}
@@ -494,6 +666,13 @@ class CrystalView extends Ui.WatchFace {
 		// Respond now to any settings change since last full draw, as we can now update the full screen.
 		if (mSettingsChangedSinceLastDraw) {
 			onSettingsChangedSinceLastDraw();
+		}
+
+		// Do we have requests pending?
+		var requestsPending = Storage.getValue("RequestsPending");
+		if (requestsPending != null) {
+			Storage.deleteValue("RequestsPending");
+			checkPendingWebRequests();
 		}
 
 		// Clear any partial update clipping.
@@ -717,7 +896,7 @@ class CrystalView extends Ui.WatchFace {
 		// crash in GoalMeter.getSegmentScale().
 		// Sanity check. I've seen weird Invalid Value and "System Error" in DataArea.setGoalValues:48 and :61. Make sure the data is valid
 		if (values[:isValid] && (!(values[:max] instanceof Lang.Number || values[:max] instanceof Lang.Float) || values[:max] < 1)) {
-			/*DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
+			//DEBUG*/ logMessage("values[:max] is invalid=" + values[:max]);
 			values[:max] = 1;
 			values[:isValid] = false;
 		}
@@ -760,7 +939,8 @@ class CrystalView extends Ui.WatchFace {
 			setHideSeconds(false);
 		}
 
-		ReadWeather(false);
+		// ReadWeather(false);
+		checkPendingWebRequests();
 
 		// If watch requires burn-in protection, set flag to false when entering sleep.
 		var settings = Sys.getDeviceSettings();

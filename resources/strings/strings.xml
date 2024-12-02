@@ -127,4 +127,8 @@
 	<string id="TeslaVehicleIndex">Which vehicle to show?</string>
 	<string id="ShowWeatherStationName">Show weather station name?</string>
 	<string id="ComplicationName">Complication Long Name</string>
+
+	<string id="latitude">Latitude</string>
+	<string id="longitude">Longitude</string>
+	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
 </strings>

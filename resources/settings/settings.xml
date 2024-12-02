@@ -258,6 +258,22 @@
 		</settingConfig>
 	</setting>
 
+	<setting propertyKey="@Properties.LastLocationLat" title="@Strings.latitude">
+		<settingConfig type="alphaNumeric" maxLength="16" required="false"/>
+	</setting>
+
+	<setting propertyKey="@Properties.LastLocationLng" title="@Strings.longitude">
+		<settingConfig type="alphaNumeric" maxLength="16" required="false"/>
+	</setting>
+
+	<setting propertyKey="@Properties.ShowWeatherStationName" title="@Strings.ShowWeatherStationName">
+		<settingConfig type="boolean"/>
+	</setting>
+
+	<setting propertyKey="@Properties.OWMKeyOverride" title="@Strings.OWMKeyOverride">
+		<settingConfig type="alphaNumeric" maxLength="32"/>
+	</setting>
+
 	<setting propertyKey="@Properties.TeslaLink" title="@Strings.TeslaLink">
 		<settingConfig type="boolean"/>
 	</setting>
