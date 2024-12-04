@@ -27,6 +27,9 @@ Reviews:
 - Video review in Spanish, by Sergio: https://www.youtube.com/watch?v=TZFhnm_y1MM.
 
 ## Below is what has been added by me (SylvainGa).
+### 2.21.0
+- Added back OpenWeatherMap as a weather service
+
 ### 2.20.0
 - Compiled with CIQ 7.3.1
 - Added recovery time as an option to the move bar. Once it's cleared, recovery is done.

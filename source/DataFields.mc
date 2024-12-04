@@ -835,6 +835,7 @@ class DataFields extends Ui.Drawable {
 					// FIELD_TYPE_HUMIDITY.
 					} else {
 						value = mWeather["humidity"];
+						value = value.format(INTEGER_FORMAT) + "%";
 					}
 				}
 				// Didn't receive weather from Garmin

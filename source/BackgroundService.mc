@@ -12,14 +12,26 @@ class BackgroundService extends Sys.ServiceDelegate {
 
     var _token;
     var _vehicle_id;
-	var _step;
+	var _stop;
 	var _bg_data;
+	var _pendingWebRequests;
 
 	(:background)
 	function initialize() {
-		//DEBUG*/ logMessage("In ServiceDelegate");
+		/*DEBUG*/ logMessage("In ServiceDelegate");
 		Sys.ServiceDelegate.initialize();
-		_step = 0;
+
+		if (_bg_data == null) {
+			_bg_data = Bg.getBackgroundData();
+			if (_bg_data == null) {
+				_bg_data = {};
+			}		
+		}
+		else {
+			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("initialize: _bg_data has keys " + keys);
+		}
+
+		_stop = false;
 
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
@@ -29,27 +41,10 @@ class BackgroundService extends Sys.ServiceDelegate {
 			return;
 		}
 
-		if (_bg_data == null) {
-			_bg_data = Bg.getBackgroundData();
-			if (_bg_data == null) {
-				_bg_data = {};
-			}		
-		}
-		else {
-			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
-		}
-
-		var timeNow = Time.now().value();
-		var createdAt;
-		var expiresIn;
-
 		// Get the unexpired token from the buffer if we have one, otherwise from Properties/Storage
 		var teslaInfo = _bg_data.get("TeslaInfo");
 		if (teslaInfo != null) {
 			_token = teslaInfo.get("AccessToken");
-			createdAt = teslaInfo.get("TokenCreatedAt");
-			expiresIn = teslaInfo.get("TokenExpiresIn");
-
 			_vehicle_id = teslaInfo.get("VehicleID");
 		}
 
@@ -57,35 +52,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 			_vehicle_id = Storage.getValue("TeslaVehicleID");
 		}
 
-		if (_token != null && createdAt != null && expiresIn != null) {
-			if (timeNow > createdAt + expiresIn) {
-				_token = null;
-			}
-		}
-		else {
-			_token = null;
-		}
-
 		if (_token == null) {
-			_token = $.getStringProperty("TeslaAccessToken","");
-			createdAt = Storage.getValue("TeslaTokenCreatedAt");
-			expiresIn = Storage.getValue("TeslaTokenExpiresIn");
+			_token = $.getStringProperty("TeslaAccessToken", null);
 		}
 
-		if (_token != null && createdAt != null && expiresIn != null) {
-			if (timeNow > createdAt + expiresIn) {
-				_token = null;
-			}
-		}
-		else {
-			_token = null;
-		}
-		
-		if (_token != null && _token.length() > 0) {
-			//DEBUG*/ var expireAt = new Time.Moment(createdAt + expiresIn); var clockTime = Gregorian.info(expireAt, Time.FORMAT_MEDIUM); var dateStr = clockTime.hour + ":" + clockTime.min.format("%02d") + ":" + clockTime.sec.format("%02d"); logMessage("initialize:Using token '" + _token.substring(0,10) + "...' which expires at " + dateStr);
-			_token = "Bearer " + _token;
-		}
-		else {
+		if (_token != null && _token.length() == 0) {
 			_token = null;
 		}
 
@@ -99,118 +70,62 @@ class BackgroundService extends Sys.ServiceDelegate {
 	// Pending web request flag will be cleared only once the background data has been successfully received.
 	(:background)
 	function onTemporalEvent() {
-		var pendingWebRequests = Storage.getValue("PendingWebRequests");
-		/*DEBUG*/ logMessage("onTemporalEvent:PendingWebRequests is '" + pendingWebRequests + "' and step is " + _step);
-		/*DEBUG*/ logMessage("onTemporalEvent:_bg_data is '" + _bg_data);
+		_pendingWebRequests = Storage.getValue("PendingWebRequests");
 
-		if (pendingWebRequests != null) {
+		/*DEBUG*/ logMessage("onTemporalEvent:_pendingWebRequests is '" + _pendingWebRequests + "'");
+		/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onTemporalEvent:_bg_data has '" + keys);
+		/*DEBUG*/ if (_token != null) { logMessage("onTemporalEvent:Using token '" + _token.substring(0,20) + "...'"); } else { logMessage("onTemporalEvent:No token");}
 
-			// // 1. City local time.
-			// if (pendingWebRequests["CityLocalTime"] != null) {
-			// 	makeWebRequest(
-			// 		"https://script.google.com/macros/s/AKfycbwPas8x0JMVWRhLaraJSJUcTkdznRifXPDovVZh8mviaf8cTw/exec",
-			// 		{
-			// 			"city" => $.getStringProperty("LocalTimeInCity","")
-			// 		},
-			// 		method(:onReceiveCityLocalTime)
-			// 	);
+		if (_pendingWebRequests != null) {
+			if (_pendingWebRequests["OpenWeatherMapCurrent"] != null) {
+				var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
+				var lat = $.getStringProperty("LastLocationLat","");
+				var lon = $.getStringProperty("LastLocationLng","");
+				/*DEBUG*/ logMessage("onTemporalEvent:OWM with overide=" + owmKeyOverride + " lat=" + lat + " lon=" + lon);
 
-			// } 
+				if (lat.length() > 0 && lon.length() > 0) {
+					makeWebRequest(
+						"https://api.openweathermap.org/data/2.5/weather",
+//						"https://api.openweathermap.org/data/3.0/onecall",
+						{
+							"lat" => lat,
+							"lon" => lon,
 
-			// 2. Weather.
-			if (_step == 0) {
-				if (pendingWebRequests["OpenWeatherMapCurrent"] != null) {
-					var owmKeyOverride = $.getStringProperty("OWMKeyOverride","");
-					var lat = $.getStringProperty("LastLocationLat","");
-					var lon = $.getStringProperty("LastLocationLng","");
-					/*DEBUG*/ logMessage("onTemporalEvent:OWM with overide=" + owmKeyOverride + " lat=" + lat + " lon=" + lon);
+							// Polite request from Vince, developer of the Crystal Watch Face:
+							//
+							// Please do not abuse this API key, or else I will be forced to make thousands of users of Crystal
+							// sign up for their own Open Weather Map free account, and enter their key in settings - a much worse
+							// user experience for everyone.
+							//
+							// Crystal has been registered with OWM on the Open Source Plan, which lifts usage limits for free, so
+							// that everyone benefits. However, these lifted limits only apply to the Current Weather API, and *not*
+							// the One Call API. Usage of this key for the One Call API risks blocking the key for everyone.
+							//
+							// If you intend to use this key in your own app, especially for the One Call API, please create your own
+							// OWM account, and own key. You should be able to apply for the Open Source Plan to benefit from the same
+							// lifted limits as Crystal. Thank you.
+							"appid" => ((owmKeyOverride == null) || (owmKeyOverride.length() == 0)) ? "2651f49cb20de925fc57590709b86ce6" : owmKeyOverride,
 
-					if (lat.length() > 0 && lon.length() > 0) {
-						makeWebRequest(
-							"https://api.openweathermap.org/data/2.5/weather",
-	//						"https://api.openweathermap.org/data/3.0/onecall",
-							{
-								"lat" => lat,
-								"lon" => lon,
-
-								// Polite request from Vince, developer of the Crystal Watch Face:
-								//
-								// Please do not abuse this API key, or else I will be forced to make thousands of users of Crystal
-								// sign up for their own Open Weather Map free account, and enter their key in settings - a much worse
-								// user experience for everyone.
-								//
-								// Crystal has been registered with OWM on the Open Source Plan, which lifts usage limits for free, so
-								// that everyone benefits. However, these lifted limits only apply to the Current Weather API, and *not*
-								// the One Call API. Usage of this key for the One Call API risks blocking the key for everyone.
-								//
-								// If you intend to use this key in your own app, especially for the One Call API, please create your own
-								// OWM account, and own key. You should be able to apply for the Open Source Plan to benefit from the same
-								// lifted limits as Crystal. Thank you.
-								"appid" => ((owmKeyOverride == null) || (owmKeyOverride.length() == 0)) ? "2651f49cb20de925fc57590709b86ce6" : owmKeyOverride,
-
-								"units" => "metric" // Celcius.
-							},
-							method(:onReceiveOpenWeatherMapCurrent)
-						);
-					}
+							"units" => "metric" // Celcius.
+						},
+						method(:onReceiveOpenWeatherMapCurrent)
+					);
 				}
-				else {
-					_step++;
-				}
-			}
-
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
-			// 3. Tesla
-			else if (_step == 1) {
-				if (pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null) {
-					if (!Sys.getDeviceSettings().phoneConnected) {
-						return;
-					}
-						
-					// if (_vehicle_id) {
-					// 	makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id.toString() + "/vehicle_data", null, method(:onReceiveVehicleData));
-					// }
-
-					if (_token == null) {					
-						/*DEBUG*/ logMessage("onTemporalEvent:Generating Access Token");
-						var refreshToken = $.getStringProperty("TeslaRefreshToken","");
-						if (refreshToken != null && refreshToken.length() > 0) {
-							//DEBUG*/ logMessage("onTemporalEvent:Refresh Token is " + refreshToken);
-							makeWebPost(refreshToken, method(:onReceiveToken));
-						} else {
-							/*DEBUG*/ logMessage("onTemporalEvent:No refresh token!");
-							_bg_data.put({ "TeslaInfo" => { "httpErrorTesla" => 401, "httpInternalErrorTesla" => 401 } });
-							//DEBUG*/ _bg_data.put({ "TeslaInfo" => { "httpErrorTesla" => 200, "httpInternalErrorTesla" => 200, "BatteryLevel" => 70, "ChargingState" => "Charging", "InsideTemp" => 21, "PrecondEnabled" => false, "SentryEnabled" => false, "VehicleID" => "12345678" , "VehicleState" => "online"} });
-							/*DEBUG*/ logMessage("onTemporalEvent: Exiting with " + _bg_data);
-							Bg.exit(_bg_data);
-						}
-						return;
-					}
-
-					if (_vehicle_id == null) {
-						/*DEBUG*/ logMessage("onTemporalEvent:Getting vehicles");
-						makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON, method(:onReceiveVehicles));
-						return;
-					}
-
-					//DEBUG*/ logMessage("onTemporalEvent: Getting vehicle data");
-					makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", Comms.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN, method(:onReceiveVehicleData));
-				}
 				else {
-					_step++;
+					doTesla();
 				}
 			}
-			else { // Done, send data!
-				/*DEBUG*/ logMessage("onTemporalEvent: Exiting with " + _bg_data);
-				Bg.exit(_bg_data);
+			else {
+				doTesla();
 			}
-
 //****************************************************************
 //******************** END OF REMVOVED SECTION *******************
 //****************************************************************
-		} else {
+		}
+		else {
 			/*DEBUG*/ logMessage("onTemporalEvent() called with no pending web requests!");
 		}
 	}
@@ -254,26 +169,67 @@ class BackgroundService extends Sys.ServiceDelegate {
 		_bg_data.put("OpenWeatherMapCurrent", result);
 
 		/*DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent: result=" + result);
+//****************************************************************
+//******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
+//****************************************************************
+		doTesla(); // Call back so we get the next steps done right now
+//****************************************************************
+//********               DO THIS INSTEAD                  ********
+//****************************************************************
+		// try {
+		// 	/*DEBUG*/ logMessage("onReceiveVehicles: Exiting with " + _bg_data);
+		// 	Bg.exit(_bg_data);
+		// }
+		// catch (e) {
+		// 	/*DEBUG*/ logMessage("onReceiveVehicles exit assertion " + e);
+		// }
 
-		_step++; // We've processed Tesla data, do next one
-		if (_step < 2) {
-			onTemporalEvent(); // Call back so we get the next steps done right now
-		}
-		else {
-			// Last queue element, exit background process
-			try {
-				/*DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent: Exiting with " + _bg_data);
-				Bg.exit(_bg_data);
-			}
-			catch (e) {
-				/*DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent exit assertion " + e);
-			}
-		}
 	}
 
 //****************************************************************
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
+	(:background)
+	function doTesla()
+	{
+		if (_pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null) {
+			if (_token == null) {
+				/*DEBUG*/ logMessage("doTesla:Generating Access Token");
+				var refreshToken = $.getStringProperty("TeslaRefreshToken","");
+				if (refreshToken != null && refreshToken.length() > 0) {
+					/*DEBUG*/ logMessage("doTesla:Get new Access token with Refresh token at '" + refreshToken.substring(0, 20) + "'...");
+					makeTeslaWebPost(refreshToken, method(:onReceiveToken));
+					return;
+				} else {
+					/*DEBUG*/ logMessage("doTesla:No refresh token!");
+					_bg_data.put("TeslaInfo", { "httpErrorTesla" => 401, "httpInternalErrorTesla" => 401 } );
+					//DEBUG*/ _bg_data.put({ "TeslaInfo" => { "httpErrorTesla" => 200, "httpInternalErrorTesla" => 200, "BatteryLevel" => 70, "ChargingState" => "Charging", "InsideTemp" => 21, "PrecondEnabled" => false, "SentryEnabled" => false, "VehicleID" => "12345678" , "VehicleState" => "online"} });
+				}
+			}
+			else if (_vehicle_id == null) {
+				/*DEBUG*/ logMessage("doTesla:Getting vehicles");
+				makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON, method(:onReceiveVehicles));
+				return;
+			}
+			else {
+				//DEBUG*/ logMessage("doTesla: Getting vehicle data");
+				makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", Comms.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN, method(:onReceiveVehicleData));
+				return;
+			}
+		}
+
+		try {
+			/*DEBUG*/ logMessage("doTesla: Exiting with " + _bg_data);
+			Bg.exit(_bg_data);
+		}
+		catch (e) {
+			/*DEBUG*/ logMessage("doTesla exit assertion " + e);
+		}
+	}
+//****************************************************************
+//******************** END OF REMVOVED SECTION *******************
+//****************************************************************
+
 	(:background)
     function onReceiveToken(responseCode, responseData) {
 		/*DEBUG*/ logMessage("onReceiveToken: " + responseCode);
@@ -285,7 +241,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 			}
 		}
 		else {
-			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveToken: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveToken: _bg_data has keys " + keys);
 		}
 
 		var teslaInfo = _bg_data.get("TeslaInfo");
@@ -294,33 +250,24 @@ class BackgroundService extends Sys.ServiceDelegate {
 		}
 
         if (responseCode == 200) {
-			teslaInfo.put("AccessToken", responseData["access_token"]);
+			_token = responseData["access_token"];
+			/*DEBUG*/ logMessage("onReceiveToken:Has token '" + _token.substring(0,20) + "...', calling back doTesla");
+			teslaInfo.put("AccessToken", _token);
 			teslaInfo.put("RefreshToken", responseData["refresh_token"]);
 			teslaInfo.put("TokenExpiresIn", responseData["expires_in"]);
 			teslaInfo.put("TokenCreatedAt", Time.now().value());
 
 			_bg_data.put("TeslaInfo", teslaInfo);
-			onTemporalEvent(); // Call back so we get the next steps done right now
-			return;
+			doTesla();
         }
-	
-		teslaInfo.put("httpErrorTesla", 401);
-		teslaInfo.put("httpInternalErrorTesla", responseCode);
-
-		_bg_data.put("TeslaInfo", teslaInfo);
-
-		_step++; // We've processed Tesla data and got an error, skip continuing Tesla and move to the next one
-		if (_step < 2) {
-			onTemporalEvent(); // Call back so we get the next steps done right now
-		}
 		else {
-			// Last queue element, exit background process
+			_bg_data.put("TeslaInfo", { "httpErrorTesla" => 401, "httpInternalErrorTesla" => responseCode } );
 			try {
-				/*DEBUG*/ logMessage("onReceiveToken: Exiting with " + _bg_data);
+				/*DEBUG*/ logMessage("onReceiveVehicles: Exiting with " + _bg_data);
 				Bg.exit(_bg_data);
 			}
 			catch (e) {
-				/*DEBUG*/ logMessage("onReceiveToken exit assertion " + e);
+				/*DEBUG*/ logMessage("onReceiveVehicles exit assertion " + e);
 			}
 		}
     }
@@ -336,9 +283,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 			}
 		}
 		else {
-			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveVehicles: Buffer has keys " + keys);
+			/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveVehicles: _bg_data has keys " + keys);
 		}
-
 
 		var teslaInfo = _bg_data.get("TeslaInfo");
 		if (teslaInfo == null) {
@@ -365,7 +311,8 @@ class BackgroundService extends Sys.ServiceDelegate {
 						_vehicle_id = null;
 						vehice_state = "VehicleNotFound";
 					}
-				} else {
+				}
+				else {
 					_vehicle_id = null;
 					vehice_state = "NoVehicles";
 				}
@@ -378,29 +325,23 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo.put("VehicleState",vehice_state);
 
 			_bg_data.put("TeslaInfo", teslaInfo);
-			_step++;
-			onTemporalEvent(); // Call back so we get the next steps done right now
-			return;
+
+			/*DEBUG*/ logMessage("onReceiveVehicles:vehice_state=" + vehice_state);
+
+			if (_vehicle_id != null) {
+				doTesla();
+				return;
+			}
         }
 
-		teslaInfo.put("httpErrorTesla", (_vehicle_id == null ? 404 : 408));
-		teslaInfo.put("httpInternalErrorTesla", responseCode);
+		_bg_data.put("TeslaInfo", { "httpErrorTesla" => (_vehicle_id == null ? 404 : 408), "httpInternalErrorTesla" => responseCode } );
 
-		_bg_data.put("TeslaInfo", teslaInfo);
-
-		_step++; // We've processed Tesla data, do next one
-		if (_step < 2) {
-			onTemporalEvent(); // Call back so we get the next steps done right now
+		try {
+			/*DEBUG*/ logMessage("onReceiveVehicles: Exiting with " + _bg_data);
+			Bg.exit(_bg_data);
 		}
-		else {
-			// Last queue element, exit background process
-			try {
-				/*DEBUG*/ logMessage("onReceiveVehicles: Exiting with " + _bg_data);
-				Bg.exit(_bg_data);
-			}
-			catch (e) {
-				/*DEBUG*/ logMessage("onReceiveVehicles exit assertion " + e);
-			}
+		catch (e) {
+			/*DEBUG*/ logMessage("onReceiveVehicles exit assertion " + e);
 		}
     }
 
@@ -415,7 +356,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 				_bg_data = {};
 			}
 			else {
-				/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveVehicleData: Buffer has keys " + keys);
+				/*DEBUG*/ var keys = _bg_data.keys(); logMessage("onReceiveVehicleData: _bg_data has keys " + keys);
 			}
 		}
 
@@ -456,51 +397,50 @@ class BackgroundService extends Sys.ServiceDelegate {
             teslaInfo.put("PrecondEnabled", $.validateString(str.substring(0, posEnd), "").equals("true"));
 
 			_bg_data.put("TeslaInfo", teslaInfo);
-			_step++;
-			onTemporalEvent(); // Call back so we get the next steps done right now
-			return;
 	    }
 		// If no vehicle (rare) or can't contact (much more frequent) is received, try to get a new vehicle (404) or retrieve its state (408)
 		else if (responseCode == 404 || responseCode == 408) {
 			// If Tesla can't find our vehicle by its ID, reset it and maybe we'll have better luck next time
 			if (responseCode == 404) {
-				teslaInfo.put("VehicleID", null);
 				_vehicle_id = null;
+				_bg_data.put("TeslaInfo", { "httpErrorTesla" => 404, "httpInternalErrorTesla" => responseCode, "VehicleID" => null } );
 			}
-			/*DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData");
-			makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON, method(:onReceiveVehicles));
-			return;
+			/*DEBUG*/ logMessage("Requesting vehicles from onReceiveVehicleData with _stop at " + _stop);
+			if (_stop == false) { // We we're true, we already came back here for the next lines so don't get into an infinite loop
+				_stop = true; // Don't get vehicle_data anymore if we fail again
+				makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/products?orders=true", Comms.HTTP_RESPONSE_CONTENT_TYPE_JSON, method(:onReceiveVehicles));
+				return;
+			}
 	    }
 		// Our access token has expired, ask for a new one
 		else if (responseCode == 401) {
 			var refreshToken = $.getStringProperty("TeslaRefreshToken","");
 			if (refreshToken != null) {
-				/*DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData");
-				makeWebPost(refreshToken, method(:onReceiveToken));
-				return;
+				/*DEBUG*/ logMessage("Requesting access token from onReceiveVehicleData with _stop at " + _stop);
+				if (_stop == false) { // We we're true, we already came back here for the next lines so don't get into an infinite loop
+					_stop = true; // Don't get vehicle_data anymore if we fail again
+					makeTeslaWebPost(refreshToken, method(:onReceiveToken));
+					return;
+				}
+				else {
+					_bg_data.put("TeslaInfo", { "httpErrorTesla" => 401, "httpInternalErrorTesla" => responseCode } );
+				}
 			}
 		}
 
 		_bg_data.put("TeslaInfo", teslaInfo);
 
-		_step++; // We've processed Tesla data, do next one
-		if (_step < 2) {
-			onTemporalEvent(); // Call back so we get the next steps done right now
+		try {
+			/*DEBUG*/ logMessage("onReceiveVehicleData: Exiting with " + _bg_data);
+			Bg.exit(_bg_data);
 		}
-		else {
-			// Last queue element, exit background process
-			try {
-				/*DEBUG*/ logMessage("onReceiveVehicleData: Exiting with " + _bg_data);
-				Bg.exit(_bg_data);
-			}
-			catch (e) {
-				/*DEBUG*/ logMessage("onReceiveVehicleData exit assertion " + e);
-			}
+		catch (e) {
+			/*DEBUG*/ logMessage("onReceiveVehicleData exit assertion " + e);
 		}
     }
 
 	(:background)
-    function makeWebPost(token, notify) {
+    function makeTeslaWebPost(token, notify) {
         var url = "https://" + $.getStringProperty("TeslaServerAUTHLocation","") + "/oauth2/v3/token";
         Comms.makeWebRequest(
             url,
@@ -523,7 +463,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		var options = {
             :method => Comms.HTTP_REQUEST_METHOD_GET,
             :headers => {
-              		"Authorization" => _token,
+              		"Authorization" => "Bearer " + _token,
 					"User-Agent" => "Crystal-Tesla for Garmin",
 					},
             :responseType => method

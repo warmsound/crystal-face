@@ -127,6 +127,7 @@ class CrystalApp extends App.AppBase {
 			// checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		}
 
+		/*DEBUG*/ logMessage("onBackgroundData:Flag requests are pending");
 		Storage.setValue("RequestsPending", true);
 		Ui.requestUpdate();
 	}
