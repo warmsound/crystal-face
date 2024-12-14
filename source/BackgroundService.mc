@@ -368,7 +368,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 		teslaInfo.put("httpErrorTesla", responseCode);
 
         if (responseCode == 200) {
-			teslaInfo.remove("httpInternalErrorTesla");
+			teslaInfo.put("httpInternalErrorTesla", 200);
 			teslaInfo.put("VehicleState", "online");
 
             var pos = responseData.find("battery_level");
@@ -426,6 +426,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 					_bg_data.put("TeslaInfo", { "httpErrorTesla" => 401, "httpInternalErrorTesla" => responseCode } );
 				}
 			}
+		}
+		else {
+			_bg_data.put("TeslaInfo", { "httpErrorTesla" => responseCode, "httpInternalErrorTesla" => responseCode } );
 		}
 
 		_bg_data.put("TeslaInfo", teslaInfo);
