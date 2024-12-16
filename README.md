@@ -30,6 +30,7 @@ Reviews:
 ### 2.21.0
 - Compiled with CIQ 7.4.3
 - Added back OpenWeatherMap as a weather service
+- Readded Fenix 8 and E
 
 ### 2.20.0
 - Compiled with CIQ 7.3.1
