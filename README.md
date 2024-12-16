@@ -28,6 +28,7 @@ Reviews:
 
 ## Below is what has been added by me (SylvainGa).
 ### 2.21.0
+- Compiled with CIQ 7.4.3
 - Added back OpenWeatherMap as a weather service
 
 ### 2.20.0
