@@ -96,42 +96,50 @@ class MoveBar extends Ui.Drawable {
 				}
 			}
 
-			if (value == null) {
+			var t = (info has :timeToRecovery);
+			if (value == null && t == true) {
 				value = info.timeToRecovery; // Info time to recovery is in hours
 			}
 
-			//value = 12;
-			currentMoveBarLevel = ((value == null || value < 0) ? 0 : value) / 12; // Each bar (up to 5 bars) is 12 hours
-			if (value > 0) {
-				currentMoveBarLevel++; // So only when the recovery time is zero does it display no move bars.
+			if (value != null) {
+				//value = 12;
+				currentMoveBarLevel = ((value == null || value < 0) ? 0 : value) / 12; // Each bar (up to 5 bars) is 12 hours
+				if (value > 0) {
+					currentMoveBarLevel++; // So only when the recovery time is zero does it display no move bars.
+				}
+				if (currentMoveBarLevel > 5) {
+					currentMoveBarLevel = 5;
+				}
+				// 0 Move bar : Times up!
+				// 1 Move bar : Between 1 and 11 hours
+				// 2 Move bar : Between 12 and 23 hours
+				// 3 Move bar : Between 24 and 35 hours
+				// 4 Move bar : Between 36 and 47 hours
+				// 5 Move bar : 48 and more hours
 			}
-			if (currentMoveBarLevel > 5) {
-				currentMoveBarLevel = 5;
+			else {
+				currentMoveBarLevel = null;
 			}
-			// 0 Move bar : Times up!
-			// 1 Move bar : Between 1 and 11 hours
-			// 2 Move bar : Between 12 and 23 hours
-			// 3 Move bar : Between 24 and 35 hours
-			// 4 Move bar : Between 36 and 47 hours
-			// 5 Move bar : 48 and more hours
 		}
 		else {
 			currentMoveBarLevel = info.moveBarLevel;
 		}
 
-		// Calculate current width here, now that DC is accessible.
-		// Balance head/tail positions in full width mode.
-		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
+		if (currentMoveBarLevel	!= null) {
+			// Calculate current width here, now that DC is accessible.
+			// Balance head/tail positions in full width mode.
+			mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
 
-		// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
-		if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
-			drawBuffered(dc, currentMoveBarLevel);
-		} else {
-			//drawUnbuffered(dc, currentMoveBarLevel);
+			// #21 Force unbuffered drawing on fr735xt (CIQ 2.x) to reduce memory usage.
+			if ((Graphics has :BufferedBitmap) && (Sys.getDeviceSettings().screenShape != Sys.SCREEN_SHAPE_SEMI_ROUND)) {
+				drawBuffered(dc, currentMoveBarLevel);
+			} else {
+				//drawUnbuffered(dc, currentMoveBarLevel);
 
-			// Draw bars vertically centred on mY.
-			drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);
-		}		
+				// Draw bars vertically centred on mY.
+				drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);
+			}
+		}
 	}
 
 	(:buffered)
