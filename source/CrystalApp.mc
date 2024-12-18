@@ -100,6 +100,12 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests = {};
 		}
 
+		var str = data.toString();
+		
+		if (data.isEmpty()) {
+			/*DEBUG*/ logMessage("onBackgroundData:Empty data");
+			return;
+		}
 		var type = data.keys()[0]; // Type of received data.
 		var storedData = Storage.getValue(type);
 		if (storedData == null) {
