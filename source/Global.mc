@@ -531,7 +531,7 @@ function doTeslaComplication(complicationValue) {
 		teslaInfo.put("SentryEnabled", $.validateBoolean(arrayInfo[4], "")); // Yes, putting an empty string instead of a Boolean. The writeBatteryLevel will know it means I don't have one
 		teslaInfo.put("PrecondEnabled", $.validateBoolean(arrayInfo[5], "")); // Yes, putting an empty string instead of a Boolean. The writeBatteryLevel will know it means I don't have one
 		teslaInfo.put("VehicleState", $.validateString(arrayInfo[6], ""));
-
+		teslaInfo.put("NewData", true);
 		Storage.setValue("TeslaInfo", teslaInfo);
 	}
 }

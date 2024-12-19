@@ -331,7 +331,7 @@ class CrystalView extends Ui.WatchFace {
 					// Existing data is older than 5 mins.
 					// TODO: Consider requesting weather at sunrise/sunset to update weather icon.
 					if ((Time.now().value() > (owmCurrent["dt"] + 300)) ||
-					  true ||	//TODO Remove
+					  //true ||	//TODO Remove
   					  // Existing data not for this location.
 					  // Not a great test, as a degree of longitude varies betwee 69 (equator) and 0 (pole) miles, but simpler than
 					  // true distance calculation. 0.02 degree of latitude is just over a mile.

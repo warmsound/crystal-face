@@ -29,8 +29,9 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 ### 2.21.0
 - Compiled with CIQ 7.4.3
-- Added back OpenWeatherMap as a weather service
+- Added back OpenWeatherMap as a weather service. This service, unlike Garmin, can display the weather station but relies on the last activity with GPS or default latitude/longitude entered in the app parameters for location.
 - Readded Fenix 8 and E
+- Fixed a crash when the Tesla data is returned as a dictionary instead of a string, although I requested it to be a string
 
 ### 2.20.0
 - Compiled with CIQ 7.3.1

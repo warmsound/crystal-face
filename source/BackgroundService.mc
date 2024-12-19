@@ -37,7 +37,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 //******** REMVOVED THIS SECTION IF TESLA CODE NOT WANTED ********
 //****************************************************************
 		if (Storage.getValue("Tesla") == null || gTeslaComplication == true) {
-			/*DEBUG*/ logMessage("returning because Storage.getValue(\"Tesla\") is " + Storage.getValue("Tesla") + " or gTeslaComplication is " + gTeslaComplication);
+			/*DEBUG*/ logMessage("initialize:Not doing Tesla because Storage.getValue(\"Tesla\") is null (it's " + Storage.getValue("Tesla") + ") or gTeslaComplication is true (it's " + gTeslaComplication + ")");
 			return;
 		}
 
@@ -134,7 +134,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	function onReceiveOpenWeatherMapCurrent(responseCode, data)
 	{
 		var result;
-		
+
 		/*DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent responseCode: " + responseCode);
 		//DEBUG*/ logMessage("onReceiveOpenWeatherMapCurrent data: " + data);
 
@@ -192,7 +192,7 @@ class BackgroundService extends Sys.ServiceDelegate {
 	(:background)
 	function doTesla()
 	{
-		if (_pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null) {
+		if (_pendingWebRequests["TeslaInfo"] != null && Storage.getValue("Tesla") != null && gTeslaComplication != true) {
 			if (_token == null) {
 				/*DEBUG*/ logMessage("doTesla:Generating Access Token");
 				var refreshToken = $.getStringProperty("TeslaRefreshToken","");
@@ -216,6 +216,9 @@ class BackgroundService extends Sys.ServiceDelegate {
 				makeTeslaWebRequest("https://" + $.getStringProperty("TeslaServerAPILocation","") + "/api/1/vehicles/" + _vehicle_id + "/vehicle_data", Comms.HTTP_RESPONSE_CONTENT_TYPE_TEXT_PLAIN, method(:onReceiveVehicleData));
 				return;
 			}
+		}
+		else {
+			/*DEBUG*/ logMessage("doTesla:Not doing Tesla because _pendingWebRequests[\"TeslaInfo\"] is null (it's " + _pendingWebRequests["TeslaInfo"] + ") Storage.getValue(\"Tesla\") is null (it's " + Storage.getValue("Tesla") + ") or gTeslaComplication is true (it's " + gTeslaComplication + ")");
 		}
 
 		try {
@@ -371,31 +374,39 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo.put("httpInternalErrorTesla", 200);
 			teslaInfo.put("VehicleState", "online");
 
-            var pos = responseData.find("battery_level");
-            var str = responseData.substring(pos + 15, pos + 20);
-            var posEnd = str.find(",");
-            teslaInfo.put("BatteryLevel", $.validateNumber(str.substring(0, posEnd), 0));
+            if (responseData instanceof Lang.Dictionary) {
+				teslaInfo.put("BatteryLevel", $.validateNumber(response.get("charge_state").get("battery_level"), 0));
+				teslaInfo.put("ChargingState", $.validateString(response.get("charge_state").get("charging_state"), ""));
+				teslaInfo.put("PrecondEnabled", $.validateBoolean(response.get("charge_state").get("preconditioning_enabled"), false));
+				teslaInfo.put("InsideTemp", $.validateNumber(response.get("climate_state").get("inside_temp"), 0));
+				teslaInfo.put("SentryEnabled", $.validateBoolean(response.get("vehicle_state").get("sentry_mode"), false));
+			}
+            else if (responseData instanceof Lang.String) {
+				var pos = responseData.find("battery_level");
+				var str = responseData.substring(pos + 15, pos + 20);
+				var posEnd = str.find(",");
+				teslaInfo.put("BatteryLevel", $.validateNumber(str.substring(0, posEnd), 0));
 
-            pos = responseData.find("charging_state");
-            str = responseData.substring(pos + 17, pos + 37);
-            posEnd = str.find("\"");
-            teslaInfo.put("ChargingState", $.validateString(str.substring(0, posEnd), ""));
+				pos = responseData.find("charging_state");
+				str = responseData.substring(pos + 17, pos + 37);
+				posEnd = str.find("\"");
+				teslaInfo.put("ChargingState", $.validateString(str.substring(0, posEnd), ""));
 
-            pos = responseData.find("inside_temp");
-            str = responseData.substring(pos + 13, pos + 20);
-            posEnd = str.find(",");
-            teslaInfo.put("InsideTemp", $.validateNumber(str.substring(0, posEnd), 0));
+				pos = responseData.find("inside_temp");
+				str = responseData.substring(pos + 13, pos + 20);
+				posEnd = str.find(",");
+				teslaInfo.put("InsideTemp", $.validateNumber(str.substring(0, posEnd), 0));
 
-            pos = responseData.find("sentry_mode");
-            str = responseData.substring(pos + 13, pos + 20);
-            posEnd = str.find(",");
-            teslaInfo.put("SentryEnabled", $.validateString(str.substring(0, posEnd), "").equals("true"));
+				pos = responseData.find("sentry_mode");
+				str = responseData.substring(pos + 13, pos + 20);
+				posEnd = str.find(",");
+				teslaInfo.put("SentryEnabled", $.validateString(str.substring(0, posEnd), "").equals("true"));
 
-            pos = responseData.find("preconditioning_enabled");
-            str = responseData.substring(pos + 25, pos + 32);
-            posEnd = str.find(",");
-            teslaInfo.put("PrecondEnabled", $.validateString(str.substring(0, posEnd), "").equals("true"));
-
+				pos = responseData.find("preconditioning_enabled");
+				str = responseData.substring(pos + 25, pos + 32);
+				posEnd = str.find(",");
+				teslaInfo.put("PrecondEnabled", $.validateString(str.substring(0, posEnd), "").equals("true"));
+			}
 			_bg_data.put("TeslaInfo", teslaInfo);
 	    }
 		// If no vehicle (rare) or can't contact (much more frequent) is received, try to get a new vehicle (404) or retrieve its state (408)

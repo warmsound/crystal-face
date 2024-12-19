@@ -813,6 +813,7 @@ class DataFields extends Ui.Drawable {
 				if (mWeather == null || Storage.getValue("NewWeatherInfo") != null) { 
 					mWeather = Storage.getValue("OpenWeatherMapCurrent");
 					Storage.deleteValue("NewWeatherInfo");
+					/*DEBUG*/ logMessage("getValueForFieldType:new weather data: " + mWeather);
 				}
 
 				// Stored weather data available.
@@ -847,6 +848,8 @@ class DataFields extends Ui.Drawable {
 						stale = true;
 					}
 				}
+
+				/*DEBUG*/ logMessage("getValueForFieldType:Weather value is " + value + " stale is " + stale);
 				break;
 
 			case FIELD_TYPE_PRESSURE:

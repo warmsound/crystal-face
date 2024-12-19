@@ -100,40 +100,42 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests = {};
 		}
 
-		var str = data.toString();
-		
 		if (data.isEmpty()) {
 			/*DEBUG*/ logMessage("onBackgroundData:Empty data");
 			return;
 		}
-		var type = data.keys()[0]; // Type of received data.
-		var storedData = Storage.getValue(type);
-		if (storedData == null) {
-			storedData = {};
-		}
-		var receivedData = data[type]; // The actual data received: strip away type key.
-		
-		// Do process the data if what we got was an error
-		if (receivedData["httpError"] == null) {
-			// New data received: clear pendingWebRequests flag and overwrite stored data that with what we received, leaving others intact.
-			// storedData = receivedData;
-			var keys = receivedData.keys();
-			var values = receivedData.values();
-			for (var i = 0; i < keys.size(); i++) {
-				storedData.put(keys[i], values[i]);
+
+		for (var keyIndex = 0; keyIndex < data.size(); keyIndex++) {
+			var type = data.keys()[keyIndex]; // Type of received data.
+			var storedData = Storage.getValue(type);
+			if (storedData == null) {
+				storedData = {};
 			}
-			storedData.put("NewData", true);
+			var receivedData = data[type]; // The actual data received: strip away type key.
+			
+			// Do process the data if what we got was an error
+			if (receivedData["httpError"] == null) {
+				// New data received: clear pendingWebRequests flag and overwrite stored data that with what we received, leaving others intact.
+				// storedData = receivedData;
+				var keys = receivedData.keys();
+				var values = receivedData.values();
+				for (var i = 0; i < keys.size(); i++) {
+					storedData.put(keys[i], values[i]);
+				}
 
-			pendingWebRequests.remove(type);
+				storedData.put("NewData", true);
+				Storage.setValue(type, storedData);
 
-			Storage.setValue("PendingWebRequests", pendingWebRequests);
-			Storage.setValue(type, storedData);
-	
-			// Don't do this now as it adds too much code to the background process
+				pendingWebRequests.remove(type);
+			}
+
+			// No benifit of doing this now as it adds code to the background process that can be done in the main view instead
 			// checkPendingWebRequests(); // We just got new data, process them right away before displaying
 		}
 
-		/*DEBUG*/ logMessage("onBackgroundData:Flag requests are pending");
+		Storage.setValue("PendingWebRequests", pendingWebRequests);
+
+		/*DEBUG*/ logMessage("onBackgroundData:Flag that requests are pending");
 		Storage.setValue("RequestsPending", true);
 		Ui.requestUpdate();
 	}
