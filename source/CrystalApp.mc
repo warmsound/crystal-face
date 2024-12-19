@@ -100,6 +100,11 @@ class CrystalApp extends App.AppBase {
 			pendingWebRequests = {};
 		}
 
+		if (data == null) {
+			/*DEBUG*/ logMessage("onBackgroundData:data is null");
+			return;
+		}
+
 		if (data.isEmpty()) {
 			/*DEBUG*/ logMessage("onBackgroundData:Empty data");
 			return;
