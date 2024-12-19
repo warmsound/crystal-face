@@ -375,11 +375,11 @@ class BackgroundService extends Sys.ServiceDelegate {
 			teslaInfo.put("VehicleState", "online");
 
             if (responseData instanceof Lang.Dictionary) {
-				teslaInfo.put("BatteryLevel", $.validateNumber(response.get("charge_state").get("battery_level"), 0));
-				teslaInfo.put("ChargingState", $.validateString(response.get("charge_state").get("charging_state"), ""));
-				teslaInfo.put("PrecondEnabled", $.validateBoolean(response.get("charge_state").get("preconditioning_enabled"), false));
-				teslaInfo.put("InsideTemp", $.validateNumber(response.get("climate_state").get("inside_temp"), 0));
-				teslaInfo.put("SentryEnabled", $.validateBoolean(response.get("vehicle_state").get("sentry_mode"), false));
+				teslaInfo.put("BatteryLevel", $.validateNumber(responseData.get("response").get("charge_state").get("battery_level"), 0));
+				teslaInfo.put("ChargingState", $.validateString(responseData.get("response").get("charge_state").get("charging_state"), ""));
+				teslaInfo.put("PrecondEnabled", $.validateBoolean(responseData.get("response").get("charge_state").get("preconditioning_enabled"), false));
+				teslaInfo.put("InsideTemp", $.validateNumber(responseData.get("response").get("climate_state").get("inside_temp"), 0));
+				teslaInfo.put("SentryEnabled", $.validateBoolean(responseData.get("response").get("vehicle_state").get("sentry_mode"), false));
 			}
             else if (responseData instanceof Lang.String) {
 				var pos = responseData.find("battery_level");

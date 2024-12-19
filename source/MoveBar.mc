@@ -96,8 +96,8 @@ class MoveBar extends Ui.Drawable {
 				}
 			}
 
-			var t = (info has :timeToRecovery);
-			if (value == null && t == true) {
+			//var t = (info has :timeToRecovery);
+			if (value == null && (info has :timeToRecovery)) {
 				value = info.timeToRecovery; // Info time to recovery is in hours
 			}
 

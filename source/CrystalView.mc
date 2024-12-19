@@ -109,6 +109,8 @@ class CrystalView extends Ui.WatchFace {
 		mGoalTypes[1] = {};
 
 		mMoveBarType = {};
+
+		/*DEBUG*/ logMessage("View:Initialize");
 	}
 
 	function burnInProtectionIsOrWasActive() {

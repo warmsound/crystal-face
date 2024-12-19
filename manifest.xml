@@ -4,6 +4,7 @@
     <iq:application entry="CrystalApp" id="0969495b-a01f-4078-bc0f-f038ec98844d" launcherIcon="@Drawables.LauncherIcon" minSdkVersion="2.4.0" name="@Strings.AppName" type="watchface" version="2.21.0">
         <iq:products>
             <iq:product id="fenix7spro"/>
+            <iq:product id="venu2plus"/>
             <iq:product id="vivoactive4s"/>
         </iq:products>
         <iq:permissions>
