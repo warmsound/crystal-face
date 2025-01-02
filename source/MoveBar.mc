@@ -24,7 +24,7 @@ class MoveBar extends Ui.Drawable {
 	// Either mBaseWidth, or a calculated full width.
 	private var mCurrentWidth;
 
-	private var mMoveBarStyle;
+	private var mMoveBarStyle = $.getIntProperty("MoveBarStyle", 0);
 
 	// private enum /* MOVE_BAR_STYLE */ {
 	// 	ALL_SEGMENTS,
@@ -96,7 +96,6 @@ class MoveBar extends Ui.Drawable {
 				}
 			}
 
-			//var t = (info has :timeToRecovery);
 			if (value == null && (info has :timeToRecovery)) {
 				value = info.timeToRecovery; // Info time to recovery is in hours
 			}
