@@ -29,9 +29,9 @@ Reviews:
 ## Below is what has been added by me (SylvainGa).
 ### 2.21.0
 - Compiled with CIQ 7.4.3
-- By requests, added back OpenWeatherMap as a weather service. This service, unlike Garmin, can display the weather station but relies on the last activity with GPS or default latitude/longitude entered in the app parameters for location (fallback in case there is no activity with GPS). Clear the "OpenWeatherMap API Key Override" field in the Settings to revert to Garmin Weather
+- By requests, OpenWeatherMap IS BACK! (as a weather service). This service, unlike Garmin, can display the weather station but relies on the last activity with GPS or default latitude/longitude entered in the app parameters for location (fallback in case there is no activity with GPS). Clear the "OpenWeatherMap API Key Override" field in the Settings to revert to Garmin Weather (the default is back to OWM). Like before, this weather data is pulled at intervals (5 minutes). 
 - Fixed a crash when the Tesla data is returned as a dictionary instead of a string, although I requested it to be a string
-- Fixed moveBar to no stay hidden after coming back from AOD.
+- Fixed moveBar to not stay hidden after coming back from AOD.
 
 ### 2.20.2
 - Fixed what seems a compiler error when timeToRecovery isn't available and yet, the compiler says it is and causes a crash because of that
