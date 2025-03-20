@@ -103,5 +103,8 @@ descentmk351mm.sourcePath = $(descentmk351mm.sourcePath);always-on-source
 epix2pro51mm.sourcePath = $(epix2pro51mm.sourcePath);always-on-source
 fr965.sourcePath = $(fr965.sourcePath);always-on-source
 venu3.sourcePath = $(venu3.sourcePath);always-on-source
+fenix843mm.sourcePath = $(fenix843mm.sourcePath);always-on-source
+fenix847mm.sourcePath = $(fenix847mm.sourcePath);always-on-source
+fenixe.sourcePath = $(fenixe.sourcePath);always-on-source
 
 rectangle-320x360.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators
