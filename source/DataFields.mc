@@ -647,7 +647,7 @@ class DataFields extends Ui.Drawable {
 	* @return {Array} Returns array of length 2 with sunrise and sunset as floats.
 	*                 Returns array with [null, -1] if the sun never rises, and [-1, null] if the sun never sets.
 	*/
-	private function getSunTimes(lat, lng, tz, tomorrow) as Array<Number> {
+	private function getSunTimes(lat, lng, tz, tomorrow) as Array<Number?> {
 
 		// Use double precision where possible, as floating point errors can affect result by minutes.
 		lat = lat.toDouble();
