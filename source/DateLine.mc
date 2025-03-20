@@ -140,7 +140,7 @@ class DateLine extends Ui.Drawable {
 	(:single_line_date)
 	// function drawSingleLine(dc, day) {
 	function drawDate(dc, day) {
-		mX; mYLine2; // Prevent compiler warning.
+		mX = mX; mYLine2 = mYLine2; // Prevent compiler warning.
 
 		var dateString = Lang.format("$1$ $2$ $3$", [mDayOfWeekString, day, mMonthString]);
 		var length = dc.getTextWidthInPixels(dateString, mFont);

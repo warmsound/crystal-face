@@ -75,7 +75,6 @@ class MoveBar extends Ui.Drawable {
 		mCurrentWidth = mIsFullWidth ? (dc.getWidth() - (2 * mX) + mTailWidth) : mBaseWidth;
 
 		// drawUnbuffered(dc, currentMoveBarLevel);
-		mBufferNeedsRecreate; // Prevent compiler warning.
 
 		// Draw bars vertically centred on mY.
 		drawBars(dc, mX, mY - (mHeight / 2),  currentMoveBarLevel);

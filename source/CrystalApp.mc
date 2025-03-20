@@ -71,7 +71,7 @@ function deleteStorageValue(key as PropertyKeyType) as Void {
 class CrystalApp extends App.AppBase {
 
 	var mView;
-	var mFieldTypes as Array<Number> = new [3];
+	var mFieldTypes as Array<Number?> = new [3];
 
 	function initialize() {
 		AppBase.initialize();
