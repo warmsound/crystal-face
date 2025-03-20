@@ -106,5 +106,7 @@ venu3.sourcePath = $(venu3.sourcePath);always-on-source
 fenix843mm.sourcePath = $(fenix843mm.sourcePath);always-on-source
 fenix847mm.sourcePath = $(fenix847mm.sourcePath);always-on-source
 fenixe.sourcePath = $(fenixe.sourcePath);always-on-source
+fr165.sourcePath = $(fr165.sourcePath);always-on-source
+fr165m.sourcePath = $(fr165m.sourcePath);always-on-source
 
 rectangle-320x360.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators
