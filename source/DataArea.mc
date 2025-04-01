@@ -76,6 +76,7 @@ class DataArea extends Ui.Drawable {
 		drawGoalIcon(dc, mGoalIconRightX, mRightGoalType, mRightGoalIsValid, Graphics.TEXT_JUSTIFY_RIGHT);
 
 		var city = getPropertyValue("LocalTimeInCity");
+		var shouldDrawGoalValues = true;
 
 		// #78 Setting with value of empty string may cause corresponding property to be null.
 		if ((city != null) && (city.length() != 0)) {
@@ -87,17 +88,6 @@ class DataArea extends Ui.Drawable {
 			if ((cityLocalTime != null) && (cityLocalTime["city"] != null)) {
 				city = cityLocalTime["city"];
 			}
-
-			// Time zone 1 city.
-			dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
-			dc.drawText(
-				locX + (width / 2),
-				mRow1Y,
-				gNormalFont,
-				// Limit string length.
-				city.substring(0, 10),
-				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
-			);
 
 			// Time zone 1 time.
 			var time;
@@ -123,11 +113,26 @@ class DataArea extends Ui.Drawable {
 					var localGmtOffset = Sys.getClockTime().timeZoneOffset;
 					localGmtOffset = new Time.Duration(localGmtOffset);
 
-					// (Local time) - (Local GMT offset) + (Time zone GMT offset)
-					time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
-					time = Gregorian.info(time, Time.FORMAT_SHORT);
-					time = App.getApp().getFormattedTime(time.hour, time.min) as FormattedTime;
-					time = time[:hour] + ":" + time[:min] + time[:amPm]; 
+					if (timeZoneGmtOffset.compare(localGmtOffset) != 0) {
+						// Time zone 1 city.
+						dc.setColor(gMonoDarkColour, Gfx.COLOR_TRANSPARENT);
+						dc.drawText(
+							locX + (width / 2),
+							mRow1Y,
+							gNormalFont,
+							// Limit string length.
+							city.substring(0, 10),
+							Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
+						);
+						// (Local time) - (Local GMT offset) + (Time zone GMT offset)
+						time = Time.now().subtract(localGmtOffset).add(timeZoneGmtOffset);
+						time = Gregorian.info(time, Time.FORMAT_SHORT);
+						time = App.getApp().getFormattedTime(time.hour, time.min) as FormattedTime;
+						time = time[:hour] + ":" + time[:min] + time[:amPm]; 
+						shouldDrawGoalValues = false;
+					} else {
+						time = "";
+					}
 				}
 
 			// Awaiting response to web request sent by BackgroundService.
@@ -144,7 +149,8 @@ class DataArea extends Ui.Drawable {
 				Graphics.TEXT_JUSTIFY_CENTER | Graphics.TEXT_JUSTIFY_VCENTER
 			);
 
-		} else {
+		}
+		if (shouldDrawGoalValues) {
 			drawGoalValues(dc, locX, mLeftGoalCurrent, mLeftGoalMax, Graphics.TEXT_JUSTIFY_LEFT);
 			drawGoalValues(dc, locX + width, mRightGoalCurrent, mRightGoalMax, Graphics.TEXT_JUSTIFY_RIGHT);
 		}
