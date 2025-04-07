@@ -47,14 +47,16 @@
 
 		<drawable id="Time" class="ThickThinTime">
 			<param name="adjustY">-4</param>
-			<param name="secondsX">272</param>
-			<param name="secondsY">234</param>
+			<param name="secondsX">320</param>
+			<param name="secondsY">190</param>
+			<param name="amPmOffsetX">-2</param>
+			<param name="amPmOffsetY">7</param>
 		</drawable>
 
 		<drawable id="MoveBar" class="MoveBar">
 			<param name="x">77</param>
 			<param name="y">265</param>
-			<param name="width">180</param>
+			<param name="width">240</param>
 			<param name="height">13</param>
 			<param name="separator">4</param>
 		</drawable>
@@ -68,8 +70,8 @@
 			<param name="adjustY">-4</param>
 			<param name="timeY">169</param>
 			<param name="lineY">217</param>
-			<!-- Allow room for Chinese date -->	
-			<param name="lineWidth">230</param>
+			<!-- Allow room for Chinese date -->
+			<param name="lineWidth">280</param>
 			<!-- param name="lineStroke">2</param -->	
 			<param name="dataY">241</param>
 			<param name="dataLeft">95</param>

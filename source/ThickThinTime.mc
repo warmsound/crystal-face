@@ -11,6 +11,7 @@ class ThickThinTime extends Ui.Drawable {
 	// "y" parameter passed to drawText(), read from layout.xml.
 	private var mSecondsY;
 
+	private var mAdjustX = 0;
 	// Wide rectangle: time should be moved up slightly to centre within available space.
 	private var mAdjustY = 0;
 
@@ -23,10 +24,12 @@ class ThickThinTime extends Ui.Drawable {
 	private var mSecondsClipRectHeight;
 
 	private var mHideSeconds = false;
-	private var AM_PM_X_OFFSET = 2;
+	private var mAmPmOffsetX = 2;
+	private var mAmPmOffsetY = 0;
 
 	// #10 Adjust position of seconds to compensate for hidden hours leading zero.
 	private var mSecondsClipXAdjust = 0;
+	private var mHourLeadingZeroWidth = 0;
 
 	typedef ThickThinTimeParams as {
 		:secondsX as Number,
@@ -41,12 +44,18 @@ class ThickThinTime extends Ui.Drawable {
 	function initialize(params as ThickThinTimeParams) {
 		Drawable.initialize(params);
 
+		if (params[:adjustX] != null) {
+			mAdjustX = params[:adjustX];
+		}
 		if (params[:adjustY] != null) {
 			mAdjustY = params[:adjustY];
 		}
 
-		if (params[:amPmOffset] != null) {
-			AM_PM_X_OFFSET = params[:amPmOffset];
+		if (params[:amPmOffsetX] != null) {
+			mAmPmOffsetX = params[:amPmOffsetX];
+		}
+		if (params[:amPmOffsetY] != null) {
+			mAmPmOffsetY = params[:amPmOffsetY];
 		}
 
 		mSecondsY = params[:secondsY];
@@ -59,6 +68,12 @@ class ThickThinTime extends Ui.Drawable {
 		mHoursFont = Ui.loadResource(Rez.Fonts.HoursFont);
 		mMinutesFont = Ui.loadResource(Rez.Fonts.MinutesFont);
 		mSecondsFont = Ui.loadResource(Rez.Fonts.SecondsFont);
+
+		onSettingsChanged();
+	}
+
+	function onSettingsChanged() {
+		mSecondsClipXAdjust = App.getApp().getProperty("HideHoursLeadingZero") ? -0.5 : 0;
 	}
 
 	function setHideSeconds(hideSeconds) {
@@ -79,7 +94,7 @@ class ThickThinTime extends Ui.Drawable {
 		var minutes = formattedTime[:min];
 		var amPmText = formattedTime[:amPm];
 
-		var halfDCWidth = dc.getWidth() / 2;
+		var halfDCWidth = (dc.getWidth() / 2) + mAdjustX;
 		var halfDCHeight = (dc.getHeight() / 2) + mAdjustY;
 
 		// Centre combined hours and minutes text (not the same as right-aligning hours and left-aligning minutes).
@@ -87,6 +102,7 @@ class ThickThinTime extends Ui.Drawable {
 		// minutes font is used to calculate total width. 
 		var totalWidth = dc.getTextWidthInPixels(hours + minutes, mHoursFont);
 		var x = halfDCWidth - (totalWidth / 2);
+		mHourLeadingZeroWidth = mSecondsClipXAdjust == 0 || hours.length() > 1 ? 0 : dc.getTextWidthInPixels("0", mHoursFont);
 
 		// Draw hours.
 		dc.setColor(gHoursColour, Graphics.COLOR_TRANSPARENT);
@@ -113,9 +129,10 @@ class ThickThinTime extends Ui.Drawable {
 		if (amPmText.length() > 0) {
 			dc.setColor(gThemeColour, Graphics.COLOR_TRANSPARENT);
 			x += dc.getTextWidthInPixels(minutes, mMinutesFont);
+			var amPmOffsetY = - dc.getFontHeight(mSecondsFont) / 2 + mAmPmOffsetY;
 			dc.drawText(
-				x + AM_PM_X_OFFSET, // Breathing space between minutes and AM/PM.
-				halfDCHeight,
+				x + mAmPmOffsetX, // Breathing space between minutes and AM/PM.
+				halfDCHeight + amPmOffsetY,
 				mSecondsFont,
 				amPmText,
 				Graphics.TEXT_JUSTIFY_LEFT | Graphics.TEXT_JUSTIFY_VCENTER
@@ -137,7 +154,7 @@ class ThickThinTime extends Ui.Drawable {
 		if (isPartialUpdate) {
 
 			dc.setClip(
-				mSecondsClipRectX + mSecondsClipXAdjust,
+				mSecondsClipRectX + mSecondsClipXAdjust * mHourLeadingZeroWidth,
 				mSecondsClipRectY,
 				mSecondsClipRectWidth,
 				mSecondsClipRectHeight
@@ -158,7 +175,7 @@ class ThickThinTime extends Ui.Drawable {
 		}
 
 		dc.drawText(
-			mSecondsClipRectX + mSecondsClipXAdjust,
+			mSecondsClipRectX + mSecondsClipXAdjust * mHourLeadingZeroWidth,
 			mSecondsY,
 			mSecondsFont,
 			seconds,
