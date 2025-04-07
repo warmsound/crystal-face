@@ -1,0 +1,105 @@
+<strings>
+
+	<string id="AppName">Crystal</string>
+	<string id="AppVersionTitle">Версія</string>
+
+	<string id="ThemeTitle">Тема</string>
+	<string id="HoursColourTitle">Колір годин</string>
+	<string id="MinutesColourTitle">Колір хвилин</string>
+	<string id="LeftGoalMeterTitle">Ліва шкала</string>
+	<string id="RightGoalMeterTitle">Права шкала</string>
+	<string id="CaloriesGoalTitle">Ціль в калоріях (1-10,000ккал)</string>
+	<string id="GoalMeterStyleTitle">Стиль шкали</string>
+	<string id="MeterDigitsStyleTitle">Стиль цифрових значень шкал</string>
+	<string id="LocalTimeInCityTitle">Додати локальний час в місті (Beta)</string>
+	<string id="MoveBarStyleTitle">Стиль смужки рухливості</string>
+	<string id="HideSecondsTitle">Приховати секунди</string>
+	<string id="HideHoursLeadingZeroTitle">Не показувати нулі перед годинами</string>
+	<string id="OWMKeyOverride">OpenWeatherMap API Key Override</string>
+
+	<string id="FieldCountTitle">Кількість полів даних</string>
+	<string id="DataField1Title">Поле даних 1</string>
+	<string id="DataField2Title">Поле даних 2</string>
+	<string id="DataField3Title">Поле даних 3</string>
+
+	<string id="IndicatorCountTitle">Кількість індикаторів</string>
+	<string id="Indicator1Title">Індикатор 1</string>
+	<string id="Indicator2Title">Індикатор 2</string>
+	<string id="Indicator3Title">Індикатор 3</string>
+
+	<string id="FromTheme">(З теми)</string>
+	<string id="MonoHighlight">Mono Highlight</string>
+	<string id="Mono">Mono</string>
+
+	<string id="AllSegmentsMerged">Всі сегменти (Merged)</string>
+	<string id="FilledSegmentsMerged">Заповнені сегменти (Merged)</string>
+	<string id="AllSegments">Всі сегменти</string>
+	<string id="FilledSegments">Заповнені сегменти</string>
+	<string id="Hidden">Приховано</string>
+	<string id="CurrentTarget">Поточне значення/Ціль</string>
+	<string id="Current">Поточне значення</string>
+
+	<string id="ThemeBlueDark">Синя (Темна)</string>
+	<string id="ThemePinkDark">Рожева (Темна)</string>
+	<string id="ThemeRedDark">Червона (Темна)</string>
+	<string id="ThemeGreenDark">Зелена (Темна)</string>
+	<string id="ThemeCornflowerBlueDark">Волошкова (Темна)</string>
+	<string id="ThemeLemonCreamDark">Лимонна (Темна)</string>
+	<string id="ThemeVividYellowDark">Насичена Жовта (Темна)</string>
+	<string id="ThemeDaygloOrangeDark">Оранжева (Темна)</string>
+	<string id="ThemeMonoDark">Моно (Темна)</string>
+	<string id="ThemeMonoLight">Моно (Світла)</string>
+	<string id="ThemeBlueLight">Синя (Світла)</string>
+	<string id="ThemeRedLight">Червона (Світла)</string>
+	<string id="ThemeGreenLight">Зелена (Світла)</string>
+	<string id="ThemeDaygloOrangeLight">Оранжева (Світла)</string>
+	<string id="ThemeCornYellowDark">Кукурудзяно-жовта (Темна)</string>
+
+	<string id="Steps">Кроки</string>
+	<string id="FloorsClimbed">Поверхи вгору</string>
+	<string id="ActiveMinutes">Хв. інтенсивних навантажеть (за тиждень)</string>
+	<string id="CaloriesManualGoal">Калорії (Ціль встановлена вручну)</string>
+	<string id="Off">Вимкнено</string>
+
+	<string id="HeartRate">Пульс</string>
+	<string id="HeartRateLive5s">Пульс (Live 5s)</string>
+	<string id="Battery">Батарея</string>
+	<string id="BatteryHidePercentage">Батарея (без відсотків)</string>
+	<string id="Notifications">Сповіщення</string>
+	<string id="Calories">Калорії</string>
+	<string id="Distance">Відстань</string>
+	<string id="Alarms">Будильники</string>
+	<string id="Altitude">Висота</string>
+	<string id="Temperature">Термометр</string>
+	<string id="Bluetooth">Bluetooth</string>
+	<string id="BluetoothOrNotifications">Bluetooth/Сповіщення</string>
+	<string id="SunriseSunset">Схід/Захід</string>
+	<string id="Weather">Погода</string>
+	<string id="Humidity">Вологість</string>
+	<string id="Pressure">Тиск</string>
+
+	<!-- Internal use only. Required because fonts cannot be overridden by locale. Leave blank for no override. -->
+	<string id="DATE_FONT_OVERRIDE"></string>
+
+	<string id="Sun">Нд</string>
+	<string id="Mon">Пн</string>
+	<string id="Tue">Вт</string>
+	<string id="Wed">Ср</string>
+	<string id="Thu">Чт</string>
+	<string id="Fri">Пт</string>
+	<string id="Sat">Сб</string>
+
+	<string id="Jan">Січ</string>
+	<string id="Feb">Лют</string>
+	<string id="Mar">Без</string>
+	<string id="Apr">Кві</string>
+	<string id="May">Тра</string>
+	<string id="Jun">Чер</string>
+	<string id="Jul">Лип</string>
+	<string id="Aug">Сер</string>
+	<string id="Sep">Вер</string>
+	<string id="Oct">Жов</string>
+	<string id="Nov">Лис</string>
+	<string id="Dec">Гру</string>
+
+</strings>
