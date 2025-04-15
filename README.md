@@ -27,6 +27,9 @@ Reviews:
 
 ## What's New
 
+### 2.7.1
+- Add support for vívoactive® 6.
+
 ### 2.7.0
 - Add support for latest watches, including fēnix® 8 series, Forerunner® 165 series, Instinct® 3 AMOLED and Enduro™ 3.
 - Technical update to CIQ 8.1.0.
