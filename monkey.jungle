@@ -110,5 +110,6 @@ fr165.sourcePath = $(fr165.sourcePath);always-on-source
 fr165m.sourcePath = $(fr165m.sourcePath);always-on-source
 instinct3amoled45mm.sourcePath = $(instinct3amoled45mm.sourcePath);always-on-source
 instinct3amoled50mm.sourcePath = $(instinct3amoled50mm.sourcePath);always-on-source
+vivoactive6.sourcePath = $(vivoactive6.sourcePath);always-on-source
 
 rectangle-320x360.excludeAnnotations = unbuffered;object_store;double_line_date;vertical_indicators
